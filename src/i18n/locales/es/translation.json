@@ -1,0 +1,154 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "about": "Sobre Mí",
+    "experience": "Experiencia",
+    "services": "Servicios",
+    "portfolio": "Portafolio",
+    "contact": "Contacto"
+  },
+  "header": {
+    "greeting": "Hola, soy",
+    "name": "Alex",
+    "title": "Desarrollador de Aplicaciones Web",
+    "cta": "Hablemos"
+  },
+  "about": {
+    "title": "Sobre Mí",
+    "subtitle": "Conóceme",
+    "description": "Soy estudiante de Desarrollo de Aplicaciones Web con experiencia en React, Java (Spring Boot), JavaScript nativo y MySQL. He trabajado en la creación de APIs, paneles de administración y actualmente me interesa desarrollar una web de e-commerce. Me apasiona la inteligencia artificial y la automatización de procesos, áreas en las que me gustaría seguir creciendo profesionalmente.",
+    "experience": "Años de Experiencia",
+    "clients": "Clientes",
+    "projects": "Proyectos",
+    "years_approx": "1 año aprox de experiencia"
+  },
+  "experience": {
+    "title": "Mi Experiencia",
+    "subtitle": "Mis Habilidades",
+    "frontend": "Desarrollo Frontend",
+    "backend": "Desarrollo Backend",
+    "experienced": "Experto",
+    "intermediate": "Intermedio",
+    "basic": "Básico",
+    "strengths": {
+      "title": "Mis Fortalezas",
+      "logic": "Fuerte Lógica",
+      "teamwork": "Coordinación de Equipos",
+      "detail": "Atención al Detalle",
+      "pressure": "Trabajo Bajo Presión",
+      "challenges": "Entusiasmo por los Retos"
+    },
+    "differentiator": {
+      "title": "Lo que me Diferencia",
+      "perfectionist": "Mentalidad Perfeccionista",
+      "quality": "Compromiso con la Calidad",
+      "real_projects": "Experiencia en Proyectos Reales",
+      "professional": "Experiencia en Entornos Profesionales"
+    }
+  },
+  "services": {
+    "title": "Mis Servicios",
+    "subtitle": "Lo que Ofrezco",
+    "webdev": {
+      "title": "Desarrollo Web",
+      "description": "Construyo aplicaciones web responsivas y dinámicas utilizando tecnologías modernas.",
+      "details": [
+        "React.js y JavaScript",
+        "Integración de APIs REST",
+        "Diseño responsivo para todos los dispositivos",
+        "Estructura de código limpia y mantenible"
+      ]
+    },
+    "automation": {
+      "title": "Automatización de Procesos con IA",
+      "description": "Automatizo tareas repetitivas utilizando herramientas de IA para mejorar la eficiencia y productividad.",
+      "details": [
+        "Automatización de tareas con IA",
+        "Scripts y herramientas personalizadas",
+        "Enfoque en flujos de trabajo repetitivos o manuales",
+        "Explorando integraciones con plataformas populares de IA"
+      ]
+    }
+  },
+  "portfolio": {
+    "title": "Mi Portafolio",
+    "subtitle": "Trabajos Recientes",
+    "projects": [
+      {
+        "title": "Admin Dashboard",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Componets Store E-Commers",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Figma dashboard UI kit for data design web apps",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Hundir la flota en Python",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "JS Pong Game",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Juego de la Serpiente",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Plantillas de gráficos e infografías en Figma",
+        "github": "GitHub",
+        "demo": "Demo en Vivo"
+      },
+      {
+        "title": "Plantillas de gráficos e infografías en Figma",
+        "github": "GitHub",
+        "demo": "Demo en Vivo"
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Testimonios",
+    "subtitle": "Opiniones de Clientes",
+    "reviews": [
+      {
+        "name": "John Smith",
+        "role": "CEO en TechCorp",
+        "review": "Trabajar con Alex ha sido un placer absoluto. Su atención al detalle y habilidades para resolver problemas son excepcionales. No solo entregó nuestro proyecto a tiempo, sino que también proporcionó ideas valiosas que mejoraron significativamente nuestro producto. Su experiencia en React y Java lo convirtió en un activo invaluable para nuestro equipo."
+      },
+      {
+        "name": "Sarah Johnson",
+        "role": "Gerente de Proyecto en InnovateX",
+        "review": "La capacidad de Alex para entender requisitos complejos y traducirlos en soluciones elegantes es notable. Su trabajo en nuestra plataforma de comercio electrónico fue sobresaliente, implementando características que mejoraron significativamente nuestras tasas de conversión. Su dedicación al código limpio y las mejores prácticas hizo que el proyecto fuera mantenible y escalable."
+      },
+      {
+        "name": "Michael Chen",
+        "role": "CTO en StartupHub",
+        "review": "Lo que más me impresionó de Alex fue su capacidad para manejar tanto el desarrollo frontend como backend con igual experiencia. Su implementación de nuestro sistema de automatización con IA nos ahorró innumerables horas de trabajo manual. Su conocimiento técnico combinado con sus fuertes habilidades de comunicación lo convierten en un excelente desarrollador para trabajar."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contáctame",
+    "subtitle": "Ponte en Contacto",
+    "email": "Correo",
+    "whatsapp": "WhatsApp",
+    "message": "Enviar Mensaje",
+    "name": "Tu Nombre",
+    "email_placeholder": "Tu Correo",
+    "message_placeholder": "Tu Mensaje",
+    "send_message": "Enviar un mensaje"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados"
+  }
+} 

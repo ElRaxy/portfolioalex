@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "contact": "Contact"
+  },
+  "header": {
+    "greeting": "Hello, I'm",
+    "name": "Alex",
+    "title": "Web Applications Developer",
+    "cta": "Let's Talk"
+  },
+  "about": {
+    "title": "About Me",
+    "subtitle": "Get To Know",
+    "description": "I am a Web Applications Development student with experience in React, Java (Spring Boot), vanilla JavaScript, and MySQL. I have worked on creating APIs, admin panels, and I'm currently interested in developing an e-commerce website. I'm passionate about artificial intelligence and process automation, areas where I would like to continue growing professionally.",
+    "experience": "Years Experience",
+    "clients": "Clients",
+    "projects": "Projects",
+    "years_approx": "1 approx Year Experience"
+  },
+  "experience": {
+    "title": "My Experience",
+    "subtitle": "What Skills I Have",
+    "frontend": "Frontend Development",
+    "backend": "Backend Development",
+    "experienced": "Experienced",
+    "intermediate": "Intermediate",
+    "basic": "Basic",
+    "strengths": {
+      "title": "My Strengths",
+      "logic": "Strong Logic",
+      "teamwork": "Team Coordination",
+      "detail": "Attention to Detail",
+      "pressure": "Works Well Under Pressure",
+      "challenges": "Enthusiastic About Challenges"
+    },
+    "differentiator": {
+      "title": "What Makes Me Different",
+      "perfectionist": "Perfectionist Mindset",
+      "quality": "Commitment to Quality",
+      "real_projects": "Real Project Experience",
+      "professional": "Professional Environment Experience"
+    }
+  },
+  "services": {
+    "title": "My Services",
+    "subtitle": "What I Offer",
+    "webdev": {
+      "title": "Web Development",
+      "description": "I build responsive and dynamic web applications using modern technologies.",
+      "details": [
+        "React.js and JavaScript",
+        "REST API integration",
+        "Responsive design for all devices",
+        "Clean, maintainable code structure"
+      ]
+    },
+    "automation": {
+      "title": "Process Automation with AI",
+      "description": "I automate repetitive tasks using AI tools to improve efficiency and productivity.",
+      "details": [
+        "AI-driven task automation",
+        "Custom scripts and tools",
+        "Focus on repetitive or manual workflows",
+        "Exploring integrations with popular AI platforms"
+      ]
+    }
+  },
+  "portfolio": {
+    "title": "My Portfolio",
+    "subtitle": "Recent Work",
+    "projects": [
+      {
+        "title": "Admin Dashboard",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Componets Store E-Commers",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Figma dashboard UI kit for data design web apps",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Battleship in Python",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "JS Pong Game",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      },
+      {
+        "title": "Snake Game",
+        "github": "GitHub",
+        "demo": "Live Demo"
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "Client Reviews",
+    "reviews": [
+      {
+        "name": "John Smith",
+        "role": "CEO at TechCorp",
+        "review": "Working with Alex has been an absolute pleasure. His attention to detail and problem-solving skills are exceptional. He not only delivered our project on time but also provided valuable insights that improved our product significantly. His expertise in React and Java made him an invaluable asset to our team."
+      },
+      {
+        "name": "Sarah Johnson",
+        "role": "Project Manager at InnovateX",
+        "review": "Alex's ability to understand complex requirements and translate them into elegant solutions is remarkable. His work on our e-commerce platform was outstanding, implementing features that significantly improved our conversion rates. His dedication to clean code and best practices made the project maintainable and scalable."
+      },
+      {
+        "name": "Michael Chen",
+        "role": "CTO at StartupHub",
+        "review": "What impressed me most about Alex was his ability to handle both frontend and backend development with equal expertise. His implementation of our AI automation system saved us countless hours of manual work. His technical knowledge combined with his strong communication skills makes him an excellent developer to work with."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact Me",
+    "subtitle": "Get In Touch",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "message": "Send Message",
+    "name": "Your Name",
+    "email_placeholder": "Your Email",
+    "message_placeholder": "Your Message",
+    "send_message": "Send a message"
+  },
+  "footer": {
+    "copyright": "All rights reserved"
+  }
+} 
