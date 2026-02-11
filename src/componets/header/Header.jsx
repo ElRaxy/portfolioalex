@@ -15,6 +15,7 @@ const Header = () => {
         <h5>{t('header.greeting')}</h5>
         <h1>{t('header.name')}</h1>
         <h5 className="text-light">{t('header.title')}</h5>
+        <small className="header__location">{t('header.location')}</small>
         <CTA />
         <HeaderSocials />
 

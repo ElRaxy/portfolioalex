@@ -10,6 +10,13 @@ header{
     position: relative;
 }
 
+.header__location {
+    display: block;
+    margin-top: 0.6rem;
+    color: var(--color-light);
+    letter-spacing: 0.04rem;
+}
+
 /* =================== CTA =================== */
 .cta{
     margin-top: 2.5rem;

@@ -9,24 +9,25 @@
   },
   "header": {
     "greeting": "Hola, soy",
-    "name": "Alex",
-    "title": "Desarrollador de Aplicaciones Web",
+    "name": "Alex Micó Robles",
+    "title": "Full Stack Developer Student",
+    "location": "Alicante, Villena",
     "cta": "Hablemos"
   },
   "about": {
     "title": "Sobre Mí",
     "subtitle": "Conóceme",
-    "description": "Soy estudiante de Desarrollo de Aplicaciones Web con experiencia en React, Java (Spring Boot), JavaScript nativo y MySQL. He trabajado en la creación de APIs, paneles de administración y actualmente me interesa desarrollar una web de e-commerce. Me apasiona la inteligencia artificial y la automatización de procesos, áreas en las que me gustaría seguir creciendo profesionalmente.",
-    "experience": "Años de Experiencia",
+    "description": "Soy estudiante de DAW con una base sólida en sistemas (SMR). Me apasiona el desarrollo de software, especialmente el Backend, donde me siento más cómodo diseñando lógica y APIs. En mi tiempo libre desarrollo proyectos propios, como una plataforma Full Stack para seguimiento de entrenamientos. Soy una persona adaptable, acostumbrada a entornos Linux y con muchas ganas de aportar y seguir aprendiendo en un equipo profesional.",
+    "experience": "Trayectoria",
     "clients": "Clientes",
     "projects": "Proyectos",
-    "years_approx": "1 año aprox de experiencia"
+    "years_approx": "SMR (2022-2024) y DAW (2024-Actualidad)"
   },
   "experience": {
-    "title": "Mi Experiencia",
-    "subtitle": "Mis Habilidades",
-    "frontend": "Desarrollo Frontend",
-    "backend": "Desarrollo Backend",
+    "title": "Stack Tecnológico",
+    "subtitle": "Herramientas y conocimientos",
+    "frontend": "Frontend",
+    "backend": "Backend y Despliegue",
     "experienced": "Experto",
     "intermediate": "Intermedio",
     "basic": "Básico",
@@ -47,26 +48,36 @@
     }
   },
   "services": {
-    "title": "Mis Servicios",
-    "subtitle": "Lo que Ofrezco",
-    "webdev": {
-      "title": "Desarrollo Web",
-      "description": "Construyo aplicaciones web responsivas y dinámicas utilizando tecnologías modernas.",
+    "title": "Resumen de CV",
+    "subtitle": "Formación, idiomas y proyectos",
+    "education": {
+      "title": "Datos Académicos",
+      "description": "Formación técnica centrada en sistemas y desarrollo web.",
       "details": [
-        "React.js y JavaScript",
-        "Integración de APIs REST",
-        "Diseño responsivo para todos los dispositivos",
-        "Estructura de código limpia y mantenible"
+        "2024 - Actualidad: Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós (finalización 2026).",
+        "2022 - 2024: Ciclo Medio de Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós.",
+        "Base sólida en sistemas y despliegue sobre Linux.",
+        "Enfoque práctico en backend, APIs y persistencia de datos."
       ]
     },
-    "automation": {
-      "title": "Automatización de Procesos con IA",
-      "description": "Automatizo tareas repetitivas utilizando herramientas de IA para mejorar la eficiencia y productividad.",
+    "languages": {
+      "title": "Idiomas",
+      "description": "Competencias lingüísticas para trabajar en equipos técnicos.",
       "details": [
-        "Automatización de tareas con IA",
-        "Scripts y herramientas personalizadas",
-        "Enfoque en flujos de trabajo repetitivos o manuales",
-        "Explorando integraciones con plataformas populares de IA"
+        "Castellano y valenciano: nativo.",
+        "Inglés: nivel medio de writing, reading y speaking.",
+        "Capacidad para documentación técnica en inglés.",
+        "Comunicación clara en entornos colaborativos."
+      ]
+    },
+    "projects": {
+      "title": "Proyectos Destacados",
+      "description": "Proyectos representativos alineados con el CV.",
+      "details": [
+        "Plataforma de Seguimiento Fitness (en desarrollo): app Full Stack MERN para rutinas de gimnasio.",
+        "Trabajo activo en backend con Node.js y persistencia en MongoDB.",
+        "Admin Dashboard y Portfolio: panel de control y web personal con React.",
+        "Interfaz limpia, funcional y orientada a uso real."
       ]
     }
   },
@@ -142,11 +153,15 @@
     "subtitle": "Ponte en Contacto",
     "email": "Correo",
     "whatsapp": "WhatsApp",
+    "location": "Ubicación",
+    "website": "Web",
     "message": "Enviar Mensaje",
     "name": "Tu Nombre",
     "email_placeholder": "Tu Correo",
     "message_placeholder": "Tu Mensaje",
-    "send_message": "Enviar un mensaje"
+    "send_message": "Enviar un mensaje",
+    "view_location": "Ver ubicación",
+    "visit_website": "Visitar web"
   },
   "footer": {
     "copyright": "Todos los derechos reservados"

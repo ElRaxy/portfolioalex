@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import './contact.css'
 import { MdOutlineEmail } from 'react-icons/md'
 import { BsWhatsapp } from 'react-icons/bs'
+import { IoLocationOutline } from 'react-icons/io5'
+import { FiLink } from 'react-icons/fi'
 import emailjs from 'emailjs-com'
 
 function Contact() {
@@ -46,6 +48,20 @@ function Contact() {
             <h4>{t('contact.whatsapp')}</h4>
             <h5>+34 693 91 24 60</h5>
             <a href="https://wa.me/693912460" target="_blank" rel="noreferrer">{t('contact.send_message')}</a>
+          </article>
+
+          <article className="contact__option">
+            <IoLocationOutline className="contact__option-icon"/>
+            <h4>{t('contact.location')}</h4>
+            <h5>Alicante, Villena</h5>
+            <a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noreferrer">{t('contact.view_location')}</a>
+          </article>
+
+          <article className="contact__option">
+            <FiLink className="contact__option-icon"/>
+            <h4>{t('contact.website')}</h4>
+            <h5>portfolioalex-blush.vercel.app</h5>
+            <a href="https://portfolioalex-blush.vercel.app/" target="_blank" rel="noreferrer">{t('contact.visit_website')}</a>
           </article>
         </div>
 

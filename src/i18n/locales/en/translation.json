@@ -9,24 +9,25 @@
   },
   "header": {
     "greeting": "Hello, I'm",
-    "name": "Alex",
-    "title": "Web Applications Developer",
+    "name": "Alex Mico Robles",
+    "title": "Full Stack Developer Student",
+    "location": "Alicante, Villena",
     "cta": "Let's Talk"
   },
   "about": {
     "title": "About Me",
     "subtitle": "Get To Know",
-    "description": "I am a Web Applications Development student with experience in React, Java (Spring Boot), vanilla JavaScript, and MySQL. I have worked on creating APIs, admin panels, and I'm currently interested in developing an e-commerce website. I'm passionate about artificial intelligence and process automation, areas where I would like to continue growing professionally.",
-    "experience": "Years Experience",
+    "description": "I am a Web Applications Development student with a solid systems background (SMR). I am especially motivated by backend development, where I feel most comfortable designing logic and APIs. In my free time I build personal projects, including a full stack fitness tracking platform. I adapt quickly, I am used to Linux environments, and I am highly motivated to keep learning and contribute to a professional team.",
+    "experience": "Background",
     "clients": "Clients",
     "projects": "Projects",
-    "years_approx": "1 approx Year Experience"
+    "years_approx": "SMR (2022-2024) and DAW (2024-Present)"
   },
   "experience": {
-    "title": "My Experience",
-    "subtitle": "What Skills I Have",
-    "frontend": "Frontend Development",
-    "backend": "Backend Development",
+    "title": "Technology Stack",
+    "subtitle": "Tools and knowledge",
+    "frontend": "Frontend",
+    "backend": "Backend and Deployment",
     "experienced": "Experienced",
     "intermediate": "Intermediate",
     "basic": "Basic",
@@ -47,26 +48,36 @@
     }
   },
   "services": {
-    "title": "My Services",
-    "subtitle": "What I Offer",
-    "webdev": {
-      "title": "Web Development",
-      "description": "I build responsive and dynamic web applications using modern technologies.",
+    "title": "CV Summary",
+    "subtitle": "Education, languages and featured projects",
+    "education": {
+      "title": "Academic Background",
+      "description": "Technical studies focused on systems and web development.",
       "details": [
-        "React.js and JavaScript",
-        "REST API integration",
-        "Responsive design for all devices",
-        "Clean, maintainable code structure"
+        "2024 - Present: Higher Vocational Training in Web Application Development (DAW), IES Hermanos Amoros (graduation in 2026).",
+        "2022 - 2024: Vocational Training in Microcomputer Systems and Networks (SMR), IES Hermanos Amoros.",
+        "Solid base in systems and Linux-based deployment.",
+        "Hands-on focus on backend, APIs and data persistence."
       ]
     },
-    "automation": {
-      "title": "Process Automation with AI",
-      "description": "I automate repetitive tasks using AI tools to improve efficiency and productivity.",
+    "languages": {
+      "title": "Languages",
+      "description": "Language skills for technical team environments.",
       "details": [
-        "AI-driven task automation",
-        "Custom scripts and tools",
-        "Focus on repetitive or manual workflows",
-        "Exploring integrations with popular AI platforms"
+        "Spanish and Valencian: native.",
+        "English: intermediate writing, reading and speaking.",
+        "Able to work with technical documentation in English.",
+        "Clear communication in collaborative teams."
+      ]
+    },
+    "projects": {
+      "title": "Featured Projects",
+      "description": "Representative projects aligned with the CV.",
+      "details": [
+        "Fitness Tracking Platform (in development): MERN full stack app to manage gym routines.",
+        "Currently focused on backend logic with Node.js and MongoDB persistence.",
+        "Admin Dashboard and Portfolio: React-based control panel and personal website.",
+        "Clean, functional interface focused on practical usage."
       ]
     }
   },
@@ -132,11 +143,15 @@
     "subtitle": "Get In Touch",
     "email": "Email",
     "whatsapp": "WhatsApp",
+    "location": "Location",
+    "website": "Website",
     "message": "Send Message",
     "name": "Your Name",
     "email_placeholder": "Your Email",
     "message_placeholder": "Your Message",
-    "send_message": "Send a message"
+    "send_message": "Send a message",
+    "view_location": "View location",
+    "visit_website": "Visit website"
   },
   "footer": {
     "copyright": "All rights reserved"

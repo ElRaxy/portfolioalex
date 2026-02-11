@@ -20,22 +20,38 @@ const Experience = () => {
       level: t('experience.experienced')
     },
     {
+      title: 'React Hooks',
+      level: t('experience.experienced')
+    },
+    {
+      title: 'React Router',
+      level: t('experience.intermediate')
+    },
+    {
+      title: 'Axios',
+      level: t('experience.intermediate')
+    },
+    {
       title: 'React',
       level: t('experience.experienced')
     },
     {
-      title: 'Bootstrap',
+      title: 'Git',
       level: t('experience.intermediate')
-    }
+    },
   ]
 
   const backendData = [
     {
-      title: 'Java',
+      title: 'Node.js',
       level: t('experience.experienced')
     },
     {
-      title: 'Spring Boot',
+      title: 'Express',
+      level: t('experience.experienced')
+    },
+    {
+      title: 'MongoDB (Mongoose)',
       level: t('experience.experienced')
     },
     {
@@ -43,13 +59,17 @@ const Experience = () => {
       level: t('experience.experienced')
     },
     {
-      title: 'REST APIs',
+      title: 'JWT + bcrypt + Cookies',
       level: t('experience.experienced')
     },
     {
-      title: 'Git',
+      title: 'Linux / Ubuntu Server',
       level: t('experience.intermediate')
-    }
+    },
+    {
+      title: 'Apache2 / Nginx / DNS',
+      level: t('experience.intermediate')
+    },
   ]
 
   return (

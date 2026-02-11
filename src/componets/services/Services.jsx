@@ -1,24 +1,30 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './services.css'
-import { FaCode, FaRobot } from 'react-icons/fa'
+import { FaGraduationCap, FaLanguage, FaFolderOpen } from 'react-icons/fa'
 
 const Services = () => {
   const { t } = useTranslation();
 
   const services = [
     {
-      title: t('services.webdev.title'),
-      description: t('services.webdev.description'),
-      details: t('services.webdev.details', { returnObjects: true }),
-      icon: <FaCode />
+      title: t('services.education.title'),
+      description: t('services.education.description'),
+      details: t('services.education.details', { returnObjects: true }),
+      icon: <FaGraduationCap />
     },
     {
-      title: t('services.automation.title'),
-      description: t('services.automation.description'),
-      details: t('services.automation.details', { returnObjects: true }),
-      icon: <FaRobot />
-    }
+      title: t('services.languages.title'),
+      description: t('services.languages.description'),
+      details: t('services.languages.details', { returnObjects: true }),
+      icon: <FaLanguage />
+    },
+    {
+      title: t('services.projects.title'),
+      description: t('services.projects.description'),
+      details: t('services.projects.details', { returnObjects: true }),
+      icon: <FaFolderOpen />
+    },
   ];
 
   return (
