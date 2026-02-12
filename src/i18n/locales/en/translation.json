@@ -119,24 +119,28 @@
   },
   "testimonials": {
     "title": "Testimonials",
-    "subtitle": "Client Reviews",
+    "subtitle": "Project references",
     "reviews": [
       {
-        "name": "John Smith",
-        "role": "CEO at TechCorp",
-        "review": "Working with Alex has been an absolute pleasure. His attention to detail and problem-solving skills are exceptional. He not only delivered our project on time but also provided valuable insights that improved our product significantly. His expertise in React and Java made him an invaluable asset to our team."
+        "name": "Anonymous client",
+        "role": "Fitness platform (project in development)",
+        "context": "Context: technical collaboration and backend feature review.",
+        "review": "I value the clear API and data model decisions. The project has progressed steadily with a good ability to integrate improvements."
       },
       {
-        "name": "Sarah Johnson",
-        "role": "Project Manager at InnovateX",
-        "review": "Alex's ability to understand complex requirements and translate them into elegant solutions is remarkable. His work on our e-commerce platform was outstanding, implementing features that significantly improved our conversion rates. His dedication to clean code and best practices made the project maintainable and scalable."
+        "name": "Test user",
+        "role": "Admin Dashboard and Portfolio",
+        "context": "Context: usability feedback for interface and navigation.",
+        "review": "The interface is clean and functional. Section navigation is quick, and the content is well organized to present profile, stack, and projects."
       },
       {
-        "name": "Michael Chen",
-        "role": "CTO at StartupHub",
-        "review": "What impressed me most about Alex was his ability to handle both frontend and backend development with equal expertise. His implementation of our AI automation system saved us countless hours of manual work. His technical knowledge combined with his strong communication skills makes him an excellent developer to work with."
+        "name": "Training teammate",
+        "role": "DAW/SMR academic project",
+        "context": "Context: collaborative work in Linux environments and version control.",
+        "review": "I want to highlight his adaptability in Linux environments and his way of solving technical issues. Communication is clear and work is well organized."
       }
-    ]
+    ],
+    "anonymous_badge": "Anonymous testimonial"
   },
   "contact": {
     "title": "Contact Me",

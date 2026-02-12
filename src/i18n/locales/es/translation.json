@@ -129,24 +129,28 @@
   },
   "testimonials": {
     "title": "Testimonios",
-    "subtitle": "Opiniones de Clientes",
+    "subtitle": "Referencias de proyectos",
     "reviews": [
       {
-        "name": "John Smith",
-        "role": "CEO en TechCorp",
-        "review": "Trabajar con Alex ha sido un placer absoluto. Su atención al detalle y habilidades para resolver problemas son excepcionales. No solo entregó nuestro proyecto a tiempo, sino que también proporcionó ideas valiosas que mejoraron significativamente nuestro producto. Su experiencia en React y Java lo convirtió en un activo invaluable para nuestro equipo."
+        "name": "Cliente anónimo",
+        "role": "Plataforma Fitness (proyecto en desarrollo)",
+        "context": "Contexto: colaboración técnica y revisión de funcionalidades backend.",
+        "review": "Valoro que la API y la estructura de datos se plantearon con lógica clara. La evolución del proyecto ha sido constante y con buena capacidad para incorporar mejoras."
       },
       {
-        "name": "Sarah Johnson",
-        "role": "Gerente de Proyecto en InnovateX",
-        "review": "La capacidad de Alex para entender requisitos complejos y traducirlos en soluciones elegantes es notable. Su trabajo en nuestra plataforma de comercio electrónico fue sobresaliente, implementando características que mejoraron significativamente nuestras tasas de conversión. Su dedicación al código limpio y las mejores prácticas hizo que el proyecto fuera mantenible y escalable."
+        "name": "Usuario de pruebas",
+        "role": "Admin Dashboard y Portfolio",
+        "context": "Contexto: feedback de uso en interfaz y navegación.",
+        "review": "La interfaz es limpia y funcional. La navegación entre secciones es rápida y el contenido está bien organizado para presentar perfil, stack y proyectos."
       },
       {
-        "name": "Michael Chen",
-        "role": "CTO en StartupHub",
-        "review": "Lo que más me impresionó de Alex fue su capacidad para manejar tanto el desarrollo frontend como backend con igual experiencia. Su implementación de nuestro sistema de automatización con IA nos ahorró innumerables horas de trabajo manual. Su conocimiento técnico combinado con sus fuertes habilidades de comunicación lo convierten en un excelente desarrollador para trabajar."
+        "name": "Compañero de formación",
+        "role": "Proyecto académico DAW/SMR",
+        "context": "Contexto: trabajo colaborativo en entorno Linux y control de versiones.",
+        "review": "Destaco su adaptación en entornos Linux y su forma de resolver incidencias técnicas. Mantiene una comunicación clara y una buena organización del trabajo."
       }
-    ]
+    ],
+    "anonymous_badge": "Testimonio anónimo"
   },
   "contact": {
     "title": "Contáctame",
