@@ -2,11 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './testimonials.css'
 import { FaQuoteLeft } from 'react-icons/fa'
-<<<<<<< HEAD
-import { Autoplay, Navigation } from 'swiper/modules'
-=======
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
->>>>>>> 9f05531 (feat(testimonials): redesign layout spacing and replace fake avatars with anonymous project references)
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
