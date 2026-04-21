@@ -2,162 +2,138 @@
   "nav": {
     "home": "Home",
     "about": "About",
-    "experience": "Experience",
-    "services": "Services",
-    "portfolio": "Portfolio",
+    "experience": "Stack",
+    "services": "CV",
+    "portfolio": "Projects",
     "contact": "Contact"
   },
   "header": {
-    "greeting": "Hello, I'm",
+    "greeting": "Hi, I'm",
     "name": "Alex Mico Robles",
-    "title": "Full Stack Developer Student",
-    "location": "Alicante, Villena",
-    "cta": "Let's Talk"
+    "title": "Full Stack Developer · AI with Claude",
+    "location": "Alicante, Villena · Remote",
+    "cta": "Let's talk",
+    "download_cv": "Download CV"
   },
   "about": {
     "title": "About Me",
-    "subtitle": "Get To Know",
-    "description": "I am a Web Applications Development student with a solid systems background (SMR). I am especially motivated by backend development, where I feel most comfortable designing logic and APIs. In my free time I build personal projects, including a full stack fitness tracking platform. I adapt quickly, I am used to Linux environments, and I am highly motivated to keep learning and contribute to a professional team.",
+    "subtitle": "Get to know",
+    "description": "Web Application Development student with a strong systems background (SMR) and a Full Stack MERN focus. I integrate AI in my daily development workflow with Claude Code, both to build and to orchestrate agents inside my own projects. I maintain Strev (fitness SaaS in production) and Atalaya (AI-powered Python CLI for dev job aggregation). Linux-native, backend-first, adaptable.",
     "experience": "Background",
     "clients": "Clients",
     "projects": "Projects",
-    "years_approx": "SMR (2022-2024) and DAW (2024-Present)"
+    "years_approx": "SMR (2022-2024) · DAW (2024-2026)"
   },
   "experience": {
     "title": "Technology Stack",
     "subtitle": "Tools and knowledge",
     "frontend": "Frontend",
-    "backend": "Backend and Deployment",
+    "backend": "Backend · AI · DevOps",
     "experienced": "Experienced",
     "intermediate": "Intermediate",
     "basic": "Basic",
     "strengths": {
       "title": "My Strengths",
-      "logic": "Strong Logic",
-      "teamwork": "Team Coordination",
-      "detail": "Attention to Detail",
-      "pressure": "Works Well Under Pressure",
-      "challenges": "Enthusiastic About Challenges"
+      "logic": "Strong logic",
+      "teamwork": "Team coordination",
+      "detail": "Attention to detail",
+      "pressure": "Works well under pressure",
+      "challenges": "Enthusiastic about challenges"
     },
     "differentiator": {
       "title": "What Makes Me Different",
-      "perfectionist": "Perfectionist Mindset",
-      "quality": "Commitment to Quality",
-      "real_projects": "Real Project Experience",
-      "professional": "Professional Environment Experience"
+      "perfectionist": "Perfectionist mindset",
+      "quality": "Commitment to quality",
+      "real_projects": "Real projects in production",
+      "professional": "AI-augmented dev workflow (Claude)"
     }
   },
   "services": {
     "title": "CV Summary",
     "subtitle": "Education, languages and featured projects",
     "education": {
-      "title": "Academic Background",
+      "title": "Education",
       "description": "Technical studies focused on systems and web development.",
       "details": [
-        "2024 - Present: Higher Vocational Training in Web Application Development (DAW), IES Hermanos Amoros (graduation in 2026).",
+        "2024 - 2026: Higher Vocational Training in Web Application Development (DAW), IES Hermanos Amoros.",
         "2022 - 2024: Vocational Training in Microcomputer Systems and Networks (SMR), IES Hermanos Amoros.",
-        "Solid base in systems and Linux-based deployment.",
-        "Hands-on focus on backend, APIs and data persistence."
+        "Solid base in Linux, deployment and networking.",
+        "Hands-on focus on backend, REST APIs and data persistence."
       ]
     },
     "languages": {
       "title": "Languages",
-      "description": "Language skills for technical team environments.",
+      "description": "Language skills for technical teams.",
       "details": [
         "Spanish and Valencian: native.",
-        "English: intermediate writing, reading and speaking.",
-        "Able to work with technical documentation in English.",
-        "Clear communication in collaborative teams."
+        "English: intermediate (writing, reading, speaking).",
+        "Comfortable with technical documentation in English.",
+        "Clear communication in remote teams."
       ]
     },
     "projects": {
       "title": "Featured Projects",
-      "description": "Representative projects aligned with the CV.",
+      "description": "Personal projects aligned with the CV.",
       "details": [
-        "Fitness Tracking Platform (in development): MERN full stack app to manage gym routines.",
-        "Currently focused on backend logic with Node.js and MongoDB persistence.",
-        "Admin Dashboard and Portfolio: React-based control panel and personal website.",
-        "Clean, functional interface focused on practical usage."
+        "Strev — MERN fitness SaaS in production with Claude integration for routine personalization.",
+        "Atalaya — Python CLI with the Anthropic SDK to aggregate and score remote dev offers.",
+        "Admin Dashboard and Portfolio — React control panels and personal site.",
+        "Clean interfaces focused on real-world usage."
       ]
     }
   },
   "portfolio": {
-    "title": "My Portfolio",
-    "subtitle": "Recent Work",
+    "title": "My Projects",
+    "subtitle": "Recent selection",
     "projects": [
       {
-        "title": "Admin Dashboard",
-        "github": "GitHub",
-        "demo": "Live Demo"
+        "title": "Strev — MERN fitness SaaS · AI",
+        "github": "Closed source",
+        "demo": "View live"
       },
       {
-        "title": "Componets Store E-Commers",
+        "title": "Atalaya — AI Python CLI · job aggregator",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "View repo"
       },
       {
-        "title": "Figma dashboard UI kit for data design web apps",
+        "title": "Admin Dashboard — React",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "View demo"
       },
       {
-        "title": "Battleship in Python",
+        "title": "Components Store — E-Commerce",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "View demo"
       },
       {
-        "title": "JS Pong Game",
+        "title": "Battleship — Python",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "View repo"
       },
       {
-        "title": "Snake Game",
+        "title": "Pong — JavaScript",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "View demo"
       }
     ]
   },
-  "testimonials": {
-    "title": "Testimonials",
-    "subtitle": "Project references",
-    "reviews": [
-      {
-        "name": "Anonymous client",
-        "role": "Fitness platform (project in development)",
-        "context": "Context: technical collaboration and backend feature review.",
-        "review": "I value the clear API and data model decisions. The project has progressed steadily with a good ability to integrate improvements."
-      },
-      {
-        "name": "Test user",
-        "role": "Admin Dashboard and Portfolio",
-        "context": "Context: usability feedback for interface and navigation.",
-        "review": "The interface is clean and functional. Section navigation is quick, and the content is well organized to present profile, stack, and projects."
-      },
-      {
-        "name": "Training teammate",
-        "role": "DAW/SMR academic project",
-        "context": "Context: collaborative work in Linux environments and version control.",
-        "review": "I want to highlight his adaptability in Linux environments and his way of solving technical issues. Communication is clear and work is well organized."
-      }
-    ],
-    "anonymous_badge": "Anonymous testimonial"
-  },
   "contact": {
     "title": "Contact Me",
-    "subtitle": "Get In Touch",
+    "subtitle": "Get in touch",
     "email": "Email",
     "whatsapp": "WhatsApp",
     "location": "Location",
     "website": "Website",
-    "message": "Send Message",
-    "name": "Your Name",
-    "email_placeholder": "Your Email",
-    "message_placeholder": "Your Message",
+    "message": "Send message",
+    "name": "Your name",
+    "email_placeholder": "Your email",
+    "message_placeholder": "Your message",
     "send_message": "Send a message",
     "view_location": "View location",
     "visit_website": "Visit website"
   },
   "footer": {
-    "copyright": "All rights reserved"
+    "copyright": "Alex Mico Robles · All rights reserved"
   }
-} 
+}

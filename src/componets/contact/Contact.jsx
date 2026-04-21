@@ -15,10 +15,10 @@ function Contact() {
     e.preventDefault()
 
     emailjs.sendForm(
-      'service_srltemq', 
-      'template_03wbx8n', 
-      form.current, 
-      'h0ukj3yGIU-rbaN6v'
+      process.env.REACT_APP_EMAILJS_SERVICE_ID,
+      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+      form.current,
+      process.env.REACT_APP_EMAILJS_PUBLIC_KEY
     )
     .then((result) => {
       console.log(result.text)
@@ -60,8 +60,8 @@ function Contact() {
           <article className="contact__option">
             <FiLink className="contact__option-icon"/>
             <h4>{t('contact.website')}</h4>
-            <h5>portfolioalex-blush.vercel.app</h5>
-            <a href="https://portfolioalex-blush.vercel.app/" target="_blank" rel="noreferrer">{t('contact.visit_website')}</a>
+            <h5>portfolioalex-mico.vercel.app</h5>
+            <a href="https://portfolioalex-mico.vercel.app/" target="_blank" rel="noreferrer">{t('contact.visit_website')}</a>
           </article>
         </div>
 

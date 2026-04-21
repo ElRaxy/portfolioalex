@@ -13,46 +13,46 @@ function Portfolio() {
 
   const data = [
     {
-      id: 1,
+      id: 0,
       image: IMG1,
       title: t('portfolio.projects.0.title'),
+      github: null,
+      demo: 'https://strev.app'
+    },
+    {
+      id: 1,
+      image: IMG2,
+      title: t('portfolio.projects.1.title'),
+      github: 'https://github.com/ElRaxy/atalaya-cli',
+      demo: 'https://github.com/ElRaxy/atalaya-cli'
+    },
+    {
+      id: 2,
+      image: IMG3,
+      title: t('portfolio.projects.2.title'),
       github: 'https://github.com/ElRaxy/AdminDashBoard',
       demo: 'https://admin-dash-board-alex.vercel.app/'
     },
     {
-      id: 2,
-      image: IMG2,
-      title: t('portfolio.projects.1.title'),
+      id: 3,
+      image: IMG4,
+      title: t('portfolio.projects.3.title'),
       github: 'https://github.com/ElRaxy/E-comers',
       demo: 'https://componetsstore.vercel.app/'
     },
     {
-      id: 3,
-      image: IMG3,
-      title: t('portfolio.projects.2.title'),
-      github: 'https://github.com',
-      demo: 'https://dribbble.com/shots/17290917-Eclipse-Figma-dashboard-UI-kit-for-data-design-web-apps'
-    },
-    {
       id: 4,
-      image: IMG4,
-      title: t('portfolio.projects.3.title'),
-      github: 'http://github.com/ElRaxy/Battleship_Python',
+      image: IMG5,
+      title: t('portfolio.projects.4.title'),
+      github: 'https://github.com/ElRaxy/Battleship_Python',
       demo: 'https://github.com/ElRaxy/Battleship_Python'
     },
     {
       id: 5,
-      image: IMG5,
-      title: t('portfolio.projects.4.title'),
-      github: 'https://github.com/ElRaxy/Pong_JS_Alex_Mico',
-      demo: 'https://ponggamealexm.vercel.app/'
-    },
-    {
-      id: 6,
       image: IMG6,
       title: t('portfolio.projects.5.title'),
-      github: 'https://github.com/ElRaxy/SnakeGame-Alex',
-      demo: 'https://snakegame-snowy-two.vercel.app/'
+      github: 'https://github.com/ElRaxy/Pong_JS_Alex_Mico',
+      demo: 'https://ponggamealexm.vercel.app/'
     }
   ]
 
@@ -70,8 +70,10 @@ function Portfolio() {
               </div>
               <h3>{title}</h3>
               <div className="portfolio__item-cta">
-                <a href={github} className="btn" target="_blank" rel="noreferrer">{t('portfolio.projects.0.github')}</a>
-                <a href={demo} className="btn btn-primary" target="_blank" rel="noreferrer">{t('portfolio.projects.0.demo')}</a>
+                {github && (
+                  <a href={github} className="btn" target="_blank" rel="noreferrer">{t(`portfolio.projects.${id}.github`)}</a>
+                )}
+                <a href={demo} className="btn btn-primary" target="_blank" rel="noreferrer">{t(`portfolio.projects.${id}.demo`)}</a>
               </div>
             </article>
           )

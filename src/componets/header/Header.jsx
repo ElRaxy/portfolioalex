@@ -20,7 +20,7 @@ const Header = () => {
         <HeaderSocials />
 
         <div className="me">
-          <img src={ME} alt="me" />
+          <img src={ME} alt="Alex Micó Robles — Full Stack Developer" />
         </div>
 
         <Link to="contact" className="scroll__down">

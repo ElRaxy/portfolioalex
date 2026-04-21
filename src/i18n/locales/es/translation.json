@@ -2,172 +2,138 @@
   "nav": {
     "home": "Inicio",
     "about": "Sobre Mí",
-    "experience": "Experiencia",
-    "services": "Servicios",
-    "portfolio": "Portafolio",
+    "experience": "Stack",
+    "services": "CV",
+    "portfolio": "Proyectos",
     "contact": "Contacto"
   },
   "header": {
     "greeting": "Hola, soy",
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer Student",
-    "location": "Alicante, Villena",
-    "cta": "Hablemos"
+    "title": "Full Stack Developer · IA con Claude",
+    "location": "Alicante, Villena · Remoto",
+    "cta": "Hablemos",
+    "download_cv": "Descargar CV"
   },
   "about": {
     "title": "Sobre Mí",
     "subtitle": "Conóceme",
-    "description": "Soy estudiante de DAW con una base sólida en sistemas (SMR). Me apasiona el desarrollo de software, especialmente el Backend, donde me siento más cómodo diseñando lógica y APIs. En mi tiempo libre desarrollo proyectos propios, como una plataforma Full Stack para seguimiento de entrenamientos. Soy una persona adaptable, acostumbrada a entornos Linux y con muchas ganas de aportar y seguir aprendiendo en un equipo profesional.",
+    "description": "Estudiante de DAW con base sólida en sistemas (SMR) y enfoque Full Stack MERN. Integro IA en mi flujo de desarrollo diario con Claude Code, tanto para construir como para orquestar agentes dentro de mis propios proyectos. Mantengo Strev (SaaS fitness en producción) y Atalaya (CLI Python IA para agregación de ofertas dev). Linux nativo, backend first, adaptable.",
     "experience": "Trayectoria",
     "clients": "Clientes",
     "projects": "Proyectos",
-    "years_approx": "SMR (2022-2024) y DAW (2024-Actualidad)"
+    "years_approx": "SMR (2022-2024) · DAW (2024-2026)"
   },
   "experience": {
     "title": "Stack Tecnológico",
     "subtitle": "Herramientas y conocimientos",
     "frontend": "Frontend",
-    "backend": "Backend y Despliegue",
+    "backend": "Backend · IA · DevOps",
     "experienced": "Experto",
     "intermediate": "Intermedio",
     "basic": "Básico",
     "strengths": {
       "title": "Mis Fortalezas",
-      "logic": "Fuerte Lógica",
-      "teamwork": "Coordinación de Equipos",
-      "detail": "Atención al Detalle",
-      "pressure": "Trabajo Bajo Presión",
-      "challenges": "Entusiasmo por los Retos"
+      "logic": "Lógica fuerte",
+      "teamwork": "Coordinación de equipos",
+      "detail": "Atención al detalle",
+      "pressure": "Trabajo bajo presión",
+      "challenges": "Entusiasmo por los retos"
     },
     "differentiator": {
       "title": "Lo que me Diferencia",
-      "perfectionist": "Mentalidad Perfeccionista",
-      "quality": "Compromiso con la Calidad",
-      "real_projects": "Experiencia en Proyectos Reales",
-      "professional": "Experiencia en Entornos Profesionales"
+      "perfectionist": "Mentalidad perfeccionista",
+      "quality": "Compromiso con la calidad",
+      "real_projects": "Proyectos reales en producción",
+      "professional": "Flujo de dev con IA (Claude)"
     }
   },
   "services": {
     "title": "Resumen de CV",
     "subtitle": "Formación, idiomas y proyectos",
     "education": {
-      "title": "Datos Académicos",
-      "description": "Formación técnica centrada en sistemas y desarrollo web.",
+      "title": "Formación",
+      "description": "Formación técnica en sistemas y desarrollo web.",
       "details": [
-        "2024 - Actualidad: Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós (finalización 2026).",
+        "2024 - 2026: Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós.",
         "2022 - 2024: Ciclo Medio de Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós.",
-        "Base sólida en sistemas y despliegue sobre Linux.",
-        "Enfoque práctico en backend, APIs y persistencia de datos."
+        "Base sólida en Linux, despliegue y redes.",
+        "Enfoque práctico en backend, APIs REST y persistencia de datos."
       ]
     },
     "languages": {
       "title": "Idiomas",
-      "description": "Competencias lingüísticas para trabajar en equipos técnicos.",
+      "description": "Competencias lingüísticas para equipos técnicos.",
       "details": [
         "Castellano y valenciano: nativo.",
-        "Inglés: nivel medio de writing, reading y speaking.",
-        "Capacidad para documentación técnica en inglés.",
-        "Comunicación clara en entornos colaborativos."
+        "Inglés: nivel medio (writing, reading, speaking).",
+        "Documentación técnica en inglés sin fricción.",
+        "Comunicación clara en equipos remotos."
       ]
     },
     "projects": {
       "title": "Proyectos Destacados",
-      "description": "Proyectos representativos alineados con el CV.",
+      "description": "Proyectos propios alineados con el CV.",
       "details": [
-        "Plataforma de Seguimiento Fitness (en desarrollo): app Full Stack MERN para rutinas de gimnasio.",
-        "Trabajo activo en backend con Node.js y persistencia en MongoDB.",
-        "Admin Dashboard y Portfolio: panel de control y web personal con React.",
-        "Interfaz limpia, funcional y orientada a uso real."
+        "Strev — SaaS fitness MERN en producción con integración de Claude para personalización de rutinas.",
+        "Atalaya — CLI Python con Anthropic SDK para agregar y puntuar ofertas dev remoto.",
+        "Admin Dashboard y Portfolio — paneles y web personal en React.",
+        "Interfaces limpias orientadas a uso real."
       ]
     }
   },
   "portfolio": {
-    "title": "Mi Portafolio",
-    "subtitle": "Trabajos Recientes",
+    "title": "Mis Proyectos",
+    "subtitle": "Selección reciente",
     "projects": [
       {
-        "title": "Admin Dashboard",
-        "github": "GitHub",
-        "demo": "Live Demo"
+        "title": "Strev — SaaS fitness MERN · IA",
+        "github": "Código cerrado",
+        "demo": "Ver en vivo"
       },
       {
-        "title": "Componets Store E-Commers",
+        "title": "Atalaya — CLI Python IA · job aggregator",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "Ver repo"
       },
       {
-        "title": "Figma dashboard UI kit for data design web apps",
+        "title": "Admin Dashboard — React",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "Ver demo"
       },
       {
-        "title": "Hundir la flota en Python",
+        "title": "Components Store — E-Commerce",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "Ver demo"
       },
       {
-        "title": "JS Pong Game",
+        "title": "Battleship — Python",
         "github": "GitHub",
-        "demo": "Live Demo"
+        "demo": "Ver repo"
       },
       {
-        "title": "Juego de la Serpiente",
+        "title": "Pong — JavaScript",
         "github": "GitHub",
-        "demo": "Live Demo"
-      },
-      {
-        "title": "Plantillas de gráficos e infografías en Figma",
-        "github": "GitHub",
-        "demo": "Demo en Vivo"
-      },
-      {
-        "title": "Plantillas de gráficos e infografías en Figma",
-        "github": "GitHub",
-        "demo": "Demo en Vivo"
+        "demo": "Ver demo"
       }
     ]
   },
-  "testimonials": {
-    "title": "Testimonios",
-    "subtitle": "Referencias de proyectos",
-    "reviews": [
-      {
-        "name": "Cliente anónimo",
-        "role": "Plataforma Fitness (proyecto en desarrollo)",
-        "context": "Contexto: colaboración técnica y revisión de funcionalidades backend.",
-        "review": "Valoro que la API y la estructura de datos se plantearon con lógica clara. La evolución del proyecto ha sido constante y con buena capacidad para incorporar mejoras."
-      },
-      {
-        "name": "Usuario de pruebas",
-        "role": "Admin Dashboard y Portfolio",
-        "context": "Contexto: feedback de uso en interfaz y navegación.",
-        "review": "La interfaz es limpia y funcional. La navegación entre secciones es rápida y el contenido está bien organizado para presentar perfil, stack y proyectos."
-      },
-      {
-        "name": "Compañero de formación",
-        "role": "Proyecto académico DAW/SMR",
-        "context": "Contexto: trabajo colaborativo en entorno Linux y control de versiones.",
-        "review": "Destaco su adaptación en entornos Linux y su forma de resolver incidencias técnicas. Mantiene una comunicación clara y una buena organización del trabajo."
-      }
-    ],
-    "anonymous_badge": "Testimonio anónimo"
-  },
   "contact": {
     "title": "Contáctame",
-    "subtitle": "Ponte en Contacto",
+    "subtitle": "Ponte en contacto",
     "email": "Correo",
     "whatsapp": "WhatsApp",
     "location": "Ubicación",
     "website": "Web",
-    "message": "Enviar Mensaje",
-    "name": "Tu Nombre",
-    "email_placeholder": "Tu Correo",
-    "message_placeholder": "Tu Mensaje",
+    "message": "Enviar mensaje",
+    "name": "Tu nombre",
+    "email_placeholder": "Tu correo",
+    "message_placeholder": "Tu mensaje",
     "send_message": "Enviar un mensaje",
     "view_location": "Ver ubicación",
     "visit_website": "Visitar web"
   },
   "footer": {
-    "copyright": "Todos los derechos reservados"
+    "copyright": "Alex Micó Robles · Todos los derechos reservados"
   }
-} 
+}

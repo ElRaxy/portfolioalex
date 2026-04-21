@@ -63,6 +63,14 @@ const Experience = () => {
       level: t('experience.experienced')
     },
     {
+      title: 'Claude API (Anthropic SDK)',
+      level: t('experience.experienced')
+    },
+    {
+      title: 'Python',
+      level: t('experience.intermediate')
+    },
+    {
       title: 'Linux / Ubuntu Server',
       level: t('experience.intermediate')
     },
