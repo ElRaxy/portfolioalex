@@ -1,5 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import './index.css'
 import Header from './componets/header/Header'
 import Nav from './componets/nav/Nav'
@@ -41,6 +43,9 @@ function App() {
           <Footer />
         </main>
       </div>
+
+      <Analytics />
+      <SpeedInsights />
     </ThemeProvider>
   )
 }
