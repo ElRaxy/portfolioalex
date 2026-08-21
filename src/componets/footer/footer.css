@@ -33,3 +33,9 @@
     color: var(--text-2);
     font-size: var(--fs-xs);
 }
+
+.site-footer__legal a {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+}

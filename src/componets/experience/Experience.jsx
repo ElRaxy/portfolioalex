@@ -44,7 +44,7 @@ const Stack = () => {
       <RevealGroup className="container stack__grid">
         {stackGroups.map((group) => (
           <RevealItem className="stack__group" key={group}>
-            <h4>{t(`stack.${group}.label`)}</h4>
+            <h3>{t(`stack.${group}.label`)}</h3>
             <p>{t(`stack.${group}.items`)}</p>
           </RevealItem>
         ))}

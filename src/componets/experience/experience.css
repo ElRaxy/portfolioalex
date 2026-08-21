@@ -41,7 +41,7 @@
     min-width: 0;
 }
 
-.stack__group h4 {
+.stack__group h3 {
     margin-bottom: var(--space-2);
     color: var(--color-text-muted);
     font-size: var(--fs-label);
