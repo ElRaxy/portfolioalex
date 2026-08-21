@@ -52,8 +52,8 @@ const Stack = () => {
   const { t } = useTranslation()
 
   return (
-    <section id="stack" className="stack">
-      <h2>{t('nav.stack')}</h2>
+    <section id="stack" className="stack" aria-labelledby="stack-title">
+      <h2 id="stack-title">{t('nav.stack')}</h2>
 
       <RevealGroup className="container stack__grid">
         {stackGroups.map((group) => (

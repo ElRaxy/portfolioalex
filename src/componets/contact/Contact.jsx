@@ -73,8 +73,8 @@ function Contact() {
   }
 
   return (
-    <Reveal as="section" id="contact">
-      <h2>{t('contact.title')}</h2>
+    <Reveal as="section" id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">{t('contact.title')}</h2>
 
       <div className="container contact__container">
         <dl className="contact__details">

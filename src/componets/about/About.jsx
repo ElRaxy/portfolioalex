@@ -7,8 +7,8 @@ const About = () => {
   const { t } = useTranslation()
 
   return (
-    <section id="about" className="about">
-      <Reveal as="h2">{t('about.title')}</Reveal>
+    <section id="about" className="about" aria-labelledby="about-title">
+      <Reveal as="h2" id="about-title">{t('about.title')}</Reveal>
 
       <Reveal className="about__content">
         <p className="about__lead">{t('about.lead')}</p>

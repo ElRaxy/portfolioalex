@@ -97,10 +97,15 @@ describe('formulario de contacto', () => {
     await waitFor(() => expect(boton).not.toBeDisabled())
   })
 
+  // Unico sitio donde se busca por selector a proposito: el honeypot esta
+  // escondido para los bots, asi que no tiene rol ni nombre accesible. Si
+  // Testing Library pudiera encontrarlo, un bot tambien.
   it('lleva honeypot y no se lo ensena a nadie', () => {
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     const { container } = render(<Contact />)
-
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     const honeypot = container.querySelector('[name="company"]')
+
     expect(honeypot).toBeInTheDocument()
     expect(honeypot).toHaveAttribute('tabIndex', '-1')
   })
