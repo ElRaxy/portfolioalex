@@ -12,7 +12,7 @@
   },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer · IA con Claude",
+    "title": "Full Stack Developer · Automatización e IA",
     "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
     "view_projects": "Ver proyectos",
     "download_cv": "Descargar CV"
@@ -45,7 +45,7 @@
     },
     "ai": {
       "label": "IA / Agentes",
-      "items": "Anthropic SDK, Claude API, integración de LLMs, flujo dev con Claude Code"
+      "items": "Anthropic SDK, integración de LLMs, diseño de prompts, orquestación de agentes"
     },
     "python": {
       "label": "Python",
@@ -99,7 +99,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, las puntúa contra tu perfil y redacta la carta con Claude. 147 tests en verde y mypy en modo estricto.",
+        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, las puntúa contra tu perfil y redacta la carta de presentación. 147 tests en verde y mypy en modo estricto.",
         "featured": true,
         "tags": [
           "Python",
@@ -116,7 +116,7 @@
       },
       {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: 115 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y rutinas generadas con Claude. 133 ficheros de test.",
+        "description": "SaaS fitness MERN en beta privada: 115 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y rutinas generadas con un LLM. 133 ficheros de test.",
         "tags": [
           "React",
           "Node",
