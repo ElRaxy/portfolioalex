@@ -22,8 +22,8 @@
   "about": {
     "title": "Sobre Mí",
     "subtitle": "Conóceme",
-    "p1": "Desarrollador full stack. Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite: si una tarea se hace tres veces a mano, la siguiente ya la hace un script.",
-    "p2": "Trabajo en Anuubis Solutions manteniendo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento y respuesta a incidencias. Fuera del trabajo construyo mis propias herramientas y uso Claude Code a diario, no como asistente sino como parte del flujo: especificación antes que código, agentes que se reparten el trabajo y una verificación que hay que pasar antes de dar nada por hecho.",
+    "p1": "Desarrollador full stack. Trabajo con React, Node y MongoDB, y con Python cuando hay que automatizar algo que se repite.",
+    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de ocho portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte extractos de cuatro bancos distintos, cada uno con su formato, en un panel de gastos con categorización por reglas.",
     "timeline": {
       "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
       "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
@@ -31,7 +31,7 @@
       "smr": "Ciclo Medio en Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós, 2022 a 2024"
     },
     "languages": "Castellano y valenciano nativos, inglés intermedio",
-    "p3": "Lo que más me interesa ahora es esa frontera: producto bien construido y agentes de IA que hagan trabajo real, no demos."
+    "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas."
   },
   "experience": {
     "title": "Experiencia",
