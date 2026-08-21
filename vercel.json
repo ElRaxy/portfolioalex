@@ -2,16 +2,21 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "redirects": [
+  "routes": [
     {
-      "source": "/es",
-      "destination": "/",
-      "permanent": true
+      "src": "/es/?",
+      "status": 308,
+      "headers": {
+        "Location": "/"
+      }
     },
     {
-      "source": "/es/",
-      "destination": "/",
-      "permanent": true
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "status": 404,
+      "dest": "/404.html"
     }
   ]
 }
