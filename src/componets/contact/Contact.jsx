@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Reveal from '../common/Reveal'
 import './contact.css'
-import emailjs from 'emailjs-com'
 
 function Contact() {
   const { t } = useTranslation()
@@ -22,20 +21,25 @@ function Contact() {
 
   const sendEmail = async (e) => {
     e.preventDefault()
-
-    const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID
-    const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID
-    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY
-
-    if (!serviceId || !templateId || !publicKey) {
-      setSendStatus('error')
-      return
-    }
-
     setSendStatus('sending')
 
     try {
-      await emailjs.sendForm(serviceId, templateId, form.current, publicKey)
+      const formData = new FormData(form.current)
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          email: formData.get('email'),
+          message: formData.get('message'),
+          company: formData.get('company'),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Contact request failed')
+      }
+
       form.current.reset()
       setSendStatus('ok')
     } catch {
@@ -67,6 +71,10 @@ function Contact() {
 
         <div className="contact__form-area">
           <form className="contact__form" ref={form} onSubmit={sendEmail}>
+            <div className="contact__honeypot" aria-hidden="true">
+              <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+            </div>
+
             <label className="contact__field">
               <span>{t('contact.name')}</span>
               <input type="text" name="name" required />

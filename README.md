@@ -17,7 +17,7 @@ Mi portfolio personal desarrollado con React, donde muestro mis proyectos, habil
 - i18next (Internacionalización)
 - Swiper.js (Carruseles)
 - React Icons
-- EmailJS (Formulario de contacto)
+- Vercel Functions y Resend (Formulario de contacto)
 
 ## 📦 Instalación
 1. Clona el repositorio
