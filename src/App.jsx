@@ -10,8 +10,11 @@ import Footer from './componets/footer/Footer'
 import LanguageSelector from './componets/language/LanguageSelector'
 import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
+import { useSmoothAnchors } from './lib/smoothScroll'
 
 function App() {
+  useSmoothAnchors()
+
   return (
     <ThemeProvider>
       <div className="site-shell">

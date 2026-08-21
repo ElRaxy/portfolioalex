@@ -5,7 +5,7 @@
     box-sizing: border-box;
     list-style: none;
     text-decoration: none;
-    scroll-behavior: smooth;
+    /* El scroll suave lo hace src/lib/smoothScroll.js, con su propia curva. */
 }
 
 :root,
@@ -102,7 +102,7 @@
 }
 
 html{
-    scroll-behavior: smooth;
+    /* El scroll suave lo hace src/lib/smoothScroll.js, con su propia curva. */
     scroll-padding-top: var(--space-4);
 }
 

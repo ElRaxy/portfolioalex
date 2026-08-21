@@ -6,9 +6,14 @@ import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
 const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
-const OBSERVED_TARGETS = ['home', ...SIDEBAR_TARGETS]
+// `home` NO se observa: vive dentro del panel lateral pegajoso, asi que su
+// getBoundingClientRect().top se queda clavado en 0 por mucho que bajes. Como
+// el activo se elige por el |top| mas pequeno, ganaba siempre y no se marcaba
+// ninguna seccion jamas. Cuando ninguna de las cinco esta en la banda, es que
+// seguimos en el hero.
+const OBSERVED_TARGETS = SIDEBAR_TARGETS
 const activeSectionListeners = new Set()
-let activeSection = OBSERVED_TARGETS[0]
+let activeSection = 'home'
 let activeSectionObserver
 
 const subscribeToActiveSection = (listener) => {
@@ -19,24 +24,27 @@ const subscribeToActiveSection = (listener) => {
       .map((target) => document.getElementById(target))
       .filter(Boolean)
 
-    const visibleSections = new Map()
+    const visibleSections = new Set()
     activeSectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          visibleSections.set(entry.target.id, entry.boundingClientRect.top)
+          visibleSections.add(entry.target.id)
         } else {
           visibleSections.delete(entry.target.id)
         }
       })
 
-      if (visibleSections.size) {
-        const [nextSection] = [...visibleSections.entries()]
+      // El top se mide AHORA: guardar el de cuando la seccion entro daba
+      // desempates con datos viejos.
+      const [nextSection] = visibleSections.size
+        ? [...visibleSections]
+          .map((id) => [id, document.getElementById(id)?.getBoundingClientRect().top ?? Infinity])
           .sort(([, firstTop], [, secondTop]) => Math.abs(firstTop) - Math.abs(secondTop))[0]
+        : ['home']
 
-        if (nextSection !== activeSection) {
-          activeSection = nextSection
-          activeSectionListeners.forEach((notify) => notify())
-        }
+      if (nextSection !== activeSection) {
+        activeSection = nextSection
+        activeSectionListeners.forEach((notify) => notify())
       }
     }, {
       rootMargin: '-20% 0px -65% 0px',

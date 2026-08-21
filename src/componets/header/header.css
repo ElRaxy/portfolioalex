@@ -208,3 +208,66 @@
     background: var(--color-success);
     box-shadow: 0 0 0 3px rgb(120 199 146 / 16%);
 }
+
+/* ---- Entrada del hero ----
+   En CSS y no en GSAP a proposito: GSAP viaja en un chunk aparte desde que
+   salio del bundle inicial, asi que el hero se pintaba visible y parpadeaba al
+   apagarse para animarse. Aqui el estado inicial entra en el primer paint. */
+
+@keyframes hero-char-in {
+    from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+    to   { opacity: 1; transform: none;             filter: blur(0); }
+}
+
+@keyframes hero-block-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.js .hero__char,
+.js .hero__title,
+.js .hero__tagline,
+.js .hero__actions,
+.js .hero > .sidebar-nav,
+.js .hero__socials,
+.js .hero__availability {
+    opacity: 0;
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: forwards;
+}
+
+.js .hero__char {
+    animation-name: hero-char-in;
+    animation-delay: calc(var(--i, 0) * 24ms);
+}
+
+.js .hero__title,
+.js .hero__tagline,
+.js .hero__actions,
+.js .hero > .sidebar-nav,
+.js .hero__socials,
+.js .hero__availability {
+    animation-name: hero-block-in;
+}
+
+/* Solapados: encadenarlos uno tras otro dejaba la ultima linea en 1,5 s. */
+.js .hero__title { animation-delay: 300ms; }
+.js .hero__tagline { animation-delay: 360ms; }
+.js .hero__actions { animation-delay: 420ms; }
+.js .hero > .sidebar-nav { animation-delay: 480ms; }
+.js .hero__socials { animation-delay: 540ms; }
+.js .hero__availability { animation-delay: 600ms; }
+
+/* El reset global apaga las animaciones, que aqui dejaria el hero invisible. */
+@media (prefers-reduced-motion: reduce) {
+    .js .hero__char,
+    .js .hero__title,
+    .js .hero__tagline,
+    .js .hero__actions,
+    .js .hero > .sidebar-nav,
+    .js .hero__socials,
+    .js .hero__availability {
+        opacity: 1;
+    }
+}
