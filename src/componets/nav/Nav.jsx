@@ -10,7 +10,7 @@ import './nav.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const SIDEBAR_TARGETS = ['about', 'portfolio', 'stack', 'contact']
+const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
 
 const useActiveSection = () => {
   const [activeSection, setActiveSection] = useState(SIDEBAR_TARGETS[0])
@@ -112,6 +112,7 @@ const Nav = () => {
     { target: 'home', label: t('nav.home') },
     { target: 'about', label: t('nav.about') },
     { target: 'portfolio', label: t('nav.portfolio') },
+    { target: 'experience', label: t('nav.experience') },
     { target: 'stack', label: t('nav.stack') },
     { target: 'contact', label: t('nav.contact') },
   ]

@@ -40,7 +40,9 @@
     --fs-sm: 0.8125rem;
     --fs-base: 1rem;
     --fs-md: 1.125rem;
-    --fs-lg: 1.5rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-section-title: clamp(1.75rem, 2.4vw, 2rem);
     --fs-display: clamp(2.25rem, 3.1vw, 3rem);
     --fs-label: 0.75rem;
     --ls-label: 0.08em;
@@ -50,11 +52,14 @@
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
+    --space-5: 1.25rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
     --space-12: 3rem;
     --space-16: 4rem;
     --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-full: 999px;
@@ -115,7 +120,7 @@ body{
     margin: 0 auto;
 }
 
-h1, h2, h3, h4, h5{
+h1, h2, h3, h4{
     font-weight: 500;
     color: var(--color-text-primary);
 }
@@ -125,22 +130,23 @@ h1{
 }
 
 section{
-    margin-top: var(--space-20);
+    margin-top: var(--space-32);
     padding: var(--space-8) 0;
 }
 
-section > h2, section > h5{
+section > h2,
+.portfolio__heading h2{
     text-align: center;
-    color: var(--color-text-muted);
-}
-
-section > h5 {
-    margin-bottom: var(--space-2);
+    color: var(--color-text-primary);
+    font-size: var(--fs-section-title);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    text-transform: none;
 }
 
 section > h2{
-    color: var(--color-text-primary);
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-8);
 }
 
 .text-light{
@@ -183,11 +189,12 @@ select {
 .btn:hover{
     background: var(--surface-2);
     color: var(--color-text-primary);
-    border-color: var(--line-control);
+    border-color: var(--accent);
 }
 
 .btn:active{
     background: var(--surface-3);
+    border-color: var(--accent-active);
 }
 
 .btn-primary{
@@ -214,36 +221,6 @@ select {
     border-color: var(--line-soft);
     color: var(--text-3);
     cursor: not-allowed;
-}
-
-img{
-    display: block;
-    width: 100%;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-    transition: transform var(--transition);
-}
-
-img:hover {
-    transform: scale(1.02);
-}
-
-/* Card styles */
-.card {
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6);
-    transition: background-color var(--transition), border-color var(--transition);
-}
-
-.card:hover {
-    background: var(--color-card-hover);
-    border-color: var(--line-control);
-}
-
-.card:active {
-    background: var(--surface-3);
 }
 
 :where(a, button, input, textarea, select):focus-visible {
@@ -312,7 +289,7 @@ img:hover {
 }
 
 .site-shell__content section + section {
-    margin-top: var(--space-20);
+    margin-top: var(--space-32);
 }
 
 .site-shell__content .container,
@@ -331,28 +308,22 @@ img:hover {
     padding-bottom: 0;
 }
 
-.site-shell__content section > h2,
-.site-shell__content .portfolio__heading h2 {
-    margin-bottom: var(--space-6);
-    color: var(--color-text-muted);
-    font-size: var(--fs-label);
-    font-weight: 600;
-    letter-spacing: var(--ls-label);
-    line-height: 1.4;
+.site-shell__content section > h2 {
+    margin-bottom: var(--space-8);
     text-align: left;
-    text-transform: uppercase;
 }
 
-.site-shell__content section > h5 {
-    display: none;
+.site-shell__content .portfolio__heading h2 {
+    margin-bottom: 0;
+    text-align: left;
 }
 
 .site-shell__content .portfolio__heading {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-8);
 }
 
 .site-shell__content .portfolio__heading p {
-    margin-top: var(--space-1);
+    margin-top: var(--space-2);
     font-size: var(--fs-base);
 }
 
@@ -362,7 +333,7 @@ img:hover {
 }
 
 .site-shell__content > footer {
-    margin-top: var(--space-20);
+    margin-top: var(--space-32);
     padding: var(--space-8) 0 0;
     text-align: left;
 }
@@ -403,10 +374,6 @@ img:hover {
     .container{
         width: var(--container-width-md);
     }
-
-    section{
-        margin-top: var(--space-20);
-    }
 }
 
 /* =================== MEDIA QUERIES (SMALL DEVICES) =================== */
@@ -420,8 +387,13 @@ img:hover {
         width: var(--container-width-sm);
     }
 
-    section > h2{
-        margin-bottom: var(--space-8);
+    section{
+        margin-top: var(--space-24);
+    }
+
+    .site-shell__content section + section,
+    .site-shell__content > footer {
+        margin-top: var(--space-24);
     }
 }
 

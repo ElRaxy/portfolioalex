@@ -11,7 +11,7 @@ export const ExperienceTimeline = () => {
   const { t } = useTranslation()
 
   return (
-    <section className="experience" aria-labelledby="experience-title">
+    <section id="experience" className="experience" aria-labelledby="experience-title">
       <h2 id="experience-title">{t('experience.title')}</h2>
 
       <div className="container experience__content">

@@ -4,7 +4,7 @@
 
 .about__content {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
     max-width: 62ch;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .about__languages {
-    margin-top: var(--space-6);
+    margin-top: var(--space-3);
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
 }

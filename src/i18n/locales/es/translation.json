@@ -4,24 +4,21 @@
     "about": "Sobre Mí",
     "stack": "Stack",
     "portfolio": "Proyectos",
+    "experience": "Experiencia",
     "contact": "Contacto",
     "sections": "Navegación por secciones",
     "open_menu": "Abrir menú",
     "close_menu": "Cerrar menú"
   },
   "header": {
-    "greeting": "",
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · IA con Claude",
     "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
-    "location": "Alicante, Villena · Remoto",
-    "cta": "Hablemos",
     "view_projects": "Ver proyectos",
     "download_cv": "Descargar CV"
   },
   "about": {
     "title": "Sobre Mí",
-    "subtitle": "Conóceme",
     "p1": "Desarrollador full stack. Trabajo con React, Node y MongoDB, y con Python cuando hay que automatizar algo que se repite.",
     "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de ocho portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte extractos de cuatro bancos distintos, cada uno con su formato, en un panel de gastos con categorización por reglas.",
     "timeline": {
@@ -67,11 +64,11 @@
     "title": "Mis Proyectos",
     "subtitle": "Selección reciente",
     "closed_label": "Código cerrado, demo bajo petición",
-    "internal_label": "Trabajo interno en Anuubis Solutions",
+    "internal_label": "Herramienta interna, código cerrado",
     "projects": [
       {
-        "title": "Automatización de flota web",
-        "description": "Automaticé la operación de una flota de sitios WordPress en producción con scripts de Python y Bash: auditorías, verificación posterior al deploy y migraciones entre proveedores. Tareas que antes se hacían sitio a sitio pasaron a ejecutarse en una sola pasada.",
+        "title": "Automatización de WordPress en producción",
+        "description": "Herramientas en Python y Bash para operar sitios WordPress en producción: auditorías, verificación posterior al deploy y migraciones entre proveedores. Lo que se hacía sitio a sitio pasó a ejecutarse en una sola pasada.",
         "tags": [
           "Python",
           "Bash",
@@ -136,7 +133,6 @@
   },
   "contact": {
     "title": "Contáctame",
-    "subtitle": "Ponte en contacto",
     "email": "Correo",
     "whatsapp": "WhatsApp",
     "location": "Ubicación",
@@ -145,10 +141,6 @@
     "name": "Tu nombre",
     "email_placeholder": "Tu correo",
     "message_placeholder": "Tu mensaje",
-    "send_message": "Enviar un mensaje",
-    "view_location": "Ver ubicación",
-    "visit_website": "Visitar web",
-    "direct_email": "O escríbeme directamente a",
     "sending": "Enviando…",
     "success": "Mensaje enviado correctamente.",
     "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo más tarde."

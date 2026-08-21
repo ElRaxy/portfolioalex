@@ -4,24 +4,21 @@
     "about": "About",
     "stack": "Stack",
     "portfolio": "Projects",
+    "experience": "Experience",
     "contact": "Contact",
     "sections": "Section navigation",
     "open_menu": "Open menu",
     "close_menu": "Close menu"
   },
   "header": {
-    "greeting": "",
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · AI with Claude",
     "tagline": "I build applications and automate the infrastructure that keeps them running.",
-    "location": "Alicante, Villena · Remote",
-    "cta": "Let's talk",
     "view_projects": "View projects",
     "download_cv": "Download CV"
   },
   "about": {
     "title": "About Me",
-    "subtitle": "Get to know me",
     "p1": "Full stack developer. I work with React, Node and MongoDB, and with Python whenever something repetitive needs automating.",
     "p2": "I built Atalaya, a command line tool that pulls dev job listings from eight boards and scores them against your profile, with 147 tests and mypy in strict mode. And SaveMyMoneyNow, which turns statements from four different banks, each with its own format, into a spending dashboard with rule based categorisation.",
     "timeline": {
@@ -67,11 +64,11 @@
     "title": "My Projects",
     "subtitle": "Recent selection",
     "closed_label": "Closed source, demo on request",
-    "internal_label": "Internal work at Anuubis Solutions",
+    "internal_label": "Internal tool, closed source",
     "projects": [
       {
-        "title": "Web fleet automation",
-        "description": "I automated the operation of a fleet of production WordPress sites with Python and Bash scripts: audits, post-deploy verification and migrations between providers. Work that used to be done site by site now runs in a single pass.",
+        "title": "WordPress automation in production",
+        "description": "Python and Bash tooling to operate WordPress sites in production: audits, post deploy verification and migrations between providers. What used to be done site by site now runs in a single pass.",
         "tags": [
           "Python",
           "Bash",
@@ -136,7 +133,6 @@
   },
   "contact": {
     "title": "Contact Me",
-    "subtitle": "Get in touch",
     "email": "Email",
     "whatsapp": "WhatsApp",
     "location": "Location",
@@ -145,10 +141,6 @@
     "name": "Your name",
     "email_placeholder": "Your email",
     "message_placeholder": "Your message",
-    "send_message": "Send a message",
-    "view_location": "View location",
-    "visit_website": "Visit website",
-    "direct_email": "Or email me directly at",
     "sending": "Sending…",
     "success": "Message sent successfully.",
     "error": "The message could not be sent. Please try again later."

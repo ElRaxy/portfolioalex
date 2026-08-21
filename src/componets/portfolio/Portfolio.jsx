@@ -6,7 +6,6 @@ import './portfolio.css'
 function Portfolio() {
   const { t } = useTranslation()
   const projects = t('portfolio.projects', { returnObjects: true })
-  const technologies = [...new Set(projects.flatMap((project) => project.tags))]
 
   return (
     <section id="portfolio" className="portfolio" aria-labelledby="portfolio-title">
@@ -15,14 +14,6 @@ function Portfolio() {
           <h2 id="portfolio-title">{t('portfolio.title')}</h2>
           <p>{t('portfolio.subtitle')}</p>
         </Reveal>
-
-        <RevealGroup as="ul" className="portfolio__legend">
-          {technologies.map((technology) => (
-            <RevealItem as="li" className="portfolio__legend-item" key={technology}>
-              {technology}
-            </RevealItem>
-          ))}
-        </RevealGroup>
 
         <RevealGroup className="portfolio__grid">
           {projects.map((project, projectIndex) => (

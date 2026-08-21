@@ -1,5 +1,4 @@
-#contact > h2,
-#contact > h5 {
+#contact > h2 {
     text-align: left;
 }
 
@@ -37,18 +36,15 @@
     overflow-wrap: anywhere;
 }
 
-.contact__detail a,
-.contact__direct-email a {
+.contact__detail a {
     color: var(--accent);
 }
 
-.contact__detail a:hover,
-.contact__direct-email a:hover {
+.contact__detail a:hover {
     color: var(--accent-hover);
 }
 
-.contact__detail a:active,
-.contact__direct-email a:active {
+.contact__detail a:active {
     color: var(--accent-active);
 }
 
@@ -57,14 +53,35 @@
 }
 
 .contact__form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.contact__field {
+    min-width: 0;
+    display: grid;
+    gap: var(--space-2);
+}
+
+.contact__field--message,
+.contact__form > button,
+.contact__status {
+    grid-column: 1 / -1;
+}
+
+.contact__field > span {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .contact__form input,
 .contact__form textarea {
-    padding: var(--space-4);
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem 1rem;
     border: thin solid var(--line-control);
     border-radius: var(--radius-md);
     background: var(--surface-1);
@@ -74,32 +91,21 @@
     resize: none;
 }
 
+.contact__form > button {
+    width: 100%;
+}
+
 .contact__form input:hover,
 .contact__form textarea:hover,
 .contact__form input:focus,
 .contact__form textarea:focus {
     background: var(--surface-2);
-}
-
-.contact__form input:focus,
-.contact__form textarea:focus {
     border-color: var(--accent);
 }
 
 .contact__form input:active,
 .contact__form textarea:active {
     border-color: var(--accent-active);
-}
-
-.contact__form input::placeholder,
-.contact__form textarea::placeholder {
-    color: var(--text-2);
-}
-
-.contact__direct-email {
-    margin-top: var(--space-4);
-    color: var(--text-2);
-    font-size: var(--fs-base);
 }
 
 .success-message,
@@ -118,4 +124,16 @@
 .error-message {
     color: var(--color-error);
     border: thin solid var(--color-error);
+}
+
+@media screen and (max-width: 600px) {
+    .contact__form {
+        grid-template-columns: 1fr;
+    }
+
+    .contact__field--message,
+    .contact__form > button,
+    .contact__status {
+        grid-column: auto;
+    }
 }

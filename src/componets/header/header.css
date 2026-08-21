@@ -63,18 +63,35 @@
 }
 
 .hero__actions .hero__button--projects {
-  background: var(--color-card);
+  height: 2.75rem;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-on);
+  font-size: 0.875rem;
 }
 
 .hero__actions .hero__button:hover {
   background: var(--surface-2);
-  border-color: var(--line-control);
+  border-color: var(--accent);
   color: var(--color-text-primary);
 }
 
 .hero__actions .hero__button:active {
   background: var(--surface-3);
+  border-color: var(--accent-active);
   color: var(--accent-active);
+}
+
+.hero__actions .hero__button--projects:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-on);
+}
+
+.hero__actions .hero__button--projects:active {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+  color: var(--accent-on);
 }
 
 .hero__socials {

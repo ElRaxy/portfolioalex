@@ -45,7 +45,6 @@ function Contact() {
 
   return (
     <Reveal as="section" id="contact">
-      <h5>{t('contact.subtitle')}</h5>
       <h2>{t('contact.title')}</h2>
 
       <div className="container contact__container">
@@ -64,18 +63,25 @@ function Contact() {
             <dt>{t('contact.location')}</dt>
             <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noreferrer">Alicante, Villena</a></dd>
           </div>
-
-          <div className="contact__detail">
-            <dt>{t('contact.website')}</dt>
-            <dd><a href="https://portfolioalex-mico.vercel.app/" target="_blank" rel="noreferrer">portfolioalex-mico.vercel.app</a></dd>
-          </div>
         </dl>
 
         <div className="contact__form-area">
           <form className="contact__form" ref={form} onSubmit={sendEmail}>
-            <input type="text" name="name" aria-label={t('contact.name')} placeholder={t('contact.name')} required />
-            <input type="email" name="email" aria-label={t('contact.email_placeholder')} placeholder={t('contact.email_placeholder')} required />
-            <textarea name="message" rows="7" aria-label={t('contact.message_placeholder')} placeholder={t('contact.message_placeholder')} required></textarea>
+            <label className="contact__field">
+              <span>{t('contact.name')}</span>
+              <input type="text" name="name" required />
+            </label>
+
+            <label className="contact__field">
+              <span>{t('contact.email_placeholder')}</span>
+              <input type="email" name="email" required />
+            </label>
+
+            <label className="contact__field contact__field--message">
+              <span>{t('contact.message_placeholder')}</span>
+              <textarea name="message" rows="5" required></textarea>
+            </label>
+
             <button
               type="submit"
               className="btn btn-primary"
@@ -103,11 +109,6 @@ function Contact() {
               )}
             </AnimatePresence>
           </form>
-
-          <p className="contact__direct-email">
-            {t('contact.direct_email')}{' '}
-            <a href="mailto:alexmico2006@gmail.com">alexmico2006@gmail.com</a>
-          </p>
         </div>
       </div>
     </Reveal>
