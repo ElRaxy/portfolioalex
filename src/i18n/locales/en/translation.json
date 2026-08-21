@@ -148,6 +148,9 @@
     "error": "The message could not be sent. Please try again later."
   },
   "footer": {
-    "copyright": "Alex Micó Robles · All rights reserved"
+    "availability": "Open to talking about new projects",
+    "cta": "Get in touch",
+    "built": "© 2026 Alex Micó Robles. Built with React, i18next and CSS, deployed on Vercel.",
+    "source": "Source of this site"
   }
 }

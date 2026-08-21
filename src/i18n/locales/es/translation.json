@@ -148,6 +148,9 @@
     "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo más tarde."
   },
   "footer": {
-    "copyright": "Alex Micó Robles · Todos los derechos reservados"
+    "availability": "Abierto a hablar de nuevos proyectos",
+    "cta": "Escríbeme",
+    "built": "© 2026 Alex Micó Robles. Construido con React, i18next y CSS, desplegado en Vercel.",
+    "source": "Código de esta web"
   }
 }

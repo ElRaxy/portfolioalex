@@ -1,5 +1,35 @@
 .site-footer {
+    display: grid;
+    gap: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: thin solid var(--line-soft);
+}
+
+.site-footer__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+}
+
+.site-footer__availability {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--fs-lg);
+    letter-spacing: -0.01em;
+}
+
+.site-footer__mail {
+    color: var(--accent);
+    font-size: var(--fs-lg);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
     color: var(--text-2);
     font-size: var(--fs-xs);
-    border-top: thin solid var(--line-soft);
 }
