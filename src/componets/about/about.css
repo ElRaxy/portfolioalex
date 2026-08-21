@@ -17,30 +17,6 @@
     font-size: var(--fs-md);
 }
 
-.about__facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6) var(--space-8);
-    margin: 0;
-    padding: var(--space-4) 0;
-    border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-    list-style: none;
-}
-
-.about__fact b {
-    display: block;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: var(--fs-lg);
-    line-height: 1.2;
-}
-
-.about__fact span {
-    color: var(--text-3);
-    font-size: var(--fs-xs);
-}
-
 .about__languages {
     margin-top: var(--space-3);
     color: var(--color-text-muted);

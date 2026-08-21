@@ -81,6 +81,11 @@ const Header = () => {
 
       <SidebarNav />
       <HeaderSocials />
+
+      <p className="hero__availability">
+        <span className="hero__availability-dot" aria-hidden="true" />
+        {t('header.availability')}
+      </p>
     </header>
   )
 }

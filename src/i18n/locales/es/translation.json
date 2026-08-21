@@ -15,24 +15,15 @@
     "title": "Full Stack Developer · Automatización e IA",
     "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
     "view_projects": "Ver proyectos",
-    "download_cv": "Descargar CV"
+    "download_cv": "Descargar CV",
+    "availability": "Abierto a nuevos proyectos · Remoto, España y UE"
   },
   "about": {
     "title": "Sobre mí",
     "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
     "languages": "Castellano y valenciano nativos, inglés intermedio",
     "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas.",
-    "lead": "Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite.",
-    "facts": [
-      {
-        "value": "147",
-        "label": "tests · mypy estricto"
-      },
-      {
-        "value": "8",
-        "label": "portales agregados"
-      }
-    ]
+    "lead": "Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite."
   },
   "experience": {
     "title": "Experiencia",
