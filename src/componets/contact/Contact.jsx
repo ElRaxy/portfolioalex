@@ -4,10 +4,19 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Reveal from '../common/Reveal'
 import './contact.css'
 
+const CONTACT_ERROR_CODES = new Set([
+  'invalid_name',
+  'invalid_email',
+  'invalid_message',
+  'not_configured',
+  'send_failed',
+])
+
 function Contact() {
   const { t } = useTranslation()
   const form = useRef()
   const [sendStatus, setSendStatus] = useState('idle')
+  const [errorCode, setErrorCode] = useState(null)
   const shouldReduceMotion = useReducedMotion()
   const hasStatus = sendStatus === 'ok' || sendStatus === 'error'
   const StatusElement = shouldReduceMotion ? 'div' : motion.div
@@ -22,12 +31,19 @@ function Contact() {
   const sendEmail = async (e) => {
     e.preventDefault()
     setSendStatus('sending')
+    setErrorCode(null)
+
+    const controller = new AbortController()
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000)
+    let nextStatus = 'error'
+    let nextErrorCode = 'send_failed'
 
     try {
       const formData = new FormData(form.current)
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           name: formData.get('name'),
           email: formData.get('email'),
@@ -37,13 +53,22 @@ function Contact() {
       })
 
       if (!response.ok) {
-        throw new Error('Contact request failed')
+        const responseBody = await response.json().catch(() => ({}))
+        nextErrorCode = CONTACT_ERROR_CODES.has(responseBody.error)
+          ? responseBody.error
+          : 'send_failed'
+        return
       }
 
       form.current.reset()
-      setSendStatus('ok')
-    } catch {
-      setSendStatus('error')
+      nextStatus = 'ok'
+      nextErrorCode = null
+    } catch (error) {
+      nextErrorCode = error.name === 'AbortError' ? 'timeout' : 'send_failed'
+    } finally {
+      window.clearTimeout(timeoutId)
+      setErrorCode(nextErrorCode)
+      setSendStatus(nextStatus)
     }
   }
 
@@ -77,17 +102,17 @@ function Contact() {
 
             <label className="contact__field">
               <span>{t('contact.name')}</span>
-              <input type="text" name="name" required />
+              <input type="text" name="name" minLength={2} maxLength={100} required />
             </label>
 
             <label className="contact__field">
               <span>{t('contact.email_placeholder')}</span>
-              <input type="email" name="email" required />
+              <input type="email" name="email" minLength={5} maxLength={200} required />
             </label>
 
             <label className="contact__field contact__field--message">
               <span>{t('contact.message_placeholder')}</span>
-              <textarea name="message" rows="5" required></textarea>
+              <textarea name="message" rows="5" minLength={10} maxLength={5000} required></textarea>
             </label>
 
             <button
@@ -111,7 +136,18 @@ function Contact() {
                     <p className="success-message">{t('contact.success')}</p>
                   )}
                   {sendStatus === 'error' && (
-                    <p className="error-message">{t('contact.error')}</p>
+                    <div className="error-message">
+                      <p>{t(`contact.errors.${errorCode || 'send_failed'}`)}</p>
+                      <p className="contact__fallback">
+                        {t('contact.errors.fallback')}
+                        {' '}
+                        <a href="mailto:alexmico2006@gmail.com">{t('contact.email')}</a>
+                        {' · '}
+                        <a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">
+                          {t('contact.whatsapp')}
+                        </a>
+                      </p>
+                    </div>
                   )}
                 </StatusElement>
               )}

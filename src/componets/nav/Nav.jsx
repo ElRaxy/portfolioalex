@@ -1,5 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link } from 'react-scroll'
+import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { gsap } from 'gsap'
@@ -11,19 +10,21 @@ import './nav.css'
 gsap.registerPlugin(ScrollTrigger)
 
 const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
+const OBSERVED_TARGETS = ['home', ...SIDEBAR_TARGETS]
+const activeSectionListeners = new Set()
+let activeSection = OBSERVED_TARGETS[0]
+let activeSectionObserver
 
-const useActiveSection = () => {
-  const [activeSection, setActiveSection] = useState(SIDEBAR_TARGETS[0])
+const subscribeToActiveSection = (listener) => {
+  activeSectionListeners.add(listener)
 
-  useEffect(() => {
-    const sections = SIDEBAR_TARGETS
+  if (activeSectionListeners.size === 1 && 'IntersectionObserver' in window) {
+    const sections = OBSERVED_TARGETS
       .map((target) => document.getElementById(target))
       .filter(Boolean)
 
-    if (!sections.length || !('IntersectionObserver' in window)) return undefined
-
     const visibleSections = new Map()
-    const observer = new IntersectionObserver((entries) => {
+    activeSectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           visibleSections.set(entry.target.id, entry.boundingClientRect.top)
@@ -35,19 +36,36 @@ const useActiveSection = () => {
       if (visibleSections.size) {
         const [nextSection] = [...visibleSections.entries()]
           .sort(([, firstTop], [, secondTop]) => Math.abs(firstTop) - Math.abs(secondTop))[0]
-        setActiveSection(nextSection)
+
+        if (nextSection !== activeSection) {
+          activeSection = nextSection
+          activeSectionListeners.forEach((notify) => notify())
+        }
       }
     }, {
       rootMargin: '-20% 0px -65% 0px',
       threshold: 0,
     })
 
-    sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
-  }, [])
+    sections.forEach((section) => activeSectionObserver.observe(section))
+  }
 
-  return activeSection
+  return () => {
+    activeSectionListeners.delete(listener)
+
+    if (!activeSectionListeners.size) {
+      activeSectionObserver?.disconnect()
+      activeSectionObserver = undefined
+    }
+  }
 }
+
+const getActiveSection = () => activeSection
+const useActiveSection = () => useSyncExternalStore(
+  subscribeToActiveSection,
+  getActiveSection,
+  getActiveSection,
+)
 
 export const SidebarNav = () => {
   const { t } = useTranslation()
@@ -103,6 +121,7 @@ export const SidebarNav = () => {
 
 const Nav = () => {
   const { t } = useTranslation()
+  const activeSection = useActiveSection()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
@@ -174,16 +193,12 @@ const Nav = () => {
   return (
     <nav className="portfolio-nav">
       <div className="portfolio-nav__inner">
-        <Link
-          to="home"
+        <a
           href="#home"
-          smooth={true}
-          offset={-64}
-          duration={0}
           className="portfolio-nav__brand"
         >
           {brandName}
-        </Link>
+        </a>
 
         <div
           ref={menuRef}
@@ -191,20 +206,15 @@ const Nav = () => {
           className={`portfolio-nav__links${isMenuOpen ? ' portfolio-nav__links--open' : ''}`}
         >
           {links.map(({ target, label }) => (
-            <Link
+            <a
               key={target}
-              to={target}
               href={`#${target}`}
-              spy={true}
-              smooth={true}
-              offset={-64}
-              duration={0}
-              activeClass="portfolio-nav__link--active"
-              className="portfolio-nav__link"
+              className={`portfolio-nav__link${activeSection === target ? ' portfolio-nav__link--active' : ''}`}
+              aria-current={activeSection === target ? 'location' : undefined}
               onClick={closeMenu}
             >
               {label}
-            </Link>
+            </a>
           ))}
         </div>
 

@@ -110,6 +110,8 @@
 
   .portfolio-nav__brand {
     flex: 0 0 auto;
+    min-width: max-content;
+    text-overflow: clip;
     font-weight: 700;
   }
 

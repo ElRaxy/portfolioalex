@@ -1,31 +1,46 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
-const GRID_COLUMNS = 24
-const GRID_ROWS = 14
-const GRID_DOT_COUNT = GRID_COLUMNS * GRID_ROWS
+const DESKTOP_GRID = { columns: 24, rows: 14 }
+const TABLET_GRID = { columns: 16, rows: 10 }
 const POINTER_THROTTLE_MS = 400
 
 const HeroGrid = () => {
   const gridRef = useRef(null)
-  const [shouldRender, setShouldRender] = useState(false)
+  const [gridLayout, setGridLayout] = useState(null)
 
   useEffect(() => {
-    const renderQuery = window.matchMedia(
+    const desktopQuery = window.matchMedia(
       '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
     )
-    const updateShouldRender = () => setShouldRender(renderQuery.matches)
+    const tabletQuery = window.matchMedia(
+      '(min-width: 768px) and (max-width: 1024px) and (prefers-reduced-motion: no-preference)',
+    )
+    const updateGridLayout = () => {
+      if (desktopQuery.matches) {
+        setGridLayout(DESKTOP_GRID)
+      } else if (tabletQuery.matches) {
+        setGridLayout(TABLET_GRID)
+      } else {
+        setGridLayout(null)
+      }
+    }
 
-    updateShouldRender()
-    renderQuery.addEventListener('change', updateShouldRender)
+    updateGridLayout()
+    desktopQuery.addEventListener('change', updateGridLayout)
+    tabletQuery.addEventListener('change', updateGridLayout)
 
-    return () => renderQuery.removeEventListener('change', updateShouldRender)
+    return () => {
+      desktopQuery.removeEventListener('change', updateGridLayout)
+      tabletQuery.removeEventListener('change', updateGridLayout)
+    }
   }, [])
 
   useLayoutEffect(() => {
-    if (!shouldRender || !gridRef.current) return undefined
+    if (!gridLayout || !gridRef.current) return undefined
 
     const grid = gridRef.current
+    const { columns, rows } = gridLayout
     const pointerTarget = grid.closest('.site-shell__sidebar') ?? grid.parentElement
     const ctx = gsap.context(() => {
       const media = gsap.matchMedia()
@@ -44,7 +59,7 @@ const HeroGrid = () => {
             duration: 0.8,
             ease: 'sine.inOut',
             stagger: {
-              grid: [GRID_ROWS, GRID_COLUMNS],
+              grid: [rows, columns],
               from,
               amount: 1.6,
             },
@@ -65,12 +80,12 @@ const HeroGrid = () => {
           if (!width || !height) return
 
           const column = Math.min(
-            GRID_COLUMNS - 1,
-            Math.max(0, Math.floor(((event.clientX - left) / width) * GRID_COLUMNS)),
+            columns - 1,
+            Math.max(0, Math.floor(((event.clientX - left) / width) * columns)),
           )
           const row = Math.min(
-            GRID_ROWS - 1,
-            Math.max(0, Math.floor(((event.clientY - top) / height) * GRID_ROWS)),
+            rows - 1,
+            Math.max(0, Math.floor(((event.clientY - top) / height) * rows)),
           )
 
           lastPointerLaunch = now
@@ -104,13 +119,23 @@ const HeroGrid = () => {
     }, grid)
 
     return () => ctx.revert()
-  }, [shouldRender])
+  }, [gridLayout])
 
-  if (!shouldRender) return null
+  if (!gridLayout) return null
+
+  const gridDotCount = gridLayout.columns * gridLayout.rows
 
   return (
-    <div className="hero-grid" aria-hidden="true" ref={gridRef}>
-      {Array.from({ length: GRID_DOT_COUNT }, (_, index) => (
+    <div
+      className="hero-grid"
+      aria-hidden="true"
+      ref={gridRef}
+      style={{
+        '--hero-grid-columns': gridLayout.columns,
+        '--hero-grid-rows': gridLayout.rows,
+      }}
+    >
+      {Array.from({ length: gridDotCount }, (_, index) => (
         <span className="hero-grid__dot" key={index} />
       ))}
     </div>

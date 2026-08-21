@@ -112,6 +112,7 @@
     max-width: 100%;
     padding: var(--space-4);
     overflow-x: auto;
+    overscroll-behavior: contain;
     color: var(--text-2);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.75rem;
@@ -311,6 +312,46 @@
 @media screen and (max-width: 900px) {
     .portfolio__featured {
         grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .portfolio__featured-copy {
+        display: contents;
+    }
+
+    .portfolio__featured-copy > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .portfolio__featured-label {
+        order: 1;
+    }
+
+    .portfolio__featured h3 {
+        order: 2;
+    }
+
+    .portfolio__featured .portfolio__description {
+        order: 3;
+    }
+
+    .portfolio__featured .portfolio__metrics {
+        order: 4;
+    }
+
+    .portfolio__featured .portfolio__tags {
+        order: 5;
+    }
+
+    .portfolio__featured .portfolio__terminal {
+        order: 6;
+        margin-top: var(--space-4);
+    }
+
+    .portfolio__featured .portfolio__footer {
+        order: 7;
     }
 }
 
@@ -325,6 +366,12 @@
 
     .portfolio__featured {
         padding: var(--space-4);
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .portfolio__terminal-body {
+        font-size: 0.6875rem;
     }
 }
 

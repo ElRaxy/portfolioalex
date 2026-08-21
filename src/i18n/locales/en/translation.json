@@ -20,7 +20,7 @@
   "about": {
     "title": "About Me",
     "p1": "Full stack developer. I work with React, Node and MongoDB, and with Python whenever something repetitive needs automating.",
-    "p2": "I built Atalaya, a command line tool that pulls dev job listings from nine boards and scores them against your profile, with 147 tests and mypy in strict mode. And SaveMyMoneyNow, which turns statements from four different banks, each with its own format, into a spending dashboard with rule based categorisation.",
+    "p2": "I built Atalaya, a command line tool that pulls dev job listings from eight boards and scores them against your profile, with 147 tests and mypy in strict mode. And SaveMyMoneyNow, which turns into a spending dashboard the statements every bank exports its own way, detecting the header without knowing which bank they came from.",
     "timeline": {
       "full_stack": "Full Stack Developer, Anuubis Solutions, 2026 to present",
       "it_support": "IT Support Technician (FCT internship), Impulso Sistemas, 2024",
@@ -88,7 +88,7 @@
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Turns bank statements, which every bank exports its own way, into a spending dashboard. An assistant detects the header row and maps the columns, then rules categorise movements and drop duplicates. 21 endpoints and 66 test cases.",
+        "description": "Turns into a spending dashboard the statements every bank exports its own way. An assistant detects the header row and maps the columns without needing a parser per bank, then rules categorise movements and drop duplicates. 21 endpoints and 66 test cases.",
         "tags": [
           "React",
           "Node",
@@ -150,7 +150,15 @@
     "message_placeholder": "Your message",
     "sending": "Sending…",
     "success": "Message sent successfully.",
-    "error": "The message could not be sent. Please try again later."
+    "errors": {
+      "invalid_name": "Check the name: it must be between 2 and 100 characters.",
+      "invalid_email": "Check the email: it must be a valid address between 5 and 200 characters.",
+      "invalid_message": "Check the message: it must be between 10 and 5000 characters.",
+      "not_configured": "The contact form is temporarily unavailable.",
+      "send_failed": "The message could not be sent. Please try again later.",
+      "timeout": "The request took too long and was cancelled.",
+      "fallback": "You can also contact me via"
+    }
   },
   "footer": {
     "availability": "Open to talking about new projects",

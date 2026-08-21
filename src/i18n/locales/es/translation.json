@@ -20,7 +20,7 @@
   "about": {
     "title": "Sobre Mí",
     "p1": "Desarrollador full stack. Trabajo con React, Node y MongoDB, y con Python cuando hay que automatizar algo que se repite.",
-    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de nueve portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte extractos de cuatro bancos distintos, cada uno con su formato, en un panel de gastos con categorización por reglas.",
+    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de ocho portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte en un panel de gastos los extractos que cada banco exporta a su manera, detectando la cabecera sin saber de qué banco vienen.",
     "timeline": {
       "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
       "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
@@ -88,7 +88,7 @@
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 66 casos de test.",
+        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas sin necesitar un parser por banco, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 66 casos de test.",
         "tags": [
           "React",
           "Node",
@@ -150,7 +150,15 @@
     "message_placeholder": "Tu mensaje",
     "sending": "Enviando…",
     "success": "Mensaje enviado correctamente.",
-    "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo más tarde."
+    "errors": {
+      "invalid_name": "Revisa el nombre: debe tener entre 2 y 100 caracteres.",
+      "invalid_email": "Revisa el correo: debe ser una dirección válida de entre 5 y 200 caracteres.",
+      "invalid_message": "Revisa el mensaje: debe tener entre 10 y 5000 caracteres.",
+      "not_configured": "El formulario no está disponible temporalmente.",
+      "send_failed": "El mensaje no se ha podido enviar. Inténtalo de nuevo más tarde.",
+      "timeout": "El envío ha tardado demasiado y se ha cancelado.",
+      "fallback": "También puedes escribirme por"
+    }
   },
   "footer": {
     "availability": "Abierto a hablar de nuevos proyectos",

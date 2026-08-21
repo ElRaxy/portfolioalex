@@ -134,6 +134,25 @@
     border: thin solid var(--color-error);
 }
 
+.contact__fallback {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+}
+
+.contact__fallback a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: var(--space-1);
+}
+
+.contact__fallback a:hover {
+    color: var(--accent-hover);
+}
+
+.contact__fallback a:active {
+    color: var(--accent-active);
+}
+
 @media screen and (max-width: 600px) {
     .contact__form {
         grid-template-columns: 1fr;
