@@ -34,3 +34,26 @@
   color: var(--text-3);
   cursor: not-allowed;
 }
+
+/* El barrido de tema tapa toda la pantalla, pero el clic se hace aqui: sin
+   respuesta en el propio boton, la interaccion se siente desconectada.
+   Bajo `.js` como el hero, para que el icono nazca ya en su estado inicial en
+   vez de pintarse visible y apagarse en el primer fotograma. */
+@keyframes theme-icon-in {
+    from { opacity: 0; transform: rotate(-70deg) scale(0.7); }
+    to   { opacity: 1; transform: none; }
+}
+
+.js .theme-toggle-icon {
+    animation: theme-icon-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.theme-toggle:active .theme-toggle-icon {
+    transform: scale(0.88);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js .theme-toggle-icon {
+        opacity: 1;
+    }
+}

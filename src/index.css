@@ -420,7 +420,10 @@ select {
 
 ::view-transition-new(root) {
     z-index: 2;
-    animation: theme-circle-reveal 0.45s ease-out both;
+    /* ease-out saltaba de 0 a medio barrido en tres fotogramas y luego se
+       arrastraba por las esquinas. Esta curva arranca contenida y cierra
+       rapido, que es lo que se lee como un barrido y no como un parpadeo. */
+    animation: theme-circle-reveal 0.55s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 @keyframes theme-circle-reveal {
