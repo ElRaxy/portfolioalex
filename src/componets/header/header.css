@@ -1,7 +1,7 @@
 .hero {
   height: 100%;
   min-height: min(100vh, 42rem);
-  padding: clamp(2rem, 8vh, 6rem) 0 clamp(1.5rem, 4vh, 3rem);
+  padding: var(--space-20) 0 var(--space-12);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -14,7 +14,7 @@
 
 .hero__name {
   color: var(--color-text-primary);
-  font-size: clamp(2.6rem, 4.2vw, 3.4rem);
+  font-size: var(--fs-display);
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.05;
@@ -22,18 +22,18 @@
 }
 
 .hero__title {
-  margin-top: 1rem;
+  margin-top: var(--space-4);
   color: var(--color-text-primary);
-  font-size: 1.15rem;
+  font-size: var(--fs-md);
   font-weight: 500;
   line-height: 1.45;
 }
 
 .hero__tagline {
   max-width: 22rem;
-  margin-top: 0.65rem;
+  margin-top: var(--space-3);
   color: var(--color-text-muted);
-  font-size: 1rem;
+  font-size: var(--fs-base);
 }
 
 .hero__actions {
@@ -41,25 +41,25 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.7rem;
-  margin-top: 1.5rem;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
 .hero__actions .hero__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.5rem;
-  padding: 0.55rem 0.85rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  min-height: calc(var(--space-8) + var(--space-2));
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line-control);
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text-primary);
-  font-size: 0.84rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .hero__actions .hero__button--projects {
@@ -67,16 +67,21 @@
 }
 
 .hero__actions .hero__button:hover {
-  background: var(--color-card-hover);
-  border-color: var(--color-text-muted);
+  background: var(--surface-2);
+  border-color: var(--line-control);
   color: var(--color-text-primary);
+}
+
+.hero__actions .hero__button:active {
+  background: var(--surface-3);
+  color: var(--accent-active);
 }
 
 .hero__socials {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1.25rem;
+  gap: var(--space-3);
 }
 
 .hero__socials a {
@@ -84,38 +89,42 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted);
-  font-size: 20px;
+  font-size: var(--icon-size);
   line-height: 1;
-  transition: color 160ms ease;
+  transition: color var(--transition);
 }
 
 .hero__socials a:hover {
-  color: var(--color-text-primary);
+  color: var(--accent-hover);
+}
+
+.hero__socials a:active {
+  color: var(--accent-active);
 }
 
 @media screen and (max-width: 1024px) {
   .hero {
     height: auto;
     min-height: 0;
-    padding: 7rem 0 4rem;
+    padding: var(--space-20) 0 var(--space-16);
   }
 
   .hero__socials {
-    margin-top: 2rem;
+    margin-top: var(--space-8);
   }
 }
 
 @media screen and (max-width: 600px) {
   .hero {
-    padding-top: 6.5rem;
+    padding-top: var(--space-20);
   }
 
   .hero__actions {
-    gap: 0.55rem;
+    gap: var(--space-2);
   }
 
   .hero__actions .hero__button {
-    padding-right: 0.7rem;
-    padding-left: 0.7rem;
+    padding-right: var(--space-3);
+    padding-left: var(--space-3);
   }
 }

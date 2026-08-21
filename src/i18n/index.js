@@ -15,11 +15,15 @@ const resources = {
   }
 };
 
+const savedLanguage = localStorage.getItem('language');
+const browserLanguage = navigator.language;
+const initialLanguage = savedLanguage || (browserLanguage.startsWith('es') ? 'es' : 'en');
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en', // default language
+    lng: initialLanguage,
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false
@@ -30,9 +34,10 @@ i18n
 // pantalla lee el ingles con fonetica espanola.
 const syncHtmlLang = (lng) => {
   document.documentElement.lang = lng;
+  localStorage.setItem('language', lng);
 };
 
 syncHtmlLang(i18n.language);
 i18n.on('languageChanged', syncHtmlLang);
 
-export default i18n; 
+export default i18n;

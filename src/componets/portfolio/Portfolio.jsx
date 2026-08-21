@@ -40,21 +40,20 @@ function Portfolio() {
               </ul>
 
               <footer className="portfolio__footer">
-                {project.closed ? (
+                {(project.links || []).map((link, linkIndex) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t(`portfolio.projects.${projectIndex}.links.${linkIndex}.label`)}
+                  </a>
+                ))}
+                {project.closed && (
                   <p className="portfolio__closed">
                     {t(project.internal ? 'portfolio.internal_label' : 'portfolio.closed_label')}
                   </p>
-                ) : (
-                  project.links.map((link, linkIndex) => (
-                    <a
-                      key={link.url}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t(`portfolio.projects.${projectIndex}.links.${linkIndex}.label`)}
-                    </a>
-                  ))
                 )}
               </footer>
             </article>

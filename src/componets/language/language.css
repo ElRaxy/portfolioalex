@@ -1,24 +1,37 @@
 .language-selector {
   display: inline-flex;
   align-items: center;
-  height: 56px;
+  height: var(--nav-height);
 }
 
 .lang-btn {
   display: inline-flex;
   align-items: center;
-  height: 56px;
-  padding: 0 0.15rem;
+  height: var(--nav-height);
+  padding: 0 var(--space-1);
   background: transparent;
   color: var(--color-text-muted);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: var(--fs-base);
   font-weight: 600;
   line-height: 1;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: color 160ms ease;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .lang-btn:hover {
+  background: var(--surface-2);
   color: var(--color-text-primary);
+}
+
+.lang-btn:active {
+  background: var(--surface-3);
+  color: var(--accent-active);
+}
+
+.lang-btn:disabled {
+  background: transparent;
+  color: var(--text-3);
+  cursor: not-allowed;
 }

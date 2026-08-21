@@ -3,7 +3,7 @@ import './index.css'
 import Header from './componets/header/Header'
 import Nav from './componets/nav/Nav'
 import About from './componets/about/About'
-import Stack from './componets/experience/Experience'
+import Stack, { ExperienceTimeline } from './componets/experience/Experience'
 import Portfolio from './componets/portfolio/Portfolio'
 import Contact from './componets/contact/Contact'
 import Footer from './componets/footer/Footer'
@@ -29,6 +29,7 @@ function App() {
 
           <About />
           <Portfolio />
+          <ExperienceTimeline />
           <Stack />
           <Contact />
           <Footer />

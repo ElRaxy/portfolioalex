@@ -1,10 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './contact.css'
-import { MdOutlineEmail } from 'react-icons/md'
-import { BsWhatsapp } from 'react-icons/bs'
-import { IoLocationOutline } from 'react-icons/io5'
-import { FiLink } from 'react-icons/fi'
 import emailjs from 'emailjs-com'
 
 function Contact() {
@@ -41,57 +37,58 @@ function Contact() {
       <h2>{t('contact.title')}</h2>
 
       <div className="container contact__container">
-        <div className="contact__options">
-          <article className="contact__option">
-            <MdOutlineEmail className="contact__option-icon"/>
-            <h4>{t('contact.email')}</h4>
-            <h5>alexmico2006@gmail.com</h5>
-            <a href="mailto:alexmico2006@gmail.com" target="_blank" rel="noreferrer">{t('contact.send_message')}</a>
-          </article>
-
-          <article className="contact__option">
-            <BsWhatsapp className="contact__option-icon"/>
-            <h4>{t('contact.whatsapp')}</h4>
-            <h5>+34 693 91 24 60</h5>
-            <a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">{t('contact.send_message')}</a>
-          </article>
-
-          <article className="contact__option">
-            <IoLocationOutline className="contact__option-icon"/>
-            <h4>{t('contact.location')}</h4>
-            <h5>Alicante, Villena</h5>
-            <a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noreferrer">{t('contact.view_location')}</a>
-          </article>
-
-          <article className="contact__option">
-            <FiLink className="contact__option-icon"/>
-            <h4>{t('contact.website')}</h4>
-            <h5>portfolioalex-mico.vercel.app</h5>
-            <a href="https://portfolioalex-mico.vercel.app/" target="_blank" rel="noreferrer">{t('contact.visit_website')}</a>
-          </article>
-        </div>
-
-        <form ref={form} onSubmit={sendEmail}>
-          <input type="text" name="name" aria-label={t('contact.name')} placeholder={t('contact.name')} required />
-          <input type="email" name="email" aria-label={t('contact.email_placeholder')} placeholder={t('contact.email_placeholder')} required />
-          <textarea name="message" rows="7" aria-label={t('contact.message_placeholder')} placeholder={t('contact.message_placeholder')} required></textarea>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={sendStatus === 'sending'}
-          >
-            {t(sendStatus === 'sending' ? 'contact.sending' : 'contact.message')}
-          </button>
-
-          <div className="contact__status" role="status" aria-live="polite">
-            {sendStatus === 'ok' && (
-              <p className="success-message">{t('contact.success')}</p>
-            )}
-            {sendStatus === 'error' && (
-              <p className="error-message">{t('contact.error')}</p>
-            )}
+        <dl className="contact__details">
+          <div className="contact__detail">
+            <dt>{t('contact.email')}</dt>
+            <dd><a href="mailto:alexmico2006@gmail.com">alexmico2006@gmail.com</a></dd>
           </div>
-        </form>
+
+          <div className="contact__detail">
+            <dt>{t('contact.whatsapp')}</dt>
+            <dd><a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">+34 693 91 24 60</a></dd>
+          </div>
+
+          <div className="contact__detail">
+            <dt>{t('contact.location')}</dt>
+            <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noreferrer">Alicante, Villena</a></dd>
+          </div>
+
+          <div className="contact__detail">
+            <dt>{t('contact.website')}</dt>
+            <dd><a href="https://portfolioalex-mico.vercel.app/" target="_blank" rel="noreferrer">portfolioalex-mico.vercel.app</a></dd>
+          </div>
+        </dl>
+
+        <div className="contact__form-area">
+          <form className="contact__form" ref={form} onSubmit={sendEmail}>
+            <input type="text" name="name" aria-label={t('contact.name')} placeholder={t('contact.name')} required />
+            <input type="email" name="email" aria-label={t('contact.email_placeholder')} placeholder={t('contact.email_placeholder')} required />
+            <textarea name="message" rows="7" aria-label={t('contact.message_placeholder')} placeholder={t('contact.message_placeholder')} required></textarea>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={sendStatus === 'sending'}
+            >
+              {t(sendStatus === 'sending' ? 'contact.sending' : 'contact.message')}
+            </button>
+
+            {(sendStatus === 'ok' || sendStatus === 'error') && (
+              <div className="contact__status" role="status" aria-live="polite">
+                {sendStatus === 'ok' && (
+                  <p className="success-message">{t('contact.success')}</p>
+                )}
+                {sendStatus === 'error' && (
+                  <p className="error-message">{t('contact.error')}</p>
+                )}
+              </div>
+            )}
+          </form>
+
+          <p className="contact__direct-email">
+            {t('contact.direct_email')}{' '}
+            <a href="mailto:alexmico2006@gmail.com">alexmico2006@gmail.com</a>
+          </p>
+        </div>
       </div>
     </section>
   )

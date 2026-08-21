@@ -24,6 +24,20 @@
     "subtitle": "Conóceme",
     "p1": "Soy desarrollador full stack. Trabajo en Anuubis Solutions, donde mantengo en pie una flota de cerca de mil sitios repartidos en ocho servidores: deploys, migraciones entre hostings, auditorías e incidencias. Casi todo scriptado, porque a ese volumen el trabajo manual es lo que tira sitios abajo.",
     "p2": "Fuera de eso construyo mis propias herramientas, casi siempre en Python y Node, y uso Claude Code a diario como parte del flujo de desarrollo.",
+    "metrics": {
+      "sites": {
+        "value": "1.000",
+        "label": "sitios en producción"
+      },
+      "servers": {
+        "value": "8",
+        "label": "servidores"
+      },
+      "months": {
+        "value": "6",
+        "label": "meses en Anuubis"
+      }
+    },
     "timeline": {
       "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
       "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
@@ -31,6 +45,10 @@
       "smr": "Ciclo Medio en Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós, 2022 a 2024"
     },
     "languages": "Castellano y valenciano nativos, inglés intermedio"
+  },
+  "experience": {
+    "title": "Experiencia",
+    "education": "Formación"
   },
   "stack": {
     "frontend": {
@@ -67,7 +85,13 @@
       {
         "title": "Operación de flota web",
         "description": "Cerca de mil sitios WordPress repartidos en ocho servidores: deploys, migraciones entre proveedores de hosting, auditorías e incidencias en producción. Sustituí el trabajo manual por scripts en Python y Bash que barren la flota entera, de modo que tareas que se hacían sitio a sitio pasaron a ejecutarse de una vez.",
-        "tags": ["Python", "Bash", "WP-CLI", "Nginx", "DNS"],
+        "tags": [
+          "Python",
+          "Bash",
+          "WP-CLI",
+          "Nginx",
+          "DNS"
+        ],
         "links": [],
         "closed": true,
         "internal": true
@@ -75,7 +99,12 @@
       {
         "title": "SaveMyMoneyNow",
         "description": "Convierte extractos bancarios en un panel de gastos. Un asistente se adapta al formato de cada banco, detecta la cabecera y mapea las columnas; después, unas reglas categorizan los movimientos y evitan duplicados.",
-        "tags": ["React", "Node", "Express", "MongoDB"],
+        "tags": [
+          "React",
+          "Node",
+          "Express",
+          "MongoDB"
+        ],
         "links": [
           {
             "label": "Código",
@@ -86,7 +115,12 @@
       {
         "title": "Atalaya",
         "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, puntúa el match contra tu perfil y redacta la carta con Claude. 147 tests y mypy strict.",
-        "tags": ["Python", "Typer", "Claude API", "SQLite"],
+        "tags": [
+          "Python",
+          "Typer",
+          "Claude API",
+          "SQLite"
+        ],
         "links": [
           {
             "label": "Código",
@@ -97,8 +131,18 @@
       {
         "title": "Strev",
         "description": "SaaS fitness MERN en beta privada: auth con cookies, tracking de entrenamientos y rutinas personalizadas con Claude.",
-        "tags": ["React", "Node", "MongoDB", "Claude API"],
-        "links": [],
+        "tags": [
+          "React",
+          "Node",
+          "MongoDB",
+          "Claude API"
+        ],
+        "links": [
+          {
+            "label": "Ver Strev",
+            "url": "https://strev.app"
+          }
+        ],
         "closed": true
       }
     ]
@@ -117,6 +161,7 @@
     "send_message": "Enviar un mensaje",
     "view_location": "Ver ubicación",
     "visit_website": "Visitar web",
+    "direct_email": "O escríbeme directamente a",
     "sending": "Enviando…",
     "success": "Mensaje enviado correctamente.",
     "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo más tarde."

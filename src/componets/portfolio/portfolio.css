@@ -3,66 +3,85 @@
 }
 
 .portfolio__heading {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-6);
 }
 
 .portfolio__heading h2 {
     color: var(--color-text-primary);
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-size: var(--fs-lg);
     line-height: 1.2;
 }
 
 .portfolio__heading p {
-    margin-top: 0.4rem;
+    margin-top: var(--space-1);
     color: var(--color-text-muted);
 }
 
 .portfolio__legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.25rem;
+    row-gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 .portfolio__legend-item {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: var(--color-card);
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-2);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--fs-mono);
     line-height: 1.2;
+}
+
+.portfolio__legend-item:not(:last-child)::after {
+    margin-inline: var(--space-2);
+    color: var(--text-3);
+    content: '·';
 }
 
 .portfolio__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
-    gap: 0.9rem;
+    gap: var(--space-4);
 }
 
 .portfolio__item {
     display: flex;
     min-width: 0;
     flex-direction: column;
-    padding: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 9px;
-    background: var(--color-card);
+    padding: var(--space-4);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    transition: background-color var(--transition), border-color var(--transition);
 }
 
 .portfolio__item:hover {
-    background: var(--color-card-hover);
+    background: var(--surface-2);
+    border-color: var(--line-control);
+}
+
+.portfolio__item:active {
+    background: var(--surface-3);
+}
+
+.portfolio__item:focus-visible,
+.portfolio__item:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .portfolio__item h3 {
     color: var(--color-text-primary);
-    font-size: 1.05rem;
+    font-size: var(--fs-md);
     line-height: 1.35;
 }
 
 .portfolio__description {
-    margin-top: 0.55rem;
+    margin-top: var(--space-2);
     color: var(--color-text-muted);
     line-height: 1.5;
     overflow-wrap: anywhere;
@@ -71,17 +90,17 @@
 .portfolio__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.9rem;
+    gap: var(--space-1);
+    margin-top: var(--space-4);
 }
 
 .portfolio__tag {
-    padding: 0.25rem 0.4rem;
-    border-radius: 4px;
-    background: var(--color-card-hover);
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
     color: var(--color-text-muted);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.68rem;
+    font-size: var(--fs-mono);
     line-height: 1.35;
 }
 
@@ -89,30 +108,39 @@
     display: flex;
     flex: 0 0 auto;
     flex-wrap: wrap;
-    gap: 0.9rem;
+    gap: var(--space-4);
     align-items: center;
     margin-top: auto;
-    padding-top: 0.9rem;
+    padding-top: var(--space-4);
     background: transparent;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--line-soft);
 }
 
 .portfolio__footer a {
     border-bottom: 1px solid var(--color-primary);
     color: var(--color-primary);
-    font-size: 0.85rem;
+    font-size: var(--fs-sm);
     line-height: 1.35;
-    transition: opacity 160ms ease;
+    transition: color var(--transition);
 }
 
 .portfolio__footer a:hover {
-    color: var(--color-primary);
-    opacity: 0.72;
+    color: var(--accent-hover);
+}
+
+.portfolio__footer a:active {
+    color: var(--accent-active);
 }
 
 .portfolio__closed {
-    color: var(--color-text-muted);
+    color: var(--text-3);
+    font-size: var(--fs-sm);
     font-style: italic;
+}
+
+.portfolio__closed::before {
+    margin-right: var(--space-2);
+    content: '—';
 }
 
 @media screen and (max-width: 1024px) {

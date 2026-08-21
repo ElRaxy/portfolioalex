@@ -73,6 +73,8 @@ const Nav = () => {
   const { t } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef(null)
+  const menuRef = useRef(null)
+  const wasMenuOpenRef = useRef(false)
   const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
   const links = [
     { target: 'home', label: t('nav.home') },
@@ -87,26 +89,50 @@ const Nav = () => {
 
     const previousOverflow = document.body.style.overflow
     const desktopQuery = window.matchMedia('(min-width: 1025px)')
+    const menu = menuRef.current
+    const menuLinks = [...(menu?.querySelectorAll('a[href]') ?? [])]
+    const firstLink = menuLinks[0]
+    const lastLink = menuLinks[menuLinks.length - 1]
 
     const closeOnDesktop = (event) => {
       if (event.matches) setIsMenuOpen(false)
     }
 
-    const closeOnEscape = (event) => {
+    const containFocus = (event) => {
       if (event.key === 'Escape') {
         setIsMenuOpen(false)
-        menuButtonRef.current?.focus()
+        return
+      }
+
+      if (event.key !== 'Tab' || !firstLink || !lastLink) return
+
+      if (event.shiftKey && (document.activeElement === firstLink || !menu?.contains(document.activeElement))) {
+        event.preventDefault()
+        lastLink.focus()
+      } else if (!event.shiftKey && (document.activeElement === lastLink || !menu?.contains(document.activeElement))) {
+        event.preventDefault()
+        firstLink.focus()
       }
     }
 
     document.body.style.overflow = 'hidden'
-    document.addEventListener('keydown', closeOnEscape)
+    firstLink?.focus()
+    document.addEventListener('keydown', containFocus)
     desktopQuery.addEventListener('change', closeOnDesktop)
 
     return () => {
       document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', closeOnEscape)
+      document.removeEventListener('keydown', containFocus)
       desktopQuery.removeEventListener('change', closeOnDesktop)
+    }
+  }, [isMenuOpen])
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      wasMenuOpenRef.current = true
+    } else if (wasMenuOpenRef.current) {
+      wasMenuOpenRef.current = false
+      menuButtonRef.current?.focus()
     }
   }, [isMenuOpen])
 
@@ -127,6 +153,7 @@ const Nav = () => {
         </Link>
 
         <div
+          ref={menuRef}
           id="portfolio-mobile-menu"
           className={`portfolio-nav__links${isMenuOpen ? ' portfolio-nav__links--open' : ''}`}
         >
