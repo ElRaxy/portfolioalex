@@ -22,7 +22,7 @@ const HeaderSocials = () => {
         <MdOutlineEmail aria-hidden="true" />
       </a>
       <a
-        href="https://wa.me/693912460"
+        href="https://wa.me/34693912460"
         target="_blank"
         rel="noreferrer"
         aria-label={t('contact.whatsapp')}

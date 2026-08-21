@@ -4,7 +4,9 @@
     "about": "About",
     "stack": "Stack",
     "portfolio": "Projects",
-    "contact": "Contact"
+    "contact": "Contact",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu"
   },
   "header": {
     "greeting": "",
@@ -153,7 +155,10 @@
     "message_placeholder": "Your message",
     "send_message": "Send a message",
     "view_location": "View location",
-    "visit_website": "Visit website"
+    "visit_website": "Visit website",
+    "sending": "Sending…",
+    "success": "Message sent successfully.",
+    "error": "The message could not be sent. Please try again later."
   },
   "footer": {
     "copyright": "Alex Micó Robles · All rights reserved"

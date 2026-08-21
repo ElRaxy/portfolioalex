@@ -17,6 +17,8 @@
     --color-primary: #8fb8e8;
     --color-text-primary: #e8e8ea;
     --color-text-muted: #9a9aa0;
+    --color-success: #78c792;
+    --color-error: #f08a8a;
 
     --transition: 160ms ease;
 
@@ -37,6 +39,8 @@
     --color-primary: #2f6ba8;
     --color-text-primary: #1a1a1c;
     --color-text-muted: #6a6a70;
+    --color-success: #287a45;
+    --color-error: #b42318;
 }
 
 html{

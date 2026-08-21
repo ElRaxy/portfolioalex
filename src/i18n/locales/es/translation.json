@@ -4,7 +4,9 @@
     "about": "Sobre Mí",
     "stack": "Stack",
     "portfolio": "Proyectos",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "open_menu": "Abrir menú",
+    "close_menu": "Cerrar menú"
   },
   "header": {
     "greeting": "",
@@ -153,7 +155,10 @@
     "message_placeholder": "Tu mensaje",
     "send_message": "Enviar un mensaje",
     "view_location": "Ver ubicación",
-    "visit_website": "Visitar web"
+    "visit_website": "Visitar web",
+    "sending": "Enviando…",
+    "success": "Mensaje enviado correctamente.",
+    "error": "No se ha podido enviar el mensaje. Inténtalo de nuevo más tarde."
   },
   "footer": {
     "copyright": "Alex Micó Robles · Todos los derechos reservados"

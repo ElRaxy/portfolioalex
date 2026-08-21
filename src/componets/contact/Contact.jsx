@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './contact.css'
 import { MdOutlineEmail } from 'react-icons/md'
@@ -8,25 +8,31 @@ import { FiLink } from 'react-icons/fi'
 import emailjs from 'emailjs-com'
 
 function Contact() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const form = useRef()
+  const [sendStatus, setSendStatus] = useState('idle')
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault()
 
-    emailjs.sendForm(
-      process.env.REACT_APP_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-      form.current,
-      process.env.REACT_APP_EMAILJS_PUBLIC_KEY
-    )
-    .then((result) => {
-      console.log(result.text)
+    const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID
+    const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+
+    if (!serviceId || !templateId || !publicKey) {
+      setSendStatus('error')
+      return
+    }
+
+    setSendStatus('sending')
+
+    try {
+      await emailjs.sendForm(serviceId, templateId, form.current, publicKey)
       form.current.reset()
-    })
-    .catch((error) => {
-      console.log(error.text)
-    })
+      setSendStatus('ok')
+    } catch {
+      setSendStatus('error')
+    }
   }
 
   return (
@@ -47,7 +53,7 @@ function Contact() {
             <BsWhatsapp className="contact__option-icon"/>
             <h4>{t('contact.whatsapp')}</h4>
             <h5>+34 693 91 24 60</h5>
-            <a href="https://wa.me/693912460" target="_blank" rel="noreferrer">{t('contact.send_message')}</a>
+            <a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">{t('contact.send_message')}</a>
           </article>
 
           <article className="contact__option">
@@ -69,7 +75,22 @@ function Contact() {
           <input type="text" name="name" placeholder={t('contact.name')} required />
           <input type="email" name="email" placeholder={t('contact.email_placeholder')} required />
           <textarea name="message" rows="7" placeholder={t('contact.message_placeholder')} required></textarea>
-          <button type="submit" className="btn btn-primary">{t('contact.message')}</button>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={sendStatus === 'sending'}
+          >
+            {t(sendStatus === 'sending' ? 'contact.sending' : 'contact.message')}
+          </button>
+
+          <div className="contact__status" role="status" aria-live="polite">
+            {sendStatus === 'ok' && (
+              <p className="success-message">{t('contact.success')}</p>
+            )}
+            {sendStatus === 'error' && (
+              <p className="error-message">{t('contact.error')}</p>
+            )}
+          </div>
         </form>
       </div>
     </section>
