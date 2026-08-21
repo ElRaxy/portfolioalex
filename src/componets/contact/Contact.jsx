@@ -72,9 +72,9 @@ function Contact() {
         </div>
 
         <form ref={form} onSubmit={sendEmail}>
-          <input type="text" name="name" placeholder={t('contact.name')} required />
-          <input type="email" name="email" placeholder={t('contact.email_placeholder')} required />
-          <textarea name="message" rows="7" placeholder={t('contact.message_placeholder')} required></textarea>
+          <input type="text" name="name" aria-label={t('contact.name')} placeholder={t('contact.name')} required />
+          <input type="email" name="email" aria-label={t('contact.email_placeholder')} placeholder={t('contact.email_placeholder')} required />
+          <textarea name="message" rows="7" aria-label={t('contact.message_placeholder')} placeholder={t('contact.message_placeholder')} required></textarea>
           <button
             type="submit"
             className="btn btn-primary"

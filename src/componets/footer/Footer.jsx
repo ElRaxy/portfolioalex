@@ -17,7 +17,7 @@ const Footer = () => {
   ]
 
   return (
-    <footer>
+    <footer className="site-footer">
       <div className="footer__logo">ALEX</div>
 
       <ul className="permalinks">

@@ -1,4 +1,4 @@
-footer {
+.site-footer {
     background: var(--color-bg);
     color: var(--color-text-muted);
     padding: 3rem 0;
@@ -8,12 +8,12 @@ footer {
     border-top: 1px solid var(--color-border);
 }
 
-footer a {
+.site-footer a {
     color: var(--color-text-muted);
     transition: color 160ms ease;
 }
 
-footer a:hover {
+.site-footer a:hover {
     color: var(--color-text-primary);
 }
 

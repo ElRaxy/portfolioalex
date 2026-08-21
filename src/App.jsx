@@ -17,9 +17,9 @@ function App() {
       <div className="site-shell">
         <Nav />
 
-        <aside className="site-shell__sidebar">
+        <header className="site-shell__sidebar">
           <Header />
-        </aside>
+        </header>
 
         <main className="site-shell__content">
           <div className="site-shell__controls">
