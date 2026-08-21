@@ -85,3 +85,21 @@ export const useSmoothAnchors = () => {
     return () => document.removeEventListener('click', onClick)
   }, [])
 }
+
+// Con el idioma cambiando por pushState, el boton atras devuelve la URL a `/`
+// pero el contenido se quedaba en ingles. Esto los vuelve a atar.
+export const useLanguageFromHistory = (i18n) => {
+  React.useEffect(() => {
+    const onPopState = () => {
+      const language = /^\/en(?:\/|$)/.test(window.location.pathname) ? 'en' : 'es'
+      if (i18n.resolvedLanguage !== language) {
+        i18n.changeLanguage(language).then(() => {
+          document.documentElement.lang = language
+        })
+      }
+    }
+
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [i18n])
+}

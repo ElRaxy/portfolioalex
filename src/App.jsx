@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import './index.css'
 import Header from './componets/header/Header'
 import Nav from './componets/nav/Nav'
@@ -10,10 +11,12 @@ import Footer from './componets/footer/Footer'
 import LanguageSelector from './componets/language/LanguageSelector'
 import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
-import { useSmoothAnchors } from './lib/smoothScroll'
+import { useSmoothAnchors, useLanguageFromHistory } from './lib/smoothScroll'
 
 function App() {
+  const { i18n } = useTranslation()
   useSmoothAnchors()
+  useLanguageFromHistory(i18n)
 
   return (
     <ThemeProvider>

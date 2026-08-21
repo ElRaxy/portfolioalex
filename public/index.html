@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script>document.documentElement.classList.add('js')</script>
+    <script>
+        (function () {
+            var root = document.documentElement
+            root.classList.add('js')
+            var theme = 'dark'
+            try { theme = window.localStorage.getItem('theme') || 'dark' } catch (e) { /* privado */ }
+            root.setAttribute('data-theme', theme)
+        })()
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Alex Micó Robles, desarrollador full stack. React, Node y MongoDB para producto; Python y Bash para automatizar. Autor de Atalaya y SaveMyMoneyNow.">

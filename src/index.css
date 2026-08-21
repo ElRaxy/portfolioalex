@@ -445,3 +445,20 @@ select {
         animation: none !important;
     }
 }
+
+/* Sin View Transitions no hay barrido y el tema saltaba de golpe. Una
+   transicion corta de fondo y texto deja el cambio legible sin fingir el
+   barrido, que ahi no se puede hacer. */
+@supports not (view-transition-name: none) {
+    html,
+    body {
+        transition: background-color 260ms ease, color 260ms ease;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html,
+    body {
+        transition: none;
+    }
+}

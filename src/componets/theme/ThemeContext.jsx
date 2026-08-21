@@ -1,22 +1,17 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState } from 'react'
 
 export const ThemeContext = createContext()
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('dark')
+// El tema ya lo dejo puesto el script del <head> antes del primer paint; aqui
+// solo se lee, para que el estado de React no contradiga a lo que se ve.
+const getPaintedTheme = () => (
+  typeof document === 'undefined'
+    ? 'dark'
+    : document.documentElement.getAttribute('data-theme') || 'dark'
+)
 
-  // En navegacion privada `localStorage` lanza al leerlo. Sin guarda, la
-  // excepcion sube y la web se queda sin pintar.
-  useEffect(() => {
-    let savedTheme = 'dark'
-    try {
-      savedTheme = window.localStorage.getItem('theme') || 'dark'
-    } catch {
-      /* almacenamiento bloqueado: nos quedamos con el tema por defecto */
-    }
-    setTheme(savedTheme)
-    document.documentElement.setAttribute('data-theme', savedTheme)
-  }, [])
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(getPaintedTheme)
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark'
