@@ -8,7 +8,7 @@ const CTA = () => {
   return (
     <div className="hero__actions">
       <a href="#portfolio" className="hero__button hero__button--projects">
-        {t('nav.portfolio')}
+        {t('header.view_projects')}
       </a>
       <a href={CV} download className="hero__button">
         {t('header.download_cv')}

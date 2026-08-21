@@ -26,4 +26,13 @@ i18n
     }
   });
 
+// El atributo lang del html debe seguir al idioma activo: si no, un lector de
+// pantalla lee el ingles con fonetica espanola.
+const syncHtmlLang = (lng) => {
+  document.documentElement.lang = lng;
+};
+
+syncHtmlLang(i18n.language);
+i18n.on('languageChanged', syncHtmlLang);
+
 export default i18n; 

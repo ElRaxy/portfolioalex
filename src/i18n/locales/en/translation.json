@@ -5,6 +5,7 @@
     "stack": "Stack",
     "portfolio": "Projects",
     "contact": "Contact",
+    "sections": "Section navigation",
     "open_menu": "Open menu",
     "close_menu": "Close menu"
   },
@@ -15,6 +16,7 @@
     "tagline": "I keep close to a thousand sites running and build my own tools.",
     "location": "Alicante, Villena · Remote",
     "cta": "Let's talk",
+    "view_projects": "View projects",
     "download_cv": "Download CV"
   },
   "about": {
@@ -60,16 +62,16 @@
     "title": "My Projects",
     "subtitle": "Recent selection",
     "closed_label": "Closed source, demo on request",
-    "filters": {
-      "all": "All",
-      "react": "React",
-      "node": "Node",
-      "mongodb": "MongoDB",
-      "python": "Python",
-      "ai": "AI / Claude",
-      "infra": "Infrastructure"
-    },
+    "internal_label": "Internal work at Anuubis Solutions",
     "projects": [
+      {
+        "title": "Web fleet operations",
+        "description": "Nearly a thousand WordPress sites across eight servers: deployments, migrations between hosting providers, audits, and production incidents. I replaced manual work with Python and Bash scripts that sweep the entire fleet, turning tasks once done site by site into single-run operations.",
+        "tags": ["Python", "Bash", "WP-CLI", "Nginx", "DNS"],
+        "links": [],
+        "closed": true,
+        "internal": true
+      },
       {
         "title": "SaveMyMoneyNow",
         "description": "Turns bank statements into a spending dashboard. An assistant handles each bank's format by detecting headers and mapping columns, while rules categorize transactions and catch duplicates.",
@@ -98,47 +100,6 @@
         "tags": ["React", "Node", "MongoDB", "Claude API"],
         "links": [],
         "closed": true
-      },
-      {
-        "title": "This portfolio",
-        "description": "Bilingual via i18next, with light and dark themes and an EmailJS contact form.",
-        "tags": ["React", "i18next", "CSS"],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/portfolioalex"
-          },
-          {
-            "label": "Live",
-            "url": "https://portfolioalex-mico.vercel.app"
-          }
-        ]
-      },
-      {
-        "title": "Admin Dashboard",
-        "description": "A dashboard with ApexCharts and ECharts visualizations, light and dark themes, and data served by a mock API.",
-        "tags": ["React", "ApexCharts", "Bootstrap"],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/AdminDashBoard"
-          },
-          {
-            "label": "Live",
-            "url": "https://admin-dash-board-alex.vercel.app"
-          }
-        ]
-      },
-      {
-        "title": "LDAP-generate",
-        "description": "An LDAP hierarchy generator, complete with a guide to setting up DNS with Bind9 and LDAP on Ubuntu Server.",
-        "tags": ["LDAP", "Bind9", "Ubuntu"],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/LDAP-generate"
-          }
-        ]
       }
     ]
   },

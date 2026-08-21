@@ -57,7 +57,7 @@ body{
     background: var(--color-bg);
     color: var(--color-text-primary);
     line-height: 1.7;
-    background-image: url(./assets/white-texture.jpg);
+    min-width: 320px;
 }
 
 /* =================== GENERAL STYLES =================== */
@@ -167,8 +167,152 @@ img:hover {
     outline-offset: 2px;
 }
 
+/* =================== PAGE COMPOSITION =================== */
+
+.site-shell {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 6rem);
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    gap: clamp(3rem, 5vw, 4rem);
+}
+
+.site-shell__sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-width: 0;
+}
+
+.site-shell__sidebar .hero {
+    justify-content: flex-start;
+}
+
+.site-shell__sidebar .sidebar-nav {
+    margin-top: clamp(3rem, 10vh, 6rem);
+}
+
+.site-shell__sidebar .hero__socials {
+    margin-top: 2rem;
+}
+
+.site-shell__content {
+    min-width: 0;
+    padding: 3rem 0 6rem;
+}
+
+.site-shell__controls {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.site-shell__controls .language-selector,
+.site-shell__controls .lang-btn,
+.site-shell__controls .theme-toggle {
+    height: 2rem;
+}
+
+.site-shell__content section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.site-shell__content section + section {
+    margin-top: 5rem;
+}
+
+.site-shell__content .container,
+.site-shell__content .container.contact__container {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.site-shell__content .container.contact__container {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+}
+
+.site-shell__content #portfolio {
+    padding-bottom: 0;
+}
+
+.site-shell__content section > h2,
+.site-shell__content .portfolio__heading h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.site-shell__content section > h5 {
+    display: none;
+}
+
+.site-shell__content .portfolio__heading {
+    margin-bottom: 1.5rem;
+}
+
+.site-shell__content .portfolio__heading p {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.site-shell__content .about__content,
+.site-shell__content .about__intro {
+    max-width: 42rem;
+}
+
+.site-shell__content > footer {
+    margin-top: 5rem;
+    padding: 2rem 0 0;
+    text-align: left;
+}
+
+.site-shell__content > footer .footer__logo,
+.site-shell__content > footer .permalinks,
+.site-shell__content > footer .footer__socials {
+    display: none;
+}
+
+.site-shell__content > footer .footer__copyright {
+    margin: 0;
+}
+
 /* =================== MEDIA QUERIES (MEDIUM DEVICES) =================== */
 @media screen and (max-width: 1024px){
+    html {
+        scroll-padding-top: 72px;
+    }
+
+    .site-shell {
+        display: block;
+    }
+
+    .site-shell__sidebar {
+        position: static;
+        height: auto;
+    }
+
+    .site-shell__content {
+        padding: 0 0 4rem;
+    }
+
+    .site-shell__controls {
+        display: none;
+    }
+
     .container{
         width: var(--container-width-md);
     }
@@ -180,6 +324,11 @@ img:hover {
 
 /* =================== MEDIA QUERIES (SMALL DEVICES) =================== */
 @media screen and (max-width: 600px){
+    .site-shell {
+        padding-right: clamp(1.25rem, 6vw, 1.75rem);
+        padding-left: clamp(1.25rem, 6vw, 1.75rem);
+    }
+
     .container{
         width: var(--container-width-sm);
     }

@@ -6,6 +6,69 @@ import LanguageSelector from '../language/LanguageSelector'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
+const SIDEBAR_TARGETS = ['about', 'portfolio', 'stack', 'contact']
+
+const useActiveSection = () => {
+  const [activeSection, setActiveSection] = useState(SIDEBAR_TARGETS[0])
+
+  useEffect(() => {
+    const sections = SIDEBAR_TARGETS
+      .map((target) => document.getElementById(target))
+      .filter(Boolean)
+
+    if (!sections.length || !('IntersectionObserver' in window)) return undefined
+
+    const visibleSections = new Map()
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          visibleSections.set(entry.target.id, entry.boundingClientRect.top)
+        } else {
+          visibleSections.delete(entry.target.id)
+        }
+      })
+
+      if (visibleSections.size) {
+        const [nextSection] = [...visibleSections.entries()]
+          .sort(([, firstTop], [, secondTop]) => Math.abs(firstTop) - Math.abs(secondTop))[0]
+        setActiveSection(nextSection)
+      }
+    }, {
+      rootMargin: '-20% 0px -65% 0px',
+      threshold: 0,
+    })
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  return activeSection
+}
+
+export const SidebarNav = () => {
+  const { t } = useTranslation()
+  const activeSection = useActiveSection()
+
+  return (
+    <nav className="sidebar-nav" aria-label={t('nav.sections')}>
+      <ul className="sidebar-nav__list">
+        {SIDEBAR_TARGETS.map((target) => (
+          <li key={target}>
+            <a
+              href={`#${target}`}
+              className={`sidebar-nav__link${activeSection === target ? ' sidebar-nav__link--active' : ''}`}
+              aria-current={activeSection === target ? 'location' : undefined}
+            >
+              <span className="sidebar-nav__line" aria-hidden="true" />
+              <span>{t(`nav.${target}`)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
 const Nav = () => {
   const { t } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -13,9 +76,9 @@ const Nav = () => {
   const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
   const links = [
     { target: 'home', label: t('nav.home') },
+    { target: 'about', label: t('nav.about') },
     { target: 'portfolio', label: t('nav.portfolio') },
     { target: 'stack', label: t('nav.stack') },
-    { target: 'about', label: t('nav.about') },
     { target: 'contact', label: t('nav.contact') },
   ]
 
@@ -23,7 +86,7 @@ const Nav = () => {
     if (!isMenuOpen) return undefined
 
     const previousOverflow = document.body.style.overflow
-    const desktopQuery = window.matchMedia('(min-width: 768px)')
+    const desktopQuery = window.matchMedia('(min-width: 1025px)')
 
     const closeOnDesktop = (event) => {
       if (event.matches) setIsMenuOpen(false)
