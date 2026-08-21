@@ -20,7 +20,7 @@
   "about": {
     "title": "Sobre Mí",
     "p1": "Desarrollador full stack. Trabajo con React, Node y MongoDB, y con Python cuando hay que automatizar algo que se repite.",
-    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de ocho portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte extractos de cuatro bancos distintos, cada uno con su formato, en un panel de gastos con categorización por reglas.",
+    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de nueve portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte extractos de cuatro bancos distintos, cada uno con su formato, en un panel de gastos con categorización por reglas.",
     "timeline": {
       "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
       "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
@@ -66,6 +66,11 @@
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
     "featured_label": "Proyecto destacado",
+    "metrics": {
+      "job_boards": "job boards",
+      "passing_tests": "tests en verde",
+      "commands": "comandos"
+    },
     "projects": [
       {
         "title": "Automatización de WordPress en producción",
@@ -99,7 +104,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, las puntúa contra tu perfil y redacta la carta de presentación. 147 tests en verde y mypy en modo estricto.",
+        "description": "CLI en Python que reúne ofertas dev remoto, las puntúa contra tu perfil y redacta la carta de presentación. Tipado estricto con mypy.",
         "featured": true,
         "tags": [
           "Python",

@@ -52,6 +52,10 @@
   text-align: left;
 }
 
+.hero__char {
+  display: inline-block;
+}
+
 .hero__title {
   margin-top: var(--space-4);
   color: var(--color-text-primary);

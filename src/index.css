@@ -42,6 +42,7 @@
     --fs-md: 1.125rem;
     --fs-lg: 1.25rem;
     --fs-xl: 1.5rem;
+    --fs-2xl: 1.75rem;
     --fs-section-title: clamp(1.75rem, 2.4vw, 2rem);
     --fs-display: clamp(2.25rem, 3.1vw, 3rem);
     --fs-label: 0.75rem;
@@ -66,6 +67,9 @@
 
     --transition: 160ms ease;
     --nav-height: calc(var(--space-12) + var(--space-2));
+    --theme-transition-x: 50vw;
+    --theme-transition-y: 50vh;
+    --theme-transition-radius: 150vmax;
 
     --container-width-lg: 75%;
     --container-width-md: 86%;
@@ -394,6 +398,31 @@ select {
     .site-shell__content section + section,
     .site-shell__content > footer {
         margin-top: var(--space-24);
+    }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-circle-reveal 0.45s ease-out both;
+}
+
+@keyframes theme-circle-reveal {
+    from {
+        clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+    }
+
+    to {
+        clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
     }
 }
 

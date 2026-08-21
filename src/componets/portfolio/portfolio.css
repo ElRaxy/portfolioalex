@@ -16,6 +16,9 @@
 }
 
 .portfolio__featured {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
     gap: var(--space-8);
@@ -25,6 +28,38 @@
     border: 1px solid var(--line-soft);
     border-radius: var(--radius-md);
     background: var(--surface-1);
+    isolation: isolate;
+}
+
+.portfolio__featured::before,
+.portfolio__item::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 320px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%);
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.portfolio__featured > *,
+.portfolio__item > * {
+    position: relative;
+    z-index: 1;
+}
+
+:root[data-theme='light'] .portfolio__featured::before,
+:root[data-theme='light'] .portfolio__item::before {
+    background: radial-gradient(circle 320px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .portfolio__featured:hover::before,
+    .portfolio__item:hover::before {
+        opacity: 1;
+    }
 }
 
 .portfolio__featured-copy {
@@ -84,6 +119,32 @@
     white-space: pre;
 }
 
+.portfolio__terminal-line {
+    display: block;
+    visibility: hidden;
+}
+
+.portfolio__terminal-line.is-visible {
+    visibility: visible;
+}
+
+.portfolio__terminal-cursor {
+    color: var(--accent);
+    animation: portfolio-cursor-blink 1s step-end infinite;
+}
+
+@keyframes portfolio-cursor-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
 .portfolio__terminal-accent {
     color: var(--accent);
 }
@@ -104,6 +165,9 @@
 }
 
 .portfolio__item {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
     display: flex;
     min-width: 0;
     flex-direction: column;
@@ -112,6 +176,7 @@
     border-radius: var(--radius-md);
     background: var(--surface-1);
     transition: background-color var(--transition), border-color var(--transition);
+    isolation: isolate;
 }
 
 .portfolio__item:hover {
@@ -142,6 +207,40 @@
     color: var(--color-text-muted);
     line-height: 1.5;
     overflow-wrap: anywhere;
+}
+
+.portfolio__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.portfolio__metric {
+    min-width: 0;
+    text-align: center;
+}
+
+.portfolio__metric-value {
+    display: inline-block;
+    min-width: 3ch;
+    color: var(--color-text-primary);
+    font-size: var(--fs-2xl);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.portfolio__metric-label {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--text-2);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    overflow-wrap: normal;
+    hyphens: none;
+    text-transform: uppercase;
 }
 
 .portfolio__tags {
@@ -223,5 +322,15 @@
 
     .portfolio__featured {
         padding: var(--space-4);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portfolio__terminal-line {
+        visibility: visible;
+    }
+
+    .portfolio__terminal-cursor {
+        display: none;
     }
 }

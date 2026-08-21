@@ -20,7 +20,7 @@
   "about": {
     "title": "About Me",
     "p1": "Full stack developer. I work with React, Node and MongoDB, and with Python whenever something repetitive needs automating.",
-    "p2": "I built Atalaya, a command line tool that pulls dev job listings from eight boards and scores them against your profile, with 147 tests and mypy in strict mode. And SaveMyMoneyNow, which turns statements from four different banks, each with its own format, into a spending dashboard with rule based categorisation.",
+    "p2": "I built Atalaya, a command line tool that pulls dev job listings from nine boards and scores them against your profile, with 147 tests and mypy in strict mode. And SaveMyMoneyNow, which turns statements from four different banks, each with its own format, into a spending dashboard with rule based categorisation.",
     "timeline": {
       "full_stack": "Full Stack Developer, Anuubis Solutions, 2026 to present",
       "it_support": "IT Support Technician (FCT internship), Impulso Sistemas, 2024",
@@ -66,6 +66,11 @@
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
     "featured_label": "Featured project",
+    "metrics": {
+      "job_boards": "job boards",
+      "passing_tests": "passing tests",
+      "commands": "commands"
+    },
     "projects": [
       {
         "title": "WordPress automation in production",
@@ -99,7 +104,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "Python CLI that pulls remote dev listings from eight job boards, scores them against your profile and drafts the cover letter. 147 passing tests and mypy in strict mode.",
+        "description": "Python CLI that pulls remote dev listings, scores them against your profile and drafts the cover letter. Strictly typed with mypy.",
         "featured": true,
         "tags": [
           "Python",

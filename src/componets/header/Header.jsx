@@ -10,6 +10,7 @@ import { SidebarNav } from '../nav/Nav'
 const Header = () => {
   const { t } = useTranslation()
   const rootRef = useRef(null)
+  const name = t('header.name')
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -26,7 +27,19 @@ const Header = () => {
       media.add('(prefers-reduced-motion: no-preference)', () => {
         gsap.timeline()
           .fromTo(
-            '.hero__name, .hero__title, .hero__tagline, .hero__actions, .hero__socials',
+            '.hero__char',
+            { opacity: 0, y: 18, filter: 'blur(6px)' },
+            {
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              duration: 0.5,
+              ease: 'power3.out',
+              stagger: 0.035,
+            },
+          )
+          .fromTo(
+            '.hero__title, .hero__tagline, .hero__actions, .hero__socials',
             from,
             to,
           )
@@ -43,7 +56,13 @@ const Header = () => {
       <HeroGrid />
 
       <div className="hero__intro">
-        <h1 className="hero__name">{t('header.name')}</h1>
+        <h1 className="hero__name" aria-label={name}>
+          {Array.from(name).map((character, index) => (
+            <span className="hero__char" aria-hidden="true" key={`${character}-${index}`}>
+              {character === ' ' ? '\u00a0' : character}
+            </span>
+          ))}
+        </h1>
         <p className="hero__title">{t('header.title')}</p>
         <p className="hero__tagline">{t('header.tagline')}</p>
         <CTA />
