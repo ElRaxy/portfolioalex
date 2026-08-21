@@ -65,6 +65,7 @@
     "subtitle": "Recent selection",
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
+    "featured_label": "Featured project",
     "projects": [
       {
         "title": "WordPress automation in production",
@@ -99,6 +100,7 @@
       {
         "title": "Atalaya",
         "description": "A Python CLI that aggregates remote developer roles from eight job boards, scores each match against your profile, and drafts the cover letter with Claude. It has 147 tests and uses mypy in strict mode.",
+        "featured": true,
         "tags": [
           "Python",
           "Typer",

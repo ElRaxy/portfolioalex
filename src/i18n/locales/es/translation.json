@@ -65,6 +65,7 @@
     "subtitle": "Selección reciente",
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
+    "featured_label": "Proyecto destacado",
     "projects": [
       {
         "title": "Automatización de WordPress en producción",
@@ -99,6 +100,7 @@
       {
         "title": "Atalaya",
         "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, puntúa el match contra tu perfil y redacta la carta con Claude. 147 tests y mypy strict.",
+        "featured": true,
         "tags": [
           "Python",
           "Typer",
