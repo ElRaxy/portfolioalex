@@ -71,7 +71,7 @@
 .portfolio__featured-label {
     margin-bottom: var(--space-2);
     color: var(--text-3);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: var(--fs-mono);
     font-weight: 600;
     letter-spacing: var(--ls-label);
@@ -104,7 +104,7 @@
     border-bottom: 1px solid var(--line-soft);
     background: var(--surface-2);
     color: var(--text-3);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: var(--fs-mono);
 }
 
@@ -114,7 +114,7 @@
     overflow-x: auto;
     overscroll-behavior: contain;
     color: var(--text-2);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     line-height: 1.55;
     white-space: pre;
@@ -256,7 +256,7 @@
     border-radius: var(--radius-sm);
     background: var(--surface-2);
     color: var(--color-text-muted);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: var(--fs-mono);
     line-height: 1.35;
 }

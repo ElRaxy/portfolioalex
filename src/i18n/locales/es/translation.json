@@ -18,50 +18,135 @@
     "download_cv": "Descargar CV"
   },
   "about": {
-    "title": "Sobre Mí",
-    "p1": "Desarrollador full stack. Trabajo con React, Node y MongoDB, y con Python cuando hay que automatizar algo que se repite.",
-    "p2": "He construido Atalaya, una herramienta de línea de comandos que reúne ofertas de ocho portales de empleo y las puntúa contra tu perfil, con 147 tests y mypy en modo estricto. Y SaveMyMoneyNow, que convierte en un panel de gastos los extractos que cada banco exporta a su manera, detectando la cabecera sin saber de qué banco vienen.",
-    "timeline": {
-      "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
-      "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
-      "daw": "Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós, 2024 a 2026",
-      "smr": "Ciclo Medio en Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós, 2022 a 2024"
-    },
+    "title": "Sobre mí",
+    "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte en un panel de gastos los extractos que cada banco exporta a su manera.",
     "languages": "Castellano y valenciano nativos, inglés intermedio",
-    "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas."
+    "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas.",
+    "lead": "Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite.",
+    "facts": [
+      {
+        "value": "147",
+        "label": "tests · mypy estricto"
+      },
+      {
+        "value": "8",
+        "label": "portales agregados"
+      },
+      {
+        "value": "4",
+        "label": "formatos bancarios"
+      }
+    ]
   },
   "experience": {
     "title": "Experiencia",
-    "education": "Formación"
+    "education": "Formación",
+    "roles": [
+      {
+        "role": "Desarrollador Full Stack · Automatización",
+        "org": "Anuubis Solutions · Remoto",
+        "when": "2026 — HOY",
+        "current": true,
+        "bullets": [
+          "Opero infraestructura web en producción: deploys, migraciones entre proveedores de hosting y auditorías.",
+          "Sustituyo trabajo manual por scripts en Python y Bash: lo que se hacía sitio a sitio pasó a una sola pasada.",
+          "Diagnostico caídas de punta a punta: plugins, vhosts, entrega de correo, DNS y certificados.",
+          "Mido con Lighthouse y Core Web Vitals, y entrego el informe con las métricas antes y después."
+        ]
+      },
+      {
+        "role": "Técnico de Soporte IT · Prácticas",
+        "org": "Impulso Sistemas, Coop. · Villena",
+        "when": "2024",
+        "current": false,
+        "bullets": [
+          "Incidencias presenciales y remotas por ticket y teléfono.",
+          "Preparación de equipos, clonado de discos y cuentas corporativas."
+        ]
+      }
+    ],
+    "studies": [
+      {
+        "role": "Grado Superior en Desarrollo de Aplicaciones Web",
+        "org": "IES Hermanos Amorós",
+        "when": "2024 — 2026"
+      },
+      {
+        "role": "Ciclo Medio en Sistemas Microinformáticos y Redes",
+        "org": "IES Hermanos Amorós",
+        "when": "2022 — 2024"
+      }
+    ]
   },
   "stack": {
     "frontend": {
       "label": "Frontend",
-      "items": "React (Hooks, Router, Axios), JavaScript, HTML/CSS, i18next"
+      "chips": [
+        "React",
+        "JavaScript",
+        "HTML / CSS",
+        "React Router",
+        "i18next",
+        "Axios"
+      ]
     },
     "backend": {
       "label": "Backend",
-      "items": "Node.js, Express, MongoDB (Mongoose), MySQL, REST APIs"
+      "chips": [
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Mongoose",
+        "MySQL",
+        "REST APIs"
+      ]
     },
     "ai": {
       "label": "IA / Agentes",
-      "items": "Anthropic SDK, integración de LLMs, diseño de prompts, orquestación de agentes"
+      "chips": [
+        "Anthropic SDK",
+        "LLMs en producto",
+        "Diseño de prompts",
+        "Orquestación de agentes"
+      ]
     },
     "python": {
       "label": "Python",
-      "items": "Typer, httpx, pytest, mypy, scraping"
+      "chips": [
+        "Typer",
+        "httpx",
+        "pytest",
+        "mypy",
+        "Web scraping"
+      ]
     },
     "devops": {
       "label": "DevOps / Sistemas",
-      "items": "Git, GitHub Actions, Bash, SSH, Ubuntu Server, Nginx, Apache2, Plesk, DNS"
+      "chips": [
+        "Git",
+        "GitHub Actions",
+        "Bash",
+        "SSH",
+        "Ubuntu Server",
+        "Nginx",
+        "Apache2",
+        "Plesk",
+        "DNS"
+      ]
     },
     "scale": {
       "label": "Web a escala",
-      "items": "WordPress, WP-CLI, migraciones entre hostings, Lighthouse, Core Web Vitals"
+      "chips": [
+        "WordPress",
+        "WP-CLI",
+        "Migraciones de hosting",
+        "Lighthouse",
+        "Core Web Vitals"
+      ]
     }
   },
   "portfolio": {
-    "title": "Mis Proyectos",
+    "title": "Mis proyectos",
     "subtitle": "Selección reciente",
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",

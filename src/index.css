@@ -35,6 +35,8 @@
     --color-success: #78c792;
     --color-error: #f08a8a;
 
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
     --fs-mono: 0.6875rem;
     --fs-xs: 0.75rem;
     --fs-sm: 0.8125rem;
