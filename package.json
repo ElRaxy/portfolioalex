@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/prerender.mjs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,5 +43,8 @@
   },
   "overrides": {
     "typescript": "4.9.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

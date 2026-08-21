@@ -5,24 +5,28 @@ export const ThemeContext = createContext()
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('dark')
 
+  // En navegacion privada `localStorage` lanza al leerlo. Sin guarda, la
+  // excepcion sube y la web se queda sin pintar.
   useEffect(() => {
-    // Check if user has a theme preference in localStorage
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.setAttribute('data-theme', savedTheme)
-    } else {
-      // Set default theme to dark
-      setTheme('dark')
-      document.documentElement.setAttribute('data-theme', 'dark')
+    let savedTheme = 'dark'
+    try {
+      savedTheme = window.localStorage.getItem('theme') || 'dark'
+    } catch {
+      /* almacenamiento bloqueado: nos quedamos con el tema por defecto */
     }
+    setTheme(savedTheme)
+    document.documentElement.setAttribute('data-theme', savedTheme)
   }, [])
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark'
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
-    localStorage.setItem('theme', newTheme)
+    try {
+      window.localStorage.setItem('theme', newTheme)
+    } catch {
+      /* el tema cambia igual, solo no se recuerda */
+    }
   }
 
   return (

@@ -9,21 +9,28 @@ const LanguageSelector = () => {
   const changeLabel = currentLanguage === 'es'
     ? 'Cambiar idioma a inglés'
     : 'Switch language to Spanish';
+  // Cambiar de idioma cambia de URL: `/` es el espanol y `/en/` el ingles, y
+  // cada uno se sirve prerenderizado. Es un <a> de verdad para que se pueda
+  // abrir en otra pestana y lo anuncie un lector de pantalla; el onClick solo
+  // se encarga de arrastrar el hash de la seccion en la que este el usuario.
+  const href = nextLanguage === 'en' ? '/en/' : '/';
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+  const goToLanguage = (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    event.preventDefault();
+    window.location.assign(`${href}${window.location.hash}`);
   };
 
   return (
     <div className="language-selector">
-      <button
+      <a
         className="lang-btn"
-        type="button"
-        onClick={() => changeLanguage(nextLanguage)}
+        href={href}
+        onClick={goToLanguage}
         aria-label={changeLabel}
       >
         {nextLanguage.toUpperCase()}
-      </button>
+      </a>
     </div>
   );
 };

@@ -15,9 +15,22 @@ const resources = {
   }
 };
 
-const savedLanguage = localStorage.getItem('language');
-const browserLanguage = navigator.language;
-const initialLanguage = savedLanguage || (browserLanguage.startsWith('es') ? 'es' : 'en');
+// El idioma sale SOLO de la ruta. No se consulta localStorage ni
+// navigator.language: el HTML de `/` viene prerenderizado en espanol y el de
+// `/en/` en ingles, asi que arrancar en otro idioma romperia la hidratacion y
+// haria que el contenido indexable cambiase segun el navegador.
+// Este acceso va con guarda porque tambien se ejecuta en el render de servidor,
+// donde no hay `window`.
+const readLanguageFromPath = () => {
+  try {
+    if (typeof window === 'undefined') return 'es';
+    return /^\/en(?:\/|$)/.test(window.location.pathname) ? 'en' : 'es';
+  } catch {
+    return 'es';
+  }
+};
+
+const initialLanguage = readLanguageFromPath();
 
 i18n
   .use(initReactI18next)
@@ -31,13 +44,13 @@ i18n
   });
 
 // El atributo lang del html debe seguir al idioma activo: si no, un lector de
-// pantalla lee el ingles con fonetica espanola.
-const syncHtmlLang = (lng) => {
-  document.documentElement.lang = lng;
-  localStorage.setItem('language', lng);
-};
-
-syncHtmlLang(i18n.language);
-i18n.on('languageChanged', syncHtmlLang);
+// pantalla lee el ingles con fonetica espanola. `localStorage` puede lanzar en
+// navegacion privada, y eso no puede tumbar la pagina entera.
+try {
+  document.documentElement.lang = initialLanguage;
+  window.localStorage.setItem('language', initialLanguage);
+} catch {
+  /* almacenamiento bloqueado: el idioma ya esta resuelto por la ruta */
+}
 
 export default i18n;

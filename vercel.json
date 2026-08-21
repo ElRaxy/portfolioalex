@@ -1,0 +1,17 @@
+{
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "redirects": [
+    {
+      "source": "/es",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/es/",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
