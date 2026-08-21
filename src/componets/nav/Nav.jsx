@@ -1,13 +1,9 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import LanguageSelector from '../language/LanguageSelector'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
 const OBSERVED_TARGETS = ['home', ...SIDEBAR_TARGETS]
@@ -73,29 +69,62 @@ export const SidebarNav = () => {
   const progressRef = useRef(null)
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const media = gsap.matchMedia()
+    const animationQuery = window.matchMedia(
+      '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
+    )
+    let ctx
+    let loading = false
+    let cancelled = false
 
-      media.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.fromTo(progressRef.current, {
-          scaleY: 0,
-          transformOrigin: 'top',
-        }, {
-          scaleY: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: document.body,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.3,
-          },
+    const loadScrollProgress = () => {
+      if (!animationQuery.matches || loading || ctx) return
+
+      loading = true
+      Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ]).then(([{ gsap }, { ScrollTrigger }]) => {
+        loading = false
+        if (cancelled || !animationQuery.matches) return
+
+        gsap.registerPlugin(ScrollTrigger)
+        ctx = gsap.context(() => {
+          const media = gsap.matchMedia()
+
+          media.add(
+            '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
+            () => {
+              gsap.fromTo(progressRef.current, {
+                scaleY: 0,
+                transformOrigin: 'top',
+              }, {
+                scaleY: 1,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: document.body,
+                  start: 'top top',
+                  end: 'bottom bottom',
+                  scrub: 0.3,
+                },
+              })
+            },
+          )
+
+          return () => media.revert()
         })
+      }).catch(() => {
+        loading = false
       })
+    }
 
-      return () => media.revert()
-    })
+    loadScrollProgress()
+    animationQuery.addEventListener('change', loadScrollProgress)
 
-    return () => ctx.revert()
+    return () => {
+      cancelled = true
+      animationQuery.removeEventListener('change', loadScrollProgress)
+      ctx?.revert()
+    }
   }, [])
 
   return (

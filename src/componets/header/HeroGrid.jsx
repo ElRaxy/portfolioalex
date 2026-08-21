@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
 
 const DESKTOP_GRID = { columns: 24, rows: 14 }
 const TABLET_GRID = { columns: 16, rows: 10 }
@@ -37,88 +36,102 @@ const HeroGrid = () => {
   }, [])
 
   useLayoutEffect(() => {
-    if (!gridLayout || !gridRef.current) return undefined
+    if (
+      !gridLayout
+      || !gridRef.current
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) return undefined
 
     const grid = gridRef.current
     const { columns, rows } = gridLayout
     const pointerTarget = grid.closest('.site-shell__sidebar') ?? grid.parentElement
-    const ctx = gsap.context(() => {
-      const media = gsap.matchMedia()
+    let ctx
+    let cancelled = false
 
-      media.add('(prefers-reduced-motion: no-preference)', () => {
-        const dots = gsap.utils.toArray('.hero-grid__dot', grid)
-        let activeWave
-        let lastPointerLaunch = Number.NEGATIVE_INFINITY
+    import('gsap').then(({ gsap }) => {
+      if (cancelled) return
 
-        const launchWave = (from) => {
-          activeWave?.kill()
-          gsap.set(dots, { clearProps: 'opacity,transform' })
-          activeWave = gsap.to(dots, {
-            opacity: 0.3,
-            scale: 1.45,
-            duration: 0.8,
-            ease: 'sine.inOut',
-            stagger: {
-              grid: [rows, columns],
-              from,
-              amount: 1.6,
-            },
-            repeat: -1,
-            repeatDelay: 1.4,
-            yoyo: true,
-          })
+      ctx = gsap.context(() => {
+        const media = gsap.matchMedia()
 
-          if (document.hidden) activeWave.pause()
-        }
+        media.add('(prefers-reduced-motion: no-preference)', () => {
+          const dots = gsap.utils.toArray('.hero-grid__dot', grid)
+          let activeWave
+          let lastPointerLaunch = Number.NEGATIVE_INFINITY
 
-        const handlePointerMove = (event) => {
-          const now = performance.now()
+          const launchWave = (from) => {
+            activeWave?.kill()
+            gsap.set(dots, { clearProps: 'opacity,transform' })
+            activeWave = gsap.to(dots, {
+              opacity: 0.3,
+              scale: 1.45,
+              duration: 0.8,
+              ease: 'sine.inOut',
+              stagger: {
+                grid: [rows, columns],
+                from,
+                amount: 1.6,
+              },
+              repeat: -1,
+              repeatDelay: 1.4,
+              yoyo: true,
+            })
 
-          if (now - lastPointerLaunch < POINTER_THROTTLE_MS) return
-
-          const { left, top, width, height } = grid.getBoundingClientRect()
-          if (!width || !height) return
-
-          const column = Math.min(
-            columns - 1,
-            Math.max(0, Math.floor(((event.clientX - left) / width) * columns)),
-          )
-          const row = Math.min(
-            rows - 1,
-            Math.max(0, Math.floor(((event.clientY - top) / height) * rows)),
-          )
-
-          lastPointerLaunch = now
-          launchWave([row, column])
-        }
-
-        const handleVisibilityChange = () => {
-          if (document.hidden) {
-            activeWave?.pause()
-          } else {
-            activeWave?.play()
+            if (document.hidden) activeWave.pause()
           }
-        }
 
-        launchWave('center')
-        document.addEventListener('visibilitychange', handleVisibilityChange)
+          const handlePointerMove = (event) => {
+            const now = performance.now()
 
-        const isTouchDevice = window.matchMedia('(hover: none)').matches
-        if (!isTouchDevice) {
-          pointerTarget?.addEventListener('pointermove', handlePointerMove, { passive: true })
-        }
+            if (now - lastPointerLaunch < POINTER_THROTTLE_MS) return
 
-        return () => {
-          document.removeEventListener('visibilitychange', handleVisibilityChange)
-          pointerTarget?.removeEventListener('pointermove', handlePointerMove)
-          activeWave?.kill()
-        }
-      })
+            const { left, top, width, height } = grid.getBoundingClientRect()
+            if (!width || !height) return
 
-      return () => media.revert()
-    }, grid)
+            const column = Math.min(
+              columns - 1,
+              Math.max(0, Math.floor(((event.clientX - left) / width) * columns)),
+            )
+            const row = Math.min(
+              rows - 1,
+              Math.max(0, Math.floor(((event.clientY - top) / height) * rows)),
+            )
 
-    return () => ctx.revert()
+            lastPointerLaunch = now
+            launchWave([row, column])
+          }
+
+          const handleVisibilityChange = () => {
+            if (document.hidden) {
+              activeWave?.pause()
+            } else {
+              activeWave?.play()
+            }
+          }
+
+          launchWave('center')
+          document.addEventListener('visibilitychange', handleVisibilityChange)
+
+          const isTouchDevice = window.matchMedia('(hover: none)').matches
+          if (!isTouchDevice) {
+            pointerTarget?.addEventListener('pointermove', handlePointerMove, { passive: true })
+          }
+
+          return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+            pointerTarget?.removeEventListener('pointermove', handlePointerMove)
+            activeWave?.kill()
+          }
+        })
+
+        return () => media.revert()
+      }, grid)
+    }).catch(() => undefined)
+
+    return () => {
+      cancelled = true
+      ctx?.revert()
+    }
   }, [gridLayout])
 
   if (!gridLayout) return null

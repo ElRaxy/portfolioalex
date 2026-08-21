@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { gsap } from 'gsap'
 import './header.css'
 import CTA from './CTA'
 import HeroGrid from './HeroGrid'
@@ -13,42 +12,54 @@ const Header = () => {
   const name = t('header.name')
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const media = gsap.matchMedia()
-      const from = { y: 20, opacity: 0 }
-      const to = {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.08,
-      }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
 
-      media.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.timeline()
-          .fromTo(
-            '.hero__char',
-            { opacity: 0, y: 18, filter: 'blur(6px)' },
-            {
-              opacity: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              duration: 0.5,
-              ease: 'power3.out',
-              stagger: 0.035,
-            },
-          )
-          .fromTo(
-            '.hero__title, .hero__tagline, .hero__actions, .hero__socials',
-            from,
-            to,
-          )
-      })
+    let ctx
+    let cancelled = false
 
-      return () => media.revert()
-    }, rootRef)
+    import('gsap').then(({ gsap }) => {
+      if (cancelled) return
 
-    return () => ctx.revert()
+      ctx = gsap.context(() => {
+        const media = gsap.matchMedia()
+        const from = { y: 20, opacity: 0 }
+        const to = {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.08,
+        }
+
+        media.add('(prefers-reduced-motion: no-preference)', () => {
+          gsap.timeline()
+            .fromTo(
+              '.hero__char',
+              { opacity: 0, y: 18, filter: 'blur(6px)' },
+              {
+                opacity: 1,
+                y: 0,
+                filter: 'blur(0px)',
+                duration: 0.5,
+                ease: 'power3.out',
+                stagger: 0.035,
+              },
+            )
+            .fromTo(
+              '.hero__title, .hero__tagline, .hero__actions, .hero__socials',
+              from,
+              to,
+            )
+        })
+
+        return () => media.revert()
+      }, rootRef)
+    }).catch(() => undefined)
+
+    return () => {
+      cancelled = true
+      ctx?.revert()
+    }
   }, [])
 
   return (

@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReducedMotion } from 'motion/react'
-import { gsap } from 'gsap'
 import Reveal, { RevealGroup, RevealItem } from '../common/Reveal'
 import './portfolio.css'
 
@@ -166,62 +165,77 @@ const FeaturedMetrics = () => {
     const finalValues = Object.fromEntries(
       ATALAYA_METRICS.map((metric) => [metric.key, metric.value]),
     )
-    const media = gsap.matchMedia()
 
-    media.add('(prefers-reduced-motion: reduce)', () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       hasCountedRef.current = true
       writeValues(finalValues)
-    })
+      return undefined
+    }
 
-    media.add('(prefers-reduced-motion: no-preference)', () => {
-      if (hasCountedRef.current) {
-        writeValues(finalValues)
-        return undefined
-      }
+    let ctx
+    let cancelled = false
 
-      const counter = Object.fromEntries(
-        ATALAYA_METRICS.map((metric) => [metric.key, 0]),
-      )
-      let tween
+    import('gsap').then(({ gsap }) => {
+      if (cancelled) return
 
-      writeValues(counter)
+      ctx = gsap.context(() => {
+        const media = gsap.matchMedia()
 
-      const startCount = () => {
-        if (tween || hasCountedRef.current) return
-
-        tween = gsap.to(counter, {
-          ...finalValues,
-          duration: 1.1,
-          ease: 'power2.out',
-          onUpdate: () => writeValues(counter),
-          onComplete: () => {
-            hasCountedRef.current = true
+        media.add('(prefers-reduced-motion: no-preference)', () => {
+          if (hasCountedRef.current) {
             writeValues(finalValues)
-          },
+            return undefined
+          }
+
+          const counter = Object.fromEntries(
+            ATALAYA_METRICS.map((metric) => [metric.key, 0]),
+          )
+          let tween
+
+          const startCount = () => {
+            if (tween || hasCountedRef.current) return
+
+            writeValues(counter)
+            tween = gsap.to(counter, {
+              ...finalValues,
+              duration: 1.1,
+              ease: 'power2.out',
+              onUpdate: () => writeValues(counter),
+              onComplete: () => {
+                hasCountedRef.current = true
+                writeValues(finalValues)
+              },
+            })
+          }
+
+          if (!('IntersectionObserver' in window)) {
+            startCount()
+            return () => tween?.kill()
+          }
+
+          const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) return
+
+            observer.disconnect()
+            startCount()
+          }, { threshold: 0.3 })
+
+          observer.observe(metricsElement)
+
+          return () => {
+            observer.disconnect()
+            tween?.kill()
+          }
         })
-      }
 
-      if (!('IntersectionObserver' in window)) {
-        startCount()
-        return () => tween?.kill()
-      }
+        return () => media.revert()
+      }, metricsElement)
+    }).catch(() => undefined)
 
-      const observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return
-
-        observer.disconnect()
-        startCount()
-      }, { threshold: 0.3 })
-
-      observer.observe(metricsElement)
-
-      return () => {
-        observer.disconnect()
-        tween?.kill()
-      }
-    })
-
-    return () => media.revert()
+    return () => {
+      cancelled = true
+      ctx?.revert()
+    }
   }, [])
 
   return (
@@ -232,7 +246,7 @@ const FeaturedMetrics = () => {
             className="portfolio__metric-value"
             ref={(node) => { numberRefs.current[index] = node }}
           >
-            0
+            {metric.value}
           </span>
           <span className="portfolio__metric-label">
             {t(`portfolio.metrics.${metric.labelKey}`)}
