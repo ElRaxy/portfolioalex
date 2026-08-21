@@ -19,7 +19,7 @@
   },
   "about": {
     "title": "Sobre mí",
-    "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte en un panel de gastos los extractos que cada banco exporta a su manera.",
+    "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
     "languages": "Castellano y valenciano nativos, inglés intermedio",
     "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas.",
     "lead": "Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite.",
@@ -33,8 +33,8 @@
         "label": "portales agregados"
       },
       {
-        "value": "4",
-        "label": "formatos bancarios"
+        "value": "21",
+        "label": "endpoints en SaveMyMoneyNow"
       }
     ]
   },

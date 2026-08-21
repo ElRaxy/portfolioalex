@@ -19,7 +19,7 @@
   },
   "about": {
     "title": "About me",
-    "p2": "Atalaya pulls dev job listings from eight boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns into a spending dashboard the statements every bank exports its own way.",
+    "p2": "Atalaya pulls dev job listings from eight boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns bank statements into a spending dashboard: it detects the header row and maps the columns without needing a parser per bank.",
     "languages": "Native Spanish and Valencian, intermediate English",
     "p3": "At Anuubis Solutions I keep web infrastructure running in production: deploys, migrations between providers, performance audits and incidents. Nearly all of it scripted, because doing it by hand is where things break.",
     "lead": "I build applications with React, Node and MongoDB, and automate the repetitive parts with Python.",
@@ -33,8 +33,8 @@
         "label": "job boards aggregated"
       },
       {
-        "value": "4",
-        "label": "bank formats"
+        "value": "21",
+        "label": "endpoints in SaveMyMoneyNow"
       }
     ]
   },
