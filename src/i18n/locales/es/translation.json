@@ -13,7 +13,7 @@
     "greeting": "",
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · IA con Claude",
-    "tagline": "Mantengo cerca de mil sitios en pie y construyo mis propias herramientas.",
+    "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
     "location": "Alicante, Villena · Remoto",
     "cta": "Hablemos",
     "view_projects": "Ver proyectos",
@@ -22,29 +22,16 @@
   "about": {
     "title": "Sobre Mí",
     "subtitle": "Conóceme",
-    "p1": "Soy desarrollador full stack. Trabajo en Anuubis Solutions, donde mantengo en pie una flota de cerca de mil sitios repartidos en ocho servidores: deploys, migraciones entre hostings, auditorías e incidencias. Casi todo scriptado, porque a ese volumen el trabajo manual es lo que tira sitios abajo.",
-    "p2": "Fuera de eso construyo mis propias herramientas, casi siempre en Python y Node, y uso Claude Code a diario como parte del flujo de desarrollo.",
-    "metrics": {
-      "sites": {
-        "value": "1.000",
-        "label": "sitios en producción"
-      },
-      "servers": {
-        "value": "8",
-        "label": "servidores"
-      },
-      "months": {
-        "value": "6",
-        "label": "meses en Anuubis"
-      }
-    },
+    "p1": "Desarrollador full stack. Construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite: si una tarea se hace tres veces a mano, la siguiente ya la hace un script.",
+    "p2": "Trabajo en Anuubis Solutions manteniendo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento y respuesta a incidencias. Fuera del trabajo construyo mis propias herramientas y uso Claude Code a diario, no como asistente sino como parte del flujo: especificación antes que código, agentes que se reparten el trabajo y una verificación que hay que pasar antes de dar nada por hecho.",
     "timeline": {
       "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
       "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
       "daw": "Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós, 2024 a 2026",
       "smr": "Ciclo Medio en Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós, 2022 a 2024"
     },
-    "languages": "Castellano y valenciano nativos, inglés intermedio"
+    "languages": "Castellano y valenciano nativos, inglés intermedio",
+    "p3": "Lo que más me interesa ahora es esa frontera: producto bien construido y agentes de IA que hagan trabajo real, no demos."
   },
   "experience": {
     "title": "Experiencia",
@@ -83,8 +70,8 @@
     "internal_label": "Trabajo interno en Anuubis Solutions",
     "projects": [
       {
-        "title": "Operación de flota web",
-        "description": "Cerca de mil sitios WordPress repartidos en ocho servidores: deploys, migraciones entre proveedores de hosting, auditorías e incidencias en producción. Sustituí el trabajo manual por scripts en Python y Bash que barren la flota entera, de modo que tareas que se hacían sitio a sitio pasaron a ejecutarse de una vez.",
+        "title": "Automatización de flota web",
+        "description": "Automaticé la operación de una flota de sitios WordPress en producción con scripts de Python y Bash: auditorías, verificación posterior al deploy y migraciones entre proveedores. Tareas que antes se hacían sitio a sitio pasaron a ejecutarse en una sola pasada.",
         "tags": [
           "Python",
           "Bash",

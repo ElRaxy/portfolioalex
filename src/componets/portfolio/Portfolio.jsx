@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import Reveal, { RevealGroup, RevealItem } from '../common/Reveal'
 import './portfolio.css'
 
 function Portfolio() {
@@ -10,22 +11,28 @@ function Portfolio() {
   return (
     <section id="portfolio" className="portfolio" aria-labelledby="portfolio-title">
       <div className="container">
-        <header className="portfolio__heading">
+        <Reveal as="header" className="portfolio__heading">
           <h2 id="portfolio-title">{t('portfolio.title')}</h2>
           <p>{t('portfolio.subtitle')}</p>
-        </header>
+        </Reveal>
 
-        <ul className="portfolio__legend">
+        <RevealGroup as="ul" className="portfolio__legend">
           {technologies.map((technology) => (
-            <li className="portfolio__legend-item" key={technology}>
+            <RevealItem as="li" className="portfolio__legend-item" key={technology}>
               {technology}
-            </li>
+            </RevealItem>
           ))}
-        </ul>
+        </RevealGroup>
 
-        <div className="portfolio__grid">
+        <RevealGroup className="portfolio__grid">
           {projects.map((project, projectIndex) => (
-            <article className="portfolio__item" key={project.title}>
+            <RevealItem
+              as="article"
+              className="portfolio__item"
+              key={project.title}
+              whileHover={{ y: -4 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+            >
               <h3>{t(`portfolio.projects.${projectIndex}.title`)}</h3>
               <p className="portfolio__description">
                 {t(`portfolio.projects.${projectIndex}.description`)}
@@ -56,9 +63,9 @@ function Portfolio() {
                   </p>
                 )}
               </footer>
-            </article>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   )

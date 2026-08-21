@@ -1,10 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-scroll'
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import LanguageSelector from '../language/LanguageSelector'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const SIDEBAR_TARGETS = ['about', 'portfolio', 'stack', 'contact']
 
@@ -48,9 +52,37 @@ const useActiveSection = () => {
 export const SidebarNav = () => {
   const { t } = useTranslation()
   const activeSection = useActiveSection()
+  const progressRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const media = gsap.matchMedia()
+
+      media.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(progressRef.current, {
+          scaleY: 0,
+          transformOrigin: 'top',
+        }, {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.3,
+          },
+        })
+      })
+
+      return () => media.revert()
+    })
+
+    return () => ctx.revert()
+  }, [])
 
   return (
     <nav className="sidebar-nav" aria-label={t('nav.sections')}>
+      <span className="sidebar-nav__progress" aria-hidden="true" ref={progressRef} />
       <ul className="sidebar-nav__list">
         {SIDEBAR_TARGETS.map((target) => (
           <li key={target}>

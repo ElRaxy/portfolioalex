@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import Reveal from '../common/Reveal'
 import './contact.css'
 import emailjs from 'emailjs-com'
 
@@ -7,6 +9,16 @@ function Contact() {
   const { t } = useTranslation()
   const form = useRef()
   const [sendStatus, setSendStatus] = useState('idle')
+  const shouldReduceMotion = useReducedMotion()
+  const hasStatus = sendStatus === 'ok' || sendStatus === 'error'
+  const StatusElement = shouldReduceMotion ? 'div' : motion.div
+  const statusAnimationProps = shouldReduceMotion ? {} : {
+    initial: { opacity: 0, height: 0 },
+    animate: { opacity: 1, height: 'auto' },
+    exit: { opacity: 0, height: 0 },
+    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+    style: { overflow: 'hidden' },
+  }
 
   const sendEmail = async (e) => {
     e.preventDefault()
@@ -32,7 +44,7 @@ function Contact() {
   }
 
   return (
-    <section id="contact">
+    <Reveal as="section" id="contact">
       <h5>{t('contact.subtitle')}</h5>
       <h2>{t('contact.title')}</h2>
 
@@ -72,16 +84,24 @@ function Contact() {
               {t(sendStatus === 'sending' ? 'contact.sending' : 'contact.message')}
             </button>
 
-            {(sendStatus === 'ok' || sendStatus === 'error') && (
-              <div className="contact__status" role="status" aria-live="polite">
-                {sendStatus === 'ok' && (
-                  <p className="success-message">{t('contact.success')}</p>
-                )}
-                {sendStatus === 'error' && (
-                  <p className="error-message">{t('contact.error')}</p>
-                )}
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {hasStatus && (
+                <StatusElement
+                  key={sendStatus}
+                  className="contact__status"
+                  role="status"
+                  aria-live="polite"
+                  {...statusAnimationProps}
+                >
+                  {sendStatus === 'ok' && (
+                    <p className="success-message">{t('contact.success')}</p>
+                  )}
+                  {sendStatus === 'error' && (
+                    <p className="error-message">{t('contact.error')}</p>
+                  )}
+                </StatusElement>
+              )}
+            </AnimatePresence>
           </form>
 
           <p className="contact__direct-email">
@@ -90,7 +110,7 @@ function Contact() {
           </p>
         </div>
       </div>
-    </section>
+    </Reveal>
   )
 }
 

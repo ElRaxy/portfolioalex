@@ -3,7 +3,19 @@
 }
 
 .sidebar-nav {
+  position: relative;
   width: 100%;
+}
+
+.sidebar-nav__progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
 }
 
 .sidebar-nav__list {
@@ -54,6 +66,12 @@
 
 .sidebar-nav__link:active .sidebar-nav__line {
   background: var(--accent-active);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-nav__progress {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 1024px) {

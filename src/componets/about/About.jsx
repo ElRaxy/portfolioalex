@@ -1,32 +1,21 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import Reveal from '../common/Reveal'
 import './about.css'
-
-const metricItems = ['sites', 'servers', 'months']
 
 const About = () => {
   const { t } = useTranslation()
 
   return (
     <section id="about" className="about">
-      <h2>{t('about.title')}</h2>
+      <Reveal as="h2">{t('about.title')}</Reveal>
 
-      <div className="container about__content">
-        <dl className="about__metrics">
-          {metricItems.map((metric) => (
-            <div className="about__metric" key={metric}>
-              <dt>{t(`about.metrics.${metric}.label`)}</dt>
-              <dd>{t(`about.metrics.${metric}.value`)}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="about__intro">
-          <p>{t('about.p2')}</p>
-        </div>
-
+      <Reveal className="about__content">
+        <p>{t('about.p1')}</p>
+        <p>{t('about.p2')}</p>
+        <p>{t('about.p3')}</p>
         <p className="about__languages">{t('about.languages')}</p>
-      </div>
+      </Reveal>
     </section>
   )
 }

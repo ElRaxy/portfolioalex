@@ -13,7 +13,7 @@
     "greeting": "",
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · AI with Claude",
-    "tagline": "I keep close to a thousand sites running and build my own tools.",
+    "tagline": "I build applications and automate the infrastructure that keeps them running.",
     "location": "Alicante, Villena · Remote",
     "cta": "Let's talk",
     "view_projects": "View projects",
@@ -22,29 +22,16 @@
   "about": {
     "title": "About Me",
     "subtitle": "Get to know me",
-    "p1": "I'm a full stack developer at Anuubis Solutions, where I keep a fleet of close to a thousand sites running across eight servers. My work covers deployments, migrations between hosting providers, audits, and incident response. Nearly all of it is scripted, because at that scale manual work is what takes sites down.",
-    "p2": "Outside of work, I build my own tools, usually in Python and Node. I also use Claude Code every day as part of my development workflow.",
-    "metrics": {
-      "sites": {
-        "value": "1.000",
-        "label": "sites in production"
-      },
-      "servers": {
-        "value": "8",
-        "label": "servers"
-      },
-      "months": {
-        "value": "6",
-        "label": "months at Anuubis"
-      }
-    },
+    "p1": "Full stack developer. I build applications with React, Node and MongoDB, and automate with Python whatever repeats itself: if a task gets done by hand three times, the next one is a script.",
+    "p2": "At Anuubis Solutions I keep web infrastructure running in production: deploys, migrations between providers, performance audits and incident response. Outside work I build my own tools and use Claude Code daily, not as an assistant but as part of the workflow: specs before code, agents that hand work over to each other, and a verification step that has to pass before anything counts as done.",
     "timeline": {
       "full_stack": "Full Stack Developer, Anuubis Solutions, 2026 to present",
       "it_support": "IT Support Technician (FCT internship), Impulso Sistemas, 2024",
       "daw": "Advanced Diploma in Web Application Development (DAW), IES Hermanos Amorós, 2024 to 2026",
       "smr": "Intermediate Diploma in Microcomputer Systems and Networks (SMR), IES Hermanos Amorós, 2022 to 2024"
     },
-    "languages": "Native Spanish and Valencian, intermediate English"
+    "languages": "Native Spanish and Valencian, intermediate English",
+    "p3": "What interests me most right now is that edge: well-built product and AI agents doing real work rather than demos."
   },
   "experience": {
     "title": "Experience",
@@ -83,8 +70,8 @@
     "internal_label": "Internal work at Anuubis Solutions",
     "projects": [
       {
-        "title": "Web fleet operations",
-        "description": "Nearly a thousand WordPress sites across eight servers: deployments, migrations between hosting providers, audits, and production incidents. I replaced manual work with Python and Bash scripts that sweep the entire fleet, turning tasks once done site by site into single-run operations.",
+        "title": "Web fleet automation",
+        "description": "I automated the operation of a fleet of production WordPress sites with Python and Bash scripts: audits, post-deploy verification and migrations between providers. Work that used to be done site by site now runs in a single pass.",
         "tags": [
           "Python",
           "Bash",
