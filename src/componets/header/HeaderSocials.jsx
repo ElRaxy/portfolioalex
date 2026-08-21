@@ -13,7 +13,7 @@ const HeaderSocials = () => {
       <a
         href="https://github.com/ElRaxy"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label={t('contact.website')}
       >
         <FaGithub aria-hidden="true" />
@@ -24,7 +24,7 @@ const HeaderSocials = () => {
       <a
         href="https://wa.me/34693912460"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label={t('contact.whatsapp')}
       >
         <BsWhatsapp aria-hidden="true" />

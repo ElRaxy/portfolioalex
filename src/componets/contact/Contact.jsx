@@ -85,12 +85,12 @@ function Contact() {
 
           <div className="contact__detail">
             <dt>{t('contact.whatsapp')}</dt>
-            <dd><a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">+34 693 91 24 60</a></dd>
+            <dd><a href="https://wa.me/34693912460" target="_blank" rel="noopener noreferrer">+34 693 91 24 60</a></dd>
           </div>
 
           <div className="contact__detail">
             <dt>{t('contact.location')}</dt>
-            <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noreferrer">Alicante, Villena</a></dd>
+            <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noopener noreferrer">Alicante, Villena</a></dd>
           </div>
         </dl>
 
@@ -143,7 +143,7 @@ function Contact() {
                         {' '}
                         <a href="mailto:alexmico2006@gmail.com">{t('contact.email')}</a>
                         {' · '}
-                        <a href="https://wa.me/34693912460" target="_blank" rel="noreferrer">
+                        <a href="https://wa.me/34693912460" target="_blank" rel="noopener noreferrer">
                           {t('contact.whatsapp')}
                         </a>
                       </p>

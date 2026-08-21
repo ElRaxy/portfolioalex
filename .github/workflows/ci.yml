@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npx eslint src api scripts --ext .js,.jsx,.mjs
+
+      - name: Tests
+        run: npm test -- --watchAll=false
+        env:
+          CI: true
+
+      - name: Build y prerender
+        run: npm run build
+        env:
+          CI: false
+
+      # El prerender es la razon de ser del build: si algun dia deja de inyectar
+      # el HTML dentro de #root, la web vuelve a servir un div vacio y nadie se
+      # entera hasta que un reclutador no ve nada.
+      - name: Comprobar que el HTML sale renderizado
+        run: |
+          node -e "
+            const fs = require('fs')
+            const fallos = []
+            for (const [ruta, idioma, testigo] of [
+              ['build/index.html', 'es', 'Anuubis'],
+              ['build/en/index.html', 'en', 'Anuubis'],
+            ]) {
+              const html = fs.readFileSync(ruta, 'utf8')
+              const root = html.match(/<div id=\"root\">([\s\S]*)<\/div>/)
+              if (!root || root[1].length < 5000) fallos.push(ruta + ': #root casi vacio')
+              if (!root || !root[1].includes(testigo)) fallos.push(ruta + ': falta ' + testigo)
+              if (!html.includes('<html lang=\"' + idioma + '\"')) fallos.push(ruta + ': lang incorrecto')
+              if (!html.includes('rel=\"canonical\"')) fallos.push(ruta + ': sin canonical')
+              if ((html.match(/hreflang=/g) || []).length !== 3) fallos.push(ruta + ': faltan hreflang')
+            }
+            if (fallos.length) { console.error(fallos.join('\n')); process.exit(1) }
+            console.log('Prerender correcto en los dos idiomas')
+          "
