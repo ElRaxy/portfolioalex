@@ -22,12 +22,12 @@ Mi portfolio personal desarrollado con React, donde muestro mis proyectos, habil
 ## 📦 Instalación
 1. Clona el repositorio
 ```bash
-git clone https://github.com/ElRaxy/Portfolio-Alex-Mico
+git clone https://github.com/ElRaxy/portfolioalex
 ```
 
 2. Instala las dependencias
 ```bash
-cd Portfolio_Alex_Mico
+cd portfolioalex
 npm install
 ```
 
@@ -46,10 +46,10 @@ src/
 ```
 
 ## 🌐 En Vivo
-[Ver sitio web](https://portfolioalex-blush.vercel.app/)
+[Ver sitio web](https://portfolioalex-mico.vercel.app)
 
 ## 📝 Licencia
-Este proyecto es de código abierto y está disponible para uso personal y educativo.
+MIT — ver [LICENSE](LICENSE).
 
 ## 📫 Contacto
 - Email: alexmico2006@gmail.com
