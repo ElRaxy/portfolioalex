@@ -156,7 +156,9 @@
         ],
         "links": [],
         "closed": true,
-        "internal": true
+        "internal": true,
+        "image": "wordpress",
+        "image_alt": "Diagrama: un solo comando audita todos los sitios WordPress en producción"
       },
       {
         "title": "SaveMyMoneyNow",
@@ -172,7 +174,9 @@
             "label": "Código",
             "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
           }
-        ]
+        ],
+        "image": "savemymoneynow",
+        "image_alt": "SaveMyMoneyNow detectando por su cuenta las columnas de un extracto bancario"
       },
       {
         "title": "Atalaya",
@@ -206,7 +210,9 @@
             "url": "https://strev.app"
           }
         ],
-        "closed": true
+        "closed": true,
+        "image": "strev",
+        "image_alt": "Portada de Strev con la pantalla de rutinas de la aplicación"
       }
     ]
   },

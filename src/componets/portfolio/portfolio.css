@@ -195,6 +195,19 @@
     outline-offset: 2px;
 }
 
+.portfolio__shot {
+    display: block;
+    width: calc(100% + var(--space-6) * 2);
+    height: auto;
+    margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+    aspect-ratio: 16 / 10;
+    background: var(--surface-2);
+    object-fit: cover;
+    object-position: top center;
+}
+
 .portfolio__item h3 {
     color: var(--color-text-primary);
     font-size: var(--fs-lg);

@@ -34,6 +34,26 @@ describe('la web entera', () => {
     expect(enlacesCon(/github\.com\/ElRaxy/).length).toBeGreaterThan(0)
   })
 
+  // Una miniatura sin alt util es peor que ninguna: el lector de pantalla lee
+  // el nombre del fichero. Y sin lazy, tres imagenes compiten con el primer paint.
+  it('acompana cada proyecto que tiene captura con un alt propio y carga diferida', () => {
+    render(<App />)
+
+    const capturas = screen.getAllByRole('img')
+      .filter((img) => (img.getAttribute('src') || '').startsWith('/projects/'))
+
+    expect(capturas).toHaveLength(3)
+    capturas.forEach((captura) => {
+      expect(captura.getAttribute('alt')).toMatch(/\S{10,}/)
+      expect(captura).toHaveAttribute('loading', 'lazy')
+      expect(captura).toHaveAttribute('width', '800')
+      expect(captura).toHaveAttribute('height', '500')
+    })
+
+    const textosAlternativos = capturas.map((captura) => captura.getAttribute('alt'))
+    expect(new Set(textosAlternativos).size).toBe(capturas.length)
+  })
+
   it('ofrece el CV como descarga', () => {
     render(<App />)
 

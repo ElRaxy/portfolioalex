@@ -4,6 +4,12 @@ import { useReducedMotion } from 'motion/react'
 import Reveal, { RevealGroup, RevealItem } from '../common/Reveal'
 import './portfolio.css'
 
+const PROJECT_IMAGES = {
+  wordpress: '/projects/wp-flow.svg',
+  savemymoneynow: '/projects/savemymoneynow.webp',
+  strev: '/projects/strev.webp',
+}
+
 const ATALAYA_HELP_OUTPUT = `$ bhound --help
 
  Usage: bhound [OPTIONS] COMMAND [ARGS]...
@@ -325,8 +331,21 @@ const usePointerSpotlight = (rootRef) => {
 const ProjectDetails = ({ project, projectIndex }) => {
   const { t } = useTranslation()
 
+  const projectImage = PROJECT_IMAGES[project.image]
+
   return (
     <>
+      {projectImage && (
+        <img
+          className="portfolio__shot"
+          src={projectImage}
+          alt={t(`portfolio.projects.${projectIndex}.image_alt`)}
+          width="800"
+          height="500"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
       <h3>{t(`portfolio.projects.${projectIndex}.title`)}</h3>
       <p className="portfolio__description">
         {t(`portfolio.projects.${projectIndex}.description`)}
