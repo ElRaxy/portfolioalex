@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { gsap } from 'gsap'
 import './header.css'
 import CTA from './CTA'
+import HeroGrid from './HeroGrid'
 import HeaderSocials from './HeaderSocials'
 import { SidebarNav } from '../nav/Nav'
 
@@ -39,6 +40,8 @@ const Header = () => {
 
   return (
     <header id="home" className="hero" ref={rootRef}>
+      <HeroGrid />
+
       <div className="hero__intro">
         <h1 className="hero__name">{t('header.name')}</h1>
         <p className="hero__title">{t('header.title')}</p>
