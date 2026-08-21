@@ -9,7 +9,7 @@
   },
   "header": {
     "greeting": "Hi, I'm",
-    "name": "Alex Mico Robles",
+    "name": "Alex Micó Robles",
     "title": "Full Stack Developer · AI with Claude",
     "location": "Alicante, Villena · Remote",
     "cta": "Let's talk",
@@ -134,6 +134,6 @@
     "visit_website": "Visit website"
   },
   "footer": {
-    "copyright": "Alex Mico Robles · All rights reserved"
+    "copyright": "Alex Micó Robles · All rights reserved"
   }
 }
