@@ -1,29 +1,58 @@
 import React from 'react'
 import { Link } from 'react-scroll'
+import { useTranslation } from 'react-i18next'
+import LanguageSelector from '../language/LanguageSelector'
+import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
-import { FaHome, FaUser, FaBriefcase, FaCode, FaFolderOpen, FaEnvelope } from 'react-icons/fa'
 
 const Nav = () => {
+  const { t } = useTranslation()
+  const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
+  const links = [
+    { target: 'home', label: t('nav.home') },
+    { target: 'portfolio', label: t('nav.portfolio') },
+    { target: 'stack', label: t('nav.stack') },
+    { target: 'about', label: t('nav.about') },
+    { target: 'contact', label: t('nav.contact') },
+  ]
+
   return (
-    <nav>
-      <Link to="home" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaHome />
-      </Link>
-      <Link to="about" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaUser />
-      </Link>
-      <Link to="experience" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaBriefcase />
-      </Link>
-      <Link to="services" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaCode />
-      </Link>
-      <Link to="portfolio" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaFolderOpen />
-      </Link>
-      <Link to="contact" spy={true} smooth={true} offset={-70} duration={500}>
-        <FaEnvelope />
-      </Link>
+    <nav className="portfolio-nav">
+      <div className="portfolio-nav__inner">
+        <Link
+          to="home"
+          href="#home"
+          smooth={true}
+          offset={-64}
+          duration={0}
+          className="portfolio-nav__brand"
+        >
+          {brandName}
+        </Link>
+
+        <div className="portfolio-nav__links">
+          {links.map(({ target, label }) => (
+            <Link
+              key={target}
+              to={target}
+              href={`#${target}`}
+              spy={true}
+              smooth={true}
+              offset={-64}
+              duration={0}
+              activeClass="portfolio-nav__link--active"
+              className="portfolio-nav__link"
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="portfolio-nav__controls">
+          <LanguageSelector />
+          <ThemeToggle />
+        </div>
+      </div>
     </nav>
   )
 }

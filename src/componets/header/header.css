@@ -1,166 +1,111 @@
-header{
-    height: 100vh;
-    padding-top: 7rem;
-    overflow: hidden;
+.hero {
+  min-height: 78vh;
+  display: flex;
+  align-items: center;
+  padding: 5.5rem 0 3rem;
+  overflow: hidden;
 }
 
-.header__container{
-    text-align: center;
-    height: 100%;
-    position: relative;
+.hero__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.header__location {
-    display: block;
-    margin-top: 0.6rem;
-    color: var(--color-light);
-    letter-spacing: 0.04rem;
+.hero__name {
+  color: var(--color-text-primary);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-/* =================== CTA =================== */
-.cta{
-    margin-top: 2.5rem;
-    display: flex;
-    gap: 1.2rem;
-    justify-content: center;
+.hero__title {
+  margin-top: 1rem;
+  color: var(--color-text-primary);
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  font-weight: 500;
 }
 
-.cta .btn {
-    padding: 0.8rem 1.5rem;
-    font-weight: 500;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+.hero__tagline {
+  max-width: 34rem;
+  margin-top: 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 1rem;
 }
 
-.cta .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+.hero__socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.hero__socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 20px;
+  line-height: 1;
+  transition: color 160ms ease;
+}
+
+.hero__socials a:hover {
+  color: var(--color-text-primary);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.hero__actions .hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.hero__actions .hero__button--projects {
+  background: var(--color-card);
+}
+
+.hero__actions .hero__button:hover {
+  background: var(--color-card-hover);
+  border-color: var(--color-text-muted);
+  color: var(--color-text-primary);
+}
+
+@media screen and (max-width: 600px) {
+  .hero {
+    min-height: 78vh;
+    padding: 5rem 0 2.5rem;
+  }
+
+  .hero__container {
+    width: min(var(--container-width-sm), calc(100% - 2rem));
+  }
+
+  .hero__actions {
     width: 100%;
-    height: 100%;
-    background: var(--color-gradient);
-    z-index: -1;
-    transition: all 0.3s ease;
-    opacity: 0;
-}
+  }
 
-.cta .btn:hover::before {
-    opacity: 1;
-}
-
-.cta .btn:hover {
-    color: var(--color-bg);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--color-shadow-hover);
-}
-
-.cta .btn-primary {
-    background: var(--color-gradient);
-    color: var(--color-bg);
-    border: none;
-}
-
-.cta .btn-primary::before {
-    background: var(--color-gradient-hover);
-}
-
-.cta .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--color-shadow-hover);
-}
-
-/* =================== HEADER SOCIALS =================== */
-.header__socials{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    position: absolute;
-    left: 0;
-    bottom: 3rem;
-}
-
-.header__socials::after{
-    content: "";
-    width: 1px;
-    height: 2rem;
-    background: var(--color-primary);
-}
-
-.header__socials a {
-    color: var(--color-primary);
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.header__socials a:hover {
-    color: var(--color-primary-variant);
-    transform: translateY(-3px);
-}
-
-/* =================== ME =================== */
-.me{
-    background: var(--color-gradient);
-    width: 22rem;
-    height: 30rem;
-    position: absolute;
-    left: calc(50% - 11rem);
-    margin-top: 4rem;
-    border-radius: 4rem 4rem 2rem 2rem;
-    overflow: hidden;
-    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
-    box-shadow: 0 8px 20px var(--color-shadow);
-    transition: all 0.3s ease;
-}
-
-.me img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
-}
-
-.me:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 25px var(--color-shadow-hover);
-}
-
-/* =================== SCROLL DOWN =================== */
-.scroll__down{
-    position: absolute;
-    right: -2.3rem;
-    bottom: 5rem;
-    transform: rotate(90deg);
-    font-weight: 300;
-    font-size: 0.9rem;
-    color: var(--color-primary);
-    transition: all 0.3s ease;
-}
-
-.scroll__down:hover {
-    color: var(--color-primary-variant);
-    transform: rotate(90deg) translateY(-3px);
-}
-
-/* =================== MEDIA QUERIES (MEDIUM DEVICES) =================== */
-@media screen and (max-width: 1024px){
-    header{
-        height: 68vh;
-    }
-}
-
-/* =================== MEDIA QUERIES (SMALL DEVICES) =================== */
-@media screen and (max-width: 600px){
-    header{
-        height: 100vh;
-    }
-
-    .header__socials,
-    .scroll__down{
-        display: none;
-    }
+  .hero__actions .hero__button {
+    flex: 1 1 9rem;
+  }
 }

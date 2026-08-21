@@ -1,37 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
 *{
     margin: 0;
     padding: 0;
     border: 0;
-    outline: 0;
     box-sizing: border-box;
     list-style: none;
     text-decoration: none;
     scroll-behavior: smooth;
 }
 
-:root{
-    --color-bg: #1f1f38;
-    --color-bg-variant: #2c2c6c;
-    --color-primary: #4db5ff;
-    --color-primary-variant: rgba(77, 181, 255, 0.4);
-    --color-white: #fff;
-    --color-light: rgba(255, 255, 255, 0.6);
-    --color-black: #000000;
-    --color-black-variant: #1f1f38;
-    --color-card: #2c2c6c;
-    --color-card-hover: #363680;
-    --color-border: #4db5ff;
-    --color-shadow: rgba(0, 0, 0, 0.2);
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #e9ecef;
-    --color-text-muted: #adb5bd;
-    --color-success: #4cc9f0;
-    --color-warning: #f72585;
-    --color-danger: #ff4d6d;
+:root,
+:root[data-theme='dark']{
+    --color-bg: #141416;
+    --color-card: #1d1d20;
+    --color-card-hover: #26262a;
+    --color-border: #2e2e33;
+    --color-primary: #8fb8e8;
+    --color-text-primary: #e8e8ea;
+    --color-text-muted: #9a9aa0;
 
-    --transition: all 400ms ease;
+    --transition: 160ms ease;
 
     --container-width-lg: 75%;
     --container-width-md: 86%;
@@ -42,9 +29,19 @@
     --section-padding-sm: 3rem;
 }
 
+:root[data-theme='light']{
+    --color-bg: #fafafa;
+    --color-card: #ffffff;
+    --color-card-hover: #f0f0f2;
+    --color-border: #e2e2e5;
+    --color-primary: #2f6ba8;
+    --color-text-primary: #1a1a1c;
+    --color-text-muted: #6a6a70;
+}
+
 html{
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 64px;
 }
 
 ::-webkit-scrollbar{
@@ -52,12 +49,11 @@ html{
 }
 
 body{
-    font-family: 'Poppins', sans-serif;
+    font-family: "Inter", -apple-system, "Segoe UI", system-ui, sans-serif;
     background: var(--color-bg);
-    color: var(--color-white);
+    color: var(--color-text-primary);
     line-height: 1.7;
     background-image: url(./assets/white-texture.jpg);
-    transition: var(--transition);
 }
 
 /* =================== GENERAL STYLES =================== */
@@ -79,12 +75,16 @@ h1{
 section{
     margin-top: 8rem;
     padding: 2rem 0;
-    transition: var(--transition);
+}
+
+section[id],
+header[id]{
+    scroll-margin-top: 64px;
 }
 
 section > h2, section > h5{
     text-align: center;
-    color: var(--color-light);
+    color: var(--color-text-muted);
 }
 
 section > h5 {
@@ -92,46 +92,44 @@ section > h5 {
 }
 
 section > h2{
-    color: var(--color-primary);
+    color: var(--color-text-primary);
     margin-bottom: 3rem;
 }
 
 .text-light{
-    color: var(--color-light);
+    color: var(--color-text-muted);
 }
 
 a{
-    color: var(--color-primary);
-    transition: all 0.3s ease;
+    color: inherit;
+    transition: color 160ms ease;
 }
 
 a:hover{
-    color: var(--color-white);
+    color: var(--color-text-primary);
 }
 
 .btn{
     width: max-content;
     display: inline-block;
-    color: var(--color-primary);
+    color: var(--color-text-primary);
     padding: 0.75rem 1.2rem;
     border-radius: 0.4rem;
     cursor: pointer;
-    border: 1px solid var(--color-primary);
-    transition: all 0.3s ease;
+    border: 1px solid var(--color-border);
+    transition: background-color 160ms ease, border-color 160ms ease;
     background: transparent;
 }
 
 .btn:hover{
-    background: var(--color-white);
-    color: var(--color-bg);
-    border-color: transparent;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--color-shadow);
+    background: var(--color-card-hover);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
 }
 
 .btn-primary{
-    background: var(--color-primary);
-    color: var(--color-bg);
+    background: var(--color-card);
+    color: var(--color-text-primary);
 }
 
 img{
@@ -139,7 +137,7 @@ img{
     width: 100%;
     object-fit: cover;
     border-radius: 1rem;
-    transition: var(--transition);
+    transition: transform 160ms ease;
 }
 
 img:hover {
@@ -152,14 +150,17 @@ img:hover {
     border: 1px solid var(--color-border);
     border-radius: 1rem;
     padding: 1.5rem;
-    transition: var(--transition);
-    box-shadow: 0 4px 15px var(--color-shadow);
+    transition: background-color 160ms ease, transform 160ms ease;
 }
 
 .card:hover {
     background: var(--color-card-hover);
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px var(--color-shadow);
+}
+
+:where(a, button, input, textarea, select):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* =================== MEDIA QUERIES (MEDIUM DEVICES) =================== */

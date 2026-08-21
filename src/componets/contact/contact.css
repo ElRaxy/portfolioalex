@@ -18,8 +18,7 @@
     border-radius: 1.2rem;
     text-align: center;
     border: 1px solid var(--color-border);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--color-shadow);
+    transition: background-color 160ms ease, transform 160ms ease;
     min-height: 12.2rem;
     display: flex;
     flex-direction: column;
@@ -29,26 +28,25 @@
 .contact__option:hover{
     background: var(--color-card-hover);
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px var(--color-shadow-hover);
 }
 
 .contact__option-icon{
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: var(--color-primary);
+    color: var(--color-text-muted);
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
 .contact__option h4 {
-    color: var(--color-white);
+    color: var(--color-text-primary);
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
 }
 
 .contact__option h5 {
-    color: var(--color-light);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     margin-bottom: 0.7rem;
     word-wrap: break-word;
@@ -60,7 +58,12 @@
     margin-top: 0.7rem;
     display: inline-block;
     font-size: 0.8rem;
-    color: var(--color-primary);
+    color: var(--color-text-muted);
+    transition: color 160ms ease;
+}
+
+.contact__option a:hover{
+    color: var(--color-text-primary);
 }
 
 /* ========================== FORM ========================== */
@@ -75,23 +78,21 @@ input, textarea{
     width: 100%;
     padding: 1.5rem;
     border-radius: 0.5rem;
-    background: var(--color-bg-variant);
+    background: var(--color-card);
     border: 2px solid var(--color-border);
     resize: none;
-    color: var(--color-white);
+    color: var(--color-text-primary);
     font-family: inherit;
-    transition: all 0.3s ease;
 }
 
 input:focus,
 textarea:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-transparent);
+    border-color: var(--color-text-muted);
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: var(--color-light);
+    color: var(--color-text-muted);
 }
 
 button:disabled {
@@ -109,15 +110,15 @@ button:disabled {
 }
 
 .success-message {
-    background: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
-    border: 1px solid #2ecc71;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
 }
 
 .error-message {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
 }
 
 /* ========================== MEDIA QUERIES (MEDIUM DEVICES) ========================== */

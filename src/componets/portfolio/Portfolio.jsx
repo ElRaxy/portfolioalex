@@ -1,83 +1,95 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './portfolio.css'
-import IMG1 from '../../assets/portfolio1.png'
-import IMG2 from '../../assets/portfolio2.png'
-import IMG3 from '../../assets/portfolio3.png'
-import IMG4 from '../../assets/portfolio4.png'
-import IMG5 from '../../assets/portfolio5.png'
-import IMG6 from '../../assets/portfolio6.png'
+
+const FILTER_TAGS = {
+  react: ['react'],
+  node: ['node', 'express'],
+  mongodb: ['mongodb'],
+  python: ['python', 'typer'],
+  ai: ['claudeapi'],
+  infra: ['ldap', 'bind9', 'ubuntu']
+}
+
+const normalizeTag = (tag) => tag.toLocaleLowerCase().replace(/\s+/g, '')
 
 function Portfolio() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const [activeFilter, setActiveFilter] = useState('all')
+  const filters = t('portfolio.filters', { returnObjects: true })
+  const projects = t('portfolio.projects', { returnObjects: true })
 
-  const data = [
-    {
-      id: 0,
-      image: IMG1,
-      title: t('portfolio.projects.0.title'),
-      github: null,
-      demo: 'https://strev.app'
-    },
-    {
-      id: 1,
-      image: IMG2,
-      title: t('portfolio.projects.1.title'),
-      github: 'https://github.com/ElRaxy/atalaya-cli',
-      demo: 'https://github.com/ElRaxy/atalaya-cli'
-    },
-    {
-      id: 2,
-      image: IMG3,
-      title: t('portfolio.projects.2.title'),
-      github: 'https://github.com/ElRaxy/AdminDashBoard',
-      demo: 'https://admin-dash-board-alex.vercel.app/'
-    },
-    {
-      id: 3,
-      image: IMG4,
-      title: t('portfolio.projects.3.title'),
-      github: 'https://github.com/ElRaxy/E-comers',
-      demo: 'https://componetsstore.vercel.app/'
-    },
-    {
-      id: 4,
-      image: IMG5,
-      title: t('portfolio.projects.4.title'),
-      github: 'https://github.com/ElRaxy/Battleship_Python',
-      demo: 'https://github.com/ElRaxy/Battleship_Python'
-    },
-    {
-      id: 5,
-      image: IMG6,
-      title: t('portfolio.projects.5.title'),
-      github: 'https://github.com/ElRaxy/Pong_JS_Alex_Mico',
-      demo: 'https://ponggamealexm.vercel.app/'
-    }
-  ]
+  const visibleProjects = activeFilter === 'all'
+    ? projects
+    : projects.filter((project) => project.tags.some((tag) => (
+      FILTER_TAGS[activeFilter].includes(normalizeTag(tag))
+    )))
 
   return (
-    <section id="portfolio">
-      <h5>{t('portfolio.subtitle')}</h5>
-      <h2>{t('portfolio.title')}</h2>
+    <section id="portfolio" className="portfolio" aria-labelledby="portfolio-title">
+      <div className="container">
+        <header className="portfolio__heading">
+          <h2 id="portfolio-title">{t('portfolio.title')}</h2>
+          <p>{t('portfolio.subtitle')}</p>
+        </header>
 
-      <div className="container portfolio__container">
-        {data.map(({ id, image, title, github, demo }) => {
-          return (
-            <article key={id} className="portfolio__item">
-              <div className="portfolio__item-image">
-                <img src={image} alt={title} />
-              </div>
-              <h3>{title}</h3>
-              <div className="portfolio__item-cta">
-                {github && (
-                  <a href={github} className="btn" target="_blank" rel="noreferrer">{t(`portfolio.projects.${id}.github`)}</a>
-                )}
-                <a href={demo} className="btn btn-primary" target="_blank" rel="noreferrer">{t(`portfolio.projects.${id}.demo`)}</a>
-              </div>
-            </article>
-          )
-        })}
+        <div className="portfolio__filters">
+          {Object.entries(filters).map(([filterKey]) => (
+            <button
+              key={filterKey}
+              className="portfolio__filter"
+              type="button"
+              aria-pressed={activeFilter === filterKey}
+              onClick={() => setActiveFilter(filterKey)}
+            >
+              {t(`portfolio.filters.${filterKey}`)}
+            </button>
+          ))}
+        </div>
+
+        {visibleProjects.length > 0 ? (
+          <div className="portfolio__grid">
+            {visibleProjects.map((project) => {
+              const projectIndex = projects.indexOf(project)
+
+              return (
+                <article className="portfolio__item" key={project.title}>
+                  <h3>{t(`portfolio.projects.${projectIndex}.title`)}</h3>
+                  <p className="portfolio__description">
+                    {t(`portfolio.projects.${projectIndex}.description`)}
+                  </p>
+
+                  <ul className="portfolio__tags">
+                    {project.tags.map((tag, tagIndex) => (
+                      <li className="portfolio__tag" key={tag}>
+                        {t(`portfolio.projects.${projectIndex}.tags.${tagIndex}`)}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <footer className="portfolio__footer">
+                    {project.closed ? (
+                      <p className="portfolio__closed">{t('portfolio.closed_label')}</p>
+                    ) : (
+                      project.links.map((link, linkIndex) => (
+                        <a
+                          key={link.url}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t(`portfolio.projects.${projectIndex}.links.${linkIndex}.label`)}
+                        </a>
+                      ))
+                    )}
+                  </footer>
+                </article>
+              )
+            })}
+          </div>
+        ) : (
+          <p className="portfolio__empty">{t('portfolio.subtitle')}</p>
+        )}
       </div>
     </section>
   )

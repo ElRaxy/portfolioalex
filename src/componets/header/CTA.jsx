@@ -1,24 +1,18 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import CV from '../../assets/cv.pdf'
-import { Link } from 'react-scroll'
 
-function CTA() {
-  const { t } = useTranslation();
+const CTA = () => {
+  const { t } = useTranslation()
 
   return (
-    <div className="cta">
-      <a href={CV} download className="btn">{t('header.download_cv')}</a>
-      <Link
-        to="contact"
-        spy={true}
-        smooth={true}
-        offset={-80}
-        duration={500}
-        className="btn btn-primary"
-      >
-        {t('header.cta')}
-      </Link>
+    <div className="hero__actions">
+      <a href="#portfolio" className="hero__button hero__button--projects">
+        {t('nav.portfolio')}
+      </a>
+      <a href={CV} download className="hero__button">
+        {t('header.download_cv')}
+      </a>
     </div>
   )
 }

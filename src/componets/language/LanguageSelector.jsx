@@ -4,6 +4,11 @@ import './language.css';
 
 const LanguageSelector = () => {
   const { i18n } = useTranslation();
+  const currentLanguage = (i18n.resolvedLanguage || i18n.language || 'es').split('-')[0];
+  const nextLanguage = currentLanguage === 'es' ? 'en' : 'es';
+  const changeLabel = currentLanguage === 'es'
+    ? 'Cambiar idioma a inglés'
+    : 'Switch language to Spanish';
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -12,19 +17,15 @@ const LanguageSelector = () => {
   return (
     <div className="language-selector">
       <button
-        className={`lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
-        onClick={() => changeLanguage('en')}
+        className="lang-btn"
+        type="button"
+        onClick={() => changeLanguage(nextLanguage)}
+        aria-label={changeLabel}
       >
-        EN
-      </button>
-      <button
-        className={`lang-btn ${i18n.language === 'es' ? 'active' : ''}`}
-        onClick={() => changeLanguage('es')}
-      >
-        ES
+        {nextLanguage.toUpperCase()}
       </button>
     </div>
   );
 };
 
-export default LanguageSelector; 
+export default LanguageSelector;

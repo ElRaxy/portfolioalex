@@ -2,15 +2,15 @@
   "nav": {
     "home": "Inicio",
     "about": "Sobre Mí",
-    "experience": "Stack",
-    "services": "CV",
+    "stack": "Stack",
     "portfolio": "Proyectos",
     "contact": "Contacto"
   },
   "header": {
-    "greeting": "Hola, soy",
+    "greeting": "",
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · IA con Claude",
+    "tagline": "Mantengo cerca de mil sitios en pie y construyo mis propias herramientas.",
     "location": "Alicante, Villena · Remoto",
     "cta": "Hablemos",
     "download_cv": "Descargar CV"
@@ -18,103 +18,125 @@
   "about": {
     "title": "Sobre Mí",
     "subtitle": "Conóceme",
-    "description": "Estudiante de DAW con base sólida en sistemas (SMR) y enfoque Full Stack MERN. Integro IA en mi flujo de desarrollo diario con Claude Code, tanto para construir como para orquestar agentes dentro de mis propios proyectos. Mantengo Strev (SaaS fitness en producción) y Atalaya (CLI Python IA para agregación de ofertas dev). Linux nativo, backend first, adaptable.",
-    "experience": "Trayectoria",
-    "clients": "Clientes",
-    "projects": "Proyectos",
-    "years_approx": "SMR (2022-2024) · DAW (2024-2026)"
+    "p1": "Soy desarrollador full stack. Trabajo en Anuubis Solutions, donde mantengo en pie una flota de cerca de mil sitios repartidos en ocho servidores: deploys, migraciones entre hostings, auditorías e incidencias. Casi todo scriptado, porque a ese volumen el trabajo manual es lo que tira sitios abajo.",
+    "p2": "Fuera de eso construyo mis propias herramientas, casi siempre en Python y Node, y uso Claude Code a diario como parte del flujo de desarrollo.",
+    "timeline": {
+      "full_stack": "Desarrollador Full Stack, Anuubis Solutions, 2026 a la actualidad",
+      "it_support": "Técnico de Soporte IT (prácticas FCT), Impulso Sistemas, 2024",
+      "daw": "Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós, 2024 a 2026",
+      "smr": "Ciclo Medio en Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós, 2022 a 2024"
+    },
+    "languages": "Castellano y valenciano nativos, inglés intermedio"
   },
-  "experience": {
-    "title": "Stack Tecnológico",
-    "subtitle": "Herramientas y conocimientos",
-    "frontend": "Frontend",
-    "backend": "Backend · IA · DevOps",
-    "experienced": "Experto",
-    "intermediate": "Intermedio",
-    "basic": "Básico",
-    "strengths": {
-      "title": "Mis Fortalezas",
-      "logic": "Lógica fuerte",
-      "teamwork": "Coordinación de equipos",
-      "detail": "Atención al detalle",
-      "pressure": "Trabajo bajo presión",
-      "challenges": "Entusiasmo por los retos"
+  "stack": {
+    "frontend": {
+      "label": "Frontend",
+      "items": "React (Hooks, Router, Axios), JavaScript, HTML/CSS, i18next"
     },
-    "differentiator": {
-      "title": "Lo que me Diferencia",
-      "perfectionist": "Mentalidad perfeccionista",
-      "quality": "Compromiso con la calidad",
-      "real_projects": "Proyectos reales en producción",
-      "professional": "Flujo de dev con IA (Claude)"
-    }
-  },
-  "services": {
-    "title": "Resumen de CV",
-    "subtitle": "Formación, idiomas y proyectos",
-    "education": {
-      "title": "Formación",
-      "description": "Formación técnica en sistemas y desarrollo web.",
-      "details": [
-        "2024 - 2026: Grado Superior en Desarrollo de Aplicaciones Web (DAW), IES Hermanos Amorós.",
-        "2022 - 2024: Ciclo Medio de Sistemas Microinformáticos y Redes (SMR), IES Hermanos Amorós.",
-        "Base sólida en Linux, despliegue y redes.",
-        "Enfoque práctico en backend, APIs REST y persistencia de datos."
-      ]
+    "backend": {
+      "label": "Backend",
+      "items": "Node.js, Express, MongoDB (Mongoose), MySQL, REST APIs"
     },
-    "languages": {
-      "title": "Idiomas",
-      "description": "Competencias lingüísticas para equipos técnicos.",
-      "details": [
-        "Castellano y valenciano: nativo.",
-        "Inglés: nivel medio (writing, reading, speaking).",
-        "Documentación técnica en inglés sin fricción.",
-        "Comunicación clara en equipos remotos."
-      ]
+    "ai": {
+      "label": "IA / Agentes",
+      "items": "Anthropic SDK, Claude API, integración de LLMs, flujo dev con Claude Code"
     },
-    "projects": {
-      "title": "Proyectos Destacados",
-      "description": "Proyectos propios alineados con el CV.",
-      "details": [
-        "Strev — SaaS fitness MERN en producción con integración de Claude para personalización de rutinas.",
-        "Atalaya — CLI Python con Anthropic SDK para agregar y puntuar ofertas dev remoto.",
-        "Admin Dashboard y Portfolio — paneles y web personal en React.",
-        "Interfaces limpias orientadas a uso real."
-      ]
+    "python": {
+      "label": "Python",
+      "items": "Typer, httpx, pytest, mypy, scraping"
+    },
+    "devops": {
+      "label": "DevOps / Sistemas",
+      "items": "Git, GitHub Actions, Bash, SSH, Ubuntu Server, Nginx, Apache2, Plesk, DNS"
+    },
+    "scale": {
+      "label": "Web a escala",
+      "items": "WordPress, WP-CLI, migraciones entre hostings, Lighthouse, Core Web Vitals"
     }
   },
   "portfolio": {
     "title": "Mis Proyectos",
     "subtitle": "Selección reciente",
+    "closed_label": "Código cerrado, demo bajo petición",
+    "filters": {
+      "all": "Todos",
+      "react": "React",
+      "node": "Node",
+      "mongodb": "MongoDB",
+      "python": "Python",
+      "ai": "IA / Claude",
+      "infra": "Infraestructura"
+    },
     "projects": [
       {
-        "title": "Strev — SaaS fitness MERN · IA",
-        "github": "Código cerrado",
-        "demo": "Ver en vivo"
+        "title": "SaveMyMoneyNow",
+        "description": "Convierte extractos bancarios en un panel de gastos. Un asistente se adapta al formato de cada banco, detecta la cabecera y mapea las columnas; después, unas reglas categorizan los movimientos y evitan duplicados.",
+        "tags": ["React", "Node", "Express", "MongoDB"],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
+          }
+        ]
       },
       {
-        "title": "Atalaya — CLI Python IA · job aggregator",
-        "github": "GitHub",
-        "demo": "Ver repo"
+        "title": "Atalaya",
+        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, puntúa el match contra tu perfil y redacta la carta con Claude. 147 tests y mypy strict.",
+        "tags": ["Python", "Typer", "Claude API", "SQLite"],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/atalaya-cli"
+          }
+        ]
       },
       {
-        "title": "Admin Dashboard — React",
-        "github": "GitHub",
-        "demo": "Ver demo"
+        "title": "Strev",
+        "description": "SaaS fitness MERN en beta privada: auth con cookies, tracking de entrenamientos y rutinas personalizadas con Claude.",
+        "tags": ["React", "Node", "MongoDB", "Claude API"],
+        "links": [],
+        "closed": true
       },
       {
-        "title": "Components Store — E-Commerce",
-        "github": "GitHub",
-        "demo": "Ver demo"
+        "title": "Este portfolio",
+        "description": "Bilingüe con i18next, tema claro y oscuro, y formulario de contacto por EmailJS.",
+        "tags": ["React", "i18next", "CSS"],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/portfolioalex"
+          },
+          {
+            "label": "En vivo",
+            "url": "https://portfolioalex-mico.vercel.app"
+          }
+        ]
       },
       {
-        "title": "Battleship — Python",
-        "github": "GitHub",
-        "demo": "Ver repo"
+        "title": "Admin Dashboard",
+        "description": "Panel con gráficas ApexCharts y ECharts, tema claro y oscuro, y datos servidos por una API mock.",
+        "tags": ["React", "ApexCharts", "Bootstrap"],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/AdminDashBoard"
+          },
+          {
+            "label": "En vivo",
+            "url": "https://admin-dash-board-alex.vercel.app"
+          }
+        ]
       },
       {
-        "title": "Pong — JavaScript",
-        "github": "GitHub",
-        "demo": "Ver demo"
+        "title": "LDAP-generate",
+        "description": "Generador de jerarquías LDAP, con la guía completa de montar DNS con Bind9 y LDAP en Ubuntu Server.",
+        "tags": ["LDAP", "Bind9", "Ubuntu"],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/LDAP-generate"
+          }
+        ]
       }
     ]
   },
