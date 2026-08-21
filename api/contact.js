@@ -89,7 +89,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: process.env.CONTACT_FROM || 'Portfolio <onboarding@resend.dev>',
+        from: process.env.CONTACT_FROM || 'Portfolio Alex <portfolio@strev.app>',
         to: contactTo,
         reply_to: trimmedEmail,
         subject: `Portfolio: mensaje de ${trimmedName}`,

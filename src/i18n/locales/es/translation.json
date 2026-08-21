@@ -83,7 +83,7 @@
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Convierte extractos bancarios en un panel de gastos. Un asistente se adapta al formato de cada banco, detecta la cabecera y mapea las columnas; después, unas reglas categorizan los movimientos y evitan duplicados.",
+        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 66 casos de test.",
         "tags": [
           "React",
           "Node",
@@ -99,7 +99,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, puntúa el match contra tu perfil y redacta la carta con Claude. 147 tests y mypy strict.",
+        "description": "CLI en Python que agrega ofertas dev remoto de ocho job boards, las puntúa contra tu perfil y redacta la carta con Claude. 147 tests en verde y mypy en modo estricto.",
         "featured": true,
         "tags": [
           "Python",
@@ -116,7 +116,7 @@
       },
       {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: auth con cookies, tracking de entrenamientos y rutinas personalizadas con Claude.",
+        "description": "SaaS fitness MERN en beta privada: 115 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y rutinas generadas con Claude. 133 ficheros de test.",
         "tags": [
           "React",
           "Node",

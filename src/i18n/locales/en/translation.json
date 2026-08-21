@@ -83,7 +83,7 @@
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Turns bank statements into a spending dashboard. An assistant handles each bank's format by detecting headers and mapping columns, while rules categorize transactions and catch duplicates.",
+        "description": "Turns bank statements, which every bank exports its own way, into a spending dashboard. An assistant detects the header row and maps the columns, then rules categorise movements and drop duplicates. 21 endpoints and 66 test cases.",
         "tags": [
           "React",
           "Node",
@@ -99,7 +99,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "A Python CLI that aggregates remote developer roles from eight job boards, scores each match against your profile, and drafts the cover letter with Claude. It has 147 tests and uses mypy in strict mode.",
+        "description": "Python CLI that pulls remote dev listings from eight job boards, scores them against your profile and drafts the cover letter with Claude. 147 passing tests and mypy in strict mode.",
         "featured": true,
         "tags": [
           "Python",
@@ -116,7 +116,7 @@
       },
       {
         "title": "Strev",
-        "description": "A MERN fitness SaaS in private beta, with cookie-based authentication, workout tracking, and personalized routines powered by Claude.",
+        "description": "Private beta MERN fitness SaaS: 115 endpoints across 26 modules, with cookie auth, payments, gamification and routines generated with Claude. 133 test files.",
         "tags": [
           "React",
           "Node",
