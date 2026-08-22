@@ -11,20 +11,23 @@ const PROJECT_IMAGES = {
   strev: '/projects/strev.webp',
 }
 
+// Copia abreviada de la salida real de `bhound --help`. Las descripciones son
+// las del CLI, recortadas para que quepan en la tarjeta; el CLI hablaba
+// castellano hasta el 2026-08-22 y esto se veia en ingles a medias.
 const ATALAYA_HELP_OUTPUT = `$ bhound --help
 
  Usage: bhound [OPTIONS] COMMAND [ARGS]...
 
- Atalaya - tu vigia de ofertas dev remoto.
+ Atalaya - your lookout for remote dev jobs.
 
  Commands:
-   search        Scrapea y puntua ofertas
-   list          Lista ofertas por score
-   letter        Genera carta tailored
-   cv            Genera CV tailored
-   apply-batch   Aplica en batch al top N
-   ingest-email  Ingesta alertas de email
-   export        Exporta a CSV o JSON`
+   search        Scrape a job board, score and store
+   list          List stored offers by score
+   letter        Draft a tailored cover letter
+   cv            Draft a tailored CV variant
+   apply-batch   Apply to the top N offers
+   ingest-email  Ingest offers from email alerts
+   export        Export to CSV or JSON`
 
 const ATALAYA_HELP_LINES = ATALAYA_HELP_OUTPUT.split('\n')
 const ATALAYA_METRICS = [
