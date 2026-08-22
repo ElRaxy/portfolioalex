@@ -128,25 +128,6 @@ const injectMarkup = (html, markup) => {
   return html.replace(rootPattern, `<div id="root">${markup}</div>`)
 }
 
-// El CSS es render-blocking y su peticion cuesta un viaje completo de red: en
-// movil con Slow 4G, el primer paint no llegaba hasta los ~690 ms y casi todo
-// era esperar a esta hoja. Son 34 kB sin comprimir (~7 kB con brotli) y no
-// tiene un solo url(), asi que viaja entera dentro del HTML. Se pierde el
-// cacheo entre paginas, que en un sitio de 10 URLs vale menos que el viaje.
-const inlineStylesheet = async (html) => {
-  const link = html.match(
-    /<link\b[^>]*\brel="stylesheet"[^>]*\bhref="(\/static\/css\/[^"]+)"[^>]*>/i,
-  ) || html.match(
-    /<link\b[^>]*\bhref="(\/static\/css\/[^"]+)"[^>]*\brel="stylesheet"[^>]*>/i,
-  )
-  if (!link) throw new Error('Could not find the stylesheet link in build/index.html')
-
-  const css = await readFile(path.join(buildDirectory, link[1].replace(/^\//, '')), 'utf8')
-  if (css.includes('</style')) throw new Error('The stylesheet cannot be inlined verbatim')
-
-  return html.replace(link[0], `<style>${css}</style>`)
-}
-
 const assertAbsoluteAssetPaths = (html, language) => {
   const resourceUrls = [...html.matchAll(
     /<(?:link|script)\b[^>]*(?:href|src)="([^"]+)"[^>]*>/gi,
@@ -388,10 +369,10 @@ try {
 
   for (const page of pages) {
     const markup = renderToString(createPrerenderApp(page.language, page.pathname))
-    const html = await inlineStylesheet(injectMarkup(
+    const html = injectMarkup(
       localizeHead(baseHtml, page, translations[page.language], baseMetadata),
       markup,
-    ))
+    )
     const label = `${page.language} ${page.pathname}`
 
     assertAbsoluteAssetPaths(html, label)
