@@ -309,11 +309,11 @@
         ],
         "results": [
           {
-            "value": "12",
+            "value": "13",
             "label": "commands"
           },
           {
-            "value": "156",
+            "value": "162",
             "label": "tests"
           },
           {

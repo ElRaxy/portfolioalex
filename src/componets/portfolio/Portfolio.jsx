@@ -32,8 +32,8 @@ const ATALAYA_HELP_OUTPUT = `$ bhound --help
 const ATALAYA_HELP_LINES = ATALAYA_HELP_OUTPUT.split('\n')
 const ATALAYA_METRICS = [
   { key: 'jobBoards', value: 7, labelKey: 'job_boards' },
-  { key: 'tests', value: 156, labelKey: 'passing_tests' },
-  { key: 'commands', value: 12, labelKey: 'commands' },
+  { key: 'tests', value: 162, labelKey: 'passing_tests' },
+  { key: 'commands', value: 13, labelKey: 'commands' },
 ]
 
 const renderTerminalLine = (line) => {
