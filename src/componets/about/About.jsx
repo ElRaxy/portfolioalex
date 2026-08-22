@@ -8,6 +8,7 @@ import './about.css'
 // entrada vive ahora en el CSS, que llega antes que el bundle.
 const About = () => {
   const { t } = useTranslation()
+  const facts = t('about.facts', { returnObjects: true }) || []
 
   return (
     <section id="about" className="about" aria-labelledby="about-title">
@@ -18,7 +19,17 @@ const About = () => {
 
         <p>{t('about.p2')}</p>
         <p>{t('about.p3')}</p>
-        <p className="about__languages">{t('about.languages')}</p>
+
+        {/* Los cuatro datos que se preguntan primero, como lista de
+            definiciones: un extractor se los lleva emparejados. */}
+        <dl className="about__facts">
+          {facts.map((fact) => (
+            <div className="about__fact" key={fact.term}>
+              <dt>{fact.term}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )

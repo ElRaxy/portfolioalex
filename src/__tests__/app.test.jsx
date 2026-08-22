@@ -222,6 +222,49 @@ describe('las anclas de una pagina de caso apuntan a la portada', () => {
   })
 })
 
+// Hallazgo 7 de la auditoria del 22/08: ningun encabezado se entendia fuera de
+// su pagina y no habia un bloque corto que respondiera "que es esto". Un
+// extractor que se lleva una seccion suelta necesita las dos cosas.
+describe('cada seccion se entiende fuera de su pagina', () => {
+  it('los encabezados de un caso nombran el proyecto', () => {
+    render(<App pathname="/proyectos/atalaya/" />)
+
+    const titulos = screen.getAllByRole('heading', { level: 2 })
+      .map((titulo) => titulo.textContent)
+    const delCaso = titulos.filter((texto) => !/Contáctame/i.test(texto))
+
+    expect(delCaso.length).toBeGreaterThanOrEqual(4)
+    delCaso.forEach((texto) => expect(texto).toMatch(/Atalaya/))
+  })
+
+  it('el caso abre con un bloque que dice que es el proyecto', () => {
+    const { container } = render(<App pathname="/proyectos/atalaya/" />)
+
+    const resumen = container.querySelector('.case__summary')
+    expect(resumen).not.toBeNull()
+    expect(resumen.textContent).toMatch(/^Atalaya es/)
+    expect(resumen.textContent.split(/\s+/).length).toBeLessThanOrEqual(60)
+  })
+
+  it('la portada sirve los datos de contacto como lista de definiciones', () => {
+    const { container } = render(<App pathname="/" />)
+
+    const terminos = [...container.querySelectorAll('.about__facts dt')]
+      .map((termino) => termino.textContent)
+    const valores = [...container.querySelectorAll('.about__facts dd')]
+
+    expect(terminos).toEqual(['Dónde', 'Disponible', 'Stack', 'Idiomas'])
+    expect(valores).toHaveLength(4)
+    expect(valores.every((valor) => valor.textContent.trim().length > 0)).toBe(true)
+  })
+
+  it('el primer parrafo de Sobre mi se nombra a si mismo', () => {
+    const { container } = render(<App pathname="/" />)
+
+    expect(container.querySelector('.about__lead').textContent).toMatch(/Alex Micó Robles/)
+  })
+})
+
 // Las paginas de caso son URLs propias y prerenderizadas: lo que se vigila aqui
 // es que la ruta elija la pagina correcta y que el contenido llegue entero.
 describe('paginas de caso de estudio', () => {

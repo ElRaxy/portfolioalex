@@ -8,6 +8,11 @@ const CaseStudy = ({ slug }) => {
 
   if (typeof title !== 'string' || title === titleKey) return null
 
+  // El nombre corto es el que entra en los encabezados: el titulo largo de
+  // WordPress ("Automatizacion de WordPress en produccion") no cabe dentro de
+  // una frase. Los encabezados nombran el proyecto para que cada seccion se
+  // entienda sola cuando alguien (o un LLM) la extrae del resto de la pagina.
+  const project = t(`case_study.cases.${slug}.short`)
   const tagline = t(`case_study.cases.${slug}.tagline`)
   const summary = t(`case_study.cases.${slug}.summary`)
   const problema = t(`case_study.cases.${slug}.problem`, { returnObjects: true }) || []
@@ -23,16 +28,20 @@ const CaseStudy = ({ slug }) => {
       <header className="case__header">
         <h1>{title}</h1>
         <p className="case__tagline">{tagline}</p>
-        <p className="case__summary">{summary}</p>
       </header>
 
+      <section className="case__block case__block--summary">
+        <h2>{t('case_study.summary_label', { project })}</h2>
+        <p className="case__summary">{summary}</p>
+      </section>
+
       <section className="case__block">
-        <h2>{t('case_study.problem_label')}</h2>
+        <h2>{t('case_study.problem_label', { project })}</h2>
         {problema.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
 
       <section className="case__block">
-        <h2>{t('case_study.decisions_label')}</h2>
+        <h2>{t('case_study.decisions_label', { project })}</h2>
         <ol className="case__decisions">
           {decisions.map((decision, index) => (
             <li className="case__decision" key={`${decision.title}-${index}`}>
@@ -44,7 +53,7 @@ const CaseStudy = ({ slug }) => {
       </section>
 
       <section className="case__block">
-        <h2>{t('case_study.results_label')}</h2>
+        <h2>{t('case_study.results_label', { project })}</h2>
         <ul className="case__results">
           {results.map((result, index) => (
             <li

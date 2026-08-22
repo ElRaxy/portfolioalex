@@ -17,10 +17,35 @@
     font-size: var(--fs-md);
 }
 
-.about__languages {
-    margin-top: var(--space-3);
-    color: var(--color-text-muted);
+.about__facts {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
     font-size: var(--fs-sm);
+}
+
+.about__fact {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+}
+
+.about__fact dt {
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.about__fact dd {
+    margin: 0;
+    color: var(--color-text-primary);
+}
+
+@media screen and (max-width: 600px) {
+    .about__fact {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
 }
 
 /* ---- Entrada del bloque ----

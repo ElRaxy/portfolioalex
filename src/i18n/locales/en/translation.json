@@ -21,9 +21,27 @@
   "about": {
     "title": "About me",
     "p2": "Atalaya pulls dev job listings from eight boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns bank statements into a spending dashboard: it detects the header row and maps the columns without needing a parser per bank.",
-    "languages": "Native Spanish and Valencian, intermediate English",
     "p3": "At Anuubis Solutions I keep web infrastructure running in production: deploys, migrations between providers, performance audits and incidents. Nearly all of it scripted, because doing it by hand is where things break.",
-    "lead": "I build applications with React, Node and MongoDB, and automate the repetitive parts with Python."
+    "lead": "I'm Alex Micó Robles: I build applications with React, Node and MongoDB, and automate the repetitive parts with Python.",
+    "facts_title": "In short",
+    "facts": [
+      {
+        "term": "Where",
+        "value": "Villena, Alicante, Spain. Working remotely."
+      },
+      {
+        "term": "Available",
+        "value": "Open to projects in Spain and the EU"
+      },
+      {
+        "term": "Stack",
+        "value": "React, Node, Express, MongoDB, Python, Bash"
+      },
+      {
+        "term": "Languages",
+        "value": "Native Spanish and Valencian, intermediate English"
+      }
+    ]
   },
   "experience": {
     "title": "Experience",
@@ -255,14 +273,14 @@
   "case_study": {
     "back": "Back to projects",
     "index_title": "Case study",
-    "problem_label": "The problem",
-    "decisions_label": "How it works",
-    "results_label": "Where the bar sits",
+    "problem_label": "The problem {{project}} solves",
+    "decisions_label": "How {{project}} works",
+    "results_label": "Where {{project}} sets the bar",
     "cases": {
       "atalaya": {
         "title": "Atalaya",
         "tagline": "Eight job boards, one scored list",
-        "summary": "A Python CLI that pulls remote developer roles from eight job boards, scores them against your profile and drafts the cover letter.",
+        "summary": "Atalaya is a Python CLI that pulls remote developer roles from eight job boards, scores them against your profile and drafts the cover letter.",
         "problem": [
           "Looking for remote work means going through the same boards every day. No two publish alike: one serves JSON-LD, another server-rendered HTML, another an RSS feed, another its own API. The good roles show up on several at once, so the list fills with repeats.",
           "It adds up to half an hour of mechanical work a day that never tells a good fit from a bad one."
@@ -303,12 +321,13 @@
             "label": "boards running"
           }
         ],
-        "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite."
+        "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite.",
+        "short": "Atalaya"
       },
       "savemymoneynow": {
         "title": "SaveMyMoneyNow",
         "tagline": "A statement from any bank, with no parser per bank",
-        "summary": "Turns the statements every bank exports its own way into a spending dashboard, by finding the header row instead of knowing the format in advance.",
+        "summary": "SaveMyMoneyNow turns the statements every bank exports its own way into a spending dashboard, by finding the header row instead of knowing the format in advance.",
         "problem": [
           "A bank statement almost never starts at the header. Above it sit rows for the account holder, the IBAN and the period; the header turns up on the fourth row, or the sixth. Dates come in three formats and decimals use a comma or a dot depending on the bank.",
           "The easy way out is a reader per bank. That's four banks today, and any of them can change its export tomorrow."
@@ -349,12 +368,13 @@
             "label": "wizard steps"
           }
         ],
-        "note": "React, Node, Express and MongoDB. Tests with Vitest and in-memory Mongo."
+        "note": "React, Node, Express and MongoDB. Tests with Vitest and in-memory Mongo.",
+        "short": "SaveMyMoneyNow"
       },
       "strev": {
         "title": "Strev",
         "tagline": "Encrypted health data and video that never blocks the request",
-        "summary": "A SaaS for personal trainers, in private beta. What shapes the design is that it stores health data, and that analysing technique on video takes far too long to happen inside a request.",
+        "summary": "Strev is a SaaS for personal trainers, in private beta. What shapes the design is that it stores health data, and that analysing technique on video takes far too long to happen inside a request.",
         "problem": [
           "A client's intake form is health data: a special category under GDPR. Encrypting the disk is not enough when what needs protecting is one field inside a document read every day.",
           "And analysing the technique in a video takes its time. Doing it inside the HTTP request means a hanging request and a user watching a spinner."
@@ -395,12 +415,13 @@
             "label": "test files"
           }
         ],
-        "note": "Node and Express 5, MongoDB, Redis with BullMQ, Stripe, R2. React frontend on Vite and Tailwind. Closed source."
+        "note": "Node and Express 5, MongoDB, Redis with BullMQ, Stripe, R2. React frontend on Vite and Tailwind. Closed source.",
+        "short": "Strev"
       },
       "wordpress": {
         "title": "WordPress automation in production",
         "tagline": "Forty-one phases you can resume without fear",
-        "summary": "An internal Python and Bash tool to provision, audit and migrate client WordPress sites between providers, without touching six control panels by hand.",
+        "summary": "The WordPress automation is an internal Python and Bash tool to provision, audit and migrate client WordPress sites between providers, without touching six control panels by hand.",
         "problem": [
           "Setting up or migrating a client site runs through the source host's panel, the destination one, two registrars for DNS, Search Console and Bing. Each with its own session and its own way of failing.",
           "The expensive part is not the number of steps: it is that the process cannot be resumed. Cut it in half and running it again from the top can reimport a database over a site that is already live."
@@ -441,8 +462,10 @@
             "label": "sites in one change"
           }
         ],
-        "note": "Closed source: it is an internal tool and it operates client sites. Python, Bash, WP-CLI, Nginx and DNS."
+        "note": "Closed source: it is an internal tool and it operates client sites. Python, Bash, WP-CLI, Nginx and DNS.",
+        "short": "the WordPress automation"
       }
-    }
+    },
+    "summary_label": "What {{project}} is"
   }
 }
