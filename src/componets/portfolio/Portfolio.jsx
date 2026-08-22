@@ -6,7 +6,7 @@ import './portfolio.css'
 
 const PROJECT_IMAGES = {
   wordpress: '/projects/wp-flow.svg',
-  savemymoneynow: '/projects/savemymoneynow.webp',
+  savemymoneynow: '/projects/savemymoneynow.svg',
   strev: '/projects/strev.webp',
 }
 
@@ -254,6 +254,9 @@ const FeaturedMetrics = () => {
           >
             {metric.value}
           </span>
+          {/* El espacio no es decorativo: sin el, un extractor de texto lee
+              "8job boards". Los dos span son de bloque, no se ve. */}
+          {' '}
           <span className="portfolio__metric-label">
             {t(`portfolio.metrics.${metric.labelKey}`)}
           </span>

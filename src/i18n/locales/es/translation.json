@@ -158,11 +158,11 @@
         "closed": true,
         "internal": true,
         "image": "wordpress",
-        "image_alt": "Diagrama: un solo comando audita todos los sitios WordPress en producción"
+        "image_alt": "Diagrama: un comando recorre toda la flota — inventario, comprobaciones e informe"
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas sin necesitar un parser por banco, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 66 casos de test.",
+        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas sin necesitar un parser por banco, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 113 casos de test.",
         "tags": [
           "React",
           "Node",
@@ -176,7 +176,7 @@
           }
         ],
         "image": "savemymoneynow",
-        "image_alt": "SaveMyMoneyNow detectando por su cuenta las columnas de un extracto bancario"
+        "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe"
       },
       {
         "title": "Atalaya",
@@ -197,12 +197,12 @@
       },
       {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: 115 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y rutinas generadas con un LLM. 133 ficheros de test.",
+        "description": "SaaS fitness MERN en beta privada: 117 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 150 ficheros de test.",
         "tags": [
           "React",
           "Node",
           "MongoDB",
-          "Claude API"
+          "Gemini API"
         ],
         "links": [
           {
@@ -243,5 +243,8 @@
     "cta": "Escríbeme",
     "built": "© 2026 Alex Micó Robles. Construido con React, i18next y CSS, desplegado en Vercel.",
     "source": "Código de esta web"
+  },
+  "meta": {
+    "description": "Alex Micó Robles, desarrollador full stack. React, Node y MongoDB para producto; Python y Bash para automatizar. Autor de Atalaya y SaveMyMoneyNow."
   }
 }

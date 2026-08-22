@@ -46,57 +46,143 @@
     <script type="application/ld+json">
 {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Alex Micó Robles",
-      "url": "https://portfolioalex-mico.vercel.app/",
-      "image": "https://portfolioalex-mico.vercel.app/og-image.png",
-      "jobTitle": "Full Stack Developer",
-      "email": "mailto:alexmico2006@gmail.com",
-      "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Villena",
-            "addressRegion": "Alicante",
-            "addressCountry": "ES"
-      },
-      "sameAs": [
-            "https://github.com/ElRaxy"
-      ],
-      "knowsLanguage": [
+      "@graph": [
             {
-                  "@type": "Language",
-                  "name": "Spanish"
+                  "@type": "Person",
+                  "@id": "https://portfolioalex-mico.vercel.app/#alex",
+                  "name": "Alex Micó Robles",
+                  "url": "https://portfolioalex-mico.vercel.app/",
+                  "image": "https://portfolioalex-mico.vercel.app/og-image.png",
+                  "description": "Desarrollador full stack. React, Node y MongoDB para producto; Python y Bash para automatizar infraestructura web en producción.",
+                  "jobTitle": "Full Stack Developer",
+                  "email": "mailto:alexmico2006@gmail.com",
+                  "telephone": "+34693912460",
+                  "worksFor": {
+                        "@type": "Organization",
+                        "name": "Anuubis Solutions",
+                        "url": "https://anuubis.com"
+                  },
+                  "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "Villena",
+                        "addressRegion": "Alicante",
+                        "addressCountry": "ES"
+                  },
+                  "homeLocation": {
+                        "@type": "Place",
+                        "name": "Villena, Alicante, España"
+                  },
+                  "sameAs": [
+                        "https://github.com/ElRaxy"
+                  ],
+                  "knowsLanguage": [
+                        {
+                              "@type": "Language",
+                              "name": "Spanish"
+                        },
+                        {
+                              "@type": "Language",
+                              "name": "Valencian"
+                        },
+                        {
+                              "@type": "Language",
+                              "name": "English"
+                        }
+                  ],
+                  "knowsAbout": [
+                        "React",
+                        "Node.js",
+                        "Express",
+                        "MongoDB",
+                        "JavaScript",
+                        "Python",
+                        "Bash",
+                        "REST APIs",
+                        "Git",
+                        "GitHub Actions",
+                        "Linux",
+                        "Nginx",
+                        "WordPress",
+                        "Core Web Vitals",
+                        "Large Language Models",
+                        "Anthropic API"
+                  ],
+                  "alumniOf": [
+                        {
+                              "@type": "EducationalOrganization",
+                              "name": "IES Hermanos Amorós",
+                              "description": "Grado Superior en Desarrollo de Aplicaciones Web (2024-2026)"
+                        },
+                        {
+                              "@type": "EducationalOrganization",
+                              "name": "IES Hermanos Amorós",
+                              "description": "Ciclo Medio en Sistemas Microinformáticos y Redes (2022-2024)"
+                        }
+                  ]
             },
             {
-                  "@type": "Language",
-                  "name": "Valencian"
+                  "@type": "ProfilePage",
+                  "@id": "https://portfolioalex-mico.vercel.app/#page",
+                  "url": "https://portfolioalex-mico.vercel.app/",
+                  "inLanguage": "es",
+                  "name": "Alex Micó Robles | Full Stack Developer · Automatización e IA",
+                  "mainEntity": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#alex"
+                  },
+                  "isPartOf": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#website"
+                  }
             },
             {
-                  "@type": "Language",
-                  "name": "English"
+                  "@type": "WebSite",
+                  "@id": "https://portfolioalex-mico.vercel.app/#website",
+                  "url": "https://portfolioalex-mico.vercel.app/",
+                  "name": "Alex Micó Robles",
+                  "inLanguage": [
+                        "es",
+                        "en"
+                  ],
+                  "publisher": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#alex"
+                  }
+            },
+            {
+                  "@type": "SoftwareSourceCode",
+                  "@id": "https://portfolioalex-mico.vercel.app/#atalaya",
+                  "name": "Atalaya",
+                  "codeRepository": "https://github.com/ElRaxy/atalaya-cli",
+                  "programmingLanguage": "Python",
+                  "license": "https://opensource.org/licenses/MIT",
+                  "author": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#alex"
+                  }
+            },
+            {
+                  "@type": "SoftwareSourceCode",
+                  "@id": "https://portfolioalex-mico.vercel.app/#savemymoneynow",
+                  "name": "SaveMyMoneyNow",
+                  "codeRepository": "https://github.com/ElRaxy/SaveMyMoneyNow",
+                  "programmingLanguage": [
+                        "JavaScript",
+                        "React",
+                        "Node.js"
+                  ],
+                  "author": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#alex"
+                  }
+            },
+            {
+                  "@type": "WebApplication",
+                  "@id": "https://portfolioalex-mico.vercel.app/#strev",
+                  "name": "Strev",
+                  "url": "https://strev.app",
+                  "applicationCategory": "HealthApplication",
+                  "operatingSystem": "Web",
+                  "author": {
+                        "@id": "https://portfolioalex-mico.vercel.app/#alex"
+                  }
             }
-      ],
-      "knowsAbout": [
-            "React",
-            "Node.js",
-            "Express",
-            "MongoDB",
-            "JavaScript",
-            "Python",
-            "Bash",
-            "REST APIs",
-            "Git",
-            "GitHub Actions",
-            "Linux",
-            "Nginx",
-            "WordPress",
-            "Core Web Vitals",
-            "Large Language Models",
-            "Anthropic API"
-      ],
-      "alumniOf": {
-            "@type": "EducationalOrganization",
-            "name": "IES Hermanos Amorós"
-      }
+      ]
 }
     </script>
 </head>

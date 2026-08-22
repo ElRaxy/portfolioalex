@@ -62,16 +62,26 @@ const setCanonical = (html, url) => replaceTag(
   'the canonical link',
 )
 
-const setStructuredDataUrl = (html, url) => replaceTag(
+// El grafo es unico para los dos idiomas: la Person y los proyectos no cambian.
+// Lo que si es de cada pagina es el nodo ProfilePage, que apunta a su canonical
+// y declara su idioma.
+const setStructuredDataUrl = (html, url, language) => replaceTag(
   html,
   /<script\b[^>]*\btype="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/i,
   (tag) => {
     const jsonText = tag.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '')
     const structuredData = JSON.parse(jsonText)
-    structuredData.url = url
+    const profilePage = structuredData['@graph']?.find((node) => node['@type'] === 'ProfilePage')
+
+    if (!profilePage) throw new Error('The JSON-LD graph has no ProfilePage node')
+
+    profilePage.url = url
+    profilePage['@id'] = `${url}#page`
+    profilePage.inLanguage = language
+
     return `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`
   },
-  'the Person JSON-LD block',
+  'the JSON-LD graph',
 )
 
 const addAlternates = (html) => {
@@ -114,14 +124,37 @@ const assertAbsoluteAssetPaths = (html, language) => {
   }
 }
 
+// Una clave que no existe se interpola como "undefined" y sale publicada sin
+// que nada falle: asi estuvo la meta description inglesa hasta el 2026-08-22.
+// Leer siempre por aqui.
+const requireText = (value, keyPath) => {
+  if (typeof value !== 'string' || !value.trim() || value.includes('undefined')) {
+    throw new Error(`Translation key "${keyPath}" is missing or empty`)
+  }
+  return value
+}
+
+// Segunda red, sobre el HTML ya compuesto: si una interpolacion futura se
+// escapa de requireText, el build cae aqui en vez de publicarse.
+const assertNoUndefinedInHead = (html, language) => {
+  const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? ''
+  const offending = [...head.matchAll(/<(?:title|meta|link)\b[^>]*>/gi)]
+    .map((match) => match[0])
+    .filter((tag) => tag.includes('undefined'))
+
+  if (offending.length) {
+    throw new Error(`"undefined" in the ${language} head: ${offending.join(' ')}`)
+  }
+}
+
 const localizeHead = (baseHtml, language, translation, baseMetadata) => {
   const canonicalUrl = language === 'en' ? `${baseUrl}/en/` : `${baseUrl}/`
   const isEnglish = language === 'en'
   const title = isEnglish
-    ? `${translation.header.name} | ${translation.header.title}`
+    ? `${requireText(translation.header.name, 'header.name')} | ${requireText(translation.header.title, 'header.title')}`
     : baseMetadata.title
   const description = isEnglish
-    ? `${translation.header.tagline} ${translation.about.p1}`
+    ? requireText(translation.meta?.description, 'meta.description')
     : baseMetadata.description
   const socialTitle = isEnglish ? title : baseMetadata.socialTitle
   const socialDescription = isEnglish
@@ -149,7 +182,7 @@ const localizeHead = (baseHtml, language, translation, baseMetadata) => {
   html = setMetaContent(html, 'name', 'twitter:description', socialDescription)
   html = setCanonical(html, canonicalUrl)
   html = addAlternates(html)
-  return setStructuredDataUrl(html, canonicalUrl)
+  return setStructuredDataUrl(html, canonicalUrl, language)
 }
 
 const manifest = JSON.parse(await readFile(
@@ -239,6 +272,8 @@ try {
 
   assertAbsoluteAssetPaths(localizedHtml.es, 'es')
   assertAbsoluteAssetPaths(localizedHtml.en, 'en')
+  assertNoUndefinedInHead(localizedHtml.es, 'es')
+  assertNoUndefinedInHead(localizedHtml.en, 'en')
 
   await mkdir(path.join(buildDirectory, 'en'), { recursive: true })
   await Promise.all([

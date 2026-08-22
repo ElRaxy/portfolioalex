@@ -44,7 +44,13 @@ describe('la web entera', () => {
 
     expect(capturas).toHaveLength(3)
     capturas.forEach((captura) => {
-      expect(captura.getAttribute('alt')).toMatch(/\S{10,}/)
+      // Antes se exigia /\S{10,}/, que en realidad medía la palabra mas
+      // larga del alt: un texto bueno sin ninguna palabra de 10 letras lo
+      // suspendia. Lo que hace util a un alt es que describa, asi que se
+      // mide eso: longitud y numero de palabras.
+      const alt = captura.getAttribute('alt') || ''
+      expect(alt.trim().length).toBeGreaterThanOrEqual(20)
+      expect(alt.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4)
       expect(captura).toHaveAttribute('loading', 'lazy')
       expect(captura).toHaveAttribute('width', '800')
       expect(captura).toHaveAttribute('height', '500')
@@ -90,5 +96,25 @@ describe('la web entera', () => {
     enlaces.forEach((enlace) => {
       expect(enlace.getAttribute('href')).toMatch(/^https?:\/\//)
     })
+  })
+})
+
+// El 2026-08-22 se midio en produccion que con `prefers-reduced-motion: reduce`
+// los 18 envoltorios de Reveal se quedaban a `opacity: 0` para siempre: el
+// prerender escribe el estilo inline y React, al hidratar sin prop `style`, no
+// lo retira. La reparacion vive en el CSS, asi que se vigila desde el CSS: en
+// jsdom no hay cascada real que medir.
+describe('reparacion de reduced-motion', () => {
+  it('el CSS devuelve la visibilidad a lo que el prerender dejo en opacity:0', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const css = fs.readFileSync(path.join(__dirname, '..', 'index.css'), 'utf8')
+
+    const bloques = css.match(/@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\n\}/g) || []
+    const reparacion = bloques.find((bloque) => (
+      bloque.includes('[style*="opacity:0"]') && bloque.includes('opacity: 1 !important')
+    ))
+
+    expect(reparacion).toBeDefined()
   })
 })

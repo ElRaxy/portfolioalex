@@ -102,12 +102,12 @@ function Contact() {
 
             <label className="contact__field">
               <span>{t('contact.name')}</span>
-              <input type="text" name="name" minLength={2} maxLength={100} required />
+              <input type="text" name="name" autoComplete="name" minLength={2} maxLength={100} required />
             </label>
 
             <label className="contact__field">
               <span>{t('contact.email_placeholder')}</span>
-              <input type="email" name="email" minLength={5} maxLength={200} required />
+              <input type="email" name="email" autoComplete="email" minLength={5} maxLength={200} required />
             </label>
 
             <label className="contact__field contact__field--message">

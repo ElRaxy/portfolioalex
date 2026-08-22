@@ -23,7 +23,10 @@
     --accent-on: #141416;
     --text-1: #e8e8ea;
     --text-2: #9a9aa0;
-    --text-3: #6a6a70;
+    /* AA sobre los tres fondos donde se usa (#141416, #1d1d20, #26262a):
+       5,81 / 5,31 / 4,76. El #6a6a70 anterior se quedaba en 2,81 en la
+       barra del terminal. Medido el 2026-08-22. */
+    --text-3: #909098;
 
     --color-bg: var(--surface-0);
     --color-card: var(--surface-1);
@@ -96,7 +99,9 @@
     --accent-on: #ffffff;
     --text-1: #1a1a1c;
     --text-2: #6a6a70;
-    --text-3: #8b8b93;
+    /* AA sobre #ffffff, #fafafa y #f0f0f2: 5,27 / 5,05 / 4,63.
+       El #8b8b93 anterior se quedaba en 2,97 sobre #f0f0f2. */
+    --text-3: #6b6b75;
     --color-success: #287a45;
     --color-error: #b42318;
 }
@@ -443,6 +448,19 @@ select {
         scroll-behavior: auto !important;
         transition: none !important;
         animation: none !important;
+    }
+
+    /* El HTML prerenderizado trae `opacity:0` inline en los 18 envoltorios de
+       Reveal, porque renderToString corre sin conocer la preferencia. Al
+       hidratar con reduced-motion, Reveal devuelve el elemento SIN prop style,
+       y React no retira un atributo que el no declara: el bloque se queda
+       invisible para siempre. Medido el 2026-08-22 en produccion. Se repara
+       aqui y no en JS porque el estado inicial de una animacion tiene que
+       nacer en el CSS. */
+    [style*="opacity:0"],
+    [style*="opacity: 0"] {
+        opacity: 1 !important;
+        transform: none !important;
     }
 }
 
