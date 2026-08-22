@@ -20,7 +20,7 @@
   },
   "about": {
     "title": "About me",
-    "p2": "Atalaya pulls dev job listings from eight boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns bank statements into a spending dashboard: it detects the header row and maps the columns without needing a parser per bank.",
+    "p2": "Atalaya pulls dev job listings from seven boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns bank statements into a spending dashboard: it detects the header row and maps the columns without needing a parser per bank.",
     "p3": "At Anuubis Solutions I keep web infrastructure running in production: deploys, migrations between providers, performance audits and incidents. Nearly all of it scripted, because doing it by hand is where things break.",
     "lead": "I'm Alex Micó Robles: I build applications with React, Node and MongoDB, and automate the repetitive parts with Python.",
     "facts_title": "In short",
@@ -280,7 +280,7 @@
       "atalaya": {
         "title": "Atalaya",
         "tagline": "Eight job boards, one scored list",
-        "summary": "Atalaya is a Python CLI that pulls remote developer roles from eight job boards, scores them against your profile and drafts the cover letter.",
+        "summary": "Atalaya is a Python CLI that pulls remote developer roles from seven job boards, scores them against your profile and drafts the cover letter.",
         "problem": [
           "Looking for remote work means going through the same boards every day. No two publish alike: one serves JSON-LD, another server-rendered HTML, another an RSS feed, another its own API. The good roles show up on several at once, so the list fills with repeats.",
           "It adds up to half an hour of mechanical work a day that never tells a good fit from a bad one."
@@ -288,7 +288,7 @@
         "decisions": [
           {
             "title": "One reader per board, not a scraper for everything",
-            "body": "There are nine readers and each has its own test file. Indeed Spain answers with the Cloudflare wall, so its reader is written but returns nothing: the site says eight running, not nine, because counting it any other way would be a lie."
+            "body": "There are nine readers and each has its own test file. Two return nothing: Indeed Spain answers with the Cloudflare wall, and Himalayas with a 403 that a browser user agent does not get past. The site says seven running, not nine, because counting it any other way would be a lie."
           },
           {
             "title": "The scoring weights are written down",
@@ -309,16 +309,16 @@
         ],
         "results": [
           {
-            "value": "11",
+            "value": "12",
             "label": "commands"
           },
           {
-            "value": "147",
+            "value": "156",
             "label": "tests"
           },
           {
-            "value": "8",
-            "label": "boards running"
+            "value": "7",
+            "label": "boards running · Aug 2026"
           }
         ],
         "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite.",

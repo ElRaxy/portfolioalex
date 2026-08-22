@@ -20,7 +20,7 @@
   },
   "about": {
     "title": "Sobre mí",
-    "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
+    "p2": "Atalaya reúne ofertas de siete portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
     "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas.",
     "lead": "Soy Alex Micó Robles: construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite.",
     "facts_title": "En corto",
@@ -280,7 +280,7 @@
       "atalaya": {
         "title": "Atalaya",
         "tagline": "Ocho portales de empleo, una sola lista puntuada",
-        "summary": "Atalaya es un CLI en Python que reúne ofertas de desarrollo en remoto de ocho portales, las puntúa contra tu perfil y redacta la carta de presentación.",
+        "summary": "Atalaya es un CLI en Python que reúne ofertas de desarrollo en remoto de siete portales, las puntúa contra tu perfil y redacta la carta de presentación.",
         "problem": [
           "Buscar trabajo en remoto obliga a repasar los mismos portales todos los días. Ninguno publica igual que otro: uno sirve JSON-LD, otro HTML montado en el servidor, otro un RSS, otro una API propia. Y las ofertas buenas aparecen en varios a la vez, así que la lista se llena de repetidos.",
           "El resultado es un trabajo mecánico de media hora diaria que no distingue una oferta que encaja de una que no."
@@ -288,7 +288,7 @@
         "decisions": [
           {
             "title": "Un lector por portal, no un scraper que valga para todo",
-            "body": "Hay nueve lectores y cada uno tiene su fichero de test. Indeed España responde con el muro de Cloudflare, así que su lector está escrito pero devuelve cero: la web dice ocho en marcha, no nueve, porque contarlo de otra forma sería mentir."
+            "body": "Hay nueve lectores y cada uno tiene su fichero de test. Dos devuelven cero: Indeed España responde con el muro de Cloudflare y Himalayas con un 403 que no cede ni poniendo user agent de navegador. La web dice siete en marcha, no nueve, porque contarlo de otra forma sería mentir."
           },
           {
             "title": "La puntuación lleva los pesos escritos",
@@ -309,16 +309,16 @@
         ],
         "results": [
           {
-            "value": "11",
+            "value": "12",
             "label": "comandos"
           },
           {
-            "value": "147",
+            "value": "156",
             "label": "tests"
           },
           {
-            "value": "8",
-            "label": "portales en marcha"
+            "value": "7",
+            "label": "portales en marcha · ago 2026"
           }
         ],
         "note": "Tipado estricto con mypy y linter en modo severo. Python 3.12, Typer, httpx, SQLite.",

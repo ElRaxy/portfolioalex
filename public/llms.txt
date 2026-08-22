@@ -26,9 +26,9 @@ GitHub: https://github.com/ElRaxy
 
 ## Proyectos
 
-- Atalaya — CLI en Python que reúne ofertas de empleo dev remoto de 8 portales,
+- Atalaya — CLI en Python que reúne ofertas de empleo dev remoto de 7 portales,
   las puntúa contra un perfil y redacta la carta de presentación con un LLM.
-  11 comandos, 147 tests, mypy en modo estricto.
+  12 comandos, 156 tests, mypy en modo estricto.
   https://github.com/ElRaxy/atalaya-cli
 - SaveMyMoneyNow — Convierte extractos bancarios en un panel de gastos. Detecta
   la fila de cabecera y mapea las columnas sin escribir un parser por banco.
