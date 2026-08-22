@@ -260,10 +260,15 @@ const manifest = JSON.parse(await readFile(
   path.join(buildDirectory, 'asset-manifest.json'),
   'utf8',
 ))
-const cvAssetUrl = manifest.files['static/media/cv.pdf']
-if (!cvAssetUrl?.startsWith('/')) {
-  throw new Error('The CRA CV asset URL is missing or is not absolute')
-}
+// Un PDF por idioma. El plugin de esbuild de abajo resolvia CUALQUIER .pdf a la
+// misma URL, asi que las paginas en ingles se prerenderizaban con el CV castellano.
+const cvAssetUrls = Object.fromEntries(['cv-es.pdf', 'cv-en.pdf'].map((file) => {
+  const url = manifest.files[`static/media/${file}`]
+  if (!url?.startsWith('/')) {
+    throw new Error(`The CRA asset URL for ${file} is missing or is not absolute`)
+  }
+  return [file, url]
+}))
 
 const temporaryDirectory = await mkdtemp(path.join(buildDirectory, '.prerender-'))
 const serverBundle = path.join(temporaryDirectory, 'entry.mjs')
@@ -297,14 +302,15 @@ try {
       {
         name: 'built-assets',
         setup(build) {
-          build.onResolve({ filter: /\.pdf$/ }, () => ({
-            path: 'cv.pdf',
+          build.onResolve({ filter: /\.pdf$/ }, (args) => ({
+            path: path.basename(args.path),
             namespace: 'built-assets',
           }))
-          build.onLoad({ filter: /.*/, namespace: 'built-assets' }, () => ({
-            contents: `export default ${JSON.stringify(cvAssetUrl)}`,
-            loader: 'js',
-          }))
+          build.onLoad({ filter: /.*/, namespace: 'built-assets' }, (args) => {
+            const url = cvAssetUrls[args.path]
+            if (!url) throw new Error(`No built asset for ${args.path}`)
+            return { contents: `export default ${JSON.stringify(url)}`, loader: 'js' }
+          })
         },
       },
     ],

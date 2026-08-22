@@ -60,10 +60,20 @@ describe('la web entera', () => {
     expect(new Set(textosAlternativos).size).toBe(capturas.length)
   })
 
-  it('ofrece el CV como descarga', () => {
-    render(<App />)
+  // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay
+  // navegador que detectar y las paginas inglesas servian el CV castellano.
+  it.each([
+    ['/', 'cv-es'],
+    ['/en/', 'cv-en'],
+    ['/proyectos/atalaya/', 'cv-es'],
+    ['/en/projects/atalaya/', 'cv-en'],
+  ])('en %s descarga el CV %s', (ruta, esperado) => {
+    render(<App pathname={ruta} />)
 
-    expect(enlacesCon(/\.pdf$/).length).toBeGreaterThan(0)
+    const descargas = enlacesCon(/\.pdf$/)
+    expect(descargas).toHaveLength(1)
+    expect(descargas[0].getAttribute('href')).toContain(esperado)
+    expect(descargas[0]).toHaveAttribute('download')
   })
 
   it('no deja ningun enlace externo sin rel de seguridad', () => {

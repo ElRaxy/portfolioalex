@@ -63,6 +63,13 @@ for (const pagina of PAGINAS) {
     }
   }
 
+  // Cada pagina descarga el CV de SU idioma. El bundler resolvia todos los .pdf
+  // al mismo fichero, asi que las paginas inglesas servian el CV castellano y
+  // nada lo delataba: el enlace funcionaba, solo estaba en el otro idioma.
+  const cv = html.match(/href="([^"]*cv-(es|en)\.[^"]*\.pdf)"/)
+  if (!cv) anota(pagina, 'sin enlace de descarga del CV')
+  else if (cv[2] !== pagina.idioma) anota(pagina, `descarga el CV en ${cv[2]}, deberia ser ${pagina.idioma}`)
+
   if (pagina.tipo === 'caso') {
     // En un caso no existen las secciones de la portada.
     const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
