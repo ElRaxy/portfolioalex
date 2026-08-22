@@ -39,16 +39,19 @@ function App({ pathname }) {
       <div className="site-shell">
         <Nav />
 
+        {/* Antes del sidebar en el DOM porque es donde estan en pantalla: dentro
+            del main se alcanzaban en la parada 11 y 12 del tabulador estando
+            arriba del todo (WCAG 2.4.3). La rejilla los recoloca. */}
+        <div className="site-shell__controls">
+          <LanguageSelector />
+          <ThemeToggle />
+        </div>
+
         <header className="site-shell__sidebar">
           <Header />
         </header>
 
         <main className="site-shell__content">
-          <div className="site-shell__controls">
-            <LanguageSelector />
-            <ThemeToggle />
-          </div>
-
           {route.kind === 'case' ? (
             <>
               <CaseStudy slug={route.slug} />

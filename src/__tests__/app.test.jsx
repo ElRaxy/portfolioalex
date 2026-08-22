@@ -153,6 +153,39 @@ describe('el bloque LCP no espera al JavaScript', () => {
   })
 })
 
+// El 2026-08-22 se midio que idioma y tema eran las paradas 11 y 12 del
+// tabulador en escritorio estando en la posicion mas alta de la pagina
+// (WCAG 2.4.3): vivian dentro del <main>, despues del hero y de la nav
+// lateral. El orden de foco lo fija el DOM, no la rejilla, asi que la
+// comprobacion es sobre el DOM.
+describe('el orden de foco sigue al orden visual', () => {
+  it('idioma y tema van antes que el hero en el documento', () => {
+    const { container } = render(<App />)
+
+    const controles = container.querySelector('.site-shell__controls')
+    const sidebar = container.querySelector('.site-shell__sidebar')
+
+    expect(controles).not.toBeNull()
+    expect(sidebar).not.toBeNull()
+    // eslint-disable-next-line no-bitwise
+    const vaAntes = controles.compareDocumentPosition(sidebar) & Node.DOCUMENT_POSITION_FOLLOWING
+    expect(vaAntes).toBeTruthy()
+  })
+
+  // WCAG 2.5.8 (AA en 2.2): 24x24 px. Era la unica zona pulsable por debajo.
+  it('la marca de la barra tiene al menos 24 px de alto', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const css = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'nav', 'nav.css'), 'utf8',
+    )
+
+    const regla = css.match(/\.portfolio-nav__brand \{[\s\S]*?\n  \}/)
+    expect(regla).not.toBeNull()
+    expect(regla[0]).toMatch(/min-height:\s*24px/)
+  })
+})
+
 // Las paginas de caso son URLs propias y prerenderizadas: lo que se vigila aqui
 // es que la ruta elija la pagina correcta y que el contenido llegue entero.
 describe('paginas de caso de estudio', () => {

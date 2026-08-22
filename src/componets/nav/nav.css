@@ -113,6 +113,14 @@
     min-width: max-content;
     text-overflow: clip;
     font-weight: 700;
+    /* 24 px de alto es el minimo de WCAG 2.5.8 (AA en 2.2). Con line-height 1
+       el enlace medía 16 px y era la unica zona pulsable de la web por debajo
+       del minimo. El alto sale del padding, no del interlineado, para no mover
+       el texto de su linea. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding-block: var(--space-1);
   }
 
   .portfolio-nav__links {

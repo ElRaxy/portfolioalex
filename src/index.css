@@ -253,10 +253,20 @@ select {
     padding: 0 var(--space-12);
     display: grid;
     grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
-    gap: var(--space-12);
+    /* Las areas dejan que idioma y tema vayan primero en el DOM, que es donde
+       estan en pantalla, sin sacarlos de la columna derecha. */
+    grid-template-areas:
+        "sidebar controls"
+        "sidebar content";
+    grid-template-rows: auto minmax(0, 1fr);
+    /* Sin hueco entre filas: el que separa las columnas dejaria caer el
+       contenido 48 px por debajo de donde estaba. */
+    column-gap: var(--space-12);
+    row-gap: 0;
 }
 
 .site-shell__sidebar {
+    grid-area: sidebar;
     position: sticky;
     top: 0;
     max-height: 100vh;
@@ -279,11 +289,14 @@ select {
 }
 
 .site-shell__content {
+    grid-area: content;
     min-width: 0;
-    padding: var(--space-12) 0 var(--space-20);
+    padding: 0 0 var(--space-20);
 }
 
 .site-shell__controls {
+    grid-area: controls;
+    margin-top: var(--space-12);
     height: var(--space-8);
     display: flex;
     align-items: center;
