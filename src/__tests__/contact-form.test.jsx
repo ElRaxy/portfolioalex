@@ -26,6 +26,24 @@ describe('formulario de contacto', () => {
 
   afterEach(() => jest.restoreAllMocks())
 
+  // El 429 se anadio con el limite por IP: sin su clave de traduccion el
+  // formulario habria mostrado "contact.errors.rate_limited" en crudo.
+  it('traduce el corte por exceso de envios en vez de decir "fallo al enviar"', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ ok: false, error: 'rate_limited' }),
+    }))
+
+    render(<Contact />)
+    rellenar(valido)
+    userEvent.click(screen.getByRole('button', { name: /enviar|mensaje/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/varios mensajes seguidos/i)).toBeInTheDocument()
+    })
+  })
+
   // Este es el contrato con api/contact.js: si alli cambian los limites, este
   // test tiene que fallar. Es lo unico propio que hay que medir — que la
   // validacion nativa funcione es cosa del navegador, y jsdom ni la aplica.

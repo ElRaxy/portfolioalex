@@ -33,6 +33,40 @@ describe('api/contact', () => {
     jest.restoreAllMocks()
   })
 
+  // El limite vive en la memoria de la instancia, asi que cada prueba usa su
+  // propia IP: compartirla haria que el orden de los tests decidiera el
+  // resultado.
+  it('corta la sexta peticion de la misma IP dentro de la ventana', async () => {
+    const headers = { 'x-forwarded-for': '203.0.113.7' }
+
+    for (let intento = 0; intento < 5; intento += 1) {
+      const res = crearRes()
+      await handler({ method: 'POST', headers, body: cuerpoValido }, res)
+      expect(res.statusCode).toBe(200)
+    }
+
+    const res = crearRes()
+    await handler({ method: 'POST', headers, body: cuerpoValido }, res)
+
+    expect(res.statusCode).toBe(429)
+    expect(res.payload).toEqual({ ok: false, error: 'rate_limited' })
+    expect(res.headers['Retry-After']).toBe('600')
+  })
+
+  it('no mezcla el contador de dos IP distintas', async () => {
+    const primera = { 'x-forwarded-for': '203.0.113.8' }
+    const segunda = { 'x-forwarded-for': '203.0.113.9, 70.41.3.18' }
+
+    for (let intento = 0; intento < 5; intento += 1) {
+      await handler({ method: 'POST', headers: primera, body: cuerpoValido }, crearRes())
+    }
+
+    const res = crearRes()
+    await handler({ method: 'POST', headers: segunda, body: cuerpoValido }, res)
+
+    expect(res.statusCode).toBe(200)
+  })
+
   it('rechaza cualquier metodo que no sea POST y anuncia cual acepta', async () => {
     const res = crearRes()
     await handler({ method: 'GET' }, res)

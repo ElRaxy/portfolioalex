@@ -1,5 +1,41 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+// Limite por IP. Vive en la memoria de la instancia, asi que solo frena a quien
+// cae en la misma: Vercel puede repartir la rafaga entre varias y no hay estado
+// compartido sin anadir un Redis. Aun asi corta el caso que se midio, doce POST
+// seguidos desde el mismo sitio, que antes pasaban los doce.
+const VENTANA_MS = 10 * 60 * 1000
+const MAX_POR_VENTANA = 5
+const envios = new Map()
+
+// La cabecera la pone el edge de Vercel y el cliente no puede quitarla. Si no
+// viene, no hay a quien contar y se deja pasar: contar todas las peticiones sin
+// IP en un mismo cubo cerraria el formulario a todo el mundo a la vez.
+function ipDe(req) {
+  const reenviada = req.headers?.['x-forwarded-for']
+  if (typeof reenviada === 'string' && reenviada) return reenviada.split(',')[0].trim()
+  if (Array.isArray(reenviada) && reenviada.length) return String(reenviada[0]).trim()
+  return null
+}
+
+function pasaElLimite(ip, ahora) {
+  if (!ip) return true
+
+  // La Map crece con cada IP nueva: se limpia lo caducado en cada llamada, que
+  // a este volumen es mas barato que mantener un temporizador vivo.
+  for (const [clave, marcas] of envios) {
+    const vivas = marcas.filter((marca) => ahora - marca < VENTANA_MS)
+    if (vivas.length) envios.set(clave, vivas)
+    else envios.delete(clave)
+  }
+
+  const marcas = envios.get(ip) || []
+  if (marcas.length >= MAX_POR_VENTANA) return false
+
+  envios.set(ip, [...marcas, ahora])
+  return true
+}
+
 function escapeHtml(value) {
   return value
     .replace(/&/g, '&amp;')
@@ -17,6 +53,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ ok: false, error: 'method_not_allowed' })
+  }
+
+  if (!pasaElLimite(ipDe(req), Date.now())) {
+    res.setHeader('Retry-After', String(VENTANA_MS / 1000))
+    return res.status(429).json({ ok: false, error: 'rate_limited' })
   }
 
   let body = req.body

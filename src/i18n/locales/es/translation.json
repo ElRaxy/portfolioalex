@@ -321,6 +321,7 @@
       "invalid_name": "Revisa el nombre: debe tener entre 2 y 100 caracteres.",
       "invalid_email": "Revisa el correo: debe ser una dirección válida de entre 5 y 200 caracteres.",
       "invalid_message": "Revisa el mensaje: debe tener entre 10 y 5000 caracteres.",
+      "rate_limited": "Has enviado varios mensajes seguidos. Espera unos minutos o escríbeme directamente por correo.",
       "not_configured": "El formulario no está disponible temporalmente.",
       "send_failed": "El mensaje no se ha podido enviar. Inténtalo de nuevo más tarde.",
       "timeout": "El envío ha tardado demasiado y se ha cancelado.",

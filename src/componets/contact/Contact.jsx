@@ -8,6 +8,7 @@ const CONTACT_ERROR_CODES = new Set([
   'invalid_name',
   'invalid_email',
   'invalid_message',
+  'rate_limited',
   'not_configured',
   'send_failed',
 ])

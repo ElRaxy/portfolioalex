@@ -321,6 +321,7 @@
       "invalid_name": "Check the name: it must be between 2 and 100 characters.",
       "invalid_email": "Check the email: it must be a valid address between 5 and 200 characters.",
       "invalid_message": "Check the message: it must be between 10 and 5000 characters.",
+      "rate_limited": "You have sent several messages in a row. Wait a few minutes or email me directly.",
       "not_configured": "The contact form is temporarily unavailable.",
       "send_failed": "The message could not be sent. Please try again later.",
       "timeout": "The request took too long and was cancelled.",
