@@ -1,0 +1,167 @@
+.case {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    padding: var(--space-8) 0 var(--space-20);
+}
+
+.case__back {
+    align-self: flex-start;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+}
+
+.case__back::before {
+    content: '←';
+    margin-right: var(--space-2);
+}
+
+.case__back:hover {
+    color: var(--color-text-primary);
+}
+
+.case__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.case__header h1 {
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.case__tagline {
+    color: var(--accent);
+    font-size: var(--fs-md);
+}
+
+.case__summary {
+    color: var(--color-text-muted);
+    font-size: var(--fs-md);
+    line-height: 1.6;
+    max-width: 62ch;
+}
+
+/* Las reglas globales de `section` (margen de 8rem entre hermanas, padding y
+   h2 centrado con 2rem debajo) estan pensadas para las secciones de la
+   portada. Dentro de un caso el ritmo lo lleva el gap del article. */
+.case__block,
+.site-shell__content .case__block,
+.site-shell__content .case__block + .case__block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+}
+
+.case__block h2,
+.case .case__block > h2 {
+    margin: 0;
+    text-align: left;
+}
+
+.case__block h2 {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+}
+
+.case__block > p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    max-width: 68ch;
+}
+
+.case__decisions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    counter-reset: decision;
+}
+
+.case__decision {
+    counter-increment: decision;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-left: var(--space-8);
+    position: relative;
+    max-width: 68ch;
+}
+
+/* El numero es del contador y no del texto: si manana se reordenan las
+   decisiones, no hay que renumerar nada a mano. */
+.case__decision::before {
+    content: counter(decision, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+}
+
+.case__decision h3 {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.case__decision p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+}
+
+.case__results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-6);
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    padding: var(--space-6) 0;
+}
+
+.case__result {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.case__result-value {
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xl);
+    line-height: 1;
+}
+
+.case__result-label {
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+}
+
+.case__note {
+    color: var(--text-3);
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    max-width: 68ch;
+}
+
+@media screen and (max-width: 900px) {
+    .case {
+        gap: var(--space-8);
+    }
+
+    .case__decisions {
+        gap: var(--space-6);
+    }
+}

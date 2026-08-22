@@ -10,13 +10,27 @@ import Stack, { ExperienceTimeline } from './componets/experience/Experience'
 import Portfolio from './componets/portfolio/Portfolio'
 import Contact from './componets/contact/Contact'
 import Footer from './componets/footer/Footer'
+import CaseStudy from './componets/caseStudy/CaseStudy'
+import './componets/caseStudy/caseStudy.css'
 import LanguageSelector from './componets/language/LanguageSelector'
 import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
 import { useSmoothAnchors, useLanguageFromHistory } from './lib/smoothScroll'
+import { parseRoute } from './lib/routing'
 
-function App() {
+// La ruta se lee una vez y no cambia: cada pagina de caso es un HTML propio,
+// prerenderizado, al que se llega con una navegacion normal del navegador.
+const readPathname = () => {
+  try {
+    return typeof window === 'undefined' ? '/' : window.location.pathname
+  } catch {
+    return '/'
+  }
+}
+
+function App({ pathname }) {
   const { i18n } = useTranslation()
+  const route = parseRoute(pathname || readPathname())
   useSmoothAnchors()
   useLanguageFromHistory(i18n)
 
@@ -35,12 +49,22 @@ function App() {
             <ThemeToggle />
           </div>
 
-          <About />
-          <Portfolio />
-          <ExperienceTimeline />
-          <Stack />
-          <Contact />
-          <Footer />
+          {route.kind === 'case' ? (
+            <>
+              <CaseStudy slug={route.slug} />
+              <Contact />
+              <Footer />
+            </>
+          ) : (
+            <>
+              <About />
+              <Portfolio />
+              <ExperienceTimeline />
+              <Stack />
+              <Contact />
+              <Footer />
+            </>
+          )}
         </main>
       </div>
 

@@ -158,7 +158,8 @@
         "closed": true,
         "internal": true,
         "image": "wordpress",
-        "image_alt": "Diagrama: un comando recorre toda la flota — inventario, comprobaciones e informe"
+        "image_alt": "Diagrama: un comando recorre toda la flota — inventario, comprobaciones e informe",
+        "slug": "wordpress"
       },
       {
         "title": "SaveMyMoneyNow",
@@ -176,7 +177,8 @@
           }
         ],
         "image": "savemymoneynow",
-        "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe"
+        "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe",
+        "slug": "savemymoneynow"
       },
       {
         "title": "Atalaya",
@@ -193,7 +195,8 @@
             "label": "Código",
             "url": "https://github.com/ElRaxy/atalaya-cli"
           }
-        ]
+        ],
+        "slug": "atalaya"
       },
       {
         "title": "Strev",
@@ -212,9 +215,11 @@
         ],
         "closed": true,
         "image": "strev",
-        "image_alt": "Portada de Strev con la pantalla de rutinas de la aplicación"
+        "image_alt": "Portada de Strev con la pantalla de rutinas de la aplicación",
+        "slug": "strev"
       }
-    ]
+    ],
+    "case_link": "Ver el caso"
   },
   "contact": {
     "title": "Contáctame",
@@ -246,5 +251,198 @@
   },
   "meta": {
     "description": "Alex Micó Robles, desarrollador full stack. React, Node y MongoDB para producto; Python y Bash para automatizar. Autor de Atalaya y SaveMyMoneyNow."
+  },
+  "case_study": {
+    "back": "Volver a proyectos",
+    "index_title": "Caso de estudio",
+    "problem_label": "El problema",
+    "decisions_label": "Cómo está resuelto",
+    "results_label": "Dónde está el listón",
+    "cases": {
+      "atalaya": {
+        "title": "Atalaya",
+        "tagline": "Ocho portales de empleo, una sola lista puntuada",
+        "summary": "Un CLI en Python que reúne ofertas de desarrollo en remoto de ocho portales, las puntúa contra tu perfil y redacta la carta de presentación.",
+        "problem": [
+          "Buscar trabajo en remoto obliga a repasar los mismos portales todos los días. Ninguno publica igual que otro: uno sirve JSON-LD, otro HTML montado en el servidor, otro un RSS, otro una API propia. Y las ofertas buenas aparecen en varios a la vez, así que la lista se llena de repetidos.",
+          "El resultado es un trabajo mecánico de media hora diaria que no distingue una oferta que encaja de una que no."
+        ],
+        "decisions": [
+          {
+            "title": "Un lector por portal, no un scraper que valga para todo",
+            "body": "Hay nueve lectores y cada uno tiene su fichero de test. Indeed España responde con el muro de Cloudflare, así que su lector está escrito pero devuelve cero: la web dice ocho en marcha, no nueve, porque contarlo de otra forma sería mentir."
+          },
+          {
+            "title": "La puntuación lleva los pesos escritos",
+            "body": "Stack 0,50 · remoto 0,25 · seniority 0,15 · idioma 0,10, y el stack se compara por Jaccard con un extra si toca el núcleo del perfil. Cuando una oferta sale alta se puede ver por qué, en vez de confiar en un número que sale de ningún sitio."
+          },
+          {
+            "title": "Los duplicados los corta la base de datos",
+            "body": "La URL es UNIQUE en SQLite. Si la lógica de la aplicación se despista, el duplicado sigue sin entrar."
+          },
+          {
+            "title": "El LLM entra por la suscripción, no por la API",
+            "body": "Por defecto llama a la CLI de Claude como subproceso, que usa la sesión ya pagada y no gasta créditos de API. El SDK queda como extra opcional para CI. Las dos vías exponen la misma función, así que el resto del código no sabe cuál está usando."
+          },
+          {
+            "title": "Nada se marca como enviado sin que lo confirmes",
+            "body": "Para las ofertas que solo admiten formulario, el CLI copia la carta y abre el navegador. Grabar la candidatura exige volver a ejecutarlo con la marca puesta a mano."
+          }
+        ],
+        "results": [
+          {
+            "value": "11",
+            "label": "comandos"
+          },
+          {
+            "value": "147",
+            "label": "tests"
+          },
+          {
+            "value": "8",
+            "label": "portales en marcha"
+          }
+        ],
+        "note": "Tipado estricto con mypy y linter en modo severo. Python 3.12, Typer, httpx, SQLite."
+      },
+      "savemymoneynow": {
+        "title": "SaveMyMoneyNow",
+        "tagline": "Un extracto de cualquier banco, sin escribir un parser por banco",
+        "summary": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera, detectando la fila de cabecera en vez de conocer el formato de antemano.",
+        "problem": [
+          "Un extracto bancario casi nunca empieza por la cabecera. Arriba hay filas de titular, IBAN y periodo; la cabecera aparece en la cuarta fila, o en la sexta. Las fechas vienen en tres formatos y los decimales llevan coma o punto según el banco.",
+          "La salida fácil es escribir un lector por banco. Son cuatro bancos hoy y cualquiera de ellos puede cambiar su exportación mañana."
+        ],
+        "decisions": [
+          {
+            "title": "La cabecera se busca, no se sabe",
+            "body": "Un asistente puntúa las primeras filas, se queda con la que parece la cabecera y propone qué columna es Fecha, cuál Concepto y cuál Importe, mirando tanto el nombre como lo que hay debajo. El usuario confirma o corrige."
+          },
+          {
+            "title": "La huella del duplicado no lleva el importe",
+            "body": "Es fecha y concepto. Parece un descuido y es lo contrario: al reimportar el extracto del mes, una compra corregida tras una devolución parcial habría entrado como movimiento nuevo. El importe se guarda aparte para poder auditar."
+          },
+          {
+            "title": "Los lotes de importación caducan solos",
+            "body": "Lo que produce el asistente vive dos días y Mongo lo borra; los movimientos definitivos no caducan. Retomar el asistente tarde devuelve un 410 con su explicación, en vez de trabajar sobre datos a medias."
+          },
+          {
+            "title": "El PDF tiene tope y el Excel no",
+            "body": "Cinco mil filas. No es una cifra arbitraria: la librería de PDF construye el documento entero en memoria, así que un histórico grande tumba el proceso. La de Excel escribe a medida que avanza, y por eso ahí no hace falta tope."
+          },
+          {
+            "title": "Los tests fabrican los extractos que van a leer",
+            "body": "Levantan Mongo en memoria y construyen ficheros de BBVA y Santander en el momento, en lugar de arrastrar un fichero de ejemplo que nadie vuelve a mirar."
+          }
+        ],
+        "results": [
+          {
+            "value": "21",
+            "label": "endpoints"
+          },
+          {
+            "value": "113",
+            "label": "casos de test"
+          },
+          {
+            "value": "9",
+            "label": "pasos del asistente"
+          }
+        ],
+        "note": "React, Node, Express y MongoDB. Tests con Vitest y Mongo en memoria."
+      },
+      "strev": {
+        "title": "Strev",
+        "tagline": "Datos de salud cifrados y vídeo que no bloquea la petición",
+        "summary": "SaaS para entrenadores, en beta privada. Lo que condiciona el diseño es que guarda datos de salud y que el análisis de técnica en vídeo tarda demasiado para hacerse dentro de una petición.",
+        "problem": [
+          "La anamnesis de un cliente son datos de salud: categoría especial del RGPD. Cifrar el disco no basta cuando lo que hay que proteger es un campo dentro de un documento que se consulta a diario.",
+          "Y el análisis de técnica de un vídeo tarda lo suyo. Hacerlo dentro de la petición HTTP significa una petición colgada y un usuario mirando una rueda girar."
+        ],
+        "decisions": [
+          {
+            "title": "Se cifra el campo, no el volumen",
+            "body": "Así el resto del documento se sigue consultando con normalidad. Lo ya escrito se migra con un script que por defecto no escribe nada: hay que pedírselo."
+          },
+          {
+            "title": "El vídeo va a una cola",
+            "body": "La petición devuelve enseguida y el análisis corre aparte. El modelo es Gemini y el trabajo es valorar la técnica del ejercicio, no generar rutinas."
+          },
+          {
+            "title": "Si Redis cae, la API aguanta",
+            "body": "El limitador de peticiones degrada en vez de tumbar el servicio, y hay un test dedicado a ese caso concreto porque es el que de verdad pasa a las tres de la mañana."
+          },
+          {
+            "title": "Un vídeo no se firma sin comprobar de quién es",
+            "body": "Las URL de descarga duran sesenta segundos y solo se emiten después de verificar la propiedad. Un identificador adivinado no sirve de nada."
+          },
+          {
+            "title": "Todo lo que borra empieza sin borrar",
+            "body": "Siete pares de scripts, cada uno con su versión que solo enseña lo que haría. Purgas, migraciones y cifrado: hay que pedir la ejecución de forma explícita."
+          }
+        ],
+        "results": [
+          {
+            "value": "117",
+            "label": "endpoints"
+          },
+          {
+            "value": "26",
+            "label": "módulos"
+          },
+          {
+            "value": "150",
+            "label": "ficheros de test"
+          }
+        ],
+        "note": "Node y Express 5, MongoDB, Redis con BullMQ, Stripe, R2. Frontend React con Vite y Tailwind. Código cerrado."
+      },
+      "wordpress": {
+        "title": "Automatización de WordPress en producción",
+        "tagline": "Cuarenta y una fases que se pueden reanudar sin miedo",
+        "summary": "Herramienta interna en Python y Bash para dar de alta, auditar y migrar sitios WordPress de cliente entre proveedores, sin tocar seis paneles a mano.",
+        "problem": [
+          "Montar o migrar la web de un cliente pasa por el panel del hosting de origen, el del destino, dos registradores para el DNS, Search Console y Bing. Cada uno con su sesión y su forma de fallar.",
+          "Lo caro no es el número de pasos: es que el proceso no se puede reanudar. Si se corta a la mitad, volver a lanzarlo desde el principio puede reimportar una base de datos encima de una web que ya está viva."
+        ],
+        "decisions": [
+          {
+            "title": "Antes de cada fase, se mira el servidor",
+            "body": "Cada fase trae una comprobación que mide el estado real antes de ejecutar. El registro de lo hecho existe, pero no manda: sirve para mirar, no para decidir. Es lo que permite relanzar el pipeline entero sin miedo."
+          },
+          {
+            "title": "Las fases son un grafo, no una lista",
+            "body": "Declaran de qué dependen, se detectan los ciclos al arrancar y, si una falla, las que colgaban de ella se saltan en cascada en vez de correr sobre un supuesto que ya no se cumple."
+          },
+          {
+            "title": "API primero, navegador solo donde no hay API",
+            "body": "DNS, paneles modernos, Search Console y Bing van por HTTP. El navegador se reserva para los que no ofrecen otra cosa. Es la parte frágil y por eso es la excepción."
+          },
+          {
+            "title": "Lo que devuelve un servidor no es un dato hasta validarlo",
+            "body": "Un barrido de la flota llegó a producir ochenta y siete filas de basura porque un binario mal instalado imprimía su propio código en vez del JSON. Ahora una respuesta que no cumple el contrato se descarta con un error, no se mezcla con el inventario."
+          },
+          {
+            "title": "Ninguna herramienta borra",
+            "body": "Enseñan lo que hay y quién decide es una persona. Con miles de sitios, un script que borra por su cuenta es cuestión de tiempo."
+          }
+        ],
+        "results": [
+          {
+            "value": "41",
+            "label": "fases"
+          },
+          {
+            "value": "226",
+            "label": "casos de test"
+          },
+          {
+            "value": "581",
+            "label": "webs en un solo cambio"
+          }
+        ],
+        "note": "Código cerrado: es herramienta interna y opera webs de clientes. Python, Bash, WP-CLI, Nginx y DNS."
+      }
+    }
   }
 }

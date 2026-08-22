@@ -2,10 +2,19 @@ import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalSto
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import LanguageSelector from '../language/LanguageSelector'
+import { parseRoute, homeHref } from '../../lib/routing'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
 const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
+
+// Dentro de una pagina de caso las secciones no existen: el ancla suelta no
+// llevaria a ninguna parte, asi que se prefija con la home de ese idioma.
+const useAnchorBase = () => {
+  const pathname = typeof window === 'undefined' ? '/' : window.location.pathname
+  const route = parseRoute(pathname)
+  return route.kind === 'case' ? homeHref(route.language) : ''
+}
 // `home` NO se observa: vive dentro del panel lateral pegajoso, asi que su
 // getBoundingClientRect().top se queda clavado en 0 por mucho que bajes. Como
 // el activo se elige por el |top| mas pequeno, ganaba siempre y no se marcaba
@@ -74,6 +83,7 @@ const useActiveSection = () => useSyncExternalStore(
 export const SidebarNav = () => {
   const { t } = useTranslation()
   const activeSection = useActiveSection()
+  const anchorBase = useAnchorBase()
   const progressRef = useRef(null)
 
   useLayoutEffect(() => {
@@ -142,7 +152,7 @@ export const SidebarNav = () => {
         {SIDEBAR_TARGETS.map((target) => (
           <li key={target}>
             <a
-              href={`#${target}`}
+              href={`${anchorBase}#${target}`}
               className={`sidebar-nav__link${activeSection === target ? ' sidebar-nav__link--active' : ''}`}
               aria-current={activeSection === target ? 'location' : undefined}
             >
@@ -159,6 +169,7 @@ export const SidebarNav = () => {
 const Nav = () => {
   const { t } = useTranslation()
   const activeSection = useActiveSection()
+  const anchorBase = useAnchorBase()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
@@ -231,7 +242,7 @@ const Nav = () => {
     <nav className="portfolio-nav">
       <div className="portfolio-nav__inner">
         <a
-          href="#home"
+          href={`${anchorBase}#home`}
           className="portfolio-nav__brand"
         >
           {brandName}
@@ -245,7 +256,7 @@ const Nav = () => {
           {links.map(({ target, label }) => (
             <a
               key={target}
-              href={`#${target}`}
+              href={`${anchorBase}#${target}`}
               className={`portfolio-nav__link${activeSection === target ? ' portfolio-nav__link--active' : ''}`}
               aria-current={activeSection === target ? 'location' : undefined}
               onClick={closeMenu}

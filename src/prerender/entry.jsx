@@ -10,7 +10,7 @@ const resources = {
   es: { translation: translationES },
 }
 
-export const createPrerenderApp = (language) => {
+export const createPrerenderApp = (language, pathname = '/') => {
   const i18n = createInstance()
 
   i18n.use(initReactI18next).init({
@@ -23,7 +23,7 @@ export const createPrerenderApp = (language) => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <App />
+      <App pathname={pathname} />
     </I18nextProvider>
   )
 }

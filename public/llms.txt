@@ -17,6 +17,13 @@ GitHub: https://github.com/ElRaxy
 - Producto con LLMs dentro: puntuación de ofertas, redacción asistida,
   análisis de vídeo.
 
+## Casos de estudio (una página por proyecto)
+
+- https://portfolioalex-mico.vercel.app/proyectos/wordpress/ · /en/projects/wordpress/
+- https://portfolioalex-mico.vercel.app/proyectos/savemymoneynow/ · /en/projects/savemymoneynow/
+- https://portfolioalex-mico.vercel.app/proyectos/atalaya/ · /en/projects/atalaya/
+- https://portfolioalex-mico.vercel.app/proyectos/strev/ · /en/projects/strev/
+
 ## Proyectos
 
 - Atalaya — CLI en Python que reúne ofertas de empleo dev remoto de 8 portales,

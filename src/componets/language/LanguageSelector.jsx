@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './language.css'
+import { parseRoute, caseHref } from '../../lib/routing'
 
 const BASE_URL = 'https://portfolioalex-mico.vercel.app'
 const PATHS = { es: '/', en: '/en/' }
@@ -37,10 +38,15 @@ const LanguageSelector = () => {
   const changeLabel = currentLanguage === 'es'
     ? 'Cambiar idioma a inglés'
     : 'Switch language to Spanish'
-  const href = PATHS[nextLanguage]
+  // En una pagina de caso no se cambia en caliente: cada caso tiene su HTML
+  // por idioma y su URL propia, asi que el enlace navega de verdad.
+  const route = parseRoute(typeof window === 'undefined' ? '/' : window.location.pathname)
+  const isCase = route.kind === 'case'
+  const href = isCase ? caseHref(nextLanguage, route.slug) : PATHS[nextLanguage]
 
   const switchLanguage = (event) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+    if (isCase) return
     event.preventDefault()
 
     i18n.changeLanguage(nextLanguage).then(() => {

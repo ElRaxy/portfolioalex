@@ -93,9 +93,14 @@ describe('la web entera', () => {
     const enlaces = within(portfolio).getAllByRole('link')
 
     expect(enlaces.length).toBeGreaterThan(0)
-    enlaces.forEach((enlace) => {
-      expect(enlace.getAttribute('href')).toMatch(/^https?:\/\//)
-    })
+    // Desde que cada proyecto tiene su caso, en el pie de la tarjeta conviven
+    // enlaces internos y externos: lo que se exige de cada uno es distinto.
+    const destinos = enlaces.map((enlace) => enlace.getAttribute('href'))
+    const internos = destinos.filter((href) => href.startsWith('/'))
+    const externos = destinos.filter((href) => !href.startsWith('/'))
+
+    expect(internos.every((href) => /^\/(proyectos|en\/projects)\/[a-z]+\/$/.test(href))).toBe(true)
+    expect(externos.every((href) => /^https?:\/\//.test(href))).toBe(true)
   })
 })
 
@@ -116,5 +121,49 @@ describe('reparacion de reduced-motion', () => {
     ))
 
     expect(reparacion).toBeDefined()
+  })
+})
+
+// Las paginas de caso son URLs propias y prerenderizadas: lo que se vigila aqui
+// es que la ruta elija la pagina correcta y que el contenido llegue entero.
+describe('paginas de caso de estudio', () => {
+  const { parseRoute, caseHref, CASE_SLUGS } = require('../lib/routing')
+
+  it('reconoce las rutas de caso en los dos idiomas y descarta las inventadas', () => {
+    expect(parseRoute('/proyectos/atalaya/')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
+    expect(parseRoute('/en/projects/strev/')).toEqual({ kind: 'case', language: 'en', slug: 'strev' })
+    expect(parseRoute('/proyectos/atalaya')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
+    expect(parseRoute('/proyectos/lo-que-sea/').kind).toBe('home')
+    expect(parseRoute('/').kind).toBe('home')
+    expect(parseRoute('/en/')).toEqual({ kind: 'home', language: 'en', slug: null })
+  })
+
+  it('tiene contenido de caso para cada slug, en castellano y en ingles', () => {
+    const idiomas = ['es', 'en']
+
+    idiomas.forEach((idioma) => {
+      const diccionario = require(`../i18n/locales/${idioma}/translation.json`)
+
+      CASE_SLUGS.forEach((slug) => {
+        const caso = diccionario.case_study.cases[slug]
+
+        expect(caso).toBeDefined()
+        expect(caso.title.length).toBeGreaterThan(0)
+        expect(caso.summary.length).toBeGreaterThan(40)
+        expect(caso.problem.length).toBeGreaterThanOrEqual(1)
+        expect(caso.decisions.length).toBeGreaterThanOrEqual(3)
+        expect(caso.results.length).toBeGreaterThanOrEqual(2)
+      })
+    })
+  })
+
+  it('cada proyecto de la portada enlaza a su caso', () => {
+    const diccionario = require('../i18n/locales/es/translation.json')
+    const slugs = diccionario.portfolio.projects.map((proyecto) => proyecto.slug)
+
+    expect(slugs.filter(Boolean)).toHaveLength(diccionario.portfolio.projects.length)
+    slugs.forEach((slug) => expect(CASE_SLUGS).toContain(slug))
+    expect(caseHref('es', 'atalaya')).toBe('/proyectos/atalaya/')
+    expect(caseHref('en', 'atalaya')).toBe('/en/projects/atalaya/')
   })
 })

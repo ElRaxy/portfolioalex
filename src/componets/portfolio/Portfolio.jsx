@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { caseHref } from '../../lib/routing'
 import { useReducedMotion } from 'motion/react'
 import Reveal, { RevealGroup, RevealItem } from '../common/Reveal'
 import './portfolio.css'
@@ -332,9 +333,10 @@ const usePointerSpotlight = (rootRef) => {
 }
 
 const ProjectDetails = ({ project, projectIndex }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const projectImage = PROJECT_IMAGES[project.image]
+  const language = (i18n.resolvedLanguage || i18n.language || 'es').split('-')[0]
 
   return (
     <>
@@ -365,6 +367,11 @@ const ProjectDetails = ({ project, projectIndex }) => {
       </ul>
 
       <footer className="portfolio__footer">
+        {project.slug && (
+          <a className="portfolio__case-link" href={caseHref(language, project.slug)}>
+            {t('portfolio.case_link')}
+          </a>
+        )}
         {(project.links || []).map((link, linkIndex) => (
           <a
             key={link.url}

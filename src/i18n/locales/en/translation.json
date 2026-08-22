@@ -158,7 +158,8 @@
         "closed": true,
         "internal": true,
         "image": "wordpress",
-        "image_alt": "Diagram: one command sweeps the whole fleet — inventory, checks and report"
+        "image_alt": "Diagram: one command sweeps the whole fleet — inventory, checks and report",
+        "slug": "wordpress"
       },
       {
         "title": "SaveMyMoneyNow",
@@ -176,7 +177,8 @@
           }
         ],
         "image": "savemymoneynow",
-        "image_alt": "SaveMyMoneyNow finding the header row of the statement and mapping Date, Description and Amount"
+        "image_alt": "SaveMyMoneyNow finding the header row of the statement and mapping Date, Description and Amount",
+        "slug": "savemymoneynow"
       },
       {
         "title": "Atalaya",
@@ -193,7 +195,8 @@
             "label": "Code",
             "url": "https://github.com/ElRaxy/atalaya-cli"
           }
-        ]
+        ],
+        "slug": "atalaya"
       },
       {
         "title": "Strev",
@@ -212,9 +215,11 @@
         ],
         "closed": true,
         "image": "strev",
-        "image_alt": "Strev home page showing the routines screen of the app"
+        "image_alt": "Strev home page showing the routines screen of the app",
+        "slug": "strev"
       }
-    ]
+    ],
+    "case_link": "Read the case study"
   },
   "contact": {
     "title": "Contact Me",
@@ -246,5 +251,198 @@
   },
   "meta": {
     "description": "Alex Micó Robles, full stack developer. React, Node and MongoDB for product; Python and Bash for automation. Author of Atalaya and SaveMyMoneyNow."
+  },
+  "case_study": {
+    "back": "Back to projects",
+    "index_title": "Case study",
+    "problem_label": "The problem",
+    "decisions_label": "How it works",
+    "results_label": "Where the bar sits",
+    "cases": {
+      "atalaya": {
+        "title": "Atalaya",
+        "tagline": "Eight job boards, one scored list",
+        "summary": "A Python CLI that pulls remote developer roles from eight job boards, scores them against your profile and drafts the cover letter.",
+        "problem": [
+          "Looking for remote work means going through the same boards every day. No two publish alike: one serves JSON-LD, another server-rendered HTML, another an RSS feed, another its own API. The good roles show up on several at once, so the list fills with repeats.",
+          "It adds up to half an hour of mechanical work a day that never tells a good fit from a bad one."
+        ],
+        "decisions": [
+          {
+            "title": "One reader per board, not a scraper for everything",
+            "body": "There are nine readers and each has its own test file. Indeed Spain answers with the Cloudflare wall, so its reader is written but returns nothing: the site says eight running, not nine, because counting it any other way would be a lie."
+          },
+          {
+            "title": "The scoring weights are written down",
+            "body": "Stack 0.50 · remote 0.25 · seniority 0.15 · language 0.10, with the stack compared by Jaccard plus a bonus when it touches the core of the profile. When a role scores high you can see why, instead of trusting a number from nowhere."
+          },
+          {
+            "title": "Duplicates are stopped by the database",
+            "body": "The URL is UNIQUE in SQLite. If the application logic slips, the duplicate still doesn't get in."
+          },
+          {
+            "title": "The LLM comes in through the subscription, not the API",
+            "body": "By default it calls the Claude CLI as a subprocess, which uses the session already paid for and spends no API credit. The SDK stays an optional extra for CI. Both paths expose the same function, so the rest of the code never knows which one is running."
+          },
+          {
+            "title": "Nothing is marked as sent unless you say so",
+            "body": "For roles that only take a web form, the CLI copies the letter and opens the browser. Recording the application means running it again with the flag set by hand."
+          }
+        ],
+        "results": [
+          {
+            "value": "11",
+            "label": "commands"
+          },
+          {
+            "value": "147",
+            "label": "tests"
+          },
+          {
+            "value": "8",
+            "label": "boards running"
+          }
+        ],
+        "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite."
+      },
+      "savemymoneynow": {
+        "title": "SaveMyMoneyNow",
+        "tagline": "A statement from any bank, with no parser per bank",
+        "summary": "Turns the statements every bank exports its own way into a spending dashboard, by finding the header row instead of knowing the format in advance.",
+        "problem": [
+          "A bank statement almost never starts at the header. Above it sit rows for the account holder, the IBAN and the period; the header turns up on the fourth row, or the sixth. Dates come in three formats and decimals use a comma or a dot depending on the bank.",
+          "The easy way out is a reader per bank. That's four banks today, and any of them can change its export tomorrow."
+        ],
+        "decisions": [
+          {
+            "title": "The header is searched for, not known",
+            "body": "A wizard scores the first rows, keeps the one that looks like the header and proposes which column is Date, which is Description and which is Amount, reading both the name and what sits underneath. You confirm or correct."
+          },
+          {
+            "title": "The duplicate fingerprint leaves the amount out",
+            "body": "It is date and description. It looks like an oversight and it is the opposite: on reimporting the month, a purchase corrected after a partial refund would have come in as a new movement. The amount is stored separately so it can still be audited."
+          },
+          {
+            "title": "Import batches expire on their own",
+            "body": "What the wizard produces lives two days and Mongo deletes it; the final movements never expire. Picking the wizard back up too late returns a 410 with its explanation, rather than working on half-finished data."
+          },
+          {
+            "title": "The PDF has a cap and the spreadsheet doesn't",
+            "body": "Five thousand rows. Not an arbitrary figure: the PDF library builds the whole document in memory, so a large history takes the process down. The spreadsheet one writes as it goes, which is why no cap is needed there."
+          },
+          {
+            "title": "The tests build the statements they are going to read",
+            "body": "They spin up Mongo in memory and construct BBVA and Santander files on the spot, instead of dragging along a sample file nobody looks at again."
+          }
+        ],
+        "results": [
+          {
+            "value": "21",
+            "label": "endpoints"
+          },
+          {
+            "value": "113",
+            "label": "test cases"
+          },
+          {
+            "value": "9",
+            "label": "wizard steps"
+          }
+        ],
+        "note": "React, Node, Express and MongoDB. Tests with Vitest and in-memory Mongo."
+      },
+      "strev": {
+        "title": "Strev",
+        "tagline": "Encrypted health data and video that never blocks the request",
+        "summary": "A SaaS for personal trainers, in private beta. What shapes the design is that it stores health data, and that analysing technique on video takes far too long to happen inside a request.",
+        "problem": [
+          "A client's intake form is health data: a special category under GDPR. Encrypting the disk is not enough when what needs protecting is one field inside a document read every day.",
+          "And analysing the technique in a video takes its time. Doing it inside the HTTP request means a hanging request and a user watching a spinner."
+        ],
+        "decisions": [
+          {
+            "title": "The field is encrypted, not the volume",
+            "body": "The rest of the document stays queryable as normal. What is already written gets migrated by a script that writes nothing by default: you have to ask it to."
+          },
+          {
+            "title": "Video goes to a queue",
+            "body": "The request returns straight away and the analysis runs elsewhere. The model is Gemini and the job is judging exercise technique, not generating routines."
+          },
+          {
+            "title": "If Redis goes down, the API holds",
+            "body": "The rate limiter degrades instead of taking the service with it, and there is a test for that exact case, because it is the one that actually happens at three in the morning."
+          },
+          {
+            "title": "No video is signed without checking whose it is",
+            "body": "Download URLs last sixty seconds and are only issued after ownership is verified. A guessed identifier gets you nothing."
+          },
+          {
+            "title": "Everything that deletes starts by not deleting",
+            "body": "Seven pairs of scripts, each with a version that only shows what it would do. Purges, migrations and encryption all have to be asked for explicitly."
+          }
+        ],
+        "results": [
+          {
+            "value": "117",
+            "label": "endpoints"
+          },
+          {
+            "value": "26",
+            "label": "modules"
+          },
+          {
+            "value": "150",
+            "label": "test files"
+          }
+        ],
+        "note": "Node and Express 5, MongoDB, Redis with BullMQ, Stripe, R2. React frontend on Vite and Tailwind. Closed source."
+      },
+      "wordpress": {
+        "title": "WordPress automation in production",
+        "tagline": "Forty-one phases you can resume without fear",
+        "summary": "An internal Python and Bash tool to provision, audit and migrate client WordPress sites between providers, without touching six control panels by hand.",
+        "problem": [
+          "Setting up or migrating a client site runs through the source host's panel, the destination one, two registrars for DNS, Search Console and Bing. Each with its own session and its own way of failing.",
+          "The expensive part is not the number of steps: it is that the process cannot be resumed. Cut it in half and running it again from the top can reimport a database over a site that is already live."
+        ],
+        "decisions": [
+          {
+            "title": "Before each phase, look at the server",
+            "body": "Every phase carries a check that measures the real state before running. The ledger of what was done exists, but it does not decide: it is there to look at. That is what makes relaunching the whole pipeline safe."
+          },
+          {
+            "title": "Phases are a graph, not a list",
+            "body": "They declare what they depend on, cycles are caught at start-up and, when one fails, whatever hung off it is skipped in cascade instead of running on an assumption that no longer holds."
+          },
+          {
+            "title": "APIs first, browser only where there is no API",
+            "body": "DNS, modern panels, Search Console and Bing all go over HTTP. The browser is kept for the ones that offer nothing else. It is the fragile part, and that is why it is the exception."
+          },
+          {
+            "title": "What a server returns is not data until it is validated",
+            "body": "One fleet sweep produced eighty-seven rows of garbage because a badly installed binary printed its own source instead of the JSON. Now a response that breaks the contract is dropped with an error rather than mixed into the inventory."
+          },
+          {
+            "title": "No tool deletes anything",
+            "body": "They show what is there and a person decides. Across thousands of sites, a script that deletes on its own is only a matter of time."
+          }
+        ],
+        "results": [
+          {
+            "value": "41",
+            "label": "phases"
+          },
+          {
+            "value": "226",
+            "label": "test cases"
+          },
+          {
+            "value": "581",
+            "label": "sites in one change"
+          }
+        ],
+        "note": "Closed source: it is an internal tool and it operates client sites. Python, Bash, WP-CLI, Nginx and DNS."
+      }
+    }
   }
 }

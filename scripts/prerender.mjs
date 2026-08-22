@@ -8,6 +8,9 @@ import { renderToString } from 'react-dom/server'
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const buildDirectory = path.join(projectRoot, 'build')
 const baseUrl = 'https://portfolioalex-mico.vercel.app'
+// Mismo orden que en src/lib/routing.js. Si divergen, el test lo canta.
+const CASE_SLUGS = ['wordpress', 'savemymoneynow', 'atalaya', 'strev']
+const buildDate = new Date().toISOString().slice(0, 10)
 
 const escapeAttribute = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -65,7 +68,16 @@ const setCanonical = (html, url) => replaceTag(
 // El grafo es unico para los dos idiomas: la Person y los proyectos no cambian.
 // Lo que si es de cada pagina es el nodo ProfilePage, que apunta a su canonical
 // y declara su idioma.
-const setStructuredDataUrl = (html, url, language) => replaceTag(
+// En una pagina de caso, la entidad principal es el proyecto, no la persona:
+// declararla como ProfilePage haria que cuatro URLs distintas dijeran ser el
+// perfil de Alex.
+const CASE_ENTITY_IDS = {
+  atalaya: '#atalaya',
+  savemymoneynow: '#savemymoneynow',
+  strev: '#strev',
+}
+
+const setStructuredDataUrl = (html, url, language, slug) => replaceTag(
   html,
   /<script\b[^>]*\btype="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/i,
   (tag) => {
@@ -79,12 +91,20 @@ const setStructuredDataUrl = (html, url, language) => replaceTag(
     profilePage['@id'] = `${url}#page`
     profilePage.inLanguage = language
 
+    if (slug) {
+      profilePage['@type'] = 'WebPage'
+      profilePage.mainEntity = CASE_ENTITY_IDS[slug]
+        ? { '@id': `${baseUrl}/${CASE_ENTITY_IDS[slug]}` }
+        : undefined
+      profilePage.about = { '@id': `${baseUrl}/#alex` }
+    }
+
     return `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`
   },
   'the JSON-LD graph',
 )
 
-const addAlternates = (html) => {
+const addAlternates = (html, spanishUrl, englishUrl) => {
   const withoutAlternates = html.replace(
     /<link\b(?=[^>]*\brel="alternate")(?=[^>]*\bhreflang="[^"]+")[^>]*>/gi,
     '',
@@ -93,9 +113,9 @@ const addAlternates = (html) => {
   if (!canonical) throw new Error('Could not find the canonical link for hreflang injection')
 
   const alternates = [
-    `<link rel="alternate" hreflang="es" href="${baseUrl}/">`,
-    `<link rel="alternate" hreflang="en" href="${baseUrl}/en/">`,
-    `<link rel="alternate" hreflang="x-default" href="${baseUrl}/">`,
+    `<link rel="alternate" hreflang="es" href="${spanishUrl}">`,
+    `<link rel="alternate" hreflang="en" href="${englishUrl}">`,
+    `<link rel="alternate" hreflang="x-default" href="${spanishUrl}">`,
   ].join('')
 
   return withoutAlternates.replace(canonical, `${canonical}${alternates}`)
@@ -147,19 +167,65 @@ const assertNoUndefinedInHead = (html, language) => {
   }
 }
 
-const localizeHead = (baseHtml, language, translation, baseMetadata) => {
-  const canonicalUrl = language === 'en' ? `${baseUrl}/en/` : `${baseUrl}/`
+
+// El HTML de un caso tiene que traer su contenido de verdad: si el enrutado se
+// rompe, el prerender escribiria la portada bajo la URL del caso y nadie se
+// enteraria hasta verlo indexado.
+const assertRenderedContent = (html, page) => {
+  const body = html.match(/<div id="root">([\s\S]*)<\/div>/i)?.[1] ?? ''
+  const hasCase = body.includes('class="case"')
+
+  if (page.slug && !hasCase) throw new Error(`${page.pathname} rendered without the case study`)
+  if (!page.slug && hasCase) throw new Error(`${page.pathname} rendered a case study by mistake`)
+}
+
+const buildSitemap = (pages) => {
+  const entries = pages.map((page) => [
+    '  <url>',
+    `    <loc>${page.canonicalUrl}</loc>`,
+    `    <xhtml:link rel="alternate" hreflang="es" href="${page.spanishUrl}" />`,
+    `    <xhtml:link rel="alternate" hreflang="en" href="${page.englishUrl}" />`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${page.spanishUrl}" />`,
+    `    <lastmod>${buildDate}</lastmod>`,
+    '    <changefreq>monthly</changefreq>',
+    `    <priority>${page.slug ? '0.8' : (page.language === 'es' ? '1.0' : '0.9')}</priority>`,
+    '  </url>',
+  ].join('\n')).join('\n')
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+    '        xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    entries,
+    '</urlset>',
+    '',
+  ].join('\n')
+}
+
+const localizeHead = (baseHtml, page, translation, baseMetadata) => {
+  const { language, canonicalUrl, slug } = page
   const isEnglish = language === 'en'
-  const title = isEnglish
+  const study = slug ? translation.case_study?.cases?.[slug] : null
+
+  if (slug && !study) throw new Error(`No case study content for "${slug}" in ${language}`)
+
+  const homeTitle = isEnglish
     ? `${requireText(translation.header.name, 'header.name')} | ${requireText(translation.header.title, 'header.title')}`
     : baseMetadata.title
-  const description = isEnglish
+  const homeDescription = isEnglish
     ? requireText(translation.meta?.description, 'meta.description')
     : baseMetadata.description
-  const socialTitle = isEnglish ? title : baseMetadata.socialTitle
-  const socialDescription = isEnglish
-    ? translation.header.tagline
-    : baseMetadata.socialDescription
+
+  const title = study
+    ? `${requireText(study.title, `case_study.cases.${slug}.title`)} · ${requireText(translation.header.name, 'header.name')}`
+    : homeTitle
+  const description = study
+    ? requireText(study.summary, `case_study.cases.${slug}.summary`)
+    : homeDescription
+  const socialTitle = study ? title : (isEnglish ? homeTitle : baseMetadata.socialTitle)
+  const socialDescription = study
+    ? requireText(study.tagline, `case_study.cases.${slug}.tagline`)
+    : (isEnglish ? translation.header.tagline : baseMetadata.socialDescription)
 
   let html = replaceTag(
     baseHtml,
@@ -181,8 +247,8 @@ const localizeHead = (baseHtml, language, translation, baseMetadata) => {
   html = setMetaContent(html, 'name', 'twitter:title', socialTitle)
   html = setMetaContent(html, 'name', 'twitter:description', socialDescription)
   html = setCanonical(html, canonicalUrl)
-  html = addAlternates(html)
-  return setStructuredDataUrl(html, canonicalUrl, language)
+  html = addAlternates(html, page.spanishUrl, page.englishUrl)
+  return setStructuredDataUrl(html, canonicalUrl, language, slug)
 }
 
 const manifest = JSON.parse(await readFile(
@@ -240,10 +306,6 @@ try {
   })
 
   const { createPrerenderApp } = await import(pathToFileURL(serverBundle).href)
-  const renderedMarkup = {
-    es: renderToString(createPrerenderApp('es')),
-    en: renderToString(createPrerenderApp('en')),
-  }
   const baseHtml = await readFile(path.join(buildDirectory, 'index.html'), 'utf8')
   const englishTranslation = JSON.parse(await readFile(
     path.join(projectRoot, 'src/i18n/locales/en/translation.json'),
@@ -259,27 +321,73 @@ try {
     socialTitle: getMetaContent(baseHtml, 'property', 'og:title'),
     socialDescription: getMetaContent(baseHtml, 'property', 'og:description'),
   }
-  const localizedHtml = {
-    es: injectMarkup(
-      localizeHead(baseHtml, 'es', spanishTranslation, baseMetadata),
-      renderedMarkup.es,
-    ),
-    en: injectMarkup(
-      localizeHead(baseHtml, 'en', englishTranslation, baseMetadata),
-      renderedMarkup.en,
-    ),
+  const translations = { es: spanishTranslation, en: englishTranslation }
+
+  // Una entrada por HTML a escribir: las dos portadas y un caso por proyecto e
+  // idioma. `spanishUrl`/`englishUrl` son las dos caras de la MISMA pagina, que
+  // es lo que el hreflang tiene que emparejar: la portada inglesa no es la
+  // alternativa del caso de Atalaya.
+  const pages = [
+    {
+      language: 'es',
+      slug: null,
+      pathname: '/',
+      output: 'index.html',
+      spanishUrl: `${baseUrl}/`,
+      englishUrl: `${baseUrl}/en/`,
+    },
+    {
+      language: 'en',
+      slug: null,
+      pathname: '/en/',
+      output: 'en/index.html',
+      spanishUrl: `${baseUrl}/`,
+      englishUrl: `${baseUrl}/en/`,
+    },
+    ...CASE_SLUGS.flatMap((slug) => ([
+      {
+        language: 'es',
+        slug,
+        pathname: `/proyectos/${slug}/`,
+        output: `proyectos/${slug}/index.html`,
+        spanishUrl: `${baseUrl}/proyectos/${slug}/`,
+        englishUrl: `${baseUrl}/en/projects/${slug}/`,
+      },
+      {
+        language: 'en',
+        slug,
+        pathname: `/en/projects/${slug}/`,
+        output: `en/projects/${slug}/index.html`,
+        spanishUrl: `${baseUrl}/proyectos/${slug}/`,
+        englishUrl: `${baseUrl}/en/projects/${slug}/`,
+      },
+    ])),
+  ].map((page) => ({
+    ...page,
+    canonicalUrl: page.language === 'en' ? page.englishUrl : page.spanishUrl,
+  }))
+
+  for (const page of pages) {
+    const markup = renderToString(createPrerenderApp(page.language, page.pathname))
+    const html = injectMarkup(
+      localizeHead(baseHtml, page, translations[page.language], baseMetadata),
+      markup,
+    )
+    const label = `${page.language} ${page.pathname}`
+
+    assertAbsoluteAssetPaths(html, label)
+    assertNoUndefinedInHead(html, label)
+    assertRenderedContent(html, page)
+
+    const output = path.join(buildDirectory, page.output)
+    await mkdir(path.dirname(output), { recursive: true })
+    await writeFile(output, html)
   }
 
-  assertAbsoluteAssetPaths(localizedHtml.es, 'es')
-  assertAbsoluteAssetPaths(localizedHtml.en, 'en')
-  assertNoUndefinedInHead(localizedHtml.es, 'es')
-  assertNoUndefinedInHead(localizedHtml.en, 'en')
-
-  await mkdir(path.join(buildDirectory, 'en'), { recursive: true })
-  await Promise.all([
-    writeFile(path.join(buildDirectory, 'index.html'), localizedHtml.es),
-    writeFile(path.join(buildDirectory, 'en/index.html'), localizedHtml.en),
-  ])
+  await writeFile(
+    path.join(buildDirectory, 'sitemap.xml'),
+    buildSitemap(pages),
+  )
 } finally {
   await rm(temporaryDirectory, { recursive: true, force: true })
 }
