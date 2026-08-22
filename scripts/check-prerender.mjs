@@ -71,6 +71,11 @@ for (const pagina of PAGINAS) {
   else if (cv[2] !== pagina.idioma) anota(pagina, `descarga el CV en ${cv[2]}, deberia ser ${pagina.idioma}`)
 
   if (pagina.tipo === 'caso') {
+    // Las ocho paginas de caso vivieron sin una sola imagen: 2800 px de prosa
+    // seguida en la pagina que mas tiene que contar.
+    const artefacto = html.includes('class="pdiag') || html.includes('portfolio__terminal')
+    if (!artefacto) anota(pagina, 'el caso no pinta ni diagrama ni terminal')
+
     // En un caso no existen las secciones de la portada.
     const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
     if (sueltas.length) anota(pagina, `anclas a secciones inexistentes: ${[...new Set(sueltas)].join(', ')}`)

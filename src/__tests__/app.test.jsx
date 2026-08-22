@@ -34,30 +34,44 @@ describe('la web entera', () => {
     expect(enlacesCon(/github\.com\/ElRaxy/).length).toBeGreaterThan(0)
   })
 
-  // Una miniatura sin alt util es peor que ninguna: el lector de pantalla lee
-  // el nombre del fichero. Y sin lazy, tres imagenes compiten con el primer paint.
-  it('acompana cada proyecto que tiene captura con un alt propio y carga diferida', () => {
+  // Los tres diagramas son HTML, no imagenes, para seguir el tema claro/oscuro.
+  // Al ser `role="img"` el lector lee una descripcion seguida en vez de los doce
+  // fragmentos sueltos del dibujo, asi que esa descripcion tiene que describir.
+  it('da a cada diagrama de proyecto un nombre accesible propio y descriptivo', () => {
     render(<App />)
 
-    const capturas = screen.getAllByRole('img')
-      .filter((img) => (img.getAttribute('src') || '').startsWith('/projects/'))
+    const diagramas = screen.getAllByRole('img')
+      .filter((nodo) => nodo.classList.contains('pdiag'))
 
-    expect(capturas).toHaveLength(3)
-    capturas.forEach((captura) => {
+    expect(diagramas).toHaveLength(3)
+    diagramas.forEach((diagrama) => {
       // Antes se exigia /\S{10,}/, que en realidad medía la palabra mas
-      // larga del alt: un texto bueno sin ninguna palabra de 10 letras lo
-      // suspendia. Lo que hace util a un alt es que describa, asi que se
-      // mide eso: longitud y numero de palabras.
-      const alt = captura.getAttribute('alt') || ''
-      expect(alt.trim().length).toBeGreaterThanOrEqual(20)
-      expect(alt.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4)
-      expect(captura).toHaveAttribute('loading', 'lazy')
-      expect(captura).toHaveAttribute('width', '800')
-      expect(captura).toHaveAttribute('height', '500')
+      // larga: un texto bueno sin ninguna palabra de 10 letras lo suspendia.
+      // Lo que hace util a una descripcion es que describa, asi que se mide
+      // eso: longitud y numero de palabras.
+      const nombre = diagrama.getAttribute('aria-label') || ''
+      expect(nombre.trim().length).toBeGreaterThanOrEqual(20)
+      expect(nombre.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4)
     })
 
-    const textosAlternativos = capturas.map((captura) => captura.getAttribute('alt'))
-    expect(new Set(textosAlternativos).size).toBe(capturas.length)
+    const nombres = diagramas.map((diagrama) => diagrama.getAttribute('aria-label'))
+    expect(new Set(nombres).size).toBe(diagramas.length)
+  })
+
+  // El diagrama se lee de un vistazo: si un paso o el pie se quedan vacios
+  // porque falta la clave de traduccion, el hueco no lo caza nada mas.
+  it('pinta los tres pasos y el antes/ahora de cada diagrama', () => {
+    render(<App />)
+
+    const diagramas = screen.getAllByRole('img')
+      .filter((nodo) => nodo.classList.contains('pdiag'))
+
+    diagramas.forEach((diagrama) => {
+      expect(within(diagrama).getAllByRole('listitem')).toHaveLength(3)
+      within(diagrama).getAllByRole('listitem').forEach((paso) => {
+        expect(paso.textContent.trim().length).toBeGreaterThan(10)
+      })
+    })
   })
 
   // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay

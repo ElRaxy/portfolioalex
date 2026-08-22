@@ -238,7 +238,72 @@
         "slug": "strev"
       }
     ],
-    "case_link": "Ver el caso"
+    "case_link": "Ver el caso",
+    "diagrams": {
+      "wordpress": {
+        "prompt": "$",
+        "bar": "auditar --todos",
+        "badge": "1 pasada",
+        "steps": [
+          {
+            "title": "Inventario",
+            "note": "vhosts, DNS y certificados"
+          },
+          {
+            "title": "Comprueba",
+            "note": "plugins, correo y rendimiento"
+          },
+          {
+            "title": "Informe",
+            "note": "uno por sitio, con las cifras"
+          }
+        ],
+        "before": "Antes: sitio por sitio, a mano",
+        "after": "Ahora: un comando sobre toda la flota"
+      },
+      "savemymoneynow": {
+        "prompt": "",
+        "bar": "extracto.xlsx",
+        "badge": "4 bancos",
+        "steps": [
+          {
+            "title": "Cabecera",
+            "note": "la encuentra caiga en la fila que caiga"
+          },
+          {
+            "title": "Columnas",
+            "note": "mapea fecha, concepto e importe"
+          },
+          {
+            "title": "Duplicados",
+            "note": "se resuelven antes de guardar"
+          }
+        ],
+        "before": "Antes: cada banco exporta a su manera",
+        "after": "Ahora: un panel de gastos, venga de donde venga"
+      },
+      "strev": {
+        "prompt": "",
+        "bar": "POST /api/ai/analyze",
+        "badge": "202 aceptado",
+        "steps": [
+          {
+            "title": "Vídeo",
+            "note": "el cliente sube su serie"
+          },
+          {
+            "title": "Cola",
+            "note": "la petición no espera al modelo"
+          },
+          {
+            "title": "Gemini",
+            "note": "valora la técnica y avisa al entrenador"
+          }
+        ],
+        "before": "Antes: el entrenador revisa vídeo a vídeo",
+        "after": "Ahora: le llega ya valorado"
+      }
+    }
   },
   "contact": {
     "title": "Contáctame",

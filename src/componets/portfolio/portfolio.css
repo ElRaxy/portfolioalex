@@ -174,11 +174,10 @@
         column-gap: var(--space-8);
     }
 
-    .portfolio__item:last-child:nth-child(odd) .portfolio__shot {
+    .portfolio__item:last-child:nth-child(odd) .pdiag {
         grid-row: 1 / span 6;
-        align-self: stretch;
         height: 100%;
-        object-fit: cover;
+        align-self: stretch;
     }
 }
 
@@ -216,17 +215,12 @@
     outline-offset: 2px;
 }
 
-.portfolio__shot {
-    display: block;
+/* El diagrama sangra hasta los bordes de la tarjeta y hace de cabecera. */
+.portfolio__item .pdiag {
     width: calc(100% + var(--space-6) * 2);
-    height: auto;
     margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
-    border-bottom: 1px solid var(--line-soft);
+    border-width: 0 0 1px;
     border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
-    aspect-ratio: 16 / 10;
-    background: var(--surface-2);
-    object-fit: cover;
-    object-position: top center;
 }
 
 .portfolio__item h3 {

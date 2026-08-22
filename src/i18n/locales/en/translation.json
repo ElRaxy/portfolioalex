@@ -238,7 +238,72 @@
         "slug": "strev"
       }
     ],
-    "case_link": "Read the case study"
+    "case_link": "Read the case study",
+    "diagrams": {
+      "wordpress": {
+        "prompt": "$",
+        "bar": "auditar --todos",
+        "badge": "one pass",
+        "steps": [
+          {
+            "title": "Inventory",
+            "note": "vhosts, DNS and certificates"
+          },
+          {
+            "title": "Checks",
+            "note": "plugins, mail and performance"
+          },
+          {
+            "title": "Report",
+            "note": "one per site, with the numbers"
+          }
+        ],
+        "before": "Before: site by site, by hand",
+        "after": "Now: one command across the whole fleet"
+      },
+      "savemymoneynow": {
+        "prompt": "",
+        "bar": "statement.xlsx",
+        "badge": "4 banks",
+        "steps": [
+          {
+            "title": "Header row",
+            "note": "found wherever the bank put it"
+          },
+          {
+            "title": "Columns",
+            "note": "maps date, description and amount"
+          },
+          {
+            "title": "Duplicates",
+            "note": "resolved before anything is saved"
+          }
+        ],
+        "before": "Before: every bank exports its own shape",
+        "after": "Now: one expense dashboard, whatever the source"
+      },
+      "strev": {
+        "prompt": "",
+        "bar": "POST /api/ai/analyze",
+        "badge": "202 accepted",
+        "steps": [
+          {
+            "title": "Video",
+            "note": "the client uploads their set"
+          },
+          {
+            "title": "Queue",
+            "note": "the request never waits for the model"
+          },
+          {
+            "title": "Gemini",
+            "note": "judges technique and pings the trainer"
+          }
+        ],
+        "before": "Before: the trainer reviews video after video",
+        "after": "Now: it arrives already judged"
+      }
+    }
   },
   "contact": {
     "title": "Contact Me",

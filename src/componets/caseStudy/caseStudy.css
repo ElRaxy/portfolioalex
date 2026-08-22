@@ -204,3 +204,14 @@
     border-color: var(--accent);
     background: var(--surface-2);
 }
+
+/* El artefacto del caso: el diagrama de la tarjeta o la terminal de Atalaya.
+   Aqui el ancho da de si, asi que el diagrama se ve con sus tres pasos en
+   fila y sus notas, no apilado como en la miniatura. */
+.case__artifact {
+    margin-top: var(--space-6);
+}
+
+.case__artifact .portfolio__terminal {
+    margin: 0;
+}

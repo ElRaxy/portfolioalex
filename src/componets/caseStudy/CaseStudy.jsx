@@ -1,5 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import ProjectDiagram from '../portfolio/ProjectDiagram'
+import TypewriterTerminal from '../portfolio/TypewriterTerminal'
 
 const CaseStudy = ({ slug }) => {
   const { t, i18n } = useTranslation()
@@ -27,7 +29,8 @@ const CaseStudy = ({ slug }) => {
   // que convence y no deja pulsar el codigo pierde al lector en el mejor
   // momento. Los proyectos cerrados no tienen ninguno y no pintan el bloque.
   const projects = t('portfolio.projects', { returnObjects: true }) || []
-  const links = projects.find((project) => project.slug === slug)?.links || []
+  const card = projects.find((project) => project.slug === slug)
+  const links = card?.links || []
   const backHref = i18n.language.startsWith('en') ? '/en/' : '/'
 
   return (
@@ -42,6 +45,16 @@ const CaseStudy = ({ slug }) => {
       <section className="case__block case__block--summary">
         <h2>{t('case_study.summary_label', { project })}</h2>
         <p className="case__summary">{summary}</p>
+
+        {/* Atalaya ensena su terminal; los otros tres, el diagrama de la
+            tarjeta. Es el mismo artefacto que ya hay en la portada, no uno
+            nuevo: la pagina que profundiza no puede ser la unica sin nada
+            que mirar. */}
+        <div className="case__artifact">
+          {slug === 'atalaya'
+            ? <TypewriterTerminal />
+            : <ProjectDiagram slug={slug} label={card?.image_alt} />}
+        </div>
       </section>
 
       <section className="case__block">
