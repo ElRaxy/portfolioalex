@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import LanguageSelector from '../language/LanguageSelector'
 import { parseRoute, homeHref } from '../../lib/routing'
+import { useRoutePathname } from '../../lib/routeContext'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
@@ -11,7 +12,7 @@ const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
 // Dentro de una pagina de caso las secciones no existen: el ancla suelta no
 // llevaria a ninguna parte, asi que se prefija con la home de ese idioma.
 const useAnchorBase = () => {
-  const pathname = typeof window === 'undefined' ? '/' : window.location.pathname
+  const pathname = useRoutePathname()
   const route = parseRoute(pathname)
   return route.kind === 'case' ? homeHref(route.language) : ''
 }

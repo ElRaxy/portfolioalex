@@ -186,6 +186,42 @@ describe('el orden de foco sigue al orden visual', () => {
   })
 })
 
+// El 2026-08-22 se vio que las 8 paginas de caso servian `#about`, `#portfolio`,
+// `#experience`, `#stack` y `#portfolio` (el CTA) apuntando a secciones que en
+// ese HTML no existen: la nav leia la ruta de `window`, que en el prerender no
+// hay, asi que todo se prerenderizaba como si fuera la portada. La ruta ahora
+// baja por contexto desde App, que es quien la sabe.
+describe('las anclas de una pagina de caso apuntan a la portada', () => {
+  it('ninguna ancla queda suelta cuando la ruta es un caso', () => {
+    const { container } = render(<App pathname="/proyectos/atalaya/" />)
+
+    const sueltas = [...container.querySelectorAll('a[href^="#"]')]
+      .map((enlace) => enlace.getAttribute('href'))
+
+    expect(sueltas).toEqual([])
+  })
+
+  it('la portada conserva sus anclas locales', () => {
+    const { container } = render(<App pathname="/" />)
+
+    const locales = [...container.querySelectorAll('a[href^="#"]')]
+      .map((enlace) => enlace.getAttribute('href'))
+
+    expect(locales).toEqual(expect.arrayContaining(['#about', '#portfolio', '#contact']))
+  })
+
+  // Dos h1 en el mismo documento dejan la pagina sin titulo principal.
+  it('la pagina de caso tiene un solo h1 y es el titulo del caso', () => {
+    render(<App pathname="/proyectos/atalaya/" />)
+
+    const titulos = screen.getAllByRole('heading', { level: 1 })
+    expect(titulos).toHaveLength(1)
+    expect(titulos[0]).toHaveTextContent('Atalaya')
+    // El nombre sigue anunciandose, ahora como imagen con su etiqueta.
+    expect(screen.getByRole('img', { name: 'Alex Micó Robles' })).toBeInTheDocument()
+  })
+})
+
 // Las paginas de caso son URLs propias y prerenderizadas: lo que se vigila aqui
 // es que la ruta elija la pagina correcta y que el contenido llegue entero.
 describe('paginas de caso de estudio', () => {

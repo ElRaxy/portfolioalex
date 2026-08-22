@@ -17,6 +17,7 @@ import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
 import { useSmoothAnchors, useLanguageFromHistory } from './lib/smoothScroll'
 import { parseRoute } from './lib/routing'
+import { RoutePathnameContext } from './lib/routeContext'
 
 // La ruta se lee una vez y no cambia: cada pagina de caso es un HTML propio,
 // prerenderizado, al que se llega con una navegacion normal del navegador.
@@ -30,50 +31,53 @@ const readPathname = () => {
 
 function App({ pathname }) {
   const { i18n } = useTranslation()
-  const route = parseRoute(pathname || readPathname())
+  const rutaActual = pathname || readPathname()
+  const route = parseRoute(rutaActual)
   useSmoothAnchors()
   useLanguageFromHistory(i18n)
 
   return (
-    <ThemeProvider>
-      <div className="site-shell">
-        <Nav />
+    <RoutePathnameContext.Provider value={rutaActual}>
+      <ThemeProvider>
+        <div className="site-shell">
+          <Nav />
 
-        {/* Antes del sidebar en el DOM porque es donde estan en pantalla: dentro
-            del main se alcanzaban en la parada 11 y 12 del tabulador estando
-            arriba del todo (WCAG 2.4.3). La rejilla los recoloca. */}
-        <div className="site-shell__controls">
-          <LanguageSelector />
-          <ThemeToggle />
+          {/* Antes del sidebar en el DOM porque es donde estan en pantalla: dentro
+              del main se alcanzaban en la parada 11 y 12 del tabulador estando
+              arriba del todo (WCAG 2.4.3). La rejilla los recoloca. */}
+          <div className="site-shell__controls">
+            <LanguageSelector />
+            <ThemeToggle />
+          </div>
+
+          <header className="site-shell__sidebar">
+            <Header nameAs={route.kind === 'case' ? 'p' : 'h1'} />
+          </header>
+
+          <main className="site-shell__content">
+            {route.kind === 'case' ? (
+              <>
+                <CaseStudy slug={route.slug} />
+                <Contact />
+                <Footer />
+              </>
+            ) : (
+              <>
+                <About />
+                <Portfolio />
+                <ExperienceTimeline />
+                <Stack />
+                <Contact />
+                <Footer />
+              </>
+            )}
+          </main>
         </div>
 
-        <header className="site-shell__sidebar">
-          <Header />
-        </header>
-
-        <main className="site-shell__content">
-          {route.kind === 'case' ? (
-            <>
-              <CaseStudy slug={route.slug} />
-              <Contact />
-              <Footer />
-            </>
-          ) : (
-            <>
-              <About />
-              <Portfolio />
-              <ExperienceTimeline />
-              <Stack />
-              <Contact />
-              <Footer />
-            </>
-          )}
-        </main>
-      </div>
-
-      <Analytics />
-      <SpeedInsights />
-    </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
+      </ThemeProvider>
+    </RoutePathnameContext.Provider>
   )
 }
 

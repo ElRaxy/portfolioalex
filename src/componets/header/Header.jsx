@@ -6,27 +6,39 @@ import HeroGrid from './HeroGrid'
 import HeaderSocials from './HeaderSocials'
 import { SidebarNav } from '../nav/Nav'
 
-const Header = () => {
+// En una pagina de caso el h1 es el titulo del caso, asi que el nombre baja a
+// parrafo: dos h1 en el mismo documento dejan la pagina sin titulo principal.
+// El <p> lleva `role="img"` porque `aria-label` solo se expone sobre elementos
+// con rol; sirve ademas el nombre entero de una pieza, que es lo que hace falta
+// con el nombre troceado en 16 spans.
+const Header = ({ nameAs = 'h1' }) => {
   const { t } = useTranslation()
   const name = t('header.name')
+  const esTitulo = nameAs === 'h1'
+
+  const caracteres = Array.from(name).map((character, index) => (
+    <span
+      className="hero__char"
+      aria-hidden="true"
+      style={{ '--i': index }}
+      key={`${character}-${index}`}
+    >
+      {character === ' ' ? '\u00a0' : character}
+    </span>
+  ))
 
   return (
     <header id="home" className="hero">
       <HeroGrid />
 
       <div className="hero__intro">
-        <h1 className="hero__name" aria-label={name}>
-          {Array.from(name).map((character, index) => (
-            <span
-              className="hero__char"
-              aria-hidden="true"
-              style={{ '--i': index }}
-              key={`${character}-${index}`}
-            >
-              {character === ' ' ? '\u00a0' : character}
-            </span>
-          ))}
-        </h1>
+        {React.createElement(
+          nameAs,
+          esTitulo
+            ? { className: 'hero__name', 'aria-label': name }
+            : { className: 'hero__name', role: 'img', 'aria-label': name },
+          caracteres,
+        )}
         <p className="hero__title">{t('header.title')}</p>
         <p className="hero__tagline">{t('header.tagline')}</p>
         <CTA />
