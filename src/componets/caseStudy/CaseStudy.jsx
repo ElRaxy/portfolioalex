@@ -19,6 +19,11 @@ const CaseStudy = ({ slug }) => {
   const decisions = t(`case_study.cases.${slug}.decisions`, { returnObjects: true }) || []
   const results = t(`case_study.cases.${slug}.results`, { returnObjects: true }) || []
   const note = t(`case_study.cases.${slug}.note`)
+  // Los enlaces salen de la tarjeta de la portada, que ya los tiene: un caso
+  // que convence y no deja pulsar el codigo pierde al lector en el mejor
+  // momento. Los proyectos cerrados no tienen ninguno y no pintan el bloque.
+  const projects = t('portfolio.projects', { returnObjects: true }) || []
+  const links = projects.find((project) => project.slug === slug)?.links || []
   const backHref = i18n.language.startsWith('en') ? '/en/' : '/'
 
   return (
@@ -70,6 +75,22 @@ const CaseStudy = ({ slug }) => {
       </section>
 
       <p className="case__note">{note}</p>
+
+      {links.length > 0 && (
+        <nav className="case__links" aria-label={t('case_study.links_label')}>
+          {links.map((link) => (
+            <a
+              className="case__link"
+              href={link.url}
+              key={link.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </article>
   )
 }

@@ -466,6 +466,7 @@
         "short": "la automatización de WordPress"
       }
     },
-    "summary_label": "Qué es {{project}}"
+    "summary_label": "Qué es {{project}}",
+    "links_label": "Ver el proyecto"
   }
 }

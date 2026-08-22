@@ -50,7 +50,7 @@
       {
         "role": "Full Stack Developer · Automation",
         "org": "Anuubis Solutions · Remote",
-        "when": "2026 — NOW",
+        "when": "2026 — Present",
         "current": true,
         "bullets": [
           "I run web infrastructure in production: deploys, migrations between hosting providers and audits.",
@@ -466,6 +466,7 @@
         "short": "the WordPress automation"
       }
     },
-    "summary_label": "What {{project}} is"
+    "summary_label": "What {{project}} is",
+    "links_label": "See the project"
   }
 }
