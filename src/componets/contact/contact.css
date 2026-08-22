@@ -170,3 +170,8 @@
     min-height: 24px;
     align-items: center;
 }
+
+.contact__required {
+    color: var(--text-2);
+    font-size: var(--fs-xs);
+}

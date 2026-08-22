@@ -171,3 +171,13 @@
         gap: var(--space-5);
     }
 }
+
+@media screen and (max-width: 600px) {
+    /* `space-between` + `wrap`: cuando el puesto llenaba la linea, la fecha
+       bajaba y se quedaba a la izquierda; cuando cabia, iba a la derecha. Dos
+       entradas seguidas la ponian en sitios distintos. */
+    .timeline__head {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}

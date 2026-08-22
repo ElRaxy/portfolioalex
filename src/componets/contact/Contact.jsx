@@ -100,6 +100,8 @@ function Contact() {
               <input type="text" name="company" tabIndex={-1} autoComplete="off" />
             </div>
 
+            <p className="contact__required">{t('contact.required_note')}</p>
+
             <label className="contact__field">
               <span>{t('contact.name')}</span>
               <input type="text" name="name" autoComplete="name" minLength={2} maxLength={100} required />

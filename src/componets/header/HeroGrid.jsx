@@ -101,16 +101,33 @@ const HeroGrid = () => {
             launchWave([row, column])
           }
 
+          // `document.hidden` solo cubre la pestana de fondo. Con la pestana
+          // delante y el hero fuera de pantalla, los 336 puntos seguian
+          // animando a scrollY 3000 sin que nadie los viera.
+          let enPantalla = true
+          let pestanaVisible = !document.hidden
+
+          const revisarReproduccion = () => {
+            if (enPantalla && pestanaVisible) activeWave?.play()
+            else activeWave?.pause()
+          }
+
           const handleVisibilityChange = () => {
-            if (document.hidden) {
-              activeWave?.pause()
-            } else {
-              activeWave?.play()
-            }
+            pestanaVisible = !document.hidden
+            revisarReproduccion()
           }
 
           launchWave('center')
           document.addEventListener('visibilitychange', handleVisibilityChange)
+
+          let observador
+          if ('IntersectionObserver' in window) {
+            observador = new IntersectionObserver(([entrada]) => {
+              enPantalla = entrada.isIntersecting
+              revisarReproduccion()
+            })
+            observador.observe(grid)
+          }
 
           const isTouchDevice = window.matchMedia('(hover: none)').matches
           if (!isTouchDevice) {
@@ -118,6 +135,7 @@ const HeroGrid = () => {
           }
 
           return () => {
+            observador?.disconnect()
             document.removeEventListener('visibilitychange', handleVisibilityChange)
             pointerTarget?.removeEventListener('pointermove', handlePointerMove)
             activeWave?.kill()

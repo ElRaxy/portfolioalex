@@ -325,7 +325,8 @@
       "send_failed": "The message could not be sent. Please try again later.",
       "timeout": "The request took too long and was cancelled.",
       "fallback": "You can also contact me via"
-    }
+    },
+    "required_note": "All three fields are required."
   },
   "footer": {
     "availability": "Open to talking about new projects",

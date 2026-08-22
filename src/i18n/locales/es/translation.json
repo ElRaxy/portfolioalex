@@ -325,7 +325,8 @@
       "send_failed": "El mensaje no se ha podido enviar. Inténtalo de nuevo más tarde.",
       "timeout": "El envío ha tardado demasiado y se ha cancelado.",
       "fallback": "También puedes escribirme por"
-    }
+    },
+    "required_note": "Los tres campos son obligatorios."
   },
   "footer": {
     "availability": "Abierto a hablar de nuevos proyectos",
