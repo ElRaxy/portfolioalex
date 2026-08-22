@@ -84,6 +84,7 @@
     ]
   },
   "stack": {
+    "key_note": "En cada fila, lo primero es la herramienta principal.",
     "frontend": {
       "label": "Frontend",
       "chips": [

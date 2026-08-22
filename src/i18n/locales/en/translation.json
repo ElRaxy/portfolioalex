@@ -84,6 +84,7 @@
     ]
   },
   "stack": {
+    "key_note": "In each row, the first one is the main tool.",
     "frontend": {
       "label": "Frontend",
       "chips": [

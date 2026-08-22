@@ -262,6 +262,9 @@
 
 .portfolio__metric-label {
     display: block;
+    /* Dos lineas de alto siempre: "comandos" ocupa una y "tests en verde" dos,
+       y sin esto los tres bloques acababan a distinta altura. */
+    min-height: 2.7em;
     margin-top: var(--space-1);
     color: var(--text-2);
     font-size: var(--fs-xs);

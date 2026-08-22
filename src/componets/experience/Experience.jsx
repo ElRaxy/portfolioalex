@@ -54,6 +54,8 @@ const Stack = () => {
   return (
     <section id="stack" className="stack" aria-labelledby="stack-title">
       <h2 id="stack-title">{t('nav.stack')}</h2>
+      {/* El primero de cada fila iba en color de acento y nada decia por que. */}
+      <p className="stack__note">{t('stack.key_note')}</p>
 
       <RevealGroup className="container stack__grid">
         {stackGroups.map((group) => (

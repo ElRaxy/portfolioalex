@@ -157,6 +157,13 @@
     line-height: 1.6;
 }
 
+.stack__note {
+    margin-bottom: var(--space-6);
+    color: var(--text-2);
+    font-size: var(--fs-xs);
+    text-align: center;
+}
+
 .stack__chip.is-key {
     border-color: var(--accent);
     color: var(--accent);
