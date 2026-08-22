@@ -124,6 +124,35 @@ describe('reparacion de reduced-motion', () => {
   })
 })
 
+// El 2026-08-22 se midio que el elemento LCP de la home, en movil y en
+// escritorio, es un parrafo del bloque "Sobre mi". Envuelto en Reveal nacia con
+// `opacity:0` inline en el prerender y no se pintaba hasta que hidrataba el
+// bundle: el LCP llegaba ~480 ms despues del FCP. Su entrada vive ahora en el
+// CSS y no toca la opacidad, porque un bloque a opacity 0 tampoco cuenta como
+// pintado. Se vigila desde el fuente: en jsdom no hay cascada que medir.
+describe('el bloque LCP no espera al JavaScript', () => {
+  const fs = require('fs')
+  const path = require('path')
+  const leer = (...partes) => fs.readFileSync(path.join(__dirname, '..', ...partes), 'utf8')
+
+  it('Sobre mi no se envuelve en Reveal', () => {
+    expect(leer('componets', 'about', 'About.jsx')).not.toMatch(/^import .*Reveal/m)
+  })
+
+  it('su entrada por CSS anima el desplazamiento, nunca la opacidad', () => {
+    const css = leer('componets', 'about', 'about.css')
+
+    const keyframes = css.match(/@keyframes about-block-in\s*\{[\s\S]*?\n\}/)
+    expect(keyframes).not.toBeNull()
+    expect(keyframes[0]).toMatch(/transform/)
+    expect(keyframes[0]).not.toMatch(/opacity/)
+
+    const reglas = css.match(/\.js \.about__title,[\s\S]*?\n\}/)
+    expect(reglas).not.toBeNull()
+    expect(reglas[0]).not.toMatch(/opacity/)
+  })
+})
+
 // Las paginas de caso son URLs propias y prerenderizadas: lo que se vigila aqui
 // es que la ruta elija la pagina correcta y que el contenido llegue entero.
 describe('paginas de caso de estudio', () => {

@@ -22,3 +22,26 @@
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
 }
+
+/* ---- Entrada del bloque ----
+   En CSS y no en Motion porque este parrafo es el elemento LCP en movil: con
+   el estado inicial inline del prerender, el texto esperaba a la hidratacion
+   y el LCP llegaba 600 ms despues del FCP. Medido el 2026-08-22.
+   La entrada NO toca la opacidad a proposito: un bloque que nace a opacity 0
+   tampoco cuenta como pintado, asi que el fade movia el problema en vez de
+   arreglarlo. Se desliza, y el texto esta visible desde el primer frame. */
+
+@keyframes about-block-in {
+    from { transform: translateY(12px); }
+    to   { transform: none; }
+}
+
+.js .about__title,
+.js .about__content {
+    animation-name: about-block-in;
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: backwards;
+}
+
+.js .about__content { animation-delay: 60ms; }
