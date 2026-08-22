@@ -261,6 +261,17 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     expect(delCaso.filter((texto) => /Atalaya/.test(texto)).length).toBeGreaterThanOrEqual(2)
   })
 
+  it('solo Atalaya explica por que no valia uno de los que ya existen', () => {
+    const { unmount } = render(<App pathname="/proyectos/atalaya/" />)
+
+    expect(screen.getByRole('heading', { name: /Por qué no valía/ })).toBeInTheDocument()
+    expect(screen.getByText(/InfoJobs, Tecnoempleo, JobFluent/)).toBeInTheDocument()
+    unmount()
+
+    render(<App pathname="/proyectos/strev/" />)
+    expect(screen.queryByRole('heading', { name: /Por qué no valía/ })).toBeNull()
+  })
+
   it('el caso abre con un bloque que dice que es el proyecto', () => {
     render(<App pathname="/proyectos/atalaya/" />)
 

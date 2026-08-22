@@ -322,7 +322,11 @@
           }
         ],
         "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite.",
-        "short": "Atalaya"
+        "short": "Atalaya",
+        "gap": [
+          "There are job aggregators with years behind them and thousands of stars: career-ops, AIHawk, JobSpy, ApplyPilot. None of the four reads InfoJobs, Tecnoempleo, JobFluent or RemoteWorkSpain, and none opens the alerts those boards send by email.",
+          "For a remote search from Spain, that leaves half the search out. Atalaya exists for that gap. Checked against their own documentation in August 2026: JobSpy, for one, reaches Spain only through Indeed and Glassdoor."
+        ]
       },
       "savemymoneynow": {
         "title": "SaveMyMoneyNow",
@@ -467,6 +471,7 @@
       }
     },
     "summary_label": "What {{project}} is",
-    "links_label": "See the project"
+    "links_label": "See the project",
+    "gap_label": "Why none of the existing ones fit"
   }
 }

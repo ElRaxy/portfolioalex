@@ -16,6 +16,10 @@ const CaseStudy = ({ slug }) => {
   const tagline = t(`case_study.cases.${slug}.tagline`)
   const summary = t(`case_study.cases.${slug}.summary`)
   const problema = t(`case_study.cases.${slug}.problem`, { returnObjects: true }) || []
+  // Solo lo tiene Atalaya: es el unico de los cuatro que compite con proyectos
+  // conocidos, y sin decirlo el caso no responde "por que esto y no aquello".
+  const gap = t(`case_study.cases.${slug}.gap`, { returnObjects: true })
+  const gapParrafos = Array.isArray(gap) ? gap : []
   const decisions = t(`case_study.cases.${slug}.decisions`, { returnObjects: true }) || []
   const results = t(`case_study.cases.${slug}.results`, { returnObjects: true }) || []
   const note = t(`case_study.cases.${slug}.note`)
@@ -44,6 +48,13 @@ const CaseStudy = ({ slug }) => {
         <h2>{t('case_study.problem_label', { project })}</h2>
         {problema.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
+
+      {gapParrafos.length > 0 && (
+        <section className="case__block">
+          <h2>{t('case_study.gap_label')}</h2>
+          {gapParrafos.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </section>
+      )}
 
       <section className="case__block">
         <h2>{t('case_study.decisions_label', { project })}</h2>

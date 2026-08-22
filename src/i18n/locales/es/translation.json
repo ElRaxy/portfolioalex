@@ -322,7 +322,11 @@
           }
         ],
         "note": "Tipado estricto con mypy y linter en modo severo. Python 3.12, Typer, httpx, SQLite.",
-        "short": "Atalaya"
+        "short": "Atalaya",
+        "gap": [
+          "Hay agregadores de ofertas con años detrás y miles de estrellas: career-ops, AIHawk, JobSpy, ApplyPilot. Ninguno de los cuatro lee InfoJobs, Tecnoempleo, JobFluent ni RemoteWorkSpain, y ninguno abre las alertas que esos portales mandan por correo.",
+          "Para buscar en remoto desde España, eso deja fuera media búsqueda. Atalaya existe por ese hueco. Comprobado en su documentación en agosto de 2026: JobSpy, por ejemplo, llega a España solo por Indeed y Glassdoor."
+        ]
       },
       "savemymoneynow": {
         "title": "SaveMyMoneyNow",
@@ -467,6 +471,7 @@
       }
     },
     "summary_label": "Qué es {{project}}",
-    "links_label": "Ver el proyecto"
+    "links_label": "Ver el proyecto",
+    "gap_label": "Por qué no valía uno de los que ya existen"
   }
 }
