@@ -4,6 +4,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Reveal from '../common/Reveal'
 import './contact.css'
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 const CONTACT_ERROR_CODES = new Set([
   'invalid_name',
   'invalid_email',
@@ -18,6 +20,7 @@ function Contact() {
   const form = useRef()
   const [sendStatus, setSendStatus] = useState('idle')
   const [errorCode, setErrorCode] = useState(null)
+  const [fieldErrors, setFieldErrors] = useState({})
   const shouldReduceMotion = useReducedMotion()
   const hasStatus = sendStatus === 'ok' || sendStatus === 'error'
   const StatusElement = shouldReduceMotion ? 'div' : motion.div
@@ -29,8 +32,56 @@ function Contact() {
     style: { overflow: 'hidden' },
   }
 
+  const clearFieldError = (field) => {
+    setFieldErrors((currentErrors) => {
+      if (!currentErrors[field]) return currentErrors
+
+      const nextErrors = { ...currentErrors }
+      delete nextErrors[field]
+      return nextErrors
+    })
+  }
+
   const sendEmail = async (e) => {
     e.preventDefault()
+
+    const formData = new FormData(form.current)
+    const name = formData.get('name')
+    const email = formData.get('email')
+    const message = formData.get('message')
+    const nextFieldErrors = {}
+
+    if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
+      nextFieldErrors.name = 'invalid_name'
+    }
+
+    if (
+      typeof email !== 'string'
+      || email.length < 5
+      || email.length > 200
+      || !EMAIL_PATTERN.test(email)
+    ) {
+      nextFieldErrors.email = 'invalid_email'
+    }
+
+    if (
+      typeof message !== 'string'
+      || message.trim().length < 10
+      || message.trim().length > 5000
+    ) {
+      nextFieldErrors.message = 'invalid_message'
+    }
+
+    const firstInvalidField = ['name', 'email', 'message']
+      .find((field) => nextFieldErrors[field])
+
+    if (firstInvalidField) {
+      setFieldErrors(nextFieldErrors)
+      form.current.elements.namedItem(firstInvalidField)?.focus()
+      return
+    }
+
+    setFieldErrors({})
     setSendStatus('sending')
     setErrorCode(null)
 
@@ -40,7 +91,6 @@ function Contact() {
     let nextErrorCode = 'send_failed'
 
     try {
-      const formData = new FormData(form.current)
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,26 +146,70 @@ function Contact() {
         </dl>
 
         <div className="contact__form-area">
-          <form className="contact__form" ref={form} onSubmit={sendEmail}>
+          <form className="contact__form" ref={form} onSubmit={sendEmail} noValidate>
             <div className="contact__honeypot" aria-hidden="true">
               <input type="text" name="company" tabIndex={-1} autoComplete="off" />
             </div>
 
             <p className="contact__required">{t('contact.required_note')}</p>
 
-            <label className="contact__field">
+            <label className={`contact__field${fieldErrors.name ? ' contact__field--invalid' : ''}`}>
               <span>{t('contact.name')}</span>
-              <input type="text" name="name" autoComplete="name" minLength={2} maxLength={100} required />
+              <input
+                type="text"
+                name="name"
+                autoComplete="name"
+                minLength={2}
+                maxLength={100}
+                required
+                aria-invalid={fieldErrors.name ? 'true' : undefined}
+                aria-describedby={fieldErrors.name ? 'contact-error-name' : undefined}
+                onInput={() => clearFieldError('name')}
+              />
+              {fieldErrors.name && (
+                <p className="contact__field-error" role="alert" id="contact-error-name">
+                  {t(`contact.errors.${fieldErrors.name}`)}
+                </p>
+              )}
             </label>
 
-            <label className="contact__field">
+            <label className={`contact__field${fieldErrors.email ? ' contact__field--invalid' : ''}`}>
               <span>{t('contact.email_placeholder')}</span>
-              <input type="email" name="email" autoComplete="email" minLength={5} maxLength={200} required />
+              <input
+                type="email"
+                name="email"
+                autoComplete="email"
+                minLength={5}
+                maxLength={200}
+                required
+                aria-invalid={fieldErrors.email ? 'true' : undefined}
+                aria-describedby={fieldErrors.email ? 'contact-error-email' : undefined}
+                onInput={() => clearFieldError('email')}
+              />
+              {fieldErrors.email && (
+                <p className="contact__field-error" role="alert" id="contact-error-email">
+                  {t(`contact.errors.${fieldErrors.email}`)}
+                </p>
+              )}
             </label>
 
-            <label className="contact__field contact__field--message">
+            <label className={`contact__field contact__field--message${fieldErrors.message ? ' contact__field--invalid' : ''}`}>
               <span>{t('contact.message_placeholder')}</span>
-              <textarea name="message" rows="5" minLength={10} maxLength={5000} required></textarea>
+              <textarea
+                name="message"
+                rows="5"
+                minLength={10}
+                maxLength={5000}
+                required
+                aria-invalid={fieldErrors.message ? 'true' : undefined}
+                aria-describedby={fieldErrors.message ? 'contact-error-message' : undefined}
+                onInput={() => clearFieldError('message')}
+              ></textarea>
+              {fieldErrors.message && (
+                <p className="contact__field-error" role="alert" id="contact-error-message">
+                  {t(`contact.errors.${fieldErrors.message}`)}
+                </p>
+              )}
             </label>
 
             <button

@@ -26,6 +26,39 @@ describe('formulario de contacto', () => {
 
   afterEach(() => jest.restoreAllMocks())
 
+  // El unico estado de error de validacion era la burbuja nativa de Chrome, que
+  // sobre el diseno oscuro tapaba el campo de mensaje y al cerrarse dejaba el
+  // campo malo con el mismo anillo que uno correcto.
+  it('marca los campos invalidos sin llegar a llamar al servidor', async () => {
+    render(<Contact />)
+    rellenar({ name: 'A', email: 'no-es-un-correo', message: 'corto' })
+    userEvent.click(screen.getByRole('button', { name: /enviar|mensaje/i }))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/tu nombre/i)).toHaveAttribute('aria-invalid', 'true')
+    })
+    expect(screen.getByLabelText(/tu correo/i)).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText(/tu mensaje/i)).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getAllByRole('alert')).toHaveLength(3)
+    expect(global.fetch).not.toHaveBeenCalled()
+  })
+
+  it('quita la marca de error en cuanto el usuario corrige el campo', async () => {
+    render(<Contact />)
+    rellenar({ name: 'A', email: 'alguien@ejemplo.com', message: 'Un mensaje bastante largo.' })
+    userEvent.click(screen.getByRole('button', { name: /enviar|mensaje/i }))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/tu nombre/i)).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    userEvent.type(screen.getByLabelText(/tu nombre/i), 'lex')
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/tu nombre/i)).not.toHaveAttribute('aria-invalid')
+    })
+  })
+
   // El 429 se anadio con el limite por IP: sin su clave de traduccion el
   // formulario habria mostrado "contact.errors.rate_limited" en crudo.
   it('traduce el corte por exceso de envios en vez de decir "fallo al enviar"', async () => {
