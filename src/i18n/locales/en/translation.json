@@ -280,7 +280,7 @@
     "cases": {
       "atalaya": {
         "title": "Atalaya",
-        "tagline": "Eight job boards, one scored list",
+        "tagline": "Seven job boards, one scored list",
         "summary": "Atalaya is a Python CLI that pulls remote developer roles from seven job boards, scores them against your profile and drafts the cover letter.",
         "problem": [
           "Looking for remote work means going through the same boards every day. No two publish alike: one serves JSON-LD, another server-rendered HTML, another an RSS feed, another its own API. The good roles show up on several at once, so the list fills with repeats.",

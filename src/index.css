@@ -392,6 +392,32 @@ select {
         height: auto;
     }
 
+    /* En un caso, la barra lateral apilada arriba gastaba 518 de los primeros
+       844 px repitiendo la portada: quien pulsaba "ver el caso" volvia a ver
+       el hero y el titulo aterrizaba al 68 % del primer pantallazo. Aqui baja
+       al pie, donde el nombre y el CV funcionan como firma. */
+    .site-shell--case {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .site-shell--case .site-shell__content {
+        order: 1;
+        /* La barra superior es fixed: sin este hueco se comia el "volver". */
+        padding-top: calc(var(--nav-height) + var(--space-2));
+    }
+
+    .site-shell--case .site-shell__content {
+        padding-bottom: var(--space-8);
+    }
+
+    .site-shell--case .site-shell__sidebar {
+        order: 2;
+        margin-top: var(--space-12);
+        padding-top: var(--space-12);
+        border-top: 1px solid var(--line-soft);
+    }
+
     .site-shell__content {
         padding: 0 0 var(--space-16);
     }

@@ -39,7 +39,7 @@ function App({ pathname }) {
   return (
     <RoutePathnameContext.Provider value={rutaActual}>
       <ThemeProvider>
-        <div className="site-shell">
+        <div className={route.kind === 'case' ? 'site-shell site-shell--case' : 'site-shell'}>
           <Nav />
 
           {/* Antes del sidebar en el DOM porque es donde estan en pantalla: dentro

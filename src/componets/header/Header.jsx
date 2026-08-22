@@ -39,7 +39,9 @@ const Header = ({ nameAs = 'h1' }) => {
             : { className: 'hero__name', role: 'img', 'aria-label': name },
           caracteres,
         )}
-        <p className="hero__title">{t('header.title')}</p>
+        {/* nbsp antes del separador: con espacio normal el punto medio caia
+            solo al principio de la segunda linea. El <title> no se toca. */}
+        <p className="hero__title">{t('header.title').replace(' \u00b7 ', '\u00a0\u00b7 ')}</p>
         <p className="hero__tagline">{t('header.tagline')}</p>
         <CTA />
       </div>

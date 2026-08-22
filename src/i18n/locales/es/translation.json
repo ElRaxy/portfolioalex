@@ -280,7 +280,7 @@
     "cases": {
       "atalaya": {
         "title": "Atalaya",
-        "tagline": "Ocho portales de empleo, una sola lista puntuada",
+        "tagline": "Siete portales de empleo, una sola lista puntuada",
         "summary": "Atalaya es un CLI en Python que reúne ofertas de desarrollo en remoto de siete portales, las puntúa contra tu perfil y redacta la carta de presentación.",
         "problem": [
           "Buscar trabajo en remoto obliga a repasar los mismos portales todos los días. Ninguno publica igual que otro: uno sirve JSON-LD, otro HTML montado en el servidor, otro un RSS, otro una API propia. Y las ofertas buenas aparecen en varios a la vez, así que la lista se llena de repetidos.",
