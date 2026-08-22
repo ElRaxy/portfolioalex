@@ -77,7 +77,7 @@ const CASE_ENTITY_IDS = {
   strev: '#strev',
 }
 
-const setStructuredDataUrl = (html, url, language, slug) => replaceTag(
+const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag(
   html,
   /<script\b[^>]*\btype="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/i,
   (tag) => {
@@ -90,6 +90,11 @@ const setStructuredDataUrl = (html, url, language, slug) => replaceTag(
     profilePage.url = url
     profilePage['@id'] = `${url}#page`
     profilePage.inLanguage = language
+    // El nodo se copia del HTML base, que es la portada castellana: sin esto,
+    // las 9 paginas restantes decian llamarse "Alex Mico Robles | Full Stack
+    // Developer" y las inglesas lo decian en castellano.
+    profilePage.name = metadata.name
+    profilePage.description = metadata.description
 
     if (slug) {
       profilePage['@type'] = 'WebPage'
@@ -248,7 +253,7 @@ const localizeHead = (baseHtml, page, translation, baseMetadata) => {
   html = setMetaContent(html, 'name', 'twitter:description', socialDescription)
   html = setCanonical(html, canonicalUrl)
   html = addAlternates(html, page.spanishUrl, page.englishUrl)
-  return setStructuredDataUrl(html, canonicalUrl, language, slug)
+  return setStructuredDataUrl(html, canonicalUrl, language, slug, { name: title, description })
 }
 
 const manifest = JSON.parse(await readFile(

@@ -36,24 +36,7 @@ jobs:
 
       # El prerender es la razon de ser del build: si algun dia deja de inyectar
       # el HTML dentro de #root, la web vuelve a servir un div vacio y nadie se
-      # entera hasta que un reclutador no ve nada.
-      - name: Comprobar que el HTML sale renderizado
-        run: |
-          node -e "
-            const fs = require('fs')
-            const fallos = []
-            for (const [ruta, idioma, testigo] of [
-              ['build/index.html', 'es', 'Anuubis'],
-              ['build/en/index.html', 'en', 'Anuubis'],
-            ]) {
-              const html = fs.readFileSync(ruta, 'utf8')
-              const root = html.match(/<div id=\"root\">([\s\S]*)<\/div>/)
-              if (!root || root[1].length < 5000) fallos.push(ruta + ': #root casi vacio')
-              if (!root || !root[1].includes(testigo)) fallos.push(ruta + ': falta ' + testigo)
-              if (!html.includes('<html lang=\"' + idioma + '\"')) fallos.push(ruta + ': lang incorrecto')
-              if (!html.includes('rel=\"canonical\"')) fallos.push(ruta + ': sin canonical')
-              if ((html.match(/hreflang=/g) || []).length !== 3) fallos.push(ruta + ': faltan hreflang')
-            }
-            if (fallos.length) { console.error(fallos.join('\n')); process.exit(1) }
-            console.log('Prerender correcto en los dos idiomas')
-          "
+      # entera hasta que un reclutador no ve nada. El guardian vive en
+      # scripts/check-prerender.mjs para poder correrlo tambien a mano.
+      - name: Comprobar el HTML generado
+        run: node scripts/check-prerender.mjs

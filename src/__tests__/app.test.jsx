@@ -159,17 +159,19 @@ describe('el bloque LCP no espera al JavaScript', () => {
 // lateral. El orden de foco lo fija el DOM, no la rejilla, asi que la
 // comprobacion es sobre el DOM.
 describe('el orden de foco sigue al orden visual', () => {
-  it('idioma y tema van antes que el hero en el documento', () => {
-    const { container } = render(<App />)
+  it('el idioma va antes que el hero en el orden de tabulacion', () => {
+    render(<App />)
 
-    const controles = container.querySelector('.site-shell__controls')
-    const sidebar = container.querySelector('.site-shell__sidebar')
+    // `getAllByRole` devuelve los elementos en orden del documento, que es el
+    // mismo que sigue el tabulador mientras nadie toque `tabindex`.
+    const enlaces = screen.getAllByRole('link')
+    const idioma = enlaces.findIndex((enlace) => (
+      /Cambiar idioma/i.test(enlace.getAttribute('aria-label') || '')
+    ))
+    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Ver proyectos')
 
-    expect(controles).not.toBeNull()
-    expect(sidebar).not.toBeNull()
-    // eslint-disable-next-line no-bitwise
-    const vaAntes = controles.compareDocumentPosition(sidebar) & Node.DOCUMENT_POSITION_FOLLOWING
-    expect(vaAntes).toBeTruthy()
+    expect(idioma).toBeGreaterThanOrEqual(0)
+    expect(verProyectos).toBeGreaterThan(idioma)
   })
 
   // WCAG 2.5.8 (AA en 2.2): 24x24 px. Era la unica zona pulsable por debajo.
@@ -180,7 +182,7 @@ describe('el orden de foco sigue al orden visual', () => {
       path.join(__dirname, '..', 'componets', 'nav', 'nav.css'), 'utf8',
     )
 
-    const regla = css.match(/\.portfolio-nav__brand \{[\s\S]*?\n  \}/)
+    const regla = css.match(/\.portfolio-nav__brand \{[\s\S]*?\n {2}\}/)
     expect(regla).not.toBeNull()
     expect(regla[0]).toMatch(/min-height:\s*24px/)
   })
@@ -193,20 +195,15 @@ describe('el orden de foco sigue al orden visual', () => {
 // baja por contexto desde App, que es quien la sabe.
 describe('las anclas de una pagina de caso apuntan a la portada', () => {
   it('ninguna ancla queda suelta cuando la ruta es un caso', () => {
-    const { container } = render(<App pathname="/proyectos/atalaya/" />)
+    render(<App pathname="/proyectos/atalaya/" />)
 
-    const sueltas = [...container.querySelectorAll('a[href^="#"]')]
-      .map((enlace) => enlace.getAttribute('href'))
-
-    expect(sueltas).toEqual([])
+    expect(enlacesCon(/^#/)).toEqual([])
   })
 
   it('la portada conserva sus anclas locales', () => {
-    const { container } = render(<App pathname="/" />)
+    render(<App pathname="/" />)
 
-    const locales = [...container.querySelectorAll('a[href^="#"]')]
-      .map((enlace) => enlace.getAttribute('href'))
-
+    const locales = enlacesCon(/^#/).map((enlace) => enlace.getAttribute('href'))
     expect(locales).toEqual(expect.arrayContaining(['#about', '#portfolio', '#contact']))
   })
 
@@ -219,6 +216,30 @@ describe('las anclas de una pagina de caso apuntan a la portada', () => {
     expect(titulos[0]).toHaveTextContent('Atalaya')
     // El nombre sigue anunciandose, ahora como imagen con su etiqueta.
     expect(screen.getByRole('img', { name: 'Alex Micó Robles' })).toBeInTheDocument()
+  })
+})
+
+// El selector de idioma leia la ruta de `window`, que en el prerender no
+// existe: las 8 paginas de caso servian el enlace a la portada inglesa en vez
+// de al caso traducido, y el href servido no coincidia con el que calculaba el
+// cliente al hidratar.
+describe('el selector de idioma apunta a la traduccion de la pagina', () => {
+  const hrefDelSelector = () => screen.getAllByRole('link')
+    .find((enlace) => /Cambiar idioma|Switch language/i.test(
+      enlace.getAttribute('aria-label') || '',
+    ))
+    .getAttribute('href')
+
+  it('en un caso lleva al mismo caso en el otro idioma', () => {
+    render(<App pathname="/proyectos/atalaya/" />)
+
+    expect(hrefDelSelector()).toBe('/en/projects/atalaya/')
+  })
+
+  it('en la portada lleva a la portada del otro idioma', () => {
+    render(<App pathname="/" />)
+
+    expect(hrefDelSelector()).toBe('/en/')
   })
 })
 
@@ -238,20 +259,21 @@ describe('cada seccion se entiende fuera de su pagina', () => {
   })
 
   it('el caso abre con un bloque que dice que es el proyecto', () => {
-    const { container } = render(<App pathname="/proyectos/atalaya/" />)
+    render(<App pathname="/proyectos/atalaya/" />)
 
-    const resumen = container.querySelector('.case__summary')
-    expect(resumen).not.toBeNull()
-    expect(resumen.textContent).toMatch(/^Atalaya es/)
+    const resumen = screen.getByText(/^Atalaya es un CLI en Python/)
+    expect(resumen).toBeInTheDocument()
     expect(resumen.textContent.split(/\s+/).length).toBeLessThanOrEqual(60)
   })
 
   it('la portada sirve los datos de contacto como lista de definiciones', () => {
-    const { container } = render(<App pathname="/" />)
+    render(<App pathname="/" />)
 
-    const terminos = [...container.querySelectorAll('.about__facts dt')]
-      .map((termino) => termino.textContent)
-    const valores = [...container.querySelectorAll('.about__facts dd')]
+    // El bloque de contacto tiene su propia lista, asi que se busca dentro de
+    // la seccion.
+    const sobreMi = within(screen.getByRole('region', { name: 'Sobre mí' }))
+    const terminos = sobreMi.getAllByRole('term').map((termino) => termino.textContent)
+    const valores = sobreMi.getAllByRole('definition')
 
     expect(terminos).toEqual(['Dónde', 'Disponible', 'Stack', 'Idiomas'])
     expect(valores).toHaveLength(4)
@@ -259,9 +281,9 @@ describe('cada seccion se entiende fuera de su pagina', () => {
   })
 
   it('el primer parrafo de Sobre mi se nombra a si mismo', () => {
-    const { container } = render(<App pathname="/" />)
+    render(<App pathname="/" />)
 
-    expect(container.querySelector('.about__lead').textContent).toMatch(/Alex Micó Robles/)
+    expect(screen.getByText(/^Soy Alex Micó Robles/)).toBeInTheDocument()
   })
 })
 

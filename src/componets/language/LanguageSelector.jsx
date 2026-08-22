@@ -2,6 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './language.css'
 import { parseRoute, caseHref } from '../../lib/routing'
+import { useRoutePathname } from '../../lib/routeContext'
 
 const BASE_URL = 'https://portfolioalex-mico.vercel.app'
 const PATHS = { es: '/', en: '/en/' }
@@ -40,7 +41,11 @@ const LanguageSelector = () => {
     : 'Switch language to Spanish'
   // En una pagina de caso no se cambia en caliente: cada caso tiene su HTML
   // por idioma y su URL propia, asi que el enlace navega de verdad.
-  const route = parseRoute(typeof window === 'undefined' ? '/' : window.location.pathname)
+  // La ruta viene del contexto y no de `window`: en el prerender no hay
+  // `window`, asi que las 8 paginas de caso servian el enlace de la portada
+  // inglesa en vez del caso traducido, y el href servido no coincidia con el
+  // que calculaba el cliente al hidratar.
+  const route = parseRoute(useRoutePathname())
   const isCase = route.kind === 'case'
   const href = isCase ? caseHref(nextLanguage, route.slug) : PATHS[nextLanguage]
 
