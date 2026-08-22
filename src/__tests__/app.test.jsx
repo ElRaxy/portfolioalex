@@ -254,8 +254,11 @@ describe('cada seccion se entiende fuera de su pagina', () => {
       .map((titulo) => titulo.textContent)
     const delCaso = titulos.filter((texto) => !/Contáctame/i.test(texto))
 
+    // Los dos primeros nombran el proyecto, que es lo que necesita quien se
+    // lleva el bloque suelto. Repetirlo en los cuatro rotulos seguidos se leia
+    // como un molde, asi que los otros dos se quedan cortos.
     expect(delCaso.length).toBeGreaterThanOrEqual(4)
-    delCaso.forEach((texto) => expect(texto).toMatch(/Atalaya/))
+    expect(delCaso.filter((texto) => /Atalaya/.test(texto)).length).toBeGreaterThanOrEqual(2)
   })
 
   it('el caso abre con un bloque que dice que es el proyecto', () => {

@@ -161,6 +161,27 @@
     gap: var(--space-6);
 }
 
+/* Con tres tarjetas y dos columnas, la ultima se quedaba sola con un hueco de
+   330 x 600 px al lado. Ocupa la fila entera y se reparte en dos columnas: la
+   captura a un lado y el texto al otro, como la destacada. */
+@media screen and (min-width: 641px) {
+    .portfolio__item:last-child:nth-child(odd) {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto;
+        align-items: start;
+        column-gap: var(--space-8);
+    }
+
+    .portfolio__item:last-child:nth-child(odd) .portfolio__shot {
+        grid-row: 1 / span 6;
+        align-self: stretch;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
 .portfolio__featured + .portfolio__grid {
     margin-top: var(--space-6);
 }
@@ -396,4 +417,23 @@
     .portfolio__terminal-cursor {
         display: none;
     }
+}
+
+/* La tarjeta cambiaba fondo, borde y encendia el halo al pasar por encima sin
+   ser pulsable: el enlace del caso se estira sobre toda la tarjeta y los demas
+   enlaces del pie se quedan por encima de esa capa. */
+.portfolio__item:has(.portfolio__case-link) {
+    cursor: pointer;
+}
+
+.portfolio__item .portfolio__case-link::after {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    content: '';
+}
+
+.portfolio__item .portfolio__footer a:not(.portfolio__case-link) {
+    position: relative;
+    z-index: 3;
 }

@@ -274,8 +274,8 @@
     "back": "Back to projects",
     "index_title": "Case study",
     "problem_label": "The problem {{project}} solves",
-    "decisions_label": "How {{project}} works",
-    "results_label": "Where {{project}} sets the bar",
+    "decisions_label": "How it works",
+    "results_label": "Where the bar sits",
     "cases": {
       "atalaya": {
         "title": "Atalaya",

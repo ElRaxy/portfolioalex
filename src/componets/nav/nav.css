@@ -136,7 +136,29 @@
     align-items: stretch;
     gap: 0;
     border-bottom: 1px solid var(--line-soft);
-    background: var(--color-bg);
+    /* El cajon usaba el mismo fondo que la pagina, asi que su borde inferior
+       parecia un recorte roto justo encima de los iconos sociales del hero.
+       Con fondo propio y sombra se lee como un panel que flota. */
+    background: var(--surface-1);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 45%);
+  }
+
+  :root[data-theme='light'] .portfolio-nav__links {
+    box-shadow: 0 24px 48px rgb(0 0 0 / 18%);
+  }
+
+  /* Velo bajo el cajon: sin el, su borde inferior caia a media altura de los
+     iconos sociales del hero y parecia un recorte, no un menu abierto. */
+  .portfolio-nav:has(.portfolio-nav__links--open)::after {
+    position: fixed;
+    z-index: -1;
+    inset: var(--nav-height) 0 0;
+    background: rgb(0 0 0 / 55%);
+    content: '';
+  }
+
+  :root[data-theme='light'] .portfolio-nav:has(.portfolio-nav__links--open)::after {
+    background: rgb(0 0 0 / 35%);
   }
 
   .portfolio-nav__links--open {

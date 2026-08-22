@@ -65,13 +65,24 @@
     text-align: left;
 }
 
+/* El rotulo de seccion medía 12 px sobre unos H3 de 18 px que cuelgan de el:
+   el mismo nivel semantico leia como pie de foto. Conserva la voz (mono, caja
+   alta) y recupera el peso visual con tamano y una linea que abre el bloque. */
 .case__block h2 {
-    color: var(--text-3);
+    color: var(--color-text-primary);
     font-family: var(--font-mono);
-    font-size: var(--fs-label);
+    font-size: var(--fs-lg);
     font-weight: 500;
-    letter-spacing: var(--ls-label);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
     text-transform: uppercase;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line-soft);
+}
+
+.case__block--summary h2 {
+    border-top: 0;
+    padding-top: 0;
 }
 
 .case__block > p {
@@ -110,7 +121,7 @@
 }
 
 .case__decision h3 {
-    font-size: var(--fs-md);
+    font-size: var(--fs-base);
     font-weight: 600;
     line-height: 1.35;
 }

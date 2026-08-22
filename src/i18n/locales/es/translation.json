@@ -274,8 +274,8 @@
     "back": "Volver a proyectos",
     "index_title": "Caso de estudio",
     "problem_label": "El problema que resuelve {{project}}",
-    "decisions_label": "Cómo funciona {{project}}",
-    "results_label": "Dónde está el listón de {{project}}",
+    "decisions_label": "Cómo funciona",
+    "results_label": "Dónde está el listón",
     "cases": {
       "atalaya": {
         "title": "Atalaya",
