@@ -109,7 +109,8 @@
     "ai": {
       "label": "IA / Agentes",
       "chips": [
-        "Anthropic SDK",
+        "Gemini y Vertex AI",
+        "Claude (CLI y SDK)",
         "LLMs en producto",
         "Diseño de prompts",
         "Orquestación de agentes"
@@ -218,7 +219,7 @@
       },
       {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: 117 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 150 ficheros de test.",
+        "description": "SaaS fitness MERN en beta privada: 121 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 833 tests en verde.",
         "tags": [
           "React",
           "Node",
@@ -407,7 +408,7 @@
         ],
         "results": [
           {
-            "value": "117",
+            "value": "121",
             "label": "endpoints"
           },
           {
@@ -415,8 +416,8 @@
             "label": "módulos"
           },
           {
-            "value": "150",
-            "label": "ficheros de test"
+            "value": "833",
+            "label": "tests en verde"
           }
         ],
         "note": "Node y Express 5, MongoDB, Redis con BullMQ, Stripe, R2. Frontend React con Vite y Tailwind. Código cerrado.",

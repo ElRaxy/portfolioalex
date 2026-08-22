@@ -109,7 +109,8 @@
     "ai": {
       "label": "AI / Agents",
       "chips": [
-        "Anthropic SDK",
+        "Gemini and Vertex AI",
+        "Claude (CLI and SDK)",
         "LLMs in product",
         "Prompt design",
         "Agent orchestration"
@@ -218,7 +219,7 @@
       },
       {
         "title": "Strev",
-        "description": "MERN fitness SaaS in private beta: 117 endpoints across 26 modules, with cookie auth, payments, gamification and video technique analysis through Gemini, queued so it never blocks the request. 150 test files.",
+        "description": "MERN fitness SaaS in private beta: 121 endpoints across 26 modules, with cookie auth, payments, gamification and video technique analysis through Gemini, queued so it never blocks the request. 833 passing tests.",
         "tags": [
           "React",
           "Node",
@@ -407,7 +408,7 @@
         ],
         "results": [
           {
-            "value": "117",
+            "value": "121",
             "label": "endpoints"
           },
           {
@@ -415,8 +416,8 @@
             "label": "modules"
           },
           {
-            "value": "150",
-            "label": "test files"
+            "value": "833",
+            "label": "passing tests"
           }
         ],
         "note": "Node and Express 5, MongoDB, Redis with BullMQ, Stripe, R2. React frontend on Vite and Tailwind. Closed source.",
