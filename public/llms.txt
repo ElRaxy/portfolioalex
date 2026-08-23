@@ -34,7 +34,7 @@ GitHub: https://github.com/ElRaxy
   la fila de cabecera y mapea las columnas sin escribir un parser por banco.
   21 endpoints, 113 casos de test. React, Node, Express, MongoDB.
   https://github.com/ElRaxy/SaveMyMoneyNow
-- Strev — SaaS fitness MERN en beta privada. 121 endpoints en 26 módulos y 833 tests
+- Strev — SaaS fitness MERN en beta privada. 121 endpoints en 26 módulos y 837 tests
   en verde, auth por cookies, pagos, y análisis de técnica en vídeo con Gemini
   en cola.
   Código cerrado. https://strev.app

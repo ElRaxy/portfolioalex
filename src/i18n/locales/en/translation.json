@@ -220,7 +220,7 @@
       },
       {
         "title": "Strev",
-        "description": "MERN fitness SaaS in private beta: 121 endpoints across 26 modules, with cookie auth, payments, gamification and video technique analysis through Gemini, queued so it never blocks the request. 833 passing tests.",
+        "description": "MERN fitness SaaS in private beta: 121 endpoints across 26 modules, with cookie auth, payments, gamification and video technique analysis through Gemini, queued so it never blocks the request. 837 passing tests.",
         "tags": [
           "React",
           "Node",
@@ -486,7 +486,7 @@
             "label": "modules"
           },
           {
-            "value": "833",
+            "value": "837",
             "label": "passing tests"
           }
         ],

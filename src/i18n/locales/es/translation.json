@@ -220,7 +220,7 @@
       },
       {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: 121 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 833 tests en verde.",
+        "description": "SaaS fitness MERN en beta privada: 121 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 837 tests en verde.",
         "tags": [
           "React",
           "Node",
@@ -486,7 +486,7 @@
             "label": "módulos"
           },
           {
-            "value": "833",
+            "value": "837",
             "label": "tests en verde"
           }
         ],
