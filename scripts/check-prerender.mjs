@@ -6,7 +6,11 @@
 // ya escrito: que el contenido salga dentro de #root, que cada pagina declare
 // su idioma y su canonical, y que las paginas de caso no hereden lo de la
 // portada. Hasta el 2026-08-22 solo miraba las dos portadas, y por eso tres
-// defectos vivieron meses en las ocho paginas de caso.
+// defectos vivieron meses en las ocho paginas de caso. Desde el 2026-08-23
+// mira las diez que escribe el prerender: muestrear seis dejaba cuatro casos
+// sin vigilar (strev y savemymoneynow en castellano, atalaya y wordpress en
+// ingles). La lista va literal a proposito, no derivada de la del prerender:
+// una lista derivada seguiria el mismo fallo que tiene que cazar.
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -17,11 +21,29 @@ const leer = (ruta) => readFileSync(path.join(raiz, 'build', ruta), 'utf8')
 const PAGINAS = [
   { ruta: 'index.html', idioma: 'es', tipo: 'portada', idioma_alterno: '/en/' },
   { ruta: 'en/index.html', idioma: 'en', tipo: 'portada', idioma_alterno: '/' },
-  { ruta: 'proyectos/atalaya/index.html', idioma: 'es', tipo: 'caso', idioma_alterno: '/en/projects/atalaya/' },
-  { ruta: 'proyectos/wordpress/index.html', idioma: 'es', tipo: 'caso', idioma_alterno: '/en/projects/wordpress/' },
-  { ruta: 'en/projects/strev/index.html', idioma: 'en', tipo: 'caso', idioma_alterno: '/proyectos/strev/' },
-  { ruta: 'en/projects/savemymoneynow/index.html', idioma: 'en', tipo: 'caso', idioma_alterno: '/proyectos/savemymoneynow/' },
+  { ruta: 'proyectos/atalaya/index.html', idioma: 'es', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/en/projects/atalaya/' },
+  { ruta: 'proyectos/savemymoneynow/index.html', idioma: 'es', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/en/projects/savemymoneynow/' },
+  { ruta: 'proyectos/strev/index.html', idioma: 'es', tipo: 'caso', slug: 'strev', idioma_alterno: '/en/projects/strev/' },
+  { ruta: 'proyectos/wordpress/index.html', idioma: 'es', tipo: 'caso', slug: 'wordpress', idioma_alterno: '/en/projects/wordpress/' },
+  { ruta: 'en/projects/atalaya/index.html', idioma: 'en', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/proyectos/atalaya/' },
+  { ruta: 'en/projects/savemymoneynow/index.html', idioma: 'en', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/proyectos/savemymoneynow/' },
+  { ruta: 'en/projects/strev/index.html', idioma: 'en', tipo: 'caso', slug: 'strev', idioma_alterno: '/proyectos/strev/' },
+  { ruta: 'en/projects/wordpress/index.html', idioma: 'en', tipo: 'caso', slug: 'wordpress', idioma_alterno: '/proyectos/wordpress/' },
 ]
+
+// El nombre corto de cada caso sale del diccionario, que es de donde salia
+// cuando los rotulos lo interpolaban: comparar contra una copia a mano seria
+// comparar el HTML consigo mismo.
+const DICCIONARIOS = {
+  es: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/es/translation.json'), 'utf8')),
+  en: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/en/translation.json'), 'utf8')),
+}
+
+// Variante 1 de los rotulos (2026-08-23): el nombre del proyecto baja del
+// encabezado al parrafo. El h1 lo sigue diciendo; ningun h2 debe decirlo.
+// Se cuenta el hecho y el veredicto lo compone el script, para que revertir la
+// decision rompa CI en vez de pasar inadvertido como paso con el hallazgo 13.
+const H2_CON_NOMBRE_ESPERADOS = 0
 
 const grafoDe = (html) => {
   const bloque = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
@@ -84,6 +106,13 @@ for (const pagina of PAGINAS) {
     // En un caso no existen las secciones de la portada.
     const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
     if (sueltas.length) anota(pagina, `anclas a secciones inexistentes: ${[...new Set(sueltas)].join(', ')}`)
+
+    const nombre = DICCIONARIOS[pagina.idioma].case_study.cases[pagina.slug].short
+    const h2 = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((x) => x[1].toLowerCase())
+    const conNombre = h2.filter((texto) => texto.includes(nombre.toLowerCase())).length
+    if (conNombre !== H2_CON_NOMBRE_ESPERADOS) {
+      anota(pagina, `${conNombre} h2 nombran "${nombre}", deberia haber ${H2_CON_NOMBRE_ESPERADOS}`)
+    }
   }
 }
 
