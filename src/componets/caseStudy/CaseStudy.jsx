@@ -11,7 +11,7 @@ const CaseStudy = ({ slug }) => {
   if (typeof title !== 'string' || title === titleKey) return null
 
   // Ambito de los dos bloques cuyos pasajes viajan sin sujeto: las decisiones
-  // y los numeros. Un extractor levanta "162 tests" o "Los duplicados los corta
+  // y los numeros. Un extractor levanta "174 tests" o "Los duplicados los corta
   // la base de datos" sueltos, y ni el rotulo ni el cuerpo decian de que
   // proyecto hablaban. El resumen, el problema y el hueco si se nombran en su
   // propia prosa, asi que ahi el ambito seria repeticion. Va en nominativo y

@@ -278,7 +278,7 @@ describe('el selector de idioma apunta a la traduccion de la pagina', () => {
 // nombraba solo y al problema se le anadio la frase que le faltaba.
 //
 // Rail de ambito del 23/08: quedaban dos bloques cuyos pasajes no se nombran ni
-// en el rotulo ni en el cuerpo, y son los mas citables de la pagina ("162
+// en el rotulo ni en el cuerpo, y son los mas citables de la pagina ("174
 // tests", "Los duplicados los corta la base de datos"). Esos dos, y solo esos,
 // abren con el nombre en un span visible: en aria-label o en sr-only el
 // extractor no lo ve, medido con defuddle.

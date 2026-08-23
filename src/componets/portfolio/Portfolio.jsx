@@ -7,8 +7,8 @@ import TypewriterTerminal from './TypewriterTerminal'
 import './portfolio.css'
 
 const ATALAYA_METRICS = [
-  { key: 'jobBoards', value: 7, labelKey: 'job_boards' },
-  { key: 'tests', value: 162, labelKey: 'passing_tests' },
+  { key: 'jobBoards', value: 8, labelKey: 'job_boards' },
+  { key: 'tests', value: 174, labelKey: 'passing_tests' },
   { key: 'commands', value: 13, labelKey: 'commands' },
 ]
 
