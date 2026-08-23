@@ -342,7 +342,7 @@
   "case_study": {
     "back": "Volver a proyectos",
     "index_title": "Caso de estudio",
-    "problem_label": "El problema que resuelve {{project}}",
+    "problem_label": "El problema",
     "decisions_label": "Cómo funciona",
     "results_label": "Dónde está el listón",
     "cases": {
@@ -352,7 +352,7 @@
         "summary": "Atalaya es un CLI en Python que reúne ofertas de desarrollo en remoto de siete portales, las puntúa contra tu perfil y redacta la carta de presentación.",
         "problem": [
           "Buscar trabajo en remoto obliga a repasar los mismos portales todos los días. Ninguno publica igual que otro: uno sirve JSON-LD, otro HTML montado en el servidor, otro un RSS, otro una API propia. Y las ofertas buenas aparecen en varios a la vez, así que la lista se llena de repetidos.",
-          "El resultado es un trabajo mecánico de media hora diaria que no distingue una oferta que encaja de una que no."
+          "El resultado es un trabajo mecánico de media hora diaria que no distingue una oferta que encaja de una que no. Atalaya se come esa media hora."
         ],
         "decisions": [
           {
@@ -403,7 +403,7 @@
         "summary": "SaveMyMoneyNow convierte en un panel de gastos los extractos que cada banco exporta a su manera, detectando la fila de cabecera en vez de conocer el formato de antemano.",
         "problem": [
           "Un extracto bancario casi nunca empieza por la cabecera. Arriba hay filas de titular, IBAN y periodo; la cabecera aparece en la cuarta fila, o en la sexta. Las fechas vienen en tres formatos y los decimales llevan coma o punto según el banco.",
-          "La salida fácil es escribir un lector por banco. Son cuatro bancos hoy y cualquiera de ellos puede cambiar su exportación mañana."
+          "La salida fácil es escribir un lector por banco. Son cuatro bancos hoy y cualquiera de ellos puede cambiar su exportación mañana. SaveMyMoneyNow no trae un lector por banco."
         ],
         "decisions": [
           {
@@ -450,7 +450,7 @@
         "summary": "Strev es un SaaS para entrenadores, en beta privada. Lo que condiciona el diseño es que guarda datos de salud y que el análisis de técnica en vídeo tarda demasiado para hacerse dentro de una petición.",
         "problem": [
           "La anamnesis de un cliente son datos de salud: categoría especial del RGPD. Cifrar el disco no basta cuando lo que hay que proteger es un campo dentro de un documento que se consulta a diario.",
-          "Y el análisis de técnica de un vídeo tarda lo suyo. Hacerlo dentro de la petición HTTP significa una petición colgada y un usuario mirando una rueda girar."
+          "Y el análisis de técnica de un vídeo tarda lo suyo. Hacerlo dentro de la petición HTTP significa una petición colgada y un usuario mirando una rueda girar. Strev carga con las dos restricciones: el campo cifrado por dentro y el vídeo fuera de la petición."
         ],
         "decisions": [
           {
@@ -497,7 +497,7 @@
         "summary": "La automatización de WordPress es una herramienta interna en Python y Bash para dar de alta, auditar y migrar sitios WordPress de cliente entre proveedores, sin tocar seis paneles a mano.",
         "problem": [
           "Montar o migrar la web de un cliente pasa por el panel del hosting de origen, el del destino, dos registradores para el DNS, Search Console y Bing. Cada uno con su sesión y su forma de fallar.",
-          "Lo caro no es el número de pasos: es que el proceso no se puede reanudar. Si se corta a la mitad, volver a lanzarlo desde el principio puede reimportar una base de datos encima de una web que ya está viva."
+          "Lo caro no es el número de pasos: es que el proceso no se puede reanudar. Si se corta a la mitad, volver a lanzarlo desde el principio puede reimportar una base de datos encima de una web que ya está viva. La automatización de WordPress reanuda el proceso donde se cortó."
         ],
         "decisions": [
           {
@@ -539,7 +539,7 @@
         "short": "la automatización de WordPress"
       }
     },
-    "summary_label": "Qué es {{project}}",
+    "summary_label": "En una frase",
     "links_label": "Ver el proyecto",
     "gap_label": "Por qué no valía uno de los que ya existen"
   }

@@ -270,19 +270,40 @@ describe('el selector de idioma apunta a la traduccion de la pagina', () => {
 // Hallazgo 7 de la auditoria del 22/08: ningun encabezado se entendia fuera de
 // su pagina y no habia un bloque corto que respondiera "que es esto". Un
 // extractor que se lleva una seccion suelta necesita las dos cosas.
+//
+// Variante 1 del 23/08: quien lleva el nombre es la prosa, no el rotulo. Un
+// extractor que levanta un pasaje se lleva el texto del pasaje, no el
+// encabezado de arriba, asi que el rotulo lo repetia para nadie y de paso
+// tartamudeaba tres veces seguidas. La cobertura no baja: el resumen ya se
+// nombraba solo y al problema se le anadio la frase que le faltaba.
 describe('cada seccion se entiende fuera de su pagina', () => {
-  it('los encabezados de un caso nombran el proyecto', () => {
+  it('el nombre del proyecto vive en la prosa del caso, no en sus rotulos', () => {
     render(<App pathname="/proyectos/atalaya/" />)
 
     const titulos = screen.getAllByRole('heading', { level: 2 })
       .map((titulo) => titulo.textContent)
     const delCaso = titulos.filter((texto) => !/Contáctame/i.test(texto))
 
-    // Los dos primeros nombran el proyecto, que es lo que necesita quien se
-    // lleva el bloque suelto. Repetirlo en los cuatro rotulos seguidos se leia
-    // como un molde, asi que los otros dos se quedan cortos.
     expect(delCaso.length).toBeGreaterThanOrEqual(4)
-    expect(delCaso.filter((texto) => /Atalaya/.test(texto)).length).toBeGreaterThanOrEqual(2)
+    // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las diez
+    // paginas del build; aqui se mide sobre el arbol renderizado.
+    expect(delCaso.filter((texto) => /Atalaya/.test(texto))).toEqual([])
+  })
+
+  it('el resumen y el problema de cada caso nombran el proyecto en su texto', () => {
+    const { CASE_SLUGS } = require('../lib/routing')
+
+    ;['es', 'en'].forEach((idioma) => {
+      const diccionario = require(`../i18n/locales/${idioma}/translation.json`)
+
+      CASE_SLUGS.forEach((slug) => {
+        const caso = diccionario.case_study.cases[slug]
+        const nombre = caso.short.toLowerCase()
+
+        expect(caso.summary.toLowerCase()).toContain(nombre)
+        expect(caso.problem.join(' ').toLowerCase()).toContain(nombre)
+      })
+    })
   })
 
   it('solo Atalaya explica por que no valia uno de los que ya existen', () => {
