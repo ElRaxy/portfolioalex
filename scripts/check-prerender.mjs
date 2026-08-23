@@ -51,6 +51,11 @@ for (const pagina of PAGINAS) {
     anota(pagina, `el idioma alterno apunta a ${selector[1]}, no a ${pagina.idioma_alterno}`)
   }
 
+  // La hoja externa retrasa el arranque de las animaciones de entrada hasta
+  // que llega: 336 ms medidos en produccion el 2026-08-23. Va dentro del HTML.
+  if (/href="\/static\/css\/[^"]+\.css"/.test(html)) anota(pagina, 'la hoja de estilos volvio a ser un <link> externo')
+  if (!html.includes('<style>')) anota(pagina, 'sin CSS dentro del documento')
+
   const grafo = grafoDe(html)
   const nodo = grafo?.['@graph']?.find((x) => x['@type'] === 'ProfilePage' || x['@type'] === 'WebPage')
   if (!nodo) anota(pagina, 'sin nodo de pagina en el JSON-LD')

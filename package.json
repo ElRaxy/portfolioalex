@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/prerender.mjs",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/prerender.mjs && node scripts/inline-css.mjs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
