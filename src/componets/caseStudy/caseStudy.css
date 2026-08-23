@@ -88,6 +88,34 @@
     padding-top: 0;
 }
 
+/* Rail de ambito. Los pasajes de las decisiones y de los numeros viajan solos
+   cuando alguien (o un LLM) los extrae, y salian sin sujeto. El nombre tiene
+   que ser texto visible: medido con defuddle el 2026-08-23, un aria-label o un
+   span con clase sr-only no salen del documento. Sin caja alta a proposito:
+   "SAVEMYMONEYNOW" no es como se escribe el proyecto, y el nombre es el dato.
+   Un peldano por debajo del rotulo en tamano y color para que el ojo lo lea
+   como un pie y no como un segundo titulo. */
+.case__scope {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    text-transform: none;
+}
+
+/* El separador es del ojo, no del documento: en ::after no lo extrae nadie y
+   el pasaje sale limpio ("Atalaya Como funciona"). */
+.case__scope::after {
+    content: '';
+    display: block;
+    width: var(--space-5);
+    height: 1px;
+    margin: var(--space-2) 0 var(--space-3);
+    background: var(--line-soft);
+}
+
 .case__block > p {
     color: var(--color-text-muted);
     line-height: 1.7;

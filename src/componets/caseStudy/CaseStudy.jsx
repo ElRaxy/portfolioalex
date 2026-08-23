@@ -10,11 +10,13 @@ const CaseStudy = ({ slug }) => {
 
   if (typeof title !== 'string' || title === titleKey) return null
 
-  // El nombre corto es el que entra en los encabezados: el titulo largo de
-  // WordPress ("Automatizacion de WordPress en produccion") no cabe dentro de
-  // una frase. Los encabezados nombran el proyecto para que cada seccion se
-  // entienda sola cuando alguien (o un LLM) la extrae del resto de la pagina.
-  const project = t(`case_study.cases.${slug}.short`)
+  // Ambito de los dos bloques cuyos pasajes viajan sin sujeto: las decisiones
+  // y los numeros. Un extractor levanta "162 tests" o "Los duplicados los corta
+  // la base de datos" sueltos, y ni el rotulo ni el cuerpo decian de que
+  // proyecto hablaban. El resumen, el problema y el hueco si se nombran en su
+  // propia prosa, asi que ahi el ambito seria repeticion. Va en nominativo y
+  // sin articulo: es una etiqueta, no parte de una frase.
+  const scope = t(`case_study.cases.${slug}.scope`)
   const tagline = t(`case_study.cases.${slug}.tagline`)
   const summary = t(`case_study.cases.${slug}.summary`)
   const problema = t(`case_study.cases.${slug}.problem`, { returnObjects: true }) || []
@@ -43,7 +45,7 @@ const CaseStudy = ({ slug }) => {
       </header>
 
       <section className="case__block case__block--summary">
-        <h2>{t('case_study.summary_label', { project })}</h2>
+        <h2>{t('case_study.summary_label')}</h2>
         <p className="case__summary">{summary}</p>
 
         {/* Atalaya ensena su terminal; los otros tres, el diagrama de la
@@ -58,7 +60,7 @@ const CaseStudy = ({ slug }) => {
       </section>
 
       <section className="case__block">
-        <h2>{t('case_study.problem_label', { project })}</h2>
+        <h2>{t('case_study.problem_label')}</h2>
         {problema.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
 
@@ -70,7 +72,12 @@ const CaseStudy = ({ slug }) => {
       )}
 
       <section className="case__block">
-        <h2>{t('case_study.decisions_label', { project })}</h2>
+        <h2>
+          <span className="case__scope">{scope}</span>
+          {/* Espacio de verdad: sin el, un extractor pega el ambito al rotulo. */}
+          {' '}
+          {t('case_study.decisions_label')}
+        </h2>
         <ol className="case__decisions">
           {decisions.map((decision, index) => (
             <li className="case__decision" key={`${decision.title}-${index}`}>
@@ -82,7 +89,12 @@ const CaseStudy = ({ slug }) => {
       </section>
 
       <section className="case__block">
-        <h2>{t('case_study.results_label', { project })}</h2>
+        <h2>
+          <span className="case__scope">{scope}</span>
+          {/* Espacio de verdad: sin el, un extractor pega el ambito al rotulo. */}
+          {' '}
+          {t('case_study.results_label')}
+        </h2>
         <ul className="case__results">
           {results.map((result, index) => (
             <li

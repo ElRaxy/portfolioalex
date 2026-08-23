@@ -392,6 +392,7 @@
         ],
         "note": "Tipado estricto con mypy y linter en modo severo. Python 3.12, Typer, httpx, SQLite.",
         "short": "Atalaya",
+        "scope": "Atalaya",
         "gap": [
           "Hay agregadores de ofertas con años detrás y miles de estrellas: career-ops, AIHawk, JobSpy, ApplyPilot. Ninguno de los cuatro lee InfoJobs, Tecnoempleo, JobFluent ni RemoteWorkSpain, y ninguno abre las alertas que esos portales mandan por correo.",
           "Para buscar en remoto desde España, eso deja fuera media búsqueda. Atalaya existe por ese hueco. Comprobado en su documentación en agosto de 2026: JobSpy, por ejemplo, llega a España solo por Indeed y Glassdoor."
@@ -442,7 +443,8 @@
           }
         ],
         "note": "React, Node, Express y MongoDB. Tests con Vitest y Mongo en memoria.",
-        "short": "SaveMyMoneyNow"
+        "short": "SaveMyMoneyNow",
+        "scope": "SaveMyMoneyNow"
       },
       "strev": {
         "title": "Strev",
@@ -489,7 +491,8 @@
           }
         ],
         "note": "Node y Express 5, MongoDB, Redis con BullMQ, Stripe, R2. Frontend React con Vite y Tailwind. Código cerrado.",
-        "short": "Strev"
+        "short": "Strev",
+        "scope": "Strev"
       },
       "wordpress": {
         "title": "Automatización de WordPress en producción",
@@ -536,7 +539,8 @@
           }
         ],
         "note": "Código cerrado: es herramienta interna y opera webs de clientes. Python, Bash, WP-CLI, Nginx y DNS.",
-        "short": "la automatización de WordPress"
+        "short": "la automatización de WordPress",
+        "scope": "Automatización de WordPress"
       }
     },
     "summary_label": "En una frase",

@@ -276,8 +276,14 @@ describe('el selector de idioma apunta a la traduccion de la pagina', () => {
 // encabezado de arriba, asi que el rotulo lo repetia para nadie y de paso
 // tartamudeaba tres veces seguidas. La cobertura no baja: el resumen ya se
 // nombraba solo y al problema se le anadio la frase que le faltaba.
+//
+// Rail de ambito del 23/08: quedaban dos bloques cuyos pasajes no se nombran ni
+// en el rotulo ni en el cuerpo, y son los mas citables de la pagina ("162
+// tests", "Los duplicados los corta la base de datos"). Esos dos, y solo esos,
+// abren con el nombre en un span visible: en aria-label o en sr-only el
+// extractor no lo ve, medido con defuddle.
 describe('cada seccion se entiende fuera de su pagina', () => {
-  it('el nombre del proyecto vive en la prosa del caso, no en sus rotulos', () => {
+  it('solo las decisiones y los numeros abren con el nombre del proyecto', () => {
     render(<App pathname="/proyectos/atalaya/" />)
 
     const titulos = screen.getAllByRole('heading', { level: 2 })
@@ -286,8 +292,11 @@ describe('cada seccion se entiende fuera de su pagina', () => {
 
     expect(delCaso.length).toBeGreaterThanOrEqual(4)
     // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las diez
-    // paginas del build; aqui se mide sobre el arbol renderizado.
-    expect(delCaso.filter((texto) => /Atalaya/.test(texto))).toEqual([])
+    // paginas del build; aqui se mide sobre el arbol renderizado. El nombre va
+    // en el texto del encabezado, no en un atributo: si alguien lo esconde,
+    // esta lista se queda vacia y el test cae.
+    expect(delCaso.filter((texto) => /Atalaya/.test(texto)))
+      .toEqual(['Atalaya Cómo funciona', 'Atalaya Dónde está el listón'])
   })
 
   it('el resumen y el problema de cada caso nombran el proyecto en su texto', () => {

@@ -31,19 +31,22 @@ const PAGINAS = [
   { ruta: 'en/projects/wordpress/index.html', idioma: 'en', tipo: 'caso', slug: 'wordpress', idioma_alterno: '/proyectos/wordpress/' },
 ]
 
-// El nombre corto de cada caso sale del diccionario, que es de donde salia
-// cuando los rotulos lo interpolaban: comparar contra una copia a mano seria
-// comparar el HTML consigo mismo.
+// El ambito de cada caso sale del diccionario, que es de donde lo saca el
+// componente: comparar contra una copia a mano seria comparar el HTML consigo
+// mismo.
 const DICCIONARIOS = {
   es: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/es/translation.json'), 'utf8')),
   en: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/en/translation.json'), 'utf8')),
 }
 
-// Variante 1 de los rotulos (2026-08-23): el nombre del proyecto baja del
-// encabezado al parrafo. El h1 lo sigue diciendo; ningun h2 debe decirlo.
-// Se cuenta el hecho y el veredicto lo compone el script, para que revertir la
-// decision rompa CI en vez de pasar inadvertido como paso con el hallazgo 13.
-const H2_CON_NOMBRE_ESPERADOS = 0
+// Rail de ambito (2026-08-23). El nombre del proyecto no vuelve al rotulo: lo
+// dice un span propio encima, y solo en los dos bloques cuyos pasajes viajan
+// sin sujeto cuando un extractor los levanta sueltos, las decisiones y los
+// numeros. Dos y no cinco: el resumen, el problema y el hueco ya se nombran en
+// su propia prosa, asi que ahi el ambito seria repeticion. Se cuenta el hecho y
+// el veredicto lo compone el script, para que mover la decision rompa CI en vez
+// de pasar inadvertida como paso con el hallazgo 13.
+const H2_CON_AMBITO_ESPERADOS = 2
 
 const grafoDe = (html) => {
   const bloque = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
@@ -107,11 +110,18 @@ for (const pagina of PAGINAS) {
     const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
     if (sueltas.length) anota(pagina, `anclas a secciones inexistentes: ${[...new Set(sueltas)].join(', ')}`)
 
-    const nombre = DICCIONARIOS[pagina.idioma].case_study.cases[pagina.slug].short
+    const ambito = DICCIONARIOS[pagina.idioma].case_study.cases[pagina.slug].scope
     const h2 = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((x) => x[1].toLowerCase())
-    const conNombre = h2.filter((texto) => texto.includes(nombre.toLowerCase())).length
-    if (conNombre !== H2_CON_NOMBRE_ESPERADOS) {
-      anota(pagina, `${conNombre} h2 nombran "${nombre}", deberia haber ${H2_CON_NOMBRE_ESPERADOS}`)
+    const conAmbito = h2.filter((texto) => texto.includes(ambito.toLowerCase())).length
+    if (conAmbito !== H2_CON_AMBITO_ESPERADOS) {
+      anota(pagina, `${conAmbito} h2 nombran "${ambito}", deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
+    }
+
+    // El ambito solo sirve si sale del documento: escondido en un aria-label o
+    // en un sr-only, el extractor no lo ve y el cambio no existe.
+    const ambitosVisibles = (html.match(/<span class="case__scope">/g) || []).length
+    if (ambitosVisibles !== H2_CON_AMBITO_ESPERADOS) {
+      anota(pagina, `${ambitosVisibles} span de ambito, deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
     }
   }
 }
