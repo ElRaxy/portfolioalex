@@ -75,6 +75,7 @@ const CASE_ENTITY_IDS = {
   atalaya: '#atalaya',
   savemymoneynow: '#savemymoneynow',
   strev: '#strev',
+  wordpress: '#wordpress',
 }
 
 const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag(
