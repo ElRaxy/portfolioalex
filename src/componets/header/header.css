@@ -232,14 +232,15 @@
 .js .hero__socials,
 .js .hero__availability {
     opacity: 0;
-    animation-duration: 0.45s;
+    animation-duration: 0.38s;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
     animation-fill-mode: forwards;
 }
 
 .js .hero__char {
     animation-name: hero-char-in;
-    animation-delay: calc(var(--i, 0) * 24ms);
+    animation-duration: 0.34s;
+    animation-delay: calc(var(--i, 0) * 11ms);
 }
 
 .js .hero__title,
@@ -251,13 +252,15 @@
     animation-name: hero-block-in;
 }
 
-/* Solapados: encadenarlos uno tras otro dejaba la ultima linea en 1,5 s. */
-.js .hero__title { animation-delay: 300ms; }
-.js .hero__tagline { animation-delay: 360ms; }
-.js .hero__actions { animation-delay: 420ms; }
-.js .hero > .sidebar-nav { animation-delay: 480ms; }
-.js .hero__socials { animation-delay: 540ms; }
-.js .hero__availability { animation-delay: 600ms; }
+/* Solapados: encadenarlos uno tras otro dejaba la ultima linea en 1,5 s. Los
+   retardos se comprimieron (el nombre cerraba a 810 ms y la disponibilidad a
+   1 050 ms, sobre el propio elemento LCP): ahora 505 ms y 740 ms. */
+.js .hero__title { animation-delay: 180ms; }
+.js .hero__tagline { animation-delay: 220ms; }
+.js .hero__actions { animation-delay: 260ms; }
+.js .hero > .sidebar-nav { animation-delay: 300ms; }
+.js .hero__socials { animation-delay: 330ms; }
+.js .hero__availability { animation-delay: 360ms; }
 
 /* El reset global apaga las animaciones, que aqui dejaria el hero invisible. */
 @media (prefers-reduced-motion: reduce) {
