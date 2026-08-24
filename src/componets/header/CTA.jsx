@@ -9,7 +9,15 @@ import { useRoutePathname } from '../../lib/routeContext'
 // deteccion de navegador y las 5 paginas en ingles se generaban con el CV en
 // castellano. `download` con nombre para que el recruiter no reciba el hash de CRA.
 const CV = { es: CV_ES, en: CV_EN }
-const NOMBRE_DESCARGA = { es: 'Alex-Mico-CV-es.pdf', en: 'Alex-Mico-CV-en.pdf' }
+const NOMBRE_DESCARGA = {
+  es: 'Alex_Mico_Robles_CV_ES.pdf',
+  en: 'Alex_Mico_Robles_CV_EN.pdf',
+}
+const CV_PUBLICO = {
+  es: `/${NOMBRE_DESCARGA.es}`,
+  en: `/${NOMBRE_DESCARGA.en}`,
+}
+const CV_DESCARGA = process.env.NODE_ENV === 'development' ? CV : CV_PUBLICO
 
 const CTA = () => {
   const { t } = useTranslation()
@@ -23,7 +31,7 @@ const CTA = () => {
       <a href={`${base}#portfolio`} className="hero__button hero__button--projects">
         {t('header.view_projects')}
       </a>
-      <a href={CV[route.language]} download={NOMBRE_DESCARGA[route.language]} className="hero__button">
+      <a href={CV_DESCARGA[route.language]} download={NOMBRE_DESCARGA[route.language]} className="hero__button">
         {t('header.download_cv')}
       </a>
     </div>

@@ -7,7 +7,9 @@ import {
   screen,
 } from '@testing-library/react'
 import {
+  runLanguageTransition,
   scrollToSection,
+  syncDocument,
   useLanguageFromHistory,
   useSmoothAnchors,
 } from '../lib/smoothScroll'
@@ -169,9 +171,15 @@ describe('desplazamiento suave', () => {
   })
 
   it('sincroniza el idioma al volver por historial solo cuando ha cambiado', async () => {
+    const translations = {
+      'header.name': 'Alex Micó Robles',
+      'header.title': 'Full Stack Developer',
+      'meta.description': 'Portfolio description',
+    }
     const i18n = {
       resolvedLanguage: 'es',
       changeLanguage: jest.fn().mockResolvedValue(undefined),
+      getFixedT: jest.fn(() => (key) => translations[key]),
     }
     render(<PruebaIdioma i18n={i18n} />)
 
@@ -190,5 +198,51 @@ describe('desplazamiento suave', () => {
     })
 
     expect(i18n.changeLanguage).not.toHaveBeenCalled()
+  })
+
+  it('sincroniza título, canonical y metadatos sociales con el recurso fijo', () => {
+    const nodes = [
+      ['link', { rel: 'canonical' }],
+      ...['description', 'twitter:title', 'twitter:description'].map((name) => ['meta', { name }]),
+      ...['og:title', 'og:description', 'og:url', 'og:locale'].map((property) => ['meta', { property }]),
+    ].map(([tag, attributes]) => {
+      const node = document.createElement(tag)
+      Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value))
+      document.head.appendChild(node)
+      return node
+    })
+    const values = {
+      'header.name': 'Alex Micó Robles',
+      'header.title': 'Full Stack Developer',
+      'meta.description': 'English description',
+    }
+
+    syncDocument('en', { getFixedT: () => (key) => values[key] }, '/en/')
+
+    expect(document.title).toBe('Alex Micó Robles | Full Stack Developer')
+    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://portfolioalex-mico.vercel.app/en/',
+    )
+    expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute('content', 'en_US')
+    expect(document.querySelector('meta[name="twitter:description"]')).toHaveAttribute('content', 'English description')
+    nodes.forEach((node) => node.remove())
+  })
+
+  it('bloquea un segundo cambio de idioma mientras la transición sigue activa', async () => {
+    let finish
+    document.startViewTransition = jest.fn((update) => {
+      update()
+      return { finished: new Promise((resolve) => { finish = resolve }) }
+    })
+    const first = jest.fn()
+    const second = jest.fn()
+
+    const pending = runLanguageTransition(first)
+    expect(await runLanguageTransition(second)).toBe(false)
+    expect(second).not.toHaveBeenCalled()
+    finish()
+    await pending
+    delete document.startViewTransition
   })
 })

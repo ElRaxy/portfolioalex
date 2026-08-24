@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import App from '../App'
 import '../i18n'
 
@@ -32,6 +32,24 @@ describe('la web entera', () => {
     expect(enlacesCon(/^mailto:/).length).toBeGreaterThan(0)
     expect(enlacesCon(/wa\.me|whatsapp/).length).toBeGreaterThan(0)
     expect(enlacesCon(/github\.com\/ElRaxy/).length).toBeGreaterThan(0)
+  })
+
+  it('hace encontrables el objetivo Full Stack y las herramientas de calidad', () => {
+    render(<App pathname="/" />)
+
+    expect(screen.getAllByText(/oportunidades Full Stack/i).length).toBeGreaterThan(0)
+    const stack = screen.getByRole('region', { name: 'Stack' })
+    expect(within(stack).getByRole('heading', { name: 'Testing / Calidad' })).toBeInTheDocument()
+    ;['Jest', 'Vitest', 'React Testing Library', 'pytest', 'mypy', 'ESLint', 'CI/CD']
+      .forEach((skill) => expect(within(stack).getByText(skill)).toBeInTheDocument())
+  })
+
+  it('abre con pruebas cuantitativas, tambien en el recurso ingles', () => {
+    render(<App pathname="/" />)
+
+    expect(screen.getByText(/1[.,]004.*8.*581.*0/)).toBeInTheDocument()
+    const ingles = require('../i18n/locales/en/translation.json')
+    expect(ingles.header.evidence).toMatch(/1,004.*8.*581.*0/)
   })
 
   // Los tres diagramas son HTML, no imagenes, para seguir el tema claro/oscuro.
@@ -77,17 +95,17 @@ describe('la web entera', () => {
   // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay
   // navegador que detectar y las paginas inglesas servian el CV castellano.
   it.each([
-    ['/', 'cv-es'],
-    ['/en/', 'cv-en'],
-    ['/proyectos/atalaya/', 'cv-es'],
-    ['/en/projects/atalaya/', 'cv-en'],
-  ])('en %s descarga el CV %s', (ruta, esperado) => {
+    ['/', '/Alex_Mico_Robles_CV_ES.pdf'],
+    ['/en/', '/Alex_Mico_Robles_CV_EN.pdf'],
+    ['/proyectos/atalaya/', '/Alex_Mico_Robles_CV_ES.pdf'],
+    ['/en/projects/atalaya/', '/Alex_Mico_Robles_CV_EN.pdf'],
+  ])('en %s descarga el CV desde %s', (ruta, esperado) => {
     render(<App pathname={ruta} />)
 
     const descargas = enlacesCon(/\.pdf$/)
     expect(descargas).toHaveLength(1)
-    expect(descargas[0].getAttribute('href')).toContain(esperado)
-    expect(descargas[0]).toHaveAttribute('download')
+    expect(descargas[0]).toHaveAttribute('href', esperado)
+    expect(descargas[0]).toHaveAttribute('download', esperado.slice(1))
   })
 
   it('no deja ningun enlace externo sin rel de seguridad', () => {
@@ -108,6 +126,20 @@ describe('la web entera', () => {
     const botones = screen.getAllByRole('link', { name: /cambiar idioma|switch language/i })
     expect(botones.length).toBeGreaterThan(0)
     botones.forEach((boton) => expect(boton).toHaveAttribute('href', '/en/'))
+  })
+
+  it('el selector de tema comunica y actualiza su estado accesible', () => {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    render(<App />)
+
+    const selectores = screen.getAllByRole('button', { name: /tema|theme/i })
+    expect(selectores).toHaveLength(2)
+    selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'true'))
+
+    fireEvent.click(selectores[0])
+
+    selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'false'))
+    expect(document.documentElement).toHaveAttribute('data-theme', 'light')
   })
 
   it('los proyectos que dicen tener codigo lo enlazan de verdad', () => {

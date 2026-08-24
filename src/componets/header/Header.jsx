@@ -43,6 +43,7 @@ const Header = ({ nameAs = 'h1' }) => {
             solo al principio de la segunda linea. El <title> no se toca. */}
         <p className="hero__title">{t('header.title').replace(' \u00b7 ', '\u00a0\u00b7 ')}</p>
         <p className="hero__tagline">{t('header.tagline')}</p>
+        <p className="hero__evidence">{t('header.evidence')}</p>
         <CTA />
       </div>
 

@@ -1,8 +1,8 @@
 # Alex Micó Robles
 
-> Desarrollador full stack (React, Node, MongoDB) y automatizador (Python, Bash).
-> Trabaja en Anuubis Solutions operando infraestructura web en producción.
-> Villena, Alicante, España. Abierto a proyectos en remoto en España y la UE.
+> Full Stack Developer (React, Node, MongoDB) y automatizador (Python, Bash).
+> Trabaja en Anuubis Solutions operando cerca de 1.000 sitios sobre 8 servidores.
+> Villena, Alicante, España. Abierto a puestos Full Stack en remoto en España y la UE.
 
 Web: https://portfolioalex-mico.vercel.app/ (español) · /en/ (inglés)
 Correo: alexmico2006@gmail.com
@@ -12,6 +12,8 @@ GitHub: https://github.com/ElRaxy
 
 - Aplicaciones web de punta a punta con React, Node, Express y MongoDB.
 - Automatización en Python y Bash de trabajo repetido de operaciones web.
+- Testing con Jest, Vitest, React Testing Library y pytest; análisis estático
+  con mypy y ESLint; CI/CD con GitHub Actions.
 - Operación de infraestructura WordPress en producción: deploys, migraciones
   entre proveedores, auditorías de rendimiento y diagnóstico de incidencias.
 - Producto con LLMs dentro: puntuación de ofertas, redacción asistida,
@@ -26,25 +28,25 @@ GitHub: https://github.com/ElRaxy
 
 ## Proyectos
 
-- Atalaya — CLI en Python que reúne ofertas de empleo dev remoto de 8 portales,
+- Atalaya · CLI en Python que reúne ofertas de empleo dev remoto de 8 portales,
   las puntúa contra un perfil y redacta la carta de presentación con un LLM.
   13 comandos, 174 tests, mypy en modo estricto.
   https://github.com/ElRaxy/atalaya-cli
-- SaveMyMoneyNow — Convierte extractos bancarios en un panel de gastos. Detecta
+- SaveMyMoneyNow · Convierte extractos bancarios en un panel de gastos. Detecta
   la fila de cabecera y mapea las columnas sin escribir un parser por banco.
   21 endpoints, 113 casos de test. React, Node, Express, MongoDB.
   https://github.com/ElRaxy/SaveMyMoneyNow
-- Strev — SaaS fitness MERN en beta privada. 121 endpoints en 26 módulos y 837 tests
+- Strev · SaaS fitness MERN en beta privada. 121 endpoints en 26 módulos y 837 tests
   en verde, auth por cookies, pagos, y análisis de técnica en vídeo con Gemini
   en cola.
   Código cerrado. https://strev.app
-- Automatización de WordPress en producción — herramienta interna en Python y
+- Automatización de WordPress en producción · herramienta interna en Python y
   Bash para auditar, verificar tras el deploy y migrar sitios entre
   proveedores. Código cerrado.
 
 ## Experiencia
 
-- 2026 — hoy · Desarrollador Full Stack y Automatización · Anuubis Solutions (remoto)
+- 2026 – hoy · Desarrollador Full Stack, Automatización e Infraestructura web · Anuubis Solutions (remoto)
 - 2024 · Técnico de Soporte IT en prácticas · Impulso Sistemas, Coop. (Villena)
 
 ## Formación

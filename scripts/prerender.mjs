@@ -1,6 +1,6 @@
 /* eslint-env node */
 import { build as bundle } from 'esbuild'
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { renderToString } from 'react-dom/server'
@@ -85,8 +85,10 @@ const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag
     const jsonText = tag.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '')
     const structuredData = JSON.parse(jsonText)
     const profilePage = structuredData['@graph']?.find((node) => node['@type'] === 'ProfilePage')
+    const person = structuredData['@graph']?.find((node) => node['@type'] === 'Person')
 
     if (!profilePage) throw new Error('The JSON-LD graph has no ProfilePage node')
+    if (!person) throw new Error('The JSON-LD graph has no Person node')
 
     profilePage.url = url
     profilePage['@id'] = `${url}#page`
@@ -96,6 +98,15 @@ const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag
     // Developer" y las inglesas lo decian en castellano.
     profilePage.name = metadata.name
     profilePage.description = metadata.description
+
+    if (language === 'en') {
+      person.description = metadata.personDescription
+      person.homeLocation.name = 'Villena, Alicante, Spain'
+      person.alumniOf.forEach((school, index) => {
+        const study = metadata.studies[index]
+        school.description = `${study.role} (${study.when})`
+      })
+    }
 
     if (slug) {
       profilePage['@type'] = 'WebPage'
@@ -254,22 +265,25 @@ const localizeHead = (baseHtml, page, translation, baseMetadata) => {
   html = setMetaContent(html, 'name', 'twitter:description', socialDescription)
   html = setCanonical(html, canonicalUrl)
   html = addAlternates(html, page.spanishUrl, page.englishUrl)
-  return setStructuredDataUrl(html, canonicalUrl, language, slug, { name: title, description })
+  return setStructuredDataUrl(html, canonicalUrl, language, slug, {
+    name: title,
+    description,
+    personDescription: homeDescription,
+    studies: translation.experience.studies,
+  })
 }
 
-const manifest = JSON.parse(await readFile(
-  path.join(buildDirectory, 'asset-manifest.json'),
-  'utf8',
-))
-// Un PDF por idioma. El plugin de esbuild de abajo resolvia CUALQUIER .pdf a la
-// misma URL, asi que las paginas en ingles se prerenderizaban con el CV castellano.
-const cvAssetUrls = Object.fromEntries(['cv-es.pdf', 'cv-en.pdf'].map((file) => {
-  const url = manifest.files[`static/media/${file}`]
-  if (!url?.startsWith('/')) {
-    throw new Error(`The CRA asset URL for ${file} is missing or is not absolute`)
-  }
-  return [file, url]
-}))
+// El atributo `download` no puede corregir siempre el nombre que dicta el
+// servidor. Se publican copias sin hash para que la URL, Content-Disposition y
+// el nombre sugerido coincidan en Chrome, Safari y Firefox.
+const cvAssetUrls = {
+  'cv-es.pdf': '/Alex_Mico_Robles_CV_ES.pdf',
+  'cv-en.pdf': '/Alex_Mico_Robles_CV_EN.pdf',
+}
+await Promise.all(Object.entries(cvAssetUrls).map(([sourceName, publicUrl]) => copyFile(
+  path.join(projectRoot, 'src/assets', sourceName),
+  path.join(buildDirectory, publicUrl.slice(1)),
+)))
 
 const temporaryDirectory = await mkdtemp(path.join(buildDirectory, '.prerender-'))
 const serverBundle = path.join(temporaryDirectory, 'entry.mjs')

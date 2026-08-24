@@ -10,19 +10,24 @@
     "open_menu": "Open menu",
     "close_menu": "Close menu"
   },
+  "controls": {
+    "language": "Language",
+    "theme": "Change color theme"
+  },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer · Automation and AI",
-    "tagline": "I build applications and automate the infrastructure that keeps them running.",
+    "title": "Full Stack Developer · Product, Automation and Production",
+    "tagline": "I build React and Node.js products, automate repetitive work with Python, and help run them in production.",
+    "evidence": "1,004 sites · 8 servers · 581 changes, 0 failures",
     "view_projects": "View projects",
     "download_cv": "Download CV",
-    "availability": "Open to new projects · Remote, Spain and the EU"
+    "availability": "Open to Full Stack roles · Remote in Spain and the EU"
   },
   "about": {
     "title": "About me",
-    "p2": "Atalaya pulls dev job listings from eight boards, scores them against a profile and drafts the cover letter with an LLM. SaveMyMoneyNow turns bank statements into a spending dashboard: it detects the header row and maps the columns without needing a parser per bank.",
-    "p3": "At Anuubis Solutions I keep web infrastructure running in production: deploys, migrations between providers, performance audits and incidents. Nearly all of it scripted, because doing it by hand is where things break.",
-    "lead": "I'm Alex Micó Robles: I build applications with React, Node and MongoDB, and automate the repetitive parts with Python.",
+    "p2": "SaveMyMoneyNow started with a problem I kept seeing: every bank exports a different spreadsheet. It finds the real header row, maps the columns and turns the file into a spending dashboard. Atalaya does the same kind of cleanup for job hunting, bringing eight sources into one scored shortlist.",
+    "p3": "At Anuubis Solutions I work across 1,004 WordPress sites on 8 servers. I build React and Node.js tooling, automate fleet changes with Python and Bash, and verify the result after every run. One data correction became a validated migration across 581 sites: 581 changes, 0 failures.",
+    "lead": "I work where product code meets production: React interfaces, Node.js APIs, Python automation and the checks that prove a change worked.",
     "facts_title": "In short",
     "facts": [
       {
@@ -31,7 +36,7 @@
       },
       {
         "term": "Available",
-        "value": "Open to projects in Spain and the EU"
+        "value": "Open to Full Stack roles in Spain and the EU"
       },
       {
         "term": "Stack",
@@ -48,15 +53,14 @@
     "education": "Education",
     "roles": [
       {
-        "role": "Full Stack Developer · Automation",
+        "role": "Full Stack Developer · Product and Automation",
         "org": "Anuubis Solutions · Remote",
-        "when": "2026 — Present",
+        "when": "2026 – Present",
         "current": true,
         "bullets": [
-          "I run web infrastructure in production: deploys, migrations between hosting providers and audits.",
-          "I replace manual work with Python and Bash scripts: what was done site by site now runs in a single pass.",
-          "I diagnose outages end to end: plugins, vhosts, mail delivery, DNS and certificates.",
-          "I measure with Lighthouse and Core Web Vitals, and hand over the report with the before and after numbers."
+          "I build and maintain React interfaces, Node.js APIs and Python/Bash automation that reduce manual work in support, publishing and quality control.",
+          "I turned a fleet data correction into a validated migration across 581 WordPress sites: 581 changes, 0 failures and a full verification pass afterwards.",
+          "I run deployments, migrations and incident response across 1,004 WordPress sites on 8 servers, including Linux, Nginx, DNS, mail and certificates."
         ]
       },
       {
@@ -74,12 +78,12 @@
       {
         "role": "Advanced Diploma in Web Application Development",
         "org": "IES Hermanos Amorós",
-        "when": "2024 — 2026"
+        "when": "2024 – 2026"
       },
       {
         "role": "Intermediate Diploma in Microcomputer Systems and Networks",
         "org": "IES Hermanos Amorós",
-        "when": "2022 — 2024"
+        "when": "2022 – 2024"
       }
     ]
   },
@@ -107,6 +111,18 @@
         "REST APIs"
       ]
     },
+    "quality": {
+      "label": "Testing / Quality",
+      "chips": [
+        "Jest",
+        "Vitest",
+        "React Testing Library",
+        "pytest",
+        "mypy",
+        "ESLint",
+        "CI/CD"
+      ]
+    },
     "ai": {
       "label": "AI / Agents",
       "chips": [
@@ -122,8 +138,6 @@
       "chips": [
         "Typer",
         "httpx",
-        "pytest",
-        "mypy",
         "Web scraping"
       ]
     },
@@ -178,7 +192,7 @@
         "closed": true,
         "internal": true,
         "image": "wordpress",
-        "image_alt": "Diagram: one command sweeps the whole fleet — inventory, checks and report",
+        "image_alt": "Diagram: one command sweeps the whole fleet, from inventory to report",
         "slug": "wordpress"
       },
       {
@@ -331,13 +345,13 @@
     "required_note": "All three fields are required."
   },
   "footer": {
-    "availability": "Open to talking about new projects",
+    "availability": "Open to Full Stack roles",
     "cta": "Get in touch",
     "built": "© 2026 Alex Micó Robles. Built with React, i18next and CSS, deployed on Vercel.",
     "source": "Source of this site"
   },
   "meta": {
-    "description": "Alex Micó Robles, full stack developer. React, Node and MongoDB for product; Python and Bash for automation. Author of Atalaya and SaveMyMoneyNow."
+    "description": "Alex Micó Robles builds Full Stack products with React and Node.js, automates operations with Python, and works across 1,004 production sites on 8 servers."
   },
   "case_study": {
     "back": "Back to projects",

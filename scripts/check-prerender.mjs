@@ -38,6 +38,10 @@ const DICCIONARIOS = {
   es: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/es/translation.json'), 'utf8')),
   en: JSON.parse(readFileSync(path.join(raiz, 'src/i18n/locales/en/translation.json'), 'utf8')),
 }
+const CV_POR_IDIOMA = {
+  es: 'Alex_Mico_Robles_CV_ES.pdf',
+  en: 'Alex_Mico_Robles_CV_EN.pdf',
+}
 
 // Rail de ambito (2026-08-23). El nombre del proyecto no vuelve al rotulo: lo
 // dice un span propio encima, y solo en los dos bloques cuyos pasajes viajan
@@ -96,9 +100,10 @@ for (const pagina of PAGINAS) {
   // Cada pagina descarga el CV de SU idioma. El bundler resolvia todos los .pdf
   // al mismo fichero, asi que las paginas inglesas servian el CV castellano y
   // nada lo delataba: el enlace funcionaba, solo estaba en el otro idioma.
-  const cv = html.match(/href="([^"]*cv-(es|en)\.[^"]*\.pdf)"/)
-  if (!cv) anota(pagina, 'sin enlace de descarga del CV')
-  else if (cv[2] !== pagina.idioma) anota(pagina, `descarga el CV en ${cv[2]}, deberia ser ${pagina.idioma}`)
+  const cvEsperado = `/${CV_POR_IDIOMA[pagina.idioma]}`
+  if (!html.includes(`href="${cvEsperado}"`)) {
+    anota(pagina, `no descarga ${cvEsperado}`)
+  }
 
   if (pagina.tipo === 'caso') {
     // Las ocho paginas de caso vivieron sin una sola imagen: 2800 px de prosa
@@ -124,6 +129,12 @@ for (const pagina of PAGINAS) {
       anota(pagina, `${ambitosVisibles} span de ambito, deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
     }
   }
+}
+
+for (const [idioma, nombre] of Object.entries(CV_POR_IDIOMA)) {
+  const fuente = readFileSync(path.join(raiz, 'src', 'assets', `cv-${idioma}.pdf`))
+  const publicado = readFileSync(path.join(raiz, 'build', nombre))
+  if (!fuente.equals(publicado)) fallos.push(`${nombre}: no coincide con el CV ${idioma}`)
 }
 
 const sitemap = leer('sitemap.xml')

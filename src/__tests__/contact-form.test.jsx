@@ -160,4 +160,17 @@ describe('formulario de contacto', () => {
     expect(honeypot).toBeInTheDocument()
     expect(honeypot).toHaveAttribute('tabIndex', '-1')
   })
+
+  it('la nota obligatoria no desplaza el nombre a la segunda columna', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const css = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'contact', 'contact.css'),
+      'utf8',
+    )
+    const regla = css.match(/\.contact__required\s*\{[\s\S]*?\n\}/)
+
+    expect(regla).not.toBeNull()
+    expect(regla[0]).toMatch(/grid-column:\s*1\s*\/\s*-1/)
+  })
 })

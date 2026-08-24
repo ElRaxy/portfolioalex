@@ -73,6 +73,18 @@
   font-size: var(--fs-base);
 }
 
+.hero__evidence {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: var(--space-4);
+  padding: var(--space-2) 0;
+  border-block: 1px solid var(--line-soft);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  line-height: 1.55;
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: nowrap;
@@ -227,6 +239,7 @@
 .js .hero__char,
 .js .hero__title,
 .js .hero__tagline,
+.js .hero__evidence,
 .js .hero__actions,
 .js .hero > .sidebar-nav,
 .js .hero__socials,
@@ -245,6 +258,7 @@
 
 .js .hero__title,
 .js .hero__tagline,
+.js .hero__evidence,
 .js .hero__actions,
 .js .hero > .sidebar-nav,
 .js .hero__socials,
@@ -257,16 +271,18 @@
    1 050 ms, sobre el propio elemento LCP): ahora 505 ms y 740 ms. */
 .js .hero__title { animation-delay: 180ms; }
 .js .hero__tagline { animation-delay: 220ms; }
-.js .hero__actions { animation-delay: 260ms; }
-.js .hero > .sidebar-nav { animation-delay: 300ms; }
-.js .hero__socials { animation-delay: 330ms; }
-.js .hero__availability { animation-delay: 360ms; }
+.js .hero__evidence { animation-delay: 250ms; }
+.js .hero__actions { animation-delay: 280ms; }
+.js .hero > .sidebar-nav { animation-delay: 320ms; }
+.js .hero__socials { animation-delay: 350ms; }
+.js .hero__availability { animation-delay: 380ms; }
 
 /* El reset global apaga las animaciones, que aqui dejaria el hero invisible. */
 @media (prefers-reduced-motion: reduce) {
     .js .hero__char,
     .js .hero__title,
     .js .hero__tagline,
+    .js .hero__evidence,
     .js .hero__actions,
     .js .hero > .sidebar-nav,
     .js .hero__socials,

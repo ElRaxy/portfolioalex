@@ -10,19 +10,24 @@
     "open_menu": "Abrir menú",
     "close_menu": "Cerrar menú"
   },
+  "controls": {
+    "language": "Idioma",
+    "theme": "Cambiar tema de color"
+  },
   "header": {
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · Automatización e IA",
     "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
+    "evidence": "1.004 sitios · 8 servidores · 581 cambios, 0 fallos",
     "view_projects": "Ver proyectos",
     "download_cv": "Descargar CV",
-    "availability": "Abierto a nuevos proyectos · Remoto, España y UE"
+    "availability": "Abierto a oportunidades Full Stack · Remoto, España y UE"
   },
   "about": {
     "title": "Sobre mí",
     "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
-    "p3": "En Anuubis Solutions mantengo infraestructura web en producción: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Casi todo scriptado, porque a mano es donde se rompen las cosas.",
-    "lead": "Soy Alex Micó Robles: construyo aplicaciones con React, Node y MongoDB, y automatizo con Python lo que se repite.",
+    "p3": "En Anuubis Solutions opero cerca de 1.000 sitios sobre 8 servidores: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Con Python y Bash sustituyo las revisiones sitio a sitio por ejecuciones sobre toda la flota.",
+    "lead": "Soy Alex Micó Robles. Construyo producto con React, Node y MongoDB, y uso Python y Bash para quitar de en medio el trabajo repetitivo.",
     "facts_title": "En corto",
     "facts": [
       {
@@ -31,7 +36,7 @@
       },
       {
         "term": "Disponible",
-        "value": "Abierto a proyectos en España y la UE"
+        "value": "Abierto a puestos Full Stack en España y la UE"
       },
       {
         "term": "Stack",
@@ -48,15 +53,15 @@
     "education": "Formación",
     "roles": [
       {
-        "role": "Desarrollador Full Stack · Automatización",
+        "role": "Desarrollador Full Stack · Automatización e infraestructura web",
         "org": "Anuubis Solutions · Remoto",
-        "when": "2026 — HOY",
+        "when": "2026 – HOY",
         "current": true,
         "bullets": [
-          "Opero infraestructura web en producción: deploys, migraciones entre proveedores de hosting y auditorías.",
-          "Sustituyo trabajo manual por scripts en Python y Bash: lo que se hacía sitio a sitio pasó a una sola pasada.",
-          "Diagnostico caídas de punta a punta: plugins, vhosts, entrega de correo, DNS y certificados.",
-          "Mido con Lighthouse y Core Web Vitals, y entrego el informe con las métricas antes y después."
+          "Automaticé con Python y Bash barridos de flota, auditorías SEO y de rendimiento, y verificaciones post-deploy. Sustituí las revisiones sitio a sitio por ejecuciones sobre toda la flota.",
+          "Opero deploys, migraciones entre proveedores e incidencias de producción en cerca de 1.000 sitios sobre 8 servidores.",
+          "Diagnostico incidencias de extremo a extremo en WordPress, vhosts, correo, DNS y certificados, y gestiono dominios y DNS mediante APIs de registradores.",
+          "Mido LCP y CLS con Lighthouse y Core Web Vitals, y entrego al cliente informes con los resultados medidos."
         ]
       },
       {
@@ -74,12 +79,12 @@
       {
         "role": "Grado Superior en Desarrollo de Aplicaciones Web",
         "org": "IES Hermanos Amorós",
-        "when": "2024 — 2026"
+        "when": "2024 – 2026"
       },
       {
         "role": "Ciclo Medio en Sistemas Microinformáticos y Redes",
         "org": "IES Hermanos Amorós",
-        "when": "2022 — 2024"
+        "when": "2022 – 2024"
       }
     ]
   },
@@ -107,6 +112,18 @@
         "REST APIs"
       ]
     },
+    "quality": {
+      "label": "Testing / Calidad",
+      "chips": [
+        "Jest",
+        "Vitest",
+        "React Testing Library",
+        "pytest",
+        "mypy",
+        "ESLint",
+        "CI/CD"
+      ]
+    },
     "ai": {
       "label": "IA / Agentes",
       "chips": [
@@ -122,8 +139,6 @@
       "chips": [
         "Typer",
         "httpx",
-        "pytest",
-        "mypy",
         "Web scraping"
       ]
     },
@@ -178,7 +193,7 @@
         "closed": true,
         "internal": true,
         "image": "wordpress",
-        "image_alt": "Diagrama: un comando recorre toda la flota — inventario, comprobaciones e informe",
+        "image_alt": "Diagrama: un comando recorre toda la flota, desde el inventario hasta el informe",
         "slug": "wordpress"
       },
       {
@@ -331,13 +346,13 @@
     "required_note": "Los tres campos son obligatorios."
   },
   "footer": {
-    "availability": "Abierto a hablar de nuevos proyectos",
+    "availability": "Abierto a oportunidades Full Stack",
     "cta": "Escríbeme",
     "built": "© 2026 Alex Micó Robles. Construido con React, i18next y CSS, desplegado en Vercel.",
     "source": "Código de esta web"
   },
   "meta": {
-    "description": "Alex Micó Robles, desarrollador full stack. React, Node y MongoDB para producto; Python y Bash para automatizar. Autor de Atalaya y SaveMyMoneyNow."
+    "description": "Portfolio de Alex Micó Robles, Full Stack Developer. Producto con React, Node.js y MongoDB; automatización con Python y Bash; testing, CI/CD e IA aplicada."
   },
   "case_study": {
     "back": "Volver a proyectos",

@@ -1,5 +1,7 @@
 import React from 'react'
 
+const BASE_URL = 'https://portfolioalex-mico.vercel.app'
+
 // El `scroll-behavior: smooth` nativo de Chrome, medido sobre esta web, recorre
 // 1.472 px en 256 ms y luego se arrastra: los ultimos 200 px de un viaje de
 // 3.545 px se comen 400 ms de los 1.050 totales. Se siente como un latigazo.
@@ -19,6 +21,74 @@ const getScrollPadding = () => {
 }
 
 const getDuration = (distance) => Math.min(900, Math.max(420, Math.abs(distance) * 0.32))
+
+const updateMeta = (selector, value, attribute = 'content') => {
+  const element = document.querySelector(selector)
+  if (element) element.setAttribute(attribute, value)
+}
+
+export const syncDocument = (language, i18n, pathname = window.location.pathname) => {
+  const t = i18n.getFixedT(language)
+  const url = new URL(pathname, BASE_URL).href
+  const title = `${t('header.name')} | ${t('header.title')}`
+  const description = t('meta.description')
+
+  document.documentElement.lang = language
+  document.title = title
+  updateMeta('link[rel="canonical"]', url, 'href')
+  updateMeta('meta[name="description"]', description)
+  updateMeta('meta[property="og:title"]', title)
+  updateMeta('meta[property="og:description"]', description)
+  updateMeta('meta[property="og:url"]', url)
+  updateMeta('meta[property="og:locale"]', language === 'en' ? 'en_US' : 'es_ES')
+  updateMeta('meta[name="twitter:title"]', title)
+  updateMeta('meta[name="twitter:description"]', description)
+
+  try {
+    window.localStorage.setItem('language', language)
+  } catch {
+    /* la URL y el documento siguen sincronizados aunque no haya storage */
+  }
+}
+
+const nextFrame = () => new Promise((resolve) => window.requestAnimationFrame(resolve))
+
+export const runLanguageTransition = async (update) => {
+  const root = document.documentElement
+  if (root.hasAttribute('data-view-transition')) return false
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  root.setAttribute('data-view-transition', 'language')
+
+  if (document.startViewTransition && !reducedMotion) {
+    try {
+      const transition = document.startViewTransition(update)
+      await transition.finished.catch(() => {})
+    } finally {
+      root.removeAttribute('data-view-transition')
+    }
+    return true
+  }
+
+  if (reducedMotion) {
+    try {
+      await update()
+    } finally {
+      root.removeAttribute('data-view-transition')
+    }
+    return true
+  }
+
+  root.setAttribute('data-view-transition', 'language-fallback')
+  try {
+    await nextFrame()
+    await update()
+    await nextFrame()
+  } finally {
+    root.removeAttribute('data-view-transition')
+  }
+  return true
+}
 
 export const scrollToSection = (id) => {
   const target = document.getElementById(id)
@@ -94,8 +164,10 @@ export const useLanguageFromHistory = (i18n) => {
       const language = /^\/en(?:\/|$)/.test(window.location.pathname) ? 'en' : 'es'
       if (i18n.resolvedLanguage !== language) {
         i18n.changeLanguage(language).then(() => {
-          document.documentElement.lang = language
+          syncDocument(language, i18n)
         })
+      } else {
+        syncDocument(language, i18n)
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 export const ThemeContext = createContext()
 
@@ -11,10 +11,18 @@ const getPaintedTheme = () => (
 )
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(getPaintedTheme)
+  // `null` hace que el primer render del navegador coincida con el HTML
+  // prerenderizado. Tras hidratar se lee el tema que el script del <head> ya
+  // pinto, y entonces los atributos accesibles pueden anunciar el estado real.
+  const [theme, setTheme] = useState(null)
+
+  useEffect(() => {
+    setTheme(getPaintedTheme())
+  }, [])
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    const activeTheme = theme || getPaintedTheme()
+    const newTheme = activeTheme === 'dark' ? 'light' : 'dark'
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
     try {
