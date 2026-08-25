@@ -124,11 +124,12 @@ describe('la web entera', () => {
     try {
       fireEvent.click(screen.getAllByRole('link', { name: 'Switch language to Spanish' })[0])
 
-      await waitFor(() => {
-        const descarga = screen.getByRole('link', { name: 'Descargar CV' })
-        expect(descarga).toHaveAttribute('href', '/Alex_Mico_Robles_CV_ES.pdf')
-        expect(descarga).toHaveAttribute('download', 'Alex_Mico_Robles_CV_ES.pdf')
-      }, { timeout: 5000 })
+      await waitFor(() => expect(
+        screen.getByRole('link', { name: 'Descargar CV' }),
+      ).toHaveAttribute('href', '/Alex_Mico_Robles_CV_ES.pdf'), { timeout: 5000 })
+
+      expect(screen.getByRole('link', { name: 'Descargar CV' }))
+        .toHaveAttribute('download', 'Alex_Mico_Robles_CV_ES.pdf')
     } finally {
       document.documentElement.removeAttribute('data-language-transition')
       window.history.replaceState(null, '', '/')
