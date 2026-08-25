@@ -7,7 +7,7 @@ import { useRoutePathname } from '../../lib/routeContext'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
-const SIDEBAR_TARGETS = ['about', 'portfolio', 'experience', 'stack', 'contact']
+const SIDEBAR_TARGETS = ['portfolio', 'about', 'experience', 'stack', 'contact']
 
 // Dentro de una pagina de caso las secciones no existen: el ancla suelta no
 // llevaria a ninguna parte, asi que se prefija con la home de ese idioma.
@@ -178,8 +178,8 @@ const Nav = () => {
   const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
   const links = [
     { target: 'home', label: t('nav.home') },
-    { target: 'about', label: t('nav.about') },
     { target: 'portfolio', label: t('nav.portfolio') },
+    { target: 'about', label: t('nav.about') },
     { target: 'experience', label: t('nav.experience') },
     { target: 'stack', label: t('nav.stack') },
     { target: 'contact', label: t('nav.contact') },

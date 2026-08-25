@@ -141,7 +141,7 @@ function Contact() {
 
           <div className="contact__detail">
             <dt>{t('contact.location')}</dt>
-            <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noopener noreferrer">Alicante, Villena</a></dd>
+            <dd><a href="https://maps.google.com/?q=Villena,+Alicante" target="_blank" rel="noopener noreferrer">Villena, Alicante</a></dd>
           </div>
         </dl>
 

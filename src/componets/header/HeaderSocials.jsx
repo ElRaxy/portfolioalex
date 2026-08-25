@@ -14,7 +14,7 @@ const HeaderSocials = () => {
         href="https://github.com/ElRaxy"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={t('contact.website')}
+        aria-label={t('contact.github')}
       >
         <FaGithub aria-hidden="true" />
       </a>

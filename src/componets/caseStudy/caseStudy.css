@@ -7,9 +7,12 @@
 
 .case__back {
     align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     color: var(--color-text-muted);
-    font-family: var(--font-mono);
     font-size: var(--fs-sm);
+    font-weight: 500;
 }
 
 .case__back::before {
@@ -68,17 +71,13 @@
     text-align: left;
 }
 
-/* El rotulo de seccion medía 12 px sobre unos H3 de 18 px que cuelgan de el:
-   el mismo nivel semantico leia como pie de foto. Conserva la voz (mono, caja
-   alta) y recupera el peso visual con tamano y una linea que abre el bloque. */
+/* La linea abre cada capitulo sin convertir el rotulo en una etiqueta tecnica. */
 .case__block h2 {
     color: var(--color-text-primary);
-    font-family: var(--font-mono);
-    font-size: var(--fs-lg);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    line-height: 1.3;
-    text-transform: uppercase;
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
     padding-top: var(--space-5);
     border-top: 1px solid var(--line-soft);
 }
@@ -99,10 +98,9 @@
     display: block;
     color: var(--color-text-muted);
     font-size: var(--fs-sm);
-    font-weight: 400;
-    letter-spacing: 0.02em;
+    font-weight: 500;
+    letter-spacing: 0;
     line-height: 1.4;
-    text-transform: none;
 }
 
 /* El separador es del ojo, no del documento: en ::after no lo extrae nadie y
@@ -147,8 +145,9 @@
     left: 0;
     top: 0.15em;
     color: var(--accent);
-    font-family: var(--font-mono);
     font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
 }
 
 .case__decision h3 {
@@ -179,16 +178,16 @@
 
 .case__result-value {
     color: var(--color-text-primary);
-    font-family: var(--font-mono);
     font-size: var(--fs-2xl);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
     line-height: 1;
 }
 
 .case__result-label {
     color: var(--text-3);
-    font-size: var(--fs-xs);
-    letter-spacing: var(--ls-label);
-    text-transform: uppercase;
+    font-size: var(--fs-sm);
+    line-height: 1.45;
 }
 
 .case__note {
@@ -218,7 +217,7 @@
 .case__link {
     display: inline-flex;
     align-items: center;
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 var(--space-5);
     border: 1px solid var(--line-soft);
     border-radius: var(--radius-full);
@@ -233,13 +232,34 @@
     background: var(--surface-2);
 }
 
-/* El artefacto del caso: el diagrama de la tarjeta o la terminal de Atalaya.
-   Aqui el ancho da de si, asi que el diagrama se ve con sus tres pasos en
-   fila y sus notas, no apilado como en la miniatura. */
-.case__artifact {
+/* Evidencia del producto: la captura conserva su proporcion y el marco queda
+   en segundo plano, como una lamina dentro del casebook. */
+.case__media {
     margin-top: var(--space-6);
+    max-width: 56rem;
 }
 
-.case__artifact .portfolio__terminal {
-    margin: 0;
+.case__media--savemymoneynow {
+    max-width: 48rem;
+}
+
+.case__media-frame {
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    background: var(--surface-1);
+    box-shadow: var(--media-shadow);
+}
+
+.case__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.case__media figcaption {
+    margin-top: var(--space-3);
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+    line-height: 1.5;
 }

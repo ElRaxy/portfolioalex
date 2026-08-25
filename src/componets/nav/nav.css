@@ -20,26 +20,26 @@
 
 .sidebar-nav__list {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .sidebar-nav__link {
   width: max-content;
+  min-height: 2rem;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-1) 0;
   color: var(--color-text-muted);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: var(--ls-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
   line-height: 1.4;
-  text-transform: uppercase;
   transition: color var(--transition);
 }
 
 .sidebar-nav__line {
-  width: var(--space-8);
+  width: var(--space-5);
   height: 1px;
   flex: 0 0 auto;
   background: var(--line-soft);
@@ -53,7 +53,7 @@
 
 .sidebar-nav__link:hover .sidebar-nav__line,
 .sidebar-nav__link--active .sidebar-nav__line {
-  width: var(--space-16);
+  width: var(--space-8);
 }
 
 .sidebar-nav__link--active .sidebar-nav__line {
@@ -113,13 +113,10 @@
     min-width: max-content;
     text-overflow: clip;
     font-weight: 700;
-    /* 24 px de alto es el minimo de WCAG 2.5.8 (AA en 2.2). Con line-height 1
-       el enlace medía 16 px y era la unica zona pulsable de la web por debajo
-       del minimo. El alto sale del padding, no del interlineado, para no mover
-       el texto de su linea. */
+    /* El alto táctil sigue el contrato del producto en móvil. */
     display: inline-flex;
     align-items: center;
-    min-height: 24px;
+    min-height: 44px;
     padding-block: var(--space-1);
   }
 
@@ -212,9 +209,24 @@
     margin-left: auto;
   }
 
+  .portfolio-nav__controls .language-selector {
+    height: 44px;
+  }
+
+  .portfolio-nav__controls .lang-btn,
+  .portfolio-nav__controls .language-selector__option {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .portfolio-nav__controls .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
   .portfolio-nav__menu-toggle {
-    width: calc(var(--space-8) + var(--space-2));
-    height: calc(var(--space-8) + var(--space-2));
+    width: 44px;
+    height: 44px;
     padding: 0;
     flex: 0 0 auto;
     display: inline-flex;

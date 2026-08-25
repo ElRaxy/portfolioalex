@@ -9,7 +9,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const buildDirectory = path.join(projectRoot, 'build')
 const baseUrl = 'https://portfolioalex-mico.vercel.app'
 // Mismo orden que en src/lib/routing.js. Si divergen, el test lo canta.
-const CASE_SLUGS = ['wordpress', 'savemymoneynow', 'atalaya', 'strev']
+const CASE_SLUGS = ['savemymoneynow', 'strev', 'atalaya']
 const buildDate = new Date().toISOString().slice(0, 10)
 
 const escapeAttribute = (value) => String(value)
@@ -75,7 +75,6 @@ const CASE_ENTITY_IDS = {
   atalaya: '#atalaya',
   savemymoneynow: '#savemymoneynow',
   strev: '#strev',
-  wordpress: '#wordpress',
 }
 
 const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag(
@@ -289,6 +288,13 @@ const temporaryDirectory = await mkdtemp(path.join(buildDirectory, '.prerender-'
 const serverBundle = path.join(temporaryDirectory, 'entry.mjs')
 
 try {
+  const assetManifest = JSON.parse(await readFile(
+    path.join(buildDirectory, 'asset-manifest.json'),
+    'utf8',
+  ))
+  const builtAssetUrls = Object.fromEntries(Object.entries(assetManifest.files)
+    .map(([assetPath, url]) => [path.basename(assetPath), url]))
+
   await bundle({
     entryPoints: [path.join(projectRoot, 'src/prerender/entry.jsx')],
     outfile: serverBundle,
@@ -317,12 +323,12 @@ try {
       {
         name: 'built-assets',
         setup(build) {
-          build.onResolve({ filter: /\.pdf$/ }, (args) => ({
+          build.onResolve({ filter: /\.(?:pdf|png|jpe?g|svg|webp)$/i }, (args) => ({
             path: path.basename(args.path),
             namespace: 'built-assets',
           }))
           build.onLoad({ filter: /.*/, namespace: 'built-assets' }, (args) => {
-            const url = cvAssetUrls[args.path]
+            const url = cvAssetUrls[args.path] || builtAssetUrls[args.path]
             if (!url) throw new Error(`No built asset for ${args.path}`)
             return { contents: `export default ${JSON.stringify(url)}`, loader: 'js' }
           })

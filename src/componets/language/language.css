@@ -3,8 +3,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.125rem;
-  height: 1.75rem;
-  padding: 0.125rem;
+  height: 2.75rem;
+  padding: 0;
   background: var(--surface-2);
   border: 1px solid var(--line-control);
   border-radius: var(--radius-full);
@@ -12,12 +12,12 @@
 }
 
 .site-shell__controls .language-selector {
-  height: 1.75rem;
+  height: 2.75rem;
 }
 
 .site-shell__controls .lang-btn,
 .site-shell__controls .language-selector__option {
-  height: 1.5rem;
+  height: 2.75rem;
 }
 
 .lang-btn,
@@ -25,12 +25,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.75rem;
-  height: 1.5rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
   padding: 0 0.35rem;
   background: transparent;
   color: var(--color-text-muted);
-  font: 600 0.6875rem/1 var(--font-mono);
+  font: 600 0.6875rem/1 var(--font-sans);
   letter-spacing: 0.04em;
   border: 1px solid transparent;
   border-radius: var(--radius-full);

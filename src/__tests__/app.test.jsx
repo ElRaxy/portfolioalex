@@ -1,5 +1,5 @@
 import React from 'react'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import App from '../App'
 import i18n from '../i18n'
 
@@ -39,56 +39,64 @@ describe('la web entera', () => {
 
     expect(screen.getAllByText(/oportunidades Full Stack/i).length).toBeGreaterThan(0)
     const stack = screen.getByRole('region', { name: 'Stack' })
-    expect(within(stack).getByRole('heading', { name: 'Testing / Calidad' })).toBeInTheDocument()
-    ;['Jest', 'Vitest', 'React Testing Library', 'pytest', 'mypy', 'ESLint', 'CI/CD']
+    const grupos = ['Producto web', 'Automatización aplicada', 'Calidad de entrega']
+
+    expect(within(stack).getAllByRole('heading', { level: 3 })).toHaveLength(3)
+    grupos.forEach((grupo) => {
+      expect(within(stack).getByRole('heading', { name: grupo })).toBeInTheDocument()
+    })
+    ;['React', 'Node.js', 'Python', 'Typer', 'Jest', 'Vitest', 'React Testing Library', 'pytest', 'GitHub Actions']
       .forEach((skill) => expect(within(stack).getByText(skill)).toBeInTheDocument())
   })
 
-  it('abre con pruebas cuantitativas, tambien en el recurso ingles', () => {
+  it('mantiene fuera de la narrativa publica las cifras y el lenguaje de flota', () => {
     render(<App pathname="/" />)
 
-    expect(screen.getByText(/1[.,]004.*8.*581.*0/)).toBeInTheDocument()
-    const ingles = require('../i18n/locales/en/translation.json')
-    expect(ingles.header.evidence).toMatch(/1,004.*8.*581.*0/)
+    const patron = /1[.,]004|1[.,]000|581|8 (?:servidores|servers)|\b(?:flota|fleet)\b/i
+    const diccionarios = [
+      require('../i18n/locales/es/translation.json'),
+      require('../i18n/locales/en/translation.json'),
+    ]
+
+    diccionarios.forEach((diccionario) => {
+      expect(JSON.stringify(diccionario)).not.toMatch(patron)
+      const { experience, ...fueraDeExperiencia } = diccionario
+      expect(JSON.stringify(fueraDeExperiencia)).not.toMatch(/Anuubis Solutions/i)
+      expect(experience.roles.filter((rol) => /Anuubis Solutions/i.test(rol.org))).toHaveLength(1)
+    })
+
+    expect(screen.queryByText(patron)).not.toBeInTheDocument()
   })
 
-  // Los tres diagramas son HTML, no imagenes, para seguir el tema claro/oscuro.
-  // Al ser `role="img"` el lector lee una descripcion seguida en vez de los doce
-  // fragmentos sueltos del dibujo, asi que esa descripcion tiene que describir.
-  it('da a cada diagrama de proyecto un nombre accesible propio y descriptivo', () => {
+  it('da a cada imagen de proyecto un nombre accesible propio y descriptivo', () => {
     render(<App />)
 
-    const diagramas = screen.getAllByRole('img')
-      .filter((nodo) => nodo.classList.contains('pdiag'))
+    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const imagenes = within(portfolio).getAllByRole('img')
 
-    expect(diagramas).toHaveLength(3)
-    diagramas.forEach((diagrama) => {
+    expect(imagenes).toHaveLength(3)
+    imagenes.forEach((imagen) => {
       // Antes se exigia /\S{10,}/, que en realidad medía la palabra mas
       // larga: un texto bueno sin ninguna palabra de 10 letras lo suspendia.
       // Lo que hace util a una descripcion es que describa, asi que se mide
       // eso: longitud y numero de palabras.
-      const nombre = diagrama.getAttribute('aria-label') || ''
+      const nombre = imagen.getAttribute('alt') || ''
       expect(nombre.trim().length).toBeGreaterThanOrEqual(20)
       expect(nombre.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4)
     })
 
-    const nombres = diagramas.map((diagrama) => diagrama.getAttribute('aria-label'))
-    expect(new Set(nombres).size).toBe(diagramas.length)
+    const nombres = imagenes.map((imagen) => imagen.getAttribute('alt'))
+    expect(new Set(nombres).size).toBe(imagenes.length)
   })
 
-  // El diagrama se lee de un vistazo: si un paso o el pie se quedan vacios
-  // porque falta la clave de traduccion, el hueco no lo caza nada mas.
-  it('pinta los tres pasos y el antes/ahora de cada diagrama', () => {
+  it('deja visible como pie la descripcion de cada imagen de proyecto', () => {
     render(<App />)
 
-    const diagramas = screen.getAllByRole('img')
-      .filter((nodo) => nodo.classList.contains('pdiag'))
+    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const diccionario = require('../i18n/locales/es/translation.json')
 
-    diagramas.forEach((diagrama) => {
-      expect(within(diagrama).getAllByRole('listitem')).toHaveLength(3)
-      within(diagrama).getAllByRole('listitem').forEach((paso) => {
-        expect(paso.textContent.trim().length).toBeGreaterThan(10)
-      })
+    diccionario.portfolio.projects.forEach((proyecto) => {
+      expect(within(portfolio).getByText(proyecto.image_caption)).toBeInTheDocument()
     })
   })
 
@@ -106,6 +114,26 @@ describe('la web entera', () => {
     expect(descargas).toHaveLength(1)
     expect(descargas[0]).toHaveAttribute('href', esperado)
     expect(descargas[0]).toHaveAttribute('download', esperado.slice(1))
+  })
+
+  it('actualiza el CV al cambiar de idioma sin recargar', async () => {
+    window.history.replaceState(null, '', '/en/')
+    await act(() => i18n.changeLanguage('en'))
+    render(<App />)
+
+    try {
+      fireEvent.click(screen.getAllByRole('link', { name: 'Switch language to Spanish' })[0])
+
+      await waitFor(() => {
+        const descarga = screen.getByRole('link', { name: 'Descargar CV' })
+        expect(descarga).toHaveAttribute('href', '/Alex_Mico_Robles_CV_ES.pdf')
+        expect(descarga).toHaveAttribute('download', 'Alex_Mico_Robles_CV_ES.pdf')
+      }, { timeout: 5000 })
+    } finally {
+      document.documentElement.removeAttribute('data-language-transition')
+      window.history.replaceState(null, '', '/')
+      await act(() => i18n.changeLanguage('es'))
+    }
   })
 
   it('no deja ningun enlace externo sin rel de seguridad', () => {
@@ -183,22 +211,21 @@ describe('la web entera', () => {
     await act(() => i18n.changeLanguage('es'))
     render(<App pathname="/" />)
 
-    const proyecto = screen.getByRole('heading', {
-      name: 'Automatización de WordPress en producción',
-    }).closest('article')
-    const experiencia = screen.getByText(
-      'Desarrollador Full Stack · Automatización e infraestructura web',
-    ).closest('.timeline__item')
+    const articuloPorTitulo = (nombre) => screen.getAllByRole('article')
+      .find((articulo) => within(articulo).queryByRole('heading', { name: nombre }))
+    const experienciaPorRol = (nombre) => within(
+      screen.getByRole('region', { name: /Experiencia|Experience/i }),
+    ).getAllByRole('listitem')
+      .find((item) => within(item).queryByText(nombre))
+
+    const proyecto = articuloPorTitulo('SaveMyMoneyNow')
+    const experiencia = experienciaPorRol('Desarrollador Full Stack')
 
     try {
       await act(() => i18n.changeLanguage('en'))
 
-      expect(screen.getByRole('heading', {
-        name: 'WordPress automation in production',
-      }).closest('article')).toBe(proyecto)
-      expect(screen.getByText(
-        'Full Stack Developer · Product and Automation',
-      ).closest('.timeline__item')).toBe(experiencia)
+      expect(articuloPorTitulo('SaveMyMoneyNow')).toBe(proyecto)
+      expect(experienciaPorRol('Full Stack Developer')).toBe(experiencia)
     } finally {
       await act(() => i18n.changeLanguage('es'))
     }
@@ -260,6 +287,16 @@ describe('el bloque LCP no espera al JavaScript', () => {
 // lateral. El orden de foco lo fija el DOM, no la rejilla, asi que la
 // comprobacion es sobre el DOM.
 describe('el orden de foco sigue al orden visual', () => {
+  it('la navegación lateral sigue el orden real de las secciones', () => {
+    render(<App />)
+
+    const navegacion = screen.getByRole('navigation', { name: 'Navegación por secciones' })
+    const etiquetas = within(navegacion).getAllByRole('link')
+      .map((enlace) => enlace.textContent.trim())
+
+    expect(etiquetas).toEqual(['Proyectos', 'Sobre Mí', 'Experiencia', 'Stack', 'Contacto'])
+  })
+
   it('el idioma va antes que el hero en el orden de tabulacion', () => {
     render(<App />)
 
@@ -275,17 +312,36 @@ describe('el orden de foco sigue al orden visual', () => {
     expect(verProyectos).toBeGreaterThan(idioma)
   })
 
-  // WCAG 2.5.8 (AA en 2.2): 24x24 px. Era la unica zona pulsable por debajo.
-  it('la marca de la barra tiene al menos 24 px de alto', () => {
+  it('los controles clave conservan un objetivo tactil de 44 px', () => {
     const fs = require('fs')
     const path = require('path')
-    const css = fs.readFileSync(
+    const navCss = fs.readFileSync(
       path.join(__dirname, '..', 'componets', 'nav', 'nav.css'), 'utf8',
     )
+    const caseCss = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'), 'utf8',
+    )
 
-    const regla = css.match(/\.portfolio-nav__brand \{[\s\S]*?\n {2}\}/)
-    expect(regla).not.toBeNull()
-    expect(regla[0]).toMatch(/min-height:\s*24px/)
+    const marca = navCss.match(/\.portfolio-nav__brand \{[\s\S]*?\n {2}\}/)
+    const idioma = navCss.match(
+      /\.portfolio-nav__controls \.lang-btn,\s*\n\s*\.portfolio-nav__controls \.language-selector__option \{[\s\S]*?\n {2}\}/,
+    )
+    const tema = navCss.match(/\.portfolio-nav__controls \.theme-toggle \{[\s\S]*?\n {2}\}/)
+    const volver = caseCss.match(/\.case__back \{[\s\S]*?\n\}/)
+    const accion = caseCss.match(/\.case__link \{[\s\S]*?\n\}/)
+
+    expect(marca).not.toBeNull()
+    expect(marca[0]).toMatch(/min-height:\s*44px/)
+    expect(idioma).not.toBeNull()
+    expect(idioma[0]).toMatch(/min-width:\s*44px/)
+    expect(idioma[0]).toMatch(/height:\s*44px/)
+    expect(tema).not.toBeNull()
+    expect(tema[0]).toMatch(/width:\s*44px/)
+    expect(tema[0]).toMatch(/height:\s*44px/)
+    expect(volver).not.toBeNull()
+    expect(volver[0]).toMatch(/min-height:\s*44px/)
+    expect(accion).not.toBeNull()
+    expect(accion[0]).toMatch(/min-height:\s*44px/)
   })
 })
 
@@ -315,8 +371,7 @@ describe('las anclas de una pagina de caso apuntan a la portada', () => {
     const titulos = screen.getAllByRole('heading', { level: 1 })
     expect(titulos).toHaveLength(1)
     expect(titulos[0]).toHaveTextContent('Atalaya')
-    // El nombre sigue anunciandose, ahora como imagen con su etiqueta.
-    expect(screen.getByRole('img', { name: 'Alex Micó Robles' })).toBeInTheDocument()
+    expect(screen.getByText('Alex Micó Robles')).toBeInTheDocument()
   })
 })
 
@@ -368,7 +423,7 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     const delCaso = titulos.filter((texto) => !/Contáctame/i.test(texto))
 
     expect(delCaso.length).toBeGreaterThanOrEqual(4)
-    // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las diez
+    // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las ocho
     // paginas del build; aqui se mide sobre el arbol renderizado. El nombre va
     // en el texto del encabezado, no en un atributo: si alguien lo esconde,
     // esta lista se queda vacia y el test cae.
@@ -392,14 +447,8 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     })
   })
 
-  it('solo Atalaya explica por que no valia uno de los que ya existen', () => {
-    const { unmount } = render(<App pathname="/proyectos/atalaya/" />)
-
-    expect(screen.getByRole('heading', { name: /Por qué no valía/ })).toBeInTheDocument()
-    expect(screen.getByText(/InfoJobs, Tecnoempleo, JobFluent/)).toBeInTheDocument()
-    unmount()
-
-    render(<App pathname="/proyectos/strev/" />)
+  it('no publica una comparativa de competidores sin fuentes enlazadas', () => {
+    render(<App pathname="/proyectos/atalaya/" />)
     expect(screen.queryByRole('heading', { name: /Por qué no valía/ })).toBeNull()
   })
 
@@ -428,7 +477,7 @@ describe('cada seccion se entiende fuera de su pagina', () => {
   it('el primer parrafo de Sobre mi se nombra a si mismo', () => {
     render(<App pathname="/" />)
 
-    expect(screen.getByText(/^Soy Alex Micó Robles/)).toBeInTheDocument()
+    expect(screen.getByText(/^Soy Alex,/)).toBeInTheDocument()
   })
 })
 
@@ -437,10 +486,38 @@ describe('cada seccion se entiende fuera de su pagina', () => {
 describe('paginas de caso de estudio', () => {
   const { parseRoute, caseHref, CASE_SLUGS } = require('../lib/routing')
 
+  it.each([
+    ['savemymoneynow', 'savemymoneynow-detection.png'],
+    ['strev', 'strev-product.png'],
+    ['atalaya', 'atalaya-health.svg'],
+  ])('muestra evidencia real en el caso %s', (slug, asset) => {
+    const diccionario = require('../i18n/locales/es/translation.json')
+    const proyecto = diccionario.portfolio.projects.find((item) => item.slug === slug)
+
+    render(<App pathname={`/proyectos/${slug}/`} />)
+
+    const caso = screen.getByRole('article')
+    const imagen = within(caso).getByRole('img', { name: proyecto.image_alt })
+    expect(imagen).toHaveAttribute('src', asset)
+    expect(within(caso).getByText(proyecto.image_caption)).toBeInTheDocument()
+  })
+
+  it('no depende de diagramas ni terminales sinteticos', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const source = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'CaseStudy.jsx'),
+      'utf8',
+    )
+
+    expect(source).not.toMatch(/ProjectDiagram|TypewriterTerminal/)
+  })
+
   it('reconoce las rutas de caso en los dos idiomas y descarta las inventadas', () => {
     expect(parseRoute('/proyectos/atalaya/')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
     expect(parseRoute('/en/projects/strev/')).toEqual({ kind: 'case', language: 'en', slug: 'strev' })
     expect(parseRoute('/proyectos/atalaya')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
+    expect(parseRoute('/proyectos/wordpress/').kind).toBe('home')
     expect(parseRoute('/proyectos/lo-que-sea/').kind).toBe('home')
     expect(parseRoute('/').kind).toBe('home')
     expect(parseRoute('/en/')).toEqual({ kind: 'home', language: 'en', slug: null })
@@ -469,6 +546,10 @@ describe('paginas de caso de estudio', () => {
     const diccionario = require('../i18n/locales/es/translation.json')
     const slugs = diccionario.portfolio.projects.map((proyecto) => proyecto.slug)
 
+    expect(slugs).toEqual(['savemymoneynow', 'strev', 'atalaya'])
+    expect(CASE_SLUGS).toEqual(slugs)
+    expect(diccionario.portfolio.projects.filter((proyecto) => proyecto.featured).map((proyecto) => proyecto.slug))
+      .toEqual(['savemymoneynow'])
     expect(slugs.filter(Boolean)).toHaveLength(diccionario.portfolio.projects.length)
     slugs.forEach((slug) => expect(CASE_SLUGS).toContain(slug))
     expect(caseHref('es', 'atalaya')).toBe('/proyectos/atalaya/')

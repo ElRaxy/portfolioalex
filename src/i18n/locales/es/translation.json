@@ -16,18 +16,18 @@
   },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer · Automatización e IA",
-    "tagline": "Construyo aplicaciones y automatizo la infraestructura que las sostiene.",
-    "evidence": "1.004 sitios · 8 servidores · 581 cambios, 0 fallos",
+    "title": "Full Stack Developer · React, Node y Python",
+    "tagline": "Construyo productos web con React y Node, y uso Python cuando el problema pide automatización o tratamiento de datos.",
+    "evidence": "SaveMyMoneyNow: 21 endpoints y 113 tests · Atalaya: 174 tests",
     "view_projects": "Ver proyectos",
     "download_cv": "Descargar CV",
     "availability": "Abierto a oportunidades Full Stack · Remoto, España y UE"
   },
   "about": {
     "title": "Sobre mí",
-    "p2": "Atalaya reúne ofertas de ocho portales de empleo, las puntúa contra un perfil y redacta la carta de presentación con un LLM. SaveMyMoneyNow convierte extractos bancarios en un panel de gastos: detecta la fila de cabecera y mapea las columnas sin necesitar un parser por banco.",
-    "p3": "En Anuubis Solutions opero cerca de 1.000 sitios sobre 8 servidores: deploys, migraciones entre proveedores, auditorías de rendimiento e incidencias. Con Python y Bash sustituyo las revisiones sitio a sitio por ejecuciones sobre toda la flota.",
-    "lead": "Soy Alex Micó Robles. Construyo producto con React, Node y MongoDB, y uso Python y Bash para quitar de en medio el trabajo repetitivo.",
+    "p2": "SaveMyMoneyNow busca la cabecera real de un extracto, propone las columnas y pide confirmación antes de importar. Atalaya reúne ofertas dispersas, las puntúa y deja ver por qué encajan.",
+    "p3": "Ese es el tipo de producto que quiero seguir construyendo: menos trabajo manual, decisiones visibles y tests que avisen cuando algo se rompe.",
+    "lead": "Soy Alex, desarrollador Full Stack en Villena. Me gusta el software que enseña qué está haciendo antes de guardar o decidir nada.",
     "facts_title": "En corto",
     "facts": [
       {
@@ -40,7 +40,7 @@
       },
       {
         "term": "Stack",
-        "value": "React, Node, Express, MongoDB, Python, Bash"
+        "value": "React, Node, Express, MongoDB, Python y testing"
       },
       {
         "term": "Idiomas",
@@ -53,15 +53,14 @@
     "education": "Formación",
     "roles": [
       {
-        "role": "Desarrollador Full Stack · Automatización e infraestructura web",
+        "role": "Desarrollador Full Stack",
         "org": "Anuubis Solutions · Remoto",
         "when": "2026 – HOY",
         "current": true,
         "bullets": [
-          "Automaticé con Python y Bash barridos de flota, auditorías SEO y de rendimiento, y verificaciones post-deploy. Sustituí las revisiones sitio a sitio por ejecuciones sobre toda la flota.",
-          "Opero deploys, migraciones entre proveedores e incidencias de producción en cerca de 1.000 sitios sobre 8 servidores.",
-          "Diagnostico incidencias de extremo a extremo en WordPress, vhosts, correo, DNS y certificados, y gestiono dominios y DNS mediante APIs de registradores.",
-          "Mido LCP y CLS con Lighthouse y Core Web Vitals, y entrego al cliente informes con los resultados medidos."
+          "Desarrollo interfaces React, APIs Node.js y herramientas en Python y Bash para soporte, publicación y control de calidad.",
+          "Convierto revisiones repetitivas en procesos reutilizables y dejo una comprobación posterior para verificar el resultado.",
+          "Trabajo con despliegues, migraciones y diagnóstico de incidencias en entornos web de producción."
         ]
       },
       {
@@ -89,82 +88,18 @@
     ]
   },
   "stack": {
-    "key_note": "En cada fila, lo primero es la herramienta principal.",
-    "frontend": {
-      "label": "Frontend",
-      "chips": [
-        "React",
-        "JavaScript",
-        "HTML / CSS",
-        "React Router",
-        "i18next",
-        "Axios"
-      ]
+    "key_note": "Las herramientas que uso para construir, automatizar y verificar.",
+    "product": {
+      "label": "Producto web",
+      "chips": ["React", "Node.js", "Express", "MongoDB", "REST APIs"]
     },
-    "backend": {
-      "label": "Backend",
-      "chips": [
-        "Node.js",
-        "Express",
-        "MongoDB",
-        "Mongoose",
-        "MySQL",
-        "REST APIs"
-      ]
+    "automation": {
+      "label": "Automatización aplicada",
+      "chips": ["Python", "Typer", "Gemini API", "Claude CLI", "SQLite"]
     },
     "quality": {
-      "label": "Testing / Calidad",
-      "chips": [
-        "Jest",
-        "Vitest",
-        "React Testing Library",
-        "pytest",
-        "mypy",
-        "ESLint",
-        "CI/CD"
-      ]
-    },
-    "ai": {
-      "label": "IA / Agentes",
-      "chips": [
-        "Gemini y Vertex AI",
-        "Claude (CLI y SDK)",
-        "LLMs en producto",
-        "Diseño de prompts",
-        "Orquestación de agentes"
-      ]
-    },
-    "python": {
-      "label": "Python",
-      "chips": [
-        "Typer",
-        "httpx",
-        "Web scraping"
-      ]
-    },
-    "devops": {
-      "label": "DevOps / Sistemas",
-      "chips": [
-        "Git",
-        "GitHub Actions",
-        "Bash",
-        "SSH",
-        "Ubuntu Server",
-        "Nginx",
-        "Apache2",
-        "Plesk",
-        "DNS"
-      ]
-    },
-    "scale": {
-      "label": "Web a escala",
-      "chips": [
-        "WordPress",
-        "WP-CLI",
-        "Migraciones de hosting",
-        "Lighthouse",
-        "Core Web Vitals"
-      ]
+      "label": "Calidad de entrega",
+      "chips": ["Jest", "Vitest", "React Testing Library", "pytest", "GitHub Actions"]
     }
   },
   "portfolio": {
@@ -180,25 +115,9 @@
     },
     "projects": [
       {
-        "title": "Automatización de WordPress en producción",
-        "description": "Herramientas en Python y Bash para operar sitios WordPress en producción: auditorías, verificación posterior al deploy y migraciones entre proveedores. Lo que se hacía sitio a sitio pasó a ejecutarse en una sola pasada.",
-        "tags": [
-          "Python",
-          "Bash",
-          "WP-CLI",
-          "Nginx",
-          "DNS"
-        ],
-        "links": [],
-        "closed": true,
-        "internal": true,
-        "image": "wordpress",
-        "image_alt": "Diagrama: un comando recorre toda la flota, desde el inventario hasta el informe",
-        "slug": "wordpress"
-      },
-      {
         "title": "SaveMyMoneyNow",
-        "description": "Convierte en un panel de gastos los extractos que cada banco exporta a su manera. Un asistente detecta la cabecera y mapea las columnas sin necesitar un parser por banco, y unas reglas categorizan los movimientos y descartan duplicados. 21 endpoints y 113 casos de test.",
+        "description": "Importa extractos cuyo formato cambia entre archivos. El asistente encuentra la cabecera, propone las columnas y pide confirmación antes de guardar. El repositorio público reúne 21 endpoints y 113 casos de test.",
+        "featured": true,
         "tags": [
           "React",
           "Node",
@@ -213,29 +132,12 @@
         ],
         "image": "savemymoneynow",
         "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe",
+        "image_caption": "La detección de cabeceras antes de confirmar la importación.",
         "slug": "savemymoneynow"
       },
       {
-        "title": "Atalaya",
-        "description": "CLI en Python que reúne ofertas dev remoto, las puntúa contra tu perfil y redacta la carta de presentación. Tipado estricto con mypy.",
-        "featured": true,
-        "tags": [
-          "Python",
-          "Typer",
-          "Claude CLI",
-          "SQLite"
-        ],
-        "links": [
-          {
-            "label": "Código",
-            "url": "https://github.com/ElRaxy/atalaya-cli"
-          }
-        ],
-        "slug": "atalaya"
-      },
-      {
         "title": "Strev",
-        "description": "SaaS fitness MERN en beta privada: 121 endpoints repartidos en 26 módulos, con auth por cookies, pagos, gamificación y análisis de técnica en vídeo con Gemini, que corre en cola para no bloquear la petición. 837 tests en verde.",
+        "description": "Producto web para entrenadores que reúne rutinas, seguimiento, pagos y análisis de técnica en vídeo. El análisis corre en una cola para que la interfaz no espere al modelo.",
         "tags": [
           "React",
           "Node",
@@ -251,36 +153,35 @@
         "closed": true,
         "image": "strev",
         "image_alt": "Portada de Strev con la pantalla de rutinas de la aplicación",
+        "image_caption": "Vista de producto: captación y espacio de rutinas de Strev.",
         "slug": "strev"
+      },
+      {
+        "title": "Atalaya",
+        "description": "CLI en Python que reúne ofertas de varias fuentes, elimina duplicados, las puntúa contra un perfil y prepara una carta de presentación para revisar.",
+        "tags": [
+          "Python",
+          "Typer",
+          "Claude CLI",
+          "SQLite"
+        ],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/atalaya-cli"
+          }
+        ],
+        "image_alt": "Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas",
+        "image_caption": "Registro reproducible de las fuentes consultadas por Atalaya.",
+        "slug": "atalaya"
       }
     ],
     "case_link": "Ver el caso",
     "diagrams": {
-      "wordpress": {
-        "prompt": "$",
-        "bar": "auditar --todos",
-        "badge": "1 pasada",
-        "steps": [
-          {
-            "title": "Inventario",
-            "note": "vhosts, DNS y certificados"
-          },
-          {
-            "title": "Comprueba",
-            "note": "plugins, correo y rendimiento"
-          },
-          {
-            "title": "Informe",
-            "note": "uno por sitio, con las cifras"
-          }
-        ],
-        "before": "Antes: sitio por sitio, a mano",
-        "after": "Ahora: un comando sobre toda la flota"
-      },
       "savemymoneynow": {
         "prompt": "",
         "bar": "extracto.xlsx",
-        "badge": "4 bancos",
+        "badge": "estructura detectada",
         "steps": [
           {
             "title": "Cabecera",
@@ -295,8 +196,8 @@
             "note": "se resuelven antes de guardar"
           }
         ],
-        "before": "Antes: cada banco exporta a su manera",
-        "after": "Ahora: un panel de gastos, venga de donde venga"
+        "before": "Antes: el formato cambia entre archivos",
+        "after": "Ahora: confirmas el mapeo y sigues"
       },
       "strev": {
         "prompt": "",
@@ -327,6 +228,7 @@
     "whatsapp": "WhatsApp",
     "location": "Ubicación",
     "website": "Web",
+    "github": "GitHub",
     "message": "Enviar mensaje",
     "name": "Tu nombre",
     "email_placeholder": "Tu correo",
@@ -352,7 +254,7 @@
     "source": "Código de esta web"
   },
   "meta": {
-    "description": "Portfolio de Alex Micó Robles, Full Stack Developer. Producto con React, Node.js y MongoDB; automatización con Python y Bash; testing, CI/CD e IA aplicada."
+    "description": "Alex Micó Robles, desarrollador Full Stack con React, Node.js y Python. Proyectos: SaveMyMoneyNow, Strev y Atalaya, con casos de estudio en español e inglés."
   },
   "case_study": {
     "back": "Volver a proyectos",
@@ -363,16 +265,16 @@
     "cases": {
       "atalaya": {
         "title": "Atalaya",
-        "tagline": "Ocho portales de empleo, una sola lista puntuada",
-        "summary": "Atalaya es un CLI en Python que reúne ofertas de desarrollo en remoto de ocho portales, las puntúa contra tu perfil y redacta la carta de presentación.",
+        "tagline": "Fuentes distintas, una lista con criterio",
+        "summary": "Atalaya es un CLI en Python que reúne ofertas de varias fuentes, elimina duplicados, las puntúa contra un perfil y prepara una carta de presentación para revisar.",
         "problem": [
-          "Buscar trabajo en remoto obliga a repasar los mismos portales todos los días. Ninguno publica igual que otro: uno sirve JSON-LD, otro HTML montado en el servidor, otro un RSS, otro una API propia. Y las ofertas buenas aparecen en varios a la vez, así que la lista se llena de repetidos.",
-          "El resultado es un trabajo mecánico de media hora diaria que no distingue una oferta que encaja de una que no. Atalaya se come esa media hora."
+          "Atalaya nació porque buscar trabajo en remoto obliga a repetir las mismas búsquedas. Cada fuente publica de una forma y una misma oferta puede aparecer varias veces.",
+          "El CLI reúne los resultados, corta los duplicados y enseña primero las ofertas que encajan con el perfil. La persona sigue decidiendo qué candidatura merece la pena."
         ],
         "decisions": [
           {
-            "title": "Un lector por portal, no un scraper que valga para todo",
-            "body": "Hay nueve lectores y cada uno tiene su fichero de test. Ocho traen ofertas. El que falta es Himalayas, con un 403 que no cede ni poniendo user agent de navegador. Indeed España devolvía cero contra el muro de Cloudflare y solo cedió cuando se le puso delante un navegador de verdad, que pesa cerca de un giga y se instala aparte: quien no lo quiera se queda con siete. La web dice ocho, no nueve, porque contarlo de otra forma sería mentir."
+            "title": "Cada fuente tiene su lector",
+            "body": "Los lectores viven separados y tienen sus propios tests. Si una fuente cambia su formato, el fallo queda acotado y las demás siguen entregando ofertas."
           },
           {
             "title": "La puntuación lleva los pesos escritos",
@@ -383,8 +285,8 @@
             "body": "La URL es UNIQUE en SQLite. Si la lógica de la aplicación se despista, el duplicado sigue sin entrar."
           },
           {
-            "title": "El LLM entra por la suscripción, no por la API",
-            "body": "Por defecto llama a la CLI de Claude como subproceso, que usa la sesión ya pagada y no gasta créditos de API. El SDK queda como extra opcional para CI. Las dos vías exponen la misma función, así que el resto del código no sabe cuál está usando."
+            "title": "La redacción queda detrás de un adaptador",
+            "body": "La CLI y el SDK exponen la misma función. El resto del programa pide un borrador sin quedar atado a una vía concreta para generarlo."
           },
           {
             "title": "Nada se marca como enviado sin que lo confirmes",
@@ -407,28 +309,24 @@
         ],
         "note": "Tipado estricto con mypy y linter en modo severo. Python 3.12, Typer, httpx, SQLite.",
         "short": "Atalaya",
-        "scope": "Atalaya",
-        "gap": [
-          "Hay agregadores de ofertas con años detrás y miles de estrellas: career-ops, AIHawk, JobSpy, ApplyPilot. Ninguno de los cuatro lee InfoJobs, Tecnoempleo, JobFluent ni RemoteWorkSpain, y ninguno abre las alertas que esos portales mandan por correo.",
-          "Para buscar en remoto desde España, eso deja fuera media búsqueda. Atalaya existe por ese hueco. Comprobado en su documentación en agosto de 2026: JobSpy, por ejemplo, llega a España solo por Indeed y Glassdoor."
-        ]
+        "scope": "Atalaya"
       },
       "savemymoneynow": {
         "title": "SaveMyMoneyNow",
-        "tagline": "Un extracto de cualquier banco, sin escribir un parser por banco",
-        "summary": "SaveMyMoneyNow convierte en un panel de gastos los extractos que cada banco exporta a su manera, detectando la fila de cabecera en vez de conocer el formato de antemano.",
+        "tagline": "Importa extractos sin atar el producto a una plantilla",
+        "summary": "SaveMyMoneyNow convierte extractos en un panel de gastos. Detecta la fila de cabecera, propone el mapeo de columnas y espera la confirmación del usuario antes de importar.",
         "problem": [
-          "Un extracto bancario casi nunca empieza por la cabecera. Arriba hay filas de titular, IBAN y periodo; la cabecera aparece en la cuarta fila, o en la sexta. Las fechas vienen en tres formatos y los decimales llevan coma o punto según el banco.",
-          "La salida fácil es escribir un lector por banco. Son cuatro bancos hoy y cualquiera de ellos puede cambiar su exportación mañana. SaveMyMoneyNow no trae un lector por banco."
+          "SaveMyMoneyNow recibe hojas donde la cabecera puede aparecer después de varias filas informativas. Los nombres de las columnas, las fechas y los decimales también cambian entre archivos.",
+          "Un lector dedicado a cada formato obligaría a mantener la misma lógica varias veces. El asistente busca la estructura del archivo y deja que el usuario corrija su propuesta."
         ],
         "decisions": [
           {
-            "title": "La cabecera se busca, no se sabe",
+            "title": "La cabecera se detecta por su contenido",
             "body": "Un asistente puntúa las primeras filas, se queda con la que parece la cabecera y propone qué columna es Fecha, cuál Concepto y cuál Importe, mirando tanto el nombre como lo que hay debajo. El usuario confirma o corrige."
           },
           {
             "title": "La huella del duplicado no lleva el importe",
-            "body": "Es fecha y concepto. Parece un descuido y es lo contrario: al reimportar el extracto del mes, una compra corregida tras una devolución parcial habría entrado como movimiento nuevo. El importe se guarda aparte para poder auditar."
+            "body": "La huella usa fecha y concepto. Así, una compra corregida tras una devolución parcial no entra como un movimiento nuevo al reimportar el mes. El importe se guarda aparte para poder auditarlo."
           },
           {
             "title": "Los lotes de importación caducan solos",
@@ -436,11 +334,11 @@
           },
           {
             "title": "El PDF tiene tope y el Excel no",
-            "body": "Cinco mil filas. No es una cifra arbitraria: la librería de PDF construye el documento entero en memoria, así que un histórico grande tumba el proceso. La de Excel escribe a medida que avanza, y por eso ahí no hace falta tope."
+            "body": "El PDF admite hasta cinco mil filas porque la librería construye el documento entero en memoria. La exportación a Excel escribe a medida que avanza y puede procesar históricos mayores."
           },
           {
             "title": "Los tests fabrican los extractos que van a leer",
-            "body": "Levantan Mongo en memoria y construyen ficheros de BBVA y Santander en el momento, en lugar de arrastrar un fichero de ejemplo que nadie vuelve a mirar."
+            "body": "Levantan Mongo en memoria y construyen extractos con formatos distintos durante el test. Cada caso declara la estructura que espera leer."
           }
         ],
         "results": [
@@ -463,16 +361,16 @@
       },
       "strev": {
         "title": "Strev",
-        "tagline": "Datos de salud cifrados y vídeo que no bloquea la petición",
-        "summary": "Strev es un SaaS para entrenadores, en beta privada. Lo que condiciona el diseño es que guarda datos de salud y que el análisis de técnica en vídeo tarda demasiado para hacerse dentro de una petición.",
+        "tagline": "Gestión para entrenadores con datos sensibles y trabajo asíncrono",
+        "summary": "Strev es un producto web para entrenadores. Reúne la gestión diaria, los pagos y el análisis de técnica en vídeo sin hacer esperar a la interfaz mientras trabaja el modelo.",
         "problem": [
-          "La anamnesis de un cliente son datos de salud: categoría especial del RGPD. Cifrar el disco no basta cuando lo que hay que proteger es un campo dentro de un documento que se consulta a diario.",
-          "Y el análisis de técnica de un vídeo tarda lo suyo. Hacerlo dentro de la petición HTTP significa una petición colgada y un usuario mirando una rueda girar. Strev carga con las dos restricciones: el campo cifrado por dentro y el vídeo fuera de la petición."
+          "Strev maneja rutinas, seguimiento y datos de salud que necesitan una protección específica dentro de la aplicación.",
+          "El análisis de técnica en vídeo tarda más que una petición normal. La interfaz debe responder mientras ese trabajo continúa en segundo plano."
         ],
         "decisions": [
           {
-            "title": "Se cifra el campo, no el volumen",
-            "body": "Así el resto del documento se sigue consultando con normalidad. Lo ya escrito se migra con un script que por defecto no escribe nada: hay que pedírselo."
+            "title": "Los campos sensibles se cifran por separado",
+            "body": "El resto del documento sigue disponible para las consultas habituales y los datos de salud permanecen protegidos dentro de la base de datos."
           },
           {
             "title": "El vídeo va a una cola",
@@ -480,82 +378,34 @@
           },
           {
             "title": "Si Redis cae, la API aguanta",
-            "body": "El limitador de peticiones degrada en vez de tumbar el servicio, y hay un test dedicado a ese caso concreto porque es el que de verdad pasa a las tres de la mañana."
+            "body": "El limitador de peticiones degrada cuando la caché no está disponible y deja que el servicio principal siga respondiendo."
           },
           {
-            "title": "Un vídeo no se firma sin comprobar de quién es",
-            "body": "Las URL de descarga duran sesenta segundos y solo se emiten después de verificar la propiedad. Un identificador adivinado no sirve de nada."
+            "title": "Cada descarga verifica la propiedad",
+            "body": "La aplicación comprueba quién pide el vídeo antes de emitir una URL temporal de descarga."
           },
           {
-            "title": "Todo lo que borra empieza sin borrar",
-            "body": "Siete pares de scripts, cada uno con su versión que solo enseña lo que haría. Purgas, migraciones y cifrado: hay que pedir la ejecución de forma explícita."
+            "title": "El mantenimiento empieza en modo vista previa",
+            "body": "Las tareas de purga, migración y cifrado enseñan primero lo que cambiarían. La ejecución destructiva exige una orden explícita."
           }
         ],
         "results": [
           {
-            "value": "121",
-            "label": "endpoints"
+            "value": "En cola",
+            "label": "análisis de vídeo"
           },
           {
-            "value": "26",
-            "label": "módulos"
+            "value": "Por campo",
+            "label": "cifrado de salud"
           },
           {
-            "value": "837",
-            "label": "tests en verde"
+            "value": "Explícito",
+            "label": "mantenimiento destructivo"
           }
         ],
-        "note": "Node y Express 5, MongoDB, Redis con BullMQ, Stripe, R2. Frontend React con Vite y Tailwind. Código cerrado.",
+        "note": "React, Node, Express, MongoDB, Redis con BullMQ, Stripe y Gemini. Código cerrado.",
         "short": "Strev",
         "scope": "Strev"
-      },
-      "wordpress": {
-        "title": "Automatización de WordPress en producción",
-        "tagline": "Cuarenta y una fases que se pueden reanudar sin miedo",
-        "summary": "La automatización de WordPress es una herramienta interna en Python y Bash para dar de alta, auditar y migrar sitios WordPress de cliente entre proveedores, sin tocar seis paneles a mano.",
-        "problem": [
-          "Montar o migrar la web de un cliente pasa por el panel del hosting de origen, el del destino, dos registradores para el DNS, Search Console y Bing. Cada uno con su sesión y su forma de fallar.",
-          "Lo caro no es el número de pasos: es que el proceso no se puede reanudar. Si se corta a la mitad, volver a lanzarlo desde el principio puede reimportar una base de datos encima de una web que ya está viva. La automatización de WordPress reanuda el proceso donde se cortó."
-        ],
-        "decisions": [
-          {
-            "title": "Antes de cada fase, se mira el servidor",
-            "body": "Cada fase trae una comprobación que mide el estado real antes de ejecutar. El registro de lo hecho existe, pero no manda: sirve para mirar, no para decidir. Es lo que permite relanzar el pipeline entero sin miedo."
-          },
-          {
-            "title": "Las fases son un grafo, no una lista",
-            "body": "Declaran de qué dependen, se detectan los ciclos al arrancar y, si una falla, las que colgaban de ella se saltan en cascada en vez de correr sobre un supuesto que ya no se cumple."
-          },
-          {
-            "title": "API primero, navegador solo donde no hay API",
-            "body": "DNS, paneles modernos, Search Console y Bing van por HTTP. El navegador se reserva para los que no ofrecen otra cosa. Es la parte frágil y por eso es la excepción."
-          },
-          {
-            "title": "Lo que devuelve un servidor no es un dato hasta validarlo",
-            "body": "Un barrido de la flota llegó a producir ochenta y siete filas de basura porque un binario mal instalado imprimía su propio código en vez del JSON. Ahora una respuesta que no cumple el contrato se descarta con un error, no se mezcla con el inventario."
-          },
-          {
-            "title": "Ninguna herramienta borra",
-            "body": "Enseñan lo que hay y quién decide es una persona. Con miles de sitios, un script que borra por su cuenta es cuestión de tiempo."
-          }
-        ],
-        "results": [
-          {
-            "value": "41",
-            "label": "fases"
-          },
-          {
-            "value": "226",
-            "label": "casos de test"
-          },
-          {
-            "value": "581",
-            "label": "webs en un solo cambio"
-          }
-        ],
-        "note": "Código cerrado: es herramienta interna y opera webs de clientes. Python, Bash, WP-CLI, Nginx y DNS.",
-        "short": "la automatización de WordPress",
-        "scope": "Automatización de WordPress"
       }
     },
     "summary_label": "En una frase",

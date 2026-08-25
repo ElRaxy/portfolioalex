@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
@@ -17,7 +17,7 @@ import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
 import { useSmoothAnchors, useLanguageFromHistory } from './lib/smoothScroll'
 import { parseRoute } from './lib/routing'
-import { RoutePathnameContext } from './lib/routeContext'
+import { ROUTE_CHANGE_EVENT, RoutePathnameContext } from './lib/routeContext'
 
 // La ruta se lee una vez y no cambia: cada pagina de caso es un HTML propio,
 // prerenderizado, al que se llega con una navegacion normal del navegador.
@@ -31,10 +31,24 @@ const readPathname = () => {
 
 function App({ pathname }) {
   const { i18n } = useTranslation()
-  const rutaActual = pathname || readPathname()
+  const [browserPathname, setBrowserPathname] = useState(readPathname)
+  const rutaActual = pathname || browserPathname
   const route = parseRoute(rutaActual)
   useSmoothAnchors()
   useLanguageFromHistory(i18n)
+
+  useEffect(() => {
+    if (pathname) return undefined
+
+    const syncPathname = () => setBrowserPathname(readPathname())
+    window.addEventListener('popstate', syncPathname)
+    window.addEventListener(ROUTE_CHANGE_EVENT, syncPathname)
+
+    return () => {
+      window.removeEventListener('popstate', syncPathname)
+      window.removeEventListener(ROUTE_CHANGE_EVENT, syncPathname)
+    }
+  }, [pathname])
 
   return (
     <RoutePathnameContext.Provider value={rutaActual}>
@@ -50,9 +64,9 @@ function App({ pathname }) {
             <ThemeToggle />
           </div>
 
-          <header className="site-shell__sidebar">
+          <div className="site-shell__sidebar">
             <Header nameAs={route.kind === 'case' ? 'p' : 'h1'} />
-          </header>
+          </div>
 
           <main className="site-shell__content">
             {route.kind === 'case' ? (
@@ -63,8 +77,8 @@ function App({ pathname }) {
               </>
             ) : (
               <>
-                <About />
                 <Portfolio />
+                <About />
                 <ExperienceTimeline />
                 <Stack />
                 <Contact />

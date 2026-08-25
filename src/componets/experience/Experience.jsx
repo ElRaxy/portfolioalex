@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { RevealGroup, RevealItem } from '../common/Reveal'
 import './experience.css'
 
-const stackGroups = ['frontend', 'backend', 'quality', 'ai', 'python', 'devops', 'scale']
+const stackGroups = ['product', 'automation', 'quality']
 
 const TimelineList = ({ entries, identity }) => (
   <RevealGroup as="ul" className="timeline">

@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './language.css'
 import { parseRoute, caseHref } from '../../lib/routing'
-import { useRoutePathname } from '../../lib/routeContext'
+import { ROUTE_CHANGE_EVENT, useRoutePathname } from '../../lib/routeContext'
 import { runLanguageTransition, syncDocument } from '../../lib/smoothScroll'
 
 const PATHS = { es: '/', en: '/en/' }
@@ -37,6 +37,7 @@ const LanguageSelector = () => {
     runLanguageTransition(async () => {
       await i18n.changeLanguage(nextLanguage)
       window.history.pushState(null, '', `${href}${window.location.hash}`)
+      window.dispatchEvent(new Event(ROUTE_CHANGE_EVENT))
       syncDocument(nextLanguage, i18n, href)
     })
   }

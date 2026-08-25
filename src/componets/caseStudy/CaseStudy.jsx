@@ -1,7 +1,26 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import ProjectDiagram from '../portfolio/ProjectDiagram'
-import TypewriterTerminal from '../portfolio/TypewriterTerminal'
+import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
+import strevImage from '../../assets/projects/strev-product.png'
+import atalayaImage from '../../assets/projects/atalaya-health.svg'
+
+const CASE_MEDIA = {
+  savemymoneynow: {
+    src: saveMyMoneyNowImage,
+    width: 914,
+    height: 911,
+  },
+  strev: {
+    src: strevImage,
+    width: 1440,
+    height: 900,
+  },
+  atalaya: {
+    src: atalayaImage,
+    width: 1200,
+    height: 675,
+  },
+}
 
 const CaseStudy = ({ slug }) => {
   const { t, i18n } = useTranslation()
@@ -20,7 +39,7 @@ const CaseStudy = ({ slug }) => {
   const tagline = t(`case_study.cases.${slug}.tagline`)
   const summary = t(`case_study.cases.${slug}.summary`)
   const problema = t(`case_study.cases.${slug}.problem`, { returnObjects: true }) || []
-  // Solo lo tiene Atalaya: es el unico de los cuatro que compite con proyectos
+  // Solo lo tiene Atalaya: es el unico de los tres que compite con proyectos
   // conocidos, y sin decirlo el caso no responde "por que esto y no aquello".
   const gap = t(`case_study.cases.${slug}.gap`, { returnObjects: true })
   const gapParrafos = Array.isArray(gap) ? gap : []
@@ -33,6 +52,9 @@ const CaseStudy = ({ slug }) => {
   const projects = t('portfolio.projects', { returnObjects: true }) || []
   const card = projects.find((project) => project.slug === slug)
   const links = card?.links || []
+  const media = CASE_MEDIA[slug]
+  const mediaLabel = card?.image_alt || title
+  const mediaCaption = card?.image_caption || title
   const backHref = i18n.language.startsWith('en') ? '/en/' : '/'
 
   return (
@@ -48,15 +70,21 @@ const CaseStudy = ({ slug }) => {
         <h2>{t('case_study.summary_label')}</h2>
         <p className="case__summary">{summary}</p>
 
-        {/* Atalaya ensena su terminal; los otros tres, el diagrama de la
-            tarjeta. Es el mismo artefacto que ya hay en la portada, no uno
-            nuevo: la pagina que profundiza no puede ser la unica sin nada
-            que mirar. */}
-        <div className="case__artifact">
-          {slug === 'atalaya'
-            ? <TypewriterTerminal />
-            : <ProjectDiagram slug={slug} label={card?.image_alt} />}
-        </div>
+        {media && (
+          <figure className={`case__media case__media--${slug}`}>
+            <div className="case__media-frame">
+              <img
+                src={media.src}
+                alt={mediaLabel}
+                width={media.width}
+                height={media.height}
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <figcaption>{mediaCaption}</figcaption>
+          </figure>
+        )}
       </section>
 
       <section className="case__block">

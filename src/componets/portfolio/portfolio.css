@@ -1,488 +1,271 @@
-#portfolio {
-    padding-bottom: var(--section-padding-lg);
-}
-
 .portfolio__heading {
-    margin-bottom: var(--space-8);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .portfolio__heading h2 {
-    color: var(--color-text-primary);
+  margin: 0;
 }
 
 .portfolio__heading p {
-    margin-top: var(--space-1);
-    color: var(--color-text-muted);
-}
-
-.portfolio__featured {
-    --mx: 50%;
-    --my: 50%;
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
-    gap: var(--space-8);
-    align-items: center;
-    min-width: 0;
-    padding: var(--space-6);
-    border: 1px solid var(--line-soft);
-    border-radius: calc(var(--radius-md) + var(--space-1));
-    background: var(--surface-1);
-    box-shadow: var(--card-shadow);
-    transition: border-color var(--transition), box-shadow var(--transition);
-    isolation: isolate;
-}
-
-.portfolio__featured::before,
-.portfolio__item::before {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle 300px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 8%, transparent), transparent 72%);
-    content: '';
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-}
-
-.portfolio__featured > *,
-.portfolio__item > * {
-    position: relative;
-    z-index: 1;
-}
-
-:root[data-theme='light'] .portfolio__featured::before,
-:root[data-theme='light'] .portfolio__item::before {
-    background: radial-gradient(circle 300px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 6%, transparent), transparent 72%);
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .portfolio__featured:hover::before,
-    .portfolio__item:hover::before {
-        opacity: 1;
-    }
-
-    .portfolio__featured:hover,
-    .portfolio__item:hover {
-        border-color: var(--line-control);
-        box-shadow: var(--card-shadow-hover);
-    }
-}
-
-.portfolio__featured-copy {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-}
-
-.portfolio__featured-label {
-    margin-bottom: var(--space-2);
-    color: var(--text-3);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono);
-    font-weight: 600;
-    letter-spacing: var(--ls-label);
-    line-height: 1.35;
-    text-transform: uppercase;
-}
-
-.portfolio__featured h3 {
-    color: var(--color-text-primary);
-    font-size: var(--fs-xl);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.3;
-}
-
-.portfolio__terminal {
-    min-width: 0;
-    max-width: 100%;
-    overflow: hidden;
-    border: 1px solid var(--line-soft);
-    border-radius: calc(var(--radius-md) + 2px);
-    background: var(--surface-1);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.025) inset;
-}
-
-.portfolio__terminal-bar {
-    display: flex;
-    height: var(--space-8);
-    align-items: center;
-    padding: 0 var(--space-4);
-    border-bottom: 1px solid var(--line-soft);
-    background: var(--surface-2);
-    color: var(--text-3);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono);
-}
-
-.portfolio__terminal-body {
-    max-width: 100%;
-    padding: var(--space-4);
-    overflow-x: auto;
-    overscroll-behavior: contain;
-    color: var(--text-2);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    line-height: 1.55;
-    white-space: pre;
-}
-
-.portfolio__terminal-line {
-    display: block;
-    visibility: hidden;
-}
-
-.portfolio__terminal-line.is-visible {
-    visibility: visible;
-}
-
-.portfolio__terminal-cursor {
-    color: var(--accent);
-    animation: portfolio-cursor-blink 1s step-end infinite;
-}
-
-@keyframes portfolio-cursor-blink {
-    0%,
-    49% {
-        opacity: 1;
-    }
-
-    50%,
-    100% {
-        opacity: 0;
-    }
-}
-
-.portfolio__terminal-accent {
-    color: var(--accent);
-}
-
-.portfolio__terminal-command {
-    color: var(--text-1);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
 }
 
 .portfolio__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
-    align-items: stretch;
-    gap: var(--space-6);
-}
-
-/* Con tres tarjetas y dos columnas, la ultima se quedaba sola con un hueco de
-   330 x 600 px al lado. Ocupa la fila entera y se reparte en dos columnas: la
-   captura a un lado y el texto al otro, como la destacada. */
-@media screen and (min-width: 641px) {
-    .portfolio__item:last-child:nth-child(odd) {
-        display: grid;
-        grid-column: 1 / -1;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-rows: auto;
-        align-items: start;
-        column-gap: var(--space-8);
-    }
-
-    .portfolio__item:last-child:nth-child(odd) .pdiag {
-        grid-row: 1 / span 6;
-        height: auto;
-        align-self: start;
-    }
-}
-
-.portfolio__featured + .portfolio__grid {
-    margin-top: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
 }
 
 .portfolio__item {
-    --mx: 50%;
-    --my: 50%;
-    position: relative;
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    padding: var(--space-6);
-    border: 1px solid var(--line-soft);
-    border-radius: calc(var(--radius-md) + var(--space-1));
-    background: var(--surface-1);
-    box-shadow: var(--card-shadow);
-    transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
-    isolation: isolate;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  box-shadow: var(--card-shadow);
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.portfolio__item:hover {
-    background: var(--surface-2);
-    border-color: var(--line-control);
+.portfolio__item--featured {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
 }
 
-.portfolio__item:active {
-    background: var(--surface-3);
-}
-
-.portfolio__item:focus-visible,
+.portfolio__item:hover,
 .portfolio__item:focus-within {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  border-color: var(--line-control);
+  box-shadow: var(--card-shadow-hover);
 }
 
-/* El diagrama sangra hasta los bordes de la tarjeta y hace de cabecera. */
-.portfolio__item .pdiag {
-    width: calc(100% + var(--space-6) * 2);
-    margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
-    border-width: 0 0 1px;
-    border-radius: calc(var(--radius-md) + var(--space-1) - 1px) calc(var(--radius-md) + var(--space-1) - 1px) 0 0;
+.portfolio__media {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-2);
 }
 
-/* En una tarjeta el diagrama es una vista previa, no otro panel completo.
-   Mantiene el rail horizontal incluso cuando su container mide 320-400 px. */
-.portfolio__item .pdiag__flow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-2);
-    padding: var(--space-4) var(--space-3) var(--space-3);
+.portfolio__item--featured .portfolio__media {
+  border-right: 1px solid var(--line-soft);
 }
 
-.portfolio__item .pdiag__step {
-    min-height: var(--space-12);
-    padding: var(--space-8) 0 0;
+.portfolio__media-frame {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-3);
 }
 
-.portfolio__item .pdiag__step-note,
-.portfolio__item .pdiag__before {
-    display: none;
+.portfolio__media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
-.portfolio__item .pdiag__step:not(:last-child)::after {
-    top: calc(var(--space-3) - 0.5px);
-    left: var(--space-6);
-    width: calc(100% + var(--space-2) - var(--space-6));
-    height: 1px;
-    background: linear-gradient(90deg, var(--line-control), var(--line-soft));
+.portfolio__media figcaption {
+  min-height: 3.5rem;
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--line-soft);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
 }
 
-.portfolio__item .pdiag__after {
-    grid-column: 1 / -1;
-    border-left: 0;
-    box-shadow: inset 0 2px var(--accent);
+.portfolio__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+}
+
+.portfolio__featured-label {
+  margin-bottom: var(--space-3);
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .portfolio__item h3 {
-    color: var(--color-text-primary);
-    font-size: var(--fs-lg);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.3;
+  color: var(--text-1);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.portfolio__item--featured h3 {
+  font-size: clamp(1.75rem, 2.5vw, 2.05rem);
 }
 
 .portfolio__description {
-    margin-top: var(--space-2);
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.portfolio__metrics {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
-    margin-top: var(--space-6);
-    padding: var(--space-3) 0;
-    border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-}
-
-.portfolio__metric {
-    min-width: 0;
-    padding-inline: var(--space-2);
-    text-align: center;
-}
-
-.portfolio__metric + .portfolio__metric {
-    border-left: 1px solid var(--line-soft);
-}
-
-.portfolio__metric-value {
-    display: inline-block;
-    min-width: 3ch;
-    color: var(--color-text-primary);
-    font-size: var(--fs-2xl);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    line-height: 1.1;
-}
-
-.portfolio__metric-label {
-    display: block;
-    /* Dos lineas de alto siempre: "comandos" ocupa una y "tests en verde" dos,
-       y sin esto los tres bloques acababan a distinta altura. */
-    min-height: 2.7em;
-    margin-top: var(--space-1);
-    color: var(--text-2);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.04em;
-    line-height: 1.35;
-    overflow-wrap: normal;
-    hyphens: none;
-    text-transform: uppercase;
+  margin-top: var(--space-3);
+  color: var(--text-2);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 .portfolio__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-    margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
 }
 
 .portfolio__tag {
-    padding: var(--space-1);
-    border-radius: var(--radius-sm);
-    background: var(--surface-2);
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono);
-    line-height: 1.35;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
 }
 
 .portfolio__footer {
-    display: flex;
-    flex: 0 0 auto;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    align-items: center;
-    margin-top: auto;
-    padding-top: var(--space-4);
-    background: transparent;
-    border-top: 1px solid var(--line-soft);
+  margin-top: auto;
+  padding-top: var(--space-5);
 }
 
-.portfolio__footer a {
-    display: inline-flex;
-    min-height: 24px;
-    align-items: center;
-    border-bottom: 1px solid var(--color-primary);
-    color: var(--color-primary);
-    font-size: var(--fs-sm);
-    line-height: 1.35;
-    transition: color var(--transition);
+.portfolio__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  border-top: 1px solid var(--line-soft);
 }
 
-.portfolio__footer a:hover {
-    color: var(--accent-hover);
+.portfolio__links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 
-.portfolio__footer a:active {
-    color: var(--accent-active);
+.portfolio__links a:hover {
+  color: var(--accent-hover);
 }
 
 .portfolio__closed {
-    color: var(--text-3);
-    font-size: var(--fs-sm);
-    font-style: italic;
+  padding-top: var(--space-2);
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  line-height: 1.45;
 }
 
-.portfolio__closed::before {
-    margin-right: var(--space-2);
-    content: '—';
-}
+@media screen and (max-width: 760px) {
+  .portfolio__item--featured {
+    display: flex;
+  }
 
-@media screen and (max-width: 1024px) {
-    #portfolio {
-        padding-bottom: var(--section-padding-md);
-    }
-}
-
-@media screen and (max-width: 900px) {
-    .portfolio__featured {
-        grid-template-columns: minmax(0, 1fr);
-        align-items: stretch;
-        gap: 0;
-    }
-
-    .portfolio__featured-copy {
-        display: contents;
-    }
-
-    .portfolio__featured-copy > * {
-        position: relative;
-        z-index: 1;
-    }
-
-    .portfolio__featured-label {
-        order: 1;
-    }
-
-    .portfolio__featured h3 {
-        order: 2;
-    }
-
-    .portfolio__featured .portfolio__description {
-        order: 3;
-    }
-
-    .portfolio__featured .portfolio__metrics {
-        order: 4;
-    }
-
-    .portfolio__featured .portfolio__tags {
-        order: 5;
-    }
-
-    .portfolio__featured .portfolio__terminal {
-        order: 6;
-        margin-top: var(--space-4);
-    }
-
-    .portfolio__featured .portfolio__footer {
-        order: 7;
-    }
+  .portfolio__item--featured .portfolio__media {
+    border-right: 0;
+  }
 }
 
 @media screen and (max-width: 600px) {
-    #portfolio {
-        padding-bottom: var(--section-padding-sm);
-    }
+  .portfolio__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-    .portfolio__grid {
-        grid-template-columns: 1fr;
-    }
+  .portfolio__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
 
-    .portfolio__featured {
-        padding: var(--space-4);
-    }
+  .portfolio__item--featured {
+    grid-column: auto;
+  }
+
+  .portfolio__body {
+    padding: var(--space-5);
+  }
 }
 
-@media screen and (max-width: 479px) {
-    .portfolio__terminal-body {
-        font-size: 0.6875rem;
-    }
+/* La terminal solo se conserva como artefacto autentico dentro del caso de Atalaya. */
+.portfolio__terminal {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.portfolio__terminal-bar {
+  min-height: var(--space-8);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+}
+
+.portfolio__terminal-body {
+  max-width: 100%;
+  padding: var(--space-4);
+  overflow-x: auto;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.portfolio__terminal-line {
+  display: block;
+  visibility: hidden;
+}
+
+.portfolio__terminal-line.is-visible {
+  visibility: visible;
+}
+
+.portfolio__terminal-accent {
+  color: var(--accent);
+}
+
+.portfolio__terminal-command {
+  color: var(--text-1);
+}
+
+.portfolio__terminal-cursor {
+  color: var(--accent);
+  animation: terminal-cursor 1s step-end infinite;
+}
+
+@keyframes terminal-cursor {
+  50% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .portfolio__terminal-line {
-        visibility: visible;
-    }
+  .portfolio__terminal-line {
+    visibility: visible;
+  }
 
-    .portfolio__terminal-cursor {
-        display: none;
-    }
-}
-
-/* La tarjeta cambiaba fondo, borde y encendia el halo al pasar por encima sin
-   ser pulsable: el enlace del caso se estira sobre toda la tarjeta y los demas
-   enlaces del pie se quedan por encima de esa capa. */
-.portfolio__item:has(.portfolio__case-link) {
-    cursor: pointer;
-}
-
-.portfolio__item .portfolio__case-link::after {
-    position: absolute;
-    z-index: 2;
-    inset: 0;
-    content: '';
-}
-
-.portfolio__item .portfolio__footer a:not(.portfolio__case-link) {
-    position: relative;
-    z-index: 3;
+  .portfolio__terminal-cursor {
+    display: none;
+  }
 }

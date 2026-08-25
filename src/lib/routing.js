@@ -1,7 +1,7 @@
 // Las paginas de caso son estaticas y prerenderizadas, asi que no hay router:
 // basta con leer el pathname una vez. Cada idioma tiene su prefijo propio
 // porque la URL es lo que indexa Google, y /proyectos/ en ingles no dice nada.
-export const CASE_SLUGS = ['wordpress', 'savemymoneynow', 'atalaya', 'strev']
+export const CASE_SLUGS = ['savemymoneynow', 'strev', 'atalaya']
 
 const CASE_PREFIX = { es: '/proyectos/', en: '/en/projects/' }
 

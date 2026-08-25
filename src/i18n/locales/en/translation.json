@@ -16,18 +16,18 @@
   },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer · Product, Automation and Production",
-    "tagline": "I build React and Node.js products, automate repetitive work with Python, and help run them in production.",
-    "evidence": "1,004 sites · 8 servers · 581 changes, 0 failures",
+    "title": "Full Stack Developer · React, Node and Python",
+    "tagline": "I build web products with React and Node, and use Python when the problem calls for automation or data work.",
+    "evidence": "SaveMyMoneyNow: 21 endpoints and 113 tests · Atalaya: 174 tests",
     "view_projects": "View projects",
     "download_cv": "Download CV",
     "availability": "Open to Full Stack roles · Remote in Spain and the EU"
   },
   "about": {
     "title": "About me",
-    "p2": "SaveMyMoneyNow started with a problem I kept seeing: every bank exports a different spreadsheet. It finds the real header row, maps the columns and turns the file into a spending dashboard. Atalaya does the same kind of cleanup for job hunting, bringing eight sources into one scored shortlist.",
-    "p3": "At Anuubis Solutions I work across 1,004 WordPress sites on 8 servers. I build React and Node.js tooling, automate fleet changes with Python and Bash, and verify the result after every run. One data correction became a validated migration across 581 sites: 581 changes, 0 failures.",
-    "lead": "I work where product code meets production: React interfaces, Node.js APIs, Python automation and the checks that prove a change worked.",
+    "p2": "SaveMyMoneyNow finds the real header in a statement, proposes the columns and asks for confirmation before importing. Atalaya pulls scattered job listings into one scored list and shows why each role fits.",
+    "p3": "That is the kind of product I want to keep building: less manual work, visible decisions and tests that flag when something breaks.",
+    "lead": "I'm Alex, a Full Stack Developer based in Villena, Spain. I like software that shows its work before it saves or decides anything.",
     "facts_title": "In short",
     "facts": [
       {
@@ -40,7 +40,7 @@
       },
       {
         "term": "Stack",
-        "value": "React, Node, Express, MongoDB, Python, Bash"
+        "value": "React, Node, Express, MongoDB, Python and testing"
       },
       {
         "term": "Languages",
@@ -53,14 +53,14 @@
     "education": "Education",
     "roles": [
       {
-        "role": "Full Stack Developer · Product and Automation",
+        "role": "Full Stack Developer",
         "org": "Anuubis Solutions · Remote",
         "when": "2026 – Present",
         "current": true,
         "bullets": [
-          "I build and maintain React interfaces, Node.js APIs and Python/Bash automation that reduce manual work in support, publishing and quality control.",
-          "I turned a fleet data correction into a validated migration across 581 WordPress sites: 581 changes, 0 failures and a full verification pass afterwards.",
-          "I run deployments, migrations and incident response across 1,004 WordPress sites on 8 servers, including Linux, Nginx, DNS, mail and certificates."
+          "I build React interfaces, Node.js APIs and Python and Bash tools for support, publishing and quality control.",
+          "I turn repeated checks into reusable processes and add a verification step afterwards.",
+          "I work on deployments, migrations and incident diagnosis in production web environments."
         ]
       },
       {
@@ -88,82 +88,18 @@
     ]
   },
   "stack": {
-    "key_note": "In each row, the first one is the main tool.",
-    "frontend": {
-      "label": "Frontend",
-      "chips": [
-        "React",
-        "JavaScript",
-        "HTML / CSS",
-        "React Router",
-        "i18next",
-        "Axios"
-      ]
+    "key_note": "The tools I use to build, automate and verify.",
+    "product": {
+      "label": "Web product",
+      "chips": ["React", "Node.js", "Express", "MongoDB", "REST APIs"]
     },
-    "backend": {
-      "label": "Backend",
-      "chips": [
-        "Node.js",
-        "Express",
-        "MongoDB",
-        "Mongoose",
-        "MySQL",
-        "REST APIs"
-      ]
+    "automation": {
+      "label": "Applied automation",
+      "chips": ["Python", "Typer", "Gemini API", "Claude CLI", "SQLite"]
     },
     "quality": {
-      "label": "Testing / Quality",
-      "chips": [
-        "Jest",
-        "Vitest",
-        "React Testing Library",
-        "pytest",
-        "mypy",
-        "ESLint",
-        "CI/CD"
-      ]
-    },
-    "ai": {
-      "label": "AI / Agents",
-      "chips": [
-        "Gemini and Vertex AI",
-        "Claude (CLI and SDK)",
-        "LLMs in product",
-        "Prompt design",
-        "Agent orchestration"
-      ]
-    },
-    "python": {
-      "label": "Python",
-      "chips": [
-        "Typer",
-        "httpx",
-        "Web scraping"
-      ]
-    },
-    "devops": {
-      "label": "DevOps / Systems",
-      "chips": [
-        "Git",
-        "GitHub Actions",
-        "Bash",
-        "SSH",
-        "Ubuntu Server",
-        "Nginx",
-        "Apache2",
-        "Plesk",
-        "DNS"
-      ]
-    },
-    "scale": {
-      "label": "Web at scale",
-      "chips": [
-        "WordPress",
-        "WP-CLI",
-        "Hosting migrations",
-        "Lighthouse",
-        "Core Web Vitals"
-      ]
+      "label": "Delivery quality",
+      "chips": ["Jest", "Vitest", "React Testing Library", "pytest", "GitHub Actions"]
     }
   },
   "portfolio": {
@@ -179,25 +115,9 @@
     },
     "projects": [
       {
-        "title": "WordPress automation in production",
-        "description": "Python and Bash tooling to operate WordPress sites in production: audits, post deploy verification and migrations between providers. What used to be done site by site now runs in a single pass.",
-        "tags": [
-          "Python",
-          "Bash",
-          "WP-CLI",
-          "Nginx",
-          "DNS"
-        ],
-        "links": [],
-        "closed": true,
-        "internal": true,
-        "image": "wordpress",
-        "image_alt": "Diagram: one command sweeps the whole fleet, from inventory to report",
-        "slug": "wordpress"
-      },
-      {
         "title": "SaveMyMoneyNow",
-        "description": "Turns the statements each bank exports its own way into a spending dashboard. A wizard finds the header row and maps the columns with no parser per bank, and a set of rules categorises movements and drops duplicates. 21 endpoints and 113 test cases.",
+        "description": "Imports statements whose layout changes between files. The wizard finds the header, proposes the columns and asks for confirmation before saving. The public repository contains 21 endpoints and 113 test cases.",
+        "featured": true,
         "tags": [
           "React",
           "Node",
@@ -212,29 +132,12 @@
         ],
         "image": "savemymoneynow",
         "image_alt": "SaveMyMoneyNow finding the header row of the statement and mapping Date, Description and Amount",
+        "image_caption": "Header detection before the import is confirmed.",
         "slug": "savemymoneynow"
       },
       {
-        "title": "Atalaya",
-        "description": "Python CLI that pulls remote dev listings, scores them against your profile and drafts the cover letter. Strictly typed with mypy.",
-        "featured": true,
-        "tags": [
-          "Python",
-          "Typer",
-          "Claude CLI",
-          "SQLite"
-        ],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/atalaya-cli"
-          }
-        ],
-        "slug": "atalaya"
-      },
-      {
         "title": "Strev",
-        "description": "MERN fitness SaaS in private beta: 121 endpoints across 26 modules, with cookie auth, payments, gamification and video technique analysis through Gemini, queued so it never blocks the request. 837 passing tests.",
+        "description": "A web product for personal trainers that brings together routines, progress, payments and video technique analysis. The analysis runs in a queue, so the interface never waits for the model.",
         "tags": [
           "React",
           "Node",
@@ -250,36 +153,35 @@
         "closed": true,
         "image": "strev",
         "image_alt": "Strev home page showing the routines screen of the app",
+        "image_caption": "Product view: Strev's acquisition page and routines workspace.",
         "slug": "strev"
+      },
+      {
+        "title": "Atalaya",
+        "description": "Python CLI that pulls roles from several sources, removes duplicates, scores them against a profile and prepares a cover-letter draft for review.",
+        "tags": [
+          "Python",
+          "Typer",
+          "Claude CLI",
+          "SQLite"
+        ],
+        "links": [
+          {
+            "label": "Code",
+            "url": "https://github.com/ElRaxy/atalaya-cli"
+          }
+        ],
+        "image_alt": "Atalaya showing a dated health result for its job sources",
+        "image_caption": "A reproducible record of the sources checked by Atalaya.",
+        "slug": "atalaya"
       }
     ],
     "case_link": "Read the case study",
     "diagrams": {
-      "wordpress": {
-        "prompt": "$",
-        "bar": "auditar --todos",
-        "badge": "one pass",
-        "steps": [
-          {
-            "title": "Inventory",
-            "note": "vhosts, DNS and certificates"
-          },
-          {
-            "title": "Checks",
-            "note": "plugins, mail and performance"
-          },
-          {
-            "title": "Report",
-            "note": "one per site, with the numbers"
-          }
-        ],
-        "before": "Before: site by site, by hand",
-        "after": "Now: one command across the whole fleet"
-      },
       "savemymoneynow": {
         "prompt": "",
         "bar": "statement.xlsx",
-        "badge": "4 banks",
+        "badge": "structure found",
         "steps": [
           {
             "title": "Header row",
@@ -294,8 +196,8 @@
             "note": "resolved before anything is saved"
           }
         ],
-        "before": "Before: every bank exports its own shape",
-        "after": "Now: one expense dashboard, whatever the source"
+        "before": "Before: the layout changes between files",
+        "after": "Now: confirm the mapping and continue"
       },
       "strev": {
         "prompt": "",
@@ -326,6 +228,7 @@
     "whatsapp": "WhatsApp",
     "location": "Location",
     "website": "Website",
+    "github": "GitHub",
     "message": "Send message",
     "name": "Your name",
     "email_placeholder": "Your email",
@@ -351,7 +254,7 @@
     "source": "Source of this site"
   },
   "meta": {
-    "description": "Alex Micó Robles builds Full Stack products with React and Node.js, automates operations with Python, and works across 1,004 production sites on 8 servers."
+    "description": "Alex Micó Robles is a Full Stack Developer working with React, Node.js and Python. Projects include SaveMyMoneyNow, Strev and Atalaya, with case studies in English and Spanish."
   },
   "case_study": {
     "back": "Back to projects",
@@ -362,16 +265,16 @@
     "cases": {
       "atalaya": {
         "title": "Atalaya",
-        "tagline": "Eight job boards, one scored list",
-        "summary": "Atalaya is a Python CLI that pulls remote developer roles from eight job boards, scores them against your profile and drafts the cover letter.",
+        "tagline": "Different sources, one list with clear criteria",
+        "summary": "Atalaya is a Python CLI that pulls roles from several sources, removes duplicates, scores them against a profile and prepares a cover-letter draft for review.",
         "problem": [
-          "Looking for remote work means going through the same boards every day. No two publish alike: one serves JSON-LD, another server-rendered HTML, another an RSS feed, another its own API. The good roles show up on several at once, so the list fills with repeats.",
-          "It adds up to half an hour of mechanical work a day that never tells a good fit from a bad one. Atalaya eats that half hour."
+          "Atalaya started because looking for remote work means repeating the same searches. Each source publishes differently, and the same role can appear more than once.",
+          "The CLI gathers the results, stops duplicates and puts the roles that fit the profile first. The person still decides which application is worth pursuing."
         ],
         "decisions": [
           {
-            "title": "One reader per board, not a scraper for everything",
-            "body": "There are nine readers and each has its own test file. Eight bring back offers. The missing one is Himalayas, with a 403 that a browser user agent does not get past. Indeed Spain returned nothing against the Cloudflare wall until a real browser started driving the fetch, and that browser weighs close to a gigabyte and installs as a separate extra: skip it and you are back to seven. The site says eight, not nine, because counting it any other way would be a lie."
+            "title": "Each source has its own reader",
+            "body": "The readers live separately and have their own tests. If a source changes its format, the failure stays contained and the others keep delivering roles."
           },
           {
             "title": "The scoring weights are written down",
@@ -382,8 +285,8 @@
             "body": "The URL is UNIQUE in SQLite. If the application logic slips, the duplicate still doesn't get in."
           },
           {
-            "title": "The LLM comes in through the subscription, not the API",
-            "body": "By default it calls the Claude CLI as a subprocess, which uses the session already paid for and spends no API credit. The SDK stays an optional extra for CI. Both paths expose the same function, so the rest of the code never knows which one is running."
+            "title": "Drafting sits behind an adapter",
+            "body": "The CLI and SDK expose the same function. The rest of the program requests a draft without depending on one specific way to generate it."
           },
           {
             "title": "Nothing is marked as sent unless you say so",
@@ -406,28 +309,24 @@
         ],
         "note": "Strict typing with mypy and a strict linter. Python 3.12, Typer, httpx, SQLite.",
         "short": "Atalaya",
-        "scope": "Atalaya",
-        "gap": [
-          "There are job aggregators with years behind them and thousands of stars: career-ops, AIHawk, JobSpy, ApplyPilot. None of the four reads InfoJobs, Tecnoempleo, JobFluent or RemoteWorkSpain, and none opens the alerts those boards send by email.",
-          "For a remote search from Spain, that leaves half the search out. Atalaya exists for that gap. Checked against their own documentation in August 2026: JobSpy, for one, reaches Spain only through Indeed and Glassdoor."
-        ]
+        "scope": "Atalaya"
       },
       "savemymoneynow": {
         "title": "SaveMyMoneyNow",
-        "tagline": "A statement from any bank, with no parser per bank",
-        "summary": "SaveMyMoneyNow turns the statements every bank exports its own way into a spending dashboard, by finding the header row instead of knowing the format in advance.",
+        "tagline": "Import statements without tying the product to one template",
+        "summary": "SaveMyMoneyNow turns statements into a spending dashboard. It finds the header row, proposes a column mapping and waits for the user to confirm before importing.",
         "problem": [
-          "A bank statement almost never starts at the header. Above it sit rows for the account holder, the IBAN and the period; the header turns up on the fourth row, or the sixth. Dates come in three formats and decimals use a comma or a dot depending on the bank.",
-          "The easy way out is a reader per bank. That's four banks today, and any of them can change its export tomorrow. SaveMyMoneyNow doesn't ship a reader per bank."
+          "SaveMyMoneyNow receives spreadsheets where the header can appear after several information rows. Column names, dates and decimal formats also change between files.",
+          "A dedicated reader for each layout would mean maintaining the same logic several times. The wizard looks for the file structure and lets the user correct its proposal."
         ],
         "decisions": [
           {
-            "title": "The header is searched for, not known",
+            "title": "The header is detected from its content",
             "body": "A wizard scores the first rows, keeps the one that looks like the header and proposes which column is Date, which is Description and which is Amount, reading both the name and what sits underneath. You confirm or correct."
           },
           {
             "title": "The duplicate fingerprint leaves the amount out",
-            "body": "It is date and description. It looks like an oversight and it is the opposite: on reimporting the month, a purchase corrected after a partial refund would have come in as a new movement. The amount is stored separately so it can still be audited."
+            "body": "The fingerprint uses date and description. This keeps a purchase corrected after a partial refund from becoming a new movement when the month is imported again. The amount stays separate for auditing."
           },
           {
             "title": "Import batches expire on their own",
@@ -435,11 +334,11 @@
           },
           {
             "title": "The PDF has a cap and the spreadsheet doesn't",
-            "body": "Five thousand rows. Not an arbitrary figure: the PDF library builds the whole document in memory, so a large history takes the process down. The spreadsheet one writes as it goes, which is why no cap is needed there."
+            "body": "PDF exports accept up to five thousand rows because the library builds the whole document in memory. Spreadsheet exports write as they go and can handle larger histories."
           },
           {
             "title": "The tests build the statements they are going to read",
-            "body": "They spin up Mongo in memory and construct BBVA and Santander files on the spot, instead of dragging along a sample file nobody looks at again."
+            "body": "They spin up Mongo in memory and build statements with different layouts during the test. Each case declares the structure it expects to read."
           }
         ],
         "results": [
@@ -462,16 +361,16 @@
       },
       "strev": {
         "title": "Strev",
-        "tagline": "Encrypted health data and video that never blocks the request",
-        "summary": "Strev is a SaaS for personal trainers, in private beta. What shapes the design is that it stores health data, and that analysing technique on video takes far too long to happen inside a request.",
+        "tagline": "Trainer management with sensitive data and asynchronous work",
+        "summary": "Strev is a web product for personal trainers. It brings together daily management, payments and video technique analysis without making the interface wait for the model.",
         "problem": [
-          "A client's intake form is health data: a special category under GDPR. Encrypting the disk is not enough when what needs protecting is one field inside a document read every day.",
-          "And analysing the technique in a video takes its time. Doing it inside the HTTP request means a hanging request and a user watching a spinner. Strev carries both constraints: the field encrypted inside, the video outside the request."
+          "Strev handles routines, progress and health data that need specific protection inside the application.",
+          "Video technique analysis takes longer than a normal request. The interface needs to respond while that work continues in the background."
         ],
         "decisions": [
           {
-            "title": "The field is encrypted, not the volume",
-            "body": "The rest of the document stays queryable as normal. What is already written gets migrated by a script that writes nothing by default: you have to ask it to."
+            "title": "Sensitive fields are encrypted separately",
+            "body": "The rest of the document remains available for normal queries while health data stays protected inside the database."
           },
           {
             "title": "Video goes to a queue",
@@ -479,82 +378,34 @@
           },
           {
             "title": "If Redis goes down, the API holds",
-            "body": "The rate limiter degrades instead of taking the service with it, and there is a test for that exact case, because it is the one that actually happens at three in the morning."
+            "body": "The rate limiter degrades when the cache is unavailable and lets the main service keep responding."
           },
           {
-            "title": "No video is signed without checking whose it is",
-            "body": "Download URLs last sixty seconds and are only issued after ownership is verified. A guessed identifier gets you nothing."
+            "title": "Every download checks ownership",
+            "body": "The application checks who requested the video before issuing a temporary download URL."
           },
           {
-            "title": "Everything that deletes starts by not deleting",
-            "body": "Seven pairs of scripts, each with a version that only shows what it would do. Purges, migrations and encryption all have to be asked for explicitly."
+            "title": "Maintenance starts in preview mode",
+            "body": "Purge, migration and encryption tasks first show what they would change. Destructive execution requires an explicit command."
           }
         ],
         "results": [
           {
-            "value": "121",
-            "label": "endpoints"
+            "value": "Queued",
+            "label": "video analysis"
           },
           {
-            "value": "26",
-            "label": "modules"
+            "value": "Field-level",
+            "label": "health data encryption"
           },
           {
-            "value": "837",
-            "label": "passing tests"
+            "value": "Explicit",
+            "label": "destructive maintenance"
           }
         ],
-        "note": "Node and Express 5, MongoDB, Redis with BullMQ, Stripe, R2. React frontend on Vite and Tailwind. Closed source.",
+        "note": "React, Node, Express, MongoDB, Redis with BullMQ, Stripe and Gemini. Closed source.",
         "short": "Strev",
         "scope": "Strev"
-      },
-      "wordpress": {
-        "title": "WordPress automation in production",
-        "tagline": "Forty-one phases you can resume without fear",
-        "summary": "The WordPress automation is an internal Python and Bash tool to provision, audit and migrate client WordPress sites between providers, without touching six control panels by hand.",
-        "problem": [
-          "Setting up or migrating a client site runs through the source host's panel, the destination one, two registrars for DNS, Search Console and Bing. Each with its own session and its own way of failing.",
-          "The expensive part is not the number of steps: it is that the process cannot be resumed. Cut it in half and running it again from the top can reimport a database over a site that is already live. The WordPress automation resumes the process where it stopped."
-        ],
-        "decisions": [
-          {
-            "title": "Before each phase, look at the server",
-            "body": "Every phase carries a check that measures the real state before running. The ledger of what was done exists, but it does not decide: it is there to look at. That is what makes relaunching the whole pipeline safe."
-          },
-          {
-            "title": "Phases are a graph, not a list",
-            "body": "They declare what they depend on, cycles are caught at start-up and, when one fails, whatever hung off it is skipped in cascade instead of running on an assumption that no longer holds."
-          },
-          {
-            "title": "APIs first, browser only where there is no API",
-            "body": "DNS, modern panels, Search Console and Bing all go over HTTP. The browser is kept for the ones that offer nothing else. It is the fragile part, and that is why it is the exception."
-          },
-          {
-            "title": "What a server returns is not data until it is validated",
-            "body": "One fleet sweep produced eighty-seven rows of garbage because a badly installed binary printed its own source instead of the JSON. Now a response that breaks the contract is dropped with an error rather than mixed into the inventory."
-          },
-          {
-            "title": "No tool deletes anything",
-            "body": "They show what is there and a person decides. Across thousands of sites, a script that deletes on its own is only a matter of time."
-          }
-        ],
-        "results": [
-          {
-            "value": "41",
-            "label": "phases"
-          },
-          {
-            "value": "226",
-            "label": "test cases"
-          },
-          {
-            "value": "581",
-            "label": "sites in one change"
-          }
-        ],
-        "note": "Closed source: it is an internal tool and it operates client sites. Python, Bash, WP-CLI, Nginx and DNS.",
-        "short": "the WordPress automation",
-        "scope": "WordPress automation"
       }
     },
     "summary_label": "In one line",

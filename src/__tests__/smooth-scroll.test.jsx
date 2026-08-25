@@ -201,16 +201,18 @@ describe('desplazamiento suave', () => {
   })
 
   it('sincroniza título, canonical y metadatos sociales con el recurso fijo', () => {
-    const nodes = [
-      ['link', { rel: 'canonical' }],
-      ...['description', 'twitter:title', 'twitter:description'].map((name) => ['meta', { name }]),
-      ...['og:title', 'og:description', 'og:url', 'og:locale'].map((property) => ['meta', { property }]),
-    ].map(([tag, attributes]) => {
+    const nodes = Object.fromEntries([
+      ['canonical', 'link', { rel: 'canonical' }],
+      ...['description', 'twitter:title', 'twitter:description']
+        .map((name) => [name, 'meta', { name }]),
+      ...['og:title', 'og:description', 'og:url', 'og:locale']
+        .map((property) => [property, 'meta', { property }]),
+    ].map(([key, tag, attributes]) => {
       const node = document.createElement(tag)
       Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value))
       document.head.appendChild(node)
-      return node
-    })
+      return [key, node]
+    }))
     const values = {
       'header.name': 'Alex Micó Robles',
       'header.title': 'Full Stack Developer',
@@ -220,13 +222,13 @@ describe('desplazamiento suave', () => {
     syncDocument('en', { getFixedT: () => (key) => values[key] }, '/en/')
 
     expect(document.title).toBe('Alex Micó Robles | Full Stack Developer')
-    expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
+    expect(nodes.canonical).toHaveAttribute(
       'href',
       'https://portfolioalex-mico.vercel.app/en/',
     )
-    expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute('content', 'en_US')
-    expect(document.querySelector('meta[name="twitter:description"]')).toHaveAttribute('content', 'English description')
-    nodes.forEach((node) => node.remove())
+    expect(nodes['og:locale']).toHaveAttribute('content', 'en_US')
+    expect(nodes['twitter:description']).toHaveAttribute('content', 'English description')
+    Object.values(nodes).forEach((node) => node.remove())
   })
 
   it('bloquea un segundo cambio de idioma mientras la transición sigue activa', async () => {

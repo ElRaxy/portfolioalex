@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react'
 
+export const ROUTE_CHANGE_EVENT = 'portfolio:route-change'
+
 // El prerender no tiene `window`, asi que un componente que lea la ruta de ahi
 // la ve siempre como la portada: en las paginas de caso las anclas de la nav
 // salian sueltas (`#about`) apuntando a secciones que en ese HTML no existen, y

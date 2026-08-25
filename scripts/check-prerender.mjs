@@ -6,10 +6,9 @@
 // ya escrito: que el contenido salga dentro de #root, que cada pagina declare
 // su idioma y su canonical, y que las paginas de caso no hereden lo de la
 // portada. Hasta el 2026-08-22 solo miraba las dos portadas, y por eso tres
-// defectos vivieron meses en las ocho paginas de caso. Desde el 2026-08-23
-// mira las diez que escribe el prerender: muestrear seis dejaba cuatro casos
-// sin vigilar (strev y savemymoneynow en castellano, atalaya y wordpress en
-// ingles). La lista va literal a proposito, no derivada de la del prerender:
+// defectos vivieron meses en las seis paginas de caso. Desde el 2026-08-23
+// mira las ocho que escribe el prerender: dos portadas y tres casos por idioma.
+// La lista va literal a proposito, no derivada de la del prerender:
 // una lista derivada seguiria el mismo fallo que tiene que cazar.
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -24,11 +23,9 @@ const PAGINAS = [
   { ruta: 'proyectos/atalaya/index.html', idioma: 'es', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/en/projects/atalaya/' },
   { ruta: 'proyectos/savemymoneynow/index.html', idioma: 'es', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/en/projects/savemymoneynow/' },
   { ruta: 'proyectos/strev/index.html', idioma: 'es', tipo: 'caso', slug: 'strev', idioma_alterno: '/en/projects/strev/' },
-  { ruta: 'proyectos/wordpress/index.html', idioma: 'es', tipo: 'caso', slug: 'wordpress', idioma_alterno: '/en/projects/wordpress/' },
   { ruta: 'en/projects/atalaya/index.html', idioma: 'en', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/proyectos/atalaya/' },
   { ruta: 'en/projects/savemymoneynow/index.html', idioma: 'en', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/proyectos/savemymoneynow/' },
   { ruta: 'en/projects/strev/index.html', idioma: 'en', tipo: 'caso', slug: 'strev', idioma_alterno: '/proyectos/strev/' },
-  { ruta: 'en/projects/wordpress/index.html', idioma: 'en', tipo: 'caso', slug: 'wordpress', idioma_alterno: '/proyectos/wordpress/' },
 ]
 
 // El ambito de cada caso sale del diccionario, que es de donde lo saca el
@@ -51,6 +48,11 @@ const CV_POR_IDIOMA = {
 // el veredicto lo compone el script, para que mover la decision rompa CI en vez
 // de pasar inadvertida como paso con el hallazgo 13.
 const H2_CON_AMBITO_ESPERADOS = 2
+const MEDIA_POR_CASO = {
+  savemymoneynow: 'savemymoneynow-detection',
+  strev: 'strev-product',
+  atalaya: 'atalaya-health',
+}
 
 const grafoDe = (html) => {
   const bloque = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
@@ -106,10 +108,22 @@ for (const pagina of PAGINAS) {
   }
 
   if (pagina.tipo === 'caso') {
-    // Las ocho paginas de caso vivieron sin una sola imagen: 2800 px de prosa
-    // seguida en la pagina que mas tiene que contar.
-    const artefacto = html.includes('class="pdiag') || html.includes('portfolio__terminal')
-    if (!artefacto) anota(pagina, 'el caso no pinta ni diagrama ni terminal')
+    const figura = html.match(/<figure class="case__media(?:\s|")[\s\S]*?<\/figure>/)?.[0]
+    if (!figura) {
+      anota(pagina, 'el caso no pinta su figura de evidencia')
+    } else {
+      if (!figura.includes('<img ')) anota(pagina, 'la figura del caso no contiene una imagen')
+      if (!figura.includes('<figcaption>')) anota(pagina, 'la figura del caso no tiene pie visible')
+
+      const asset = MEDIA_POR_CASO[pagina.slug]
+      if (!asset || !figura.includes(asset)) {
+        anota(pagina, `la figura no usa el asset real esperado (${asset || 'sin mapa'})`)
+      }
+    }
+
+    if (html.includes('class="pdiag') || html.includes('class="portfolio__terminal')) {
+      anota(pagina, 'el caso conserva un diagrama o terminal sintetico')
+    }
 
     // En un caso no existen las secciones de la portada.
     const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
@@ -139,7 +153,10 @@ for (const [idioma, nombre] of Object.entries(CV_POR_IDIOMA)) {
 
 const sitemap = leer('sitemap.xml')
 const urls = (sitemap.match(/<loc>/g) || []).length
-if (urls !== 10) fallos.push(`sitemap.xml: ${urls} URLs, deberia haber 10`)
+if (urls !== 8) fallos.push(`sitemap.xml: ${urls} URLs, deberia haber 8`)
+if (/\/(?:proyectos|en\/projects)\/wordpress\//.test(sitemap)) {
+  fallos.push('sitemap.xml: conserva la ruta retirada de WordPress')
+}
 
 if (fallos.length) {
   console.error(fallos.join('\n'))
