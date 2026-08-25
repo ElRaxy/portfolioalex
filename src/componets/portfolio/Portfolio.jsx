@@ -287,7 +287,7 @@ function Portfolio() {
               <RevealItem
                 as="article"
                 className="portfolio__item"
-                key={project.title}
+                key={project.slug}
                 whileHover={{ y: -4 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 24 }}
               >

@@ -5,12 +5,12 @@ import './experience.css'
 
 const stackGroups = ['frontend', 'backend', 'quality', 'ai', 'python', 'devops', 'scale']
 
-const TimelineList = ({ entries }) => (
+const TimelineList = ({ entries, identity }) => (
   <RevealGroup as="ul" className="timeline">
-    {entries.map((entry) => (
+    {entries.map((entry, index) => (
       <RevealItem
         as="li"
-        key={entry.role}
+        key={`${identity}-${index}`}
         className={`timeline__item${entry.current ? ' is-current' : ''}`}
       >
         <span className="timeline__dot" aria-hidden="true" />
@@ -37,11 +37,11 @@ export const ExperienceTimeline = () => {
       <h2 id="experience-title">{t('experience.title')}</h2>
 
       <div className="container experience__content">
-        <TimelineList entries={t('experience.roles', { returnObjects: true })} />
+        <TimelineList identity="role" entries={t('experience.roles', { returnObjects: true })} />
 
         <div className="experience__education">
           <h3>{t('experience.education')}</h3>
-          <TimelineList entries={t('experience.studies', { returnObjects: true })} />
+          <TimelineList identity="study" entries={t('experience.studies', { returnObjects: true })} />
         </div>
       </div>
     </section>

@@ -230,19 +230,60 @@ describe('desplazamiento suave', () => {
   })
 
   it('bloquea un segundo cambio de idioma mientras la transición sigue activa', async () => {
-    let finish
-    document.startViewTransition = jest.fn((update) => {
-      update()
-      return { finished: new Promise((resolve) => { finish = resolve }) }
-    })
+    jest.useFakeTimers()
+    document.startViewTransition = jest.fn()
     const first = jest.fn()
     const second = jest.fn()
 
-    const pending = runLanguageTransition(first)
-    expect(await runLanguageTransition(second)).toBe(false)
-    expect(second).not.toHaveBeenCalled()
-    finish()
-    await pending
-    delete document.startViewTransition
+    try {
+      const pending = runLanguageTransition(first)
+      expect(await runLanguageTransition(second)).toBe(false)
+      expect(second).not.toHaveBeenCalled()
+      expect(await pending).toBe(true)
+      expect(first).toHaveBeenCalledTimes(1)
+      expect(document.startViewTransition).not.toHaveBeenCalled()
+      expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
+
+      act(() => jest.advanceTimersByTime(280))
+      expect(document.documentElement).not.toHaveAttribute('data-language-transition')
+    } finally {
+      delete document.startViewTransition
+      document.documentElement.removeAttribute('data-language-transition')
+      jest.runOnlyPendingTimers()
+      jest.useRealTimers()
+    }
+  })
+
+  it('respeta movimiento reducido sin crear capturas ni animación', async () => {
+    reducedMotion = true
+    document.startViewTransition = jest.fn()
+    const update = jest.fn()
+
+    try {
+      expect(await runLanguageTransition(update)).toBe(true)
+      expect(update).toHaveBeenCalledTimes(1)
+      expect(document.startViewTransition).not.toHaveBeenCalled()
+      expect(document.documentElement).not.toHaveAttribute('data-language-transition')
+    } finally {
+      delete document.startViewTransition
+    }
+  })
+
+  it('acepta el idioma mientras el tema termina su transición viva', async () => {
+    jest.useFakeTimers()
+    const update = jest.fn()
+    document.documentElement.setAttribute('data-theme-transition', '')
+
+    try {
+      expect(await runLanguageTransition(update)).toBe(true)
+      expect(update).toHaveBeenCalledTimes(1)
+      expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
+      expect(document.documentElement).toHaveAttribute('data-theme-transition')
+    } finally {
+      document.documentElement.removeAttribute('data-theme-transition')
+      document.documentElement.removeAttribute('data-language-transition')
+      jest.runOnlyPendingTimers()
+      jest.useRealTimers()
+    }
   })
 })

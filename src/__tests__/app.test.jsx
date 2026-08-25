@@ -1,7 +1,7 @@
 import React from 'react'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import App from '../App'
-import '../i18n'
+import i18n from '../i18n'
 
 const enlacesCon = (patron) => screen.getAllByRole('link')
   .filter((enlace) => patron.test(enlace.getAttribute('href') || ''))
@@ -129,17 +129,37 @@ describe('la web entera', () => {
   })
 
   it('el selector de tema comunica y actualiza su estado accesible', () => {
+    jest.useFakeTimers()
     document.documentElement.setAttribute('data-theme', 'dark')
-    render(<App />)
+    document.documentElement.setAttribute('data-language-transition', 'settling')
+    document.startViewTransition = jest.fn()
 
-    const selectores = screen.getAllByRole('button', { name: /tema|theme/i })
-    expect(selectores).toHaveLength(2)
-    selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'true'))
+    try {
+      render(<App />)
 
-    fireEvent.click(selectores[0])
+      const selectores = screen.getAllByRole('button', { name: /tema|theme/i })
+      expect(selectores).toHaveLength(2)
+      selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'true'))
 
-    selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'false'))
-    expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+      fireEvent.click(selectores[0])
+
+      selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'false'))
+      expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+      expect(document.documentElement).toHaveAttribute('data-theme-transition')
+      expect(document.startViewTransition).not.toHaveBeenCalled()
+
+      fireEvent.click(selectores[1])
+      expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+
+      act(() => jest.advanceTimersByTime(420))
+      expect(document.documentElement).not.toHaveAttribute('data-theme-transition')
+    } finally {
+      delete document.startViewTransition
+      document.documentElement.removeAttribute('data-theme-transition')
+      document.documentElement.removeAttribute('data-language-transition')
+      jest.runOnlyPendingTimers()
+      jest.useRealTimers()
+    }
   })
 
   it('los proyectos que dicen tener codigo lo enlazan de verdad', () => {
@@ -157,6 +177,31 @@ describe('la web entera', () => {
 
     expect(internos.every((href) => /^\/(proyectos|en\/projects)\/[a-z]+\/$/.test(href))).toBe(true)
     expect(externos.every((href) => /^https?:\/\//.test(href))).toBe(true)
+  })
+
+  it('conserva las tarjetas animadas al traducir contenido ya revelado', async () => {
+    await act(() => i18n.changeLanguage('es'))
+    render(<App pathname="/" />)
+
+    const proyecto = screen.getByRole('heading', {
+      name: 'Automatización de WordPress en producción',
+    }).closest('article')
+    const experiencia = screen.getByText(
+      'Desarrollador Full Stack · Automatización e infraestructura web',
+    ).closest('.timeline__item')
+
+    try {
+      await act(() => i18n.changeLanguage('en'))
+
+      expect(screen.getByRole('heading', {
+        name: 'WordPress automation in production',
+      }).closest('article')).toBe(proyecto)
+      expect(screen.getByText(
+        'Full Stack Developer · Product and Automation',
+      ).closest('.timeline__item')).toBe(experiencia)
+    } finally {
+      await act(() => i18n.changeLanguage('es'))
+    }
   })
 })
 

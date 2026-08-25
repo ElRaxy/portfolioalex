@@ -51,41 +51,28 @@ export const syncDocument = (language, i18n, pathname = window.location.pathname
   }
 }
 
-const nextFrame = () => new Promise((resolve) => window.requestAnimationFrame(resolve))
+const LANGUAGE_TRANSITION_MS = 280
 
 export const runLanguageTransition = async (update) => {
   const root = document.documentElement
-  if (root.hasAttribute('data-view-transition')) return false
+  if (
+    root.hasAttribute('data-view-transition')
+    || root.hasAttribute('data-language-transition')
+  ) return false
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  root.setAttribute('data-view-transition', 'language')
-
-  if (document.startViewTransition && !reducedMotion) {
-    try {
-      const transition = document.startViewTransition(update)
-      await transition.finished.catch(() => {})
-    } finally {
-      root.removeAttribute('data-view-transition')
-    }
-    return true
-  }
-
-  if (reducedMotion) {
-    try {
-      await update()
-    } finally {
-      root.removeAttribute('data-view-transition')
-    }
-    return true
-  }
-
-  root.setAttribute('data-view-transition', 'language-fallback')
+  root.setAttribute('data-language-transition', 'updating')
   try {
-    await nextFrame()
     await update()
-    await nextFrame()
-  } finally {
-    root.removeAttribute('data-view-transition')
+  } catch (error) {
+    root.removeAttribute('data-language-transition')
+    throw error
+  }
+
+  if (reducedMotion) root.removeAttribute('data-language-transition')
+  else {
+    root.setAttribute('data-language-transition', 'settling')
+    window.setTimeout(() => root.removeAttribute('data-language-transition'), LANGUAGE_TRANSITION_MS)
   }
   return true
 }
