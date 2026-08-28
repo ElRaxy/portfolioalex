@@ -1,4 +1,13 @@
+.about {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.34fr) minmax(0, 0.66fr);
+    gap: var(--space-8) clamp(var(--space-10), 8vw, var(--space-24));
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line-soft);
+}
+
 .about > h2 {
+    margin: 0;
     color: var(--color-text-primary);
 }
 
@@ -29,6 +38,8 @@
     grid-template-columns: 7.5rem minmax(0, 1fr);
     gap: var(--space-3);
     align-items: baseline;
+    padding: var(--space-2) 0;
+    border-top: 1px solid var(--line-soft);
 }
 
 .about__fact dt {
@@ -42,6 +53,11 @@
 }
 
 @media screen and (max-width: 600px) {
+    .about {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-6);
+    }
+
     .about__fact {
         grid-template-columns: minmax(0, 1fr);
         gap: 0;

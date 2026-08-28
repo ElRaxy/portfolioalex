@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import LanguageSelector from '../language/LanguageSelector'
@@ -7,7 +7,7 @@ import { useRoutePathname } from '../../lib/routeContext'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
-const SIDEBAR_TARGETS = ['portfolio', 'about', 'experience', 'stack', 'contact']
+const SECTION_TARGETS = ['portfolio', 'about', 'experience', 'stack', 'contact']
 
 // Dentro de una pagina de caso las secciones no existen: el ancla suelta no
 // llevaria a ninguna parte, asi que se prefija con la home de ese idioma.
@@ -16,12 +16,9 @@ const useAnchorBase = () => {
   const route = parseRoute(pathname)
   return route.kind === 'case' ? homeHref(route.language) : ''
 }
-// `home` NO se observa: vive dentro del panel lateral pegajoso, asi que su
-// getBoundingClientRect().top se queda clavado en 0 por mucho que bajes. Como
-// el activo se elige por el |top| mas pequeno, ganaba siempre y no se marcaba
-// ninguna seccion jamas. Cuando ninguna de las cinco esta en la banda, es que
-// seguimos en el hero.
-const OBSERVED_TARGETS = SIDEBAR_TARGETS
+// El hero precede a las cinco secciones observadas. Cuando ninguna entra en la
+// banda activa, seguimos en la portada y la marca apunta a `home`.
+const OBSERVED_TARGETS = SECTION_TARGETS
 const activeSectionListeners = new Set()
 let activeSection = 'home'
 let activeSectionObserver
@@ -81,92 +78,6 @@ const useActiveSection = () => useSyncExternalStore(
   getActiveSection,
 )
 
-export const SidebarNav = () => {
-  const { t } = useTranslation()
-  const activeSection = useActiveSection()
-  const anchorBase = useAnchorBase()
-  const progressRef = useRef(null)
-
-  useLayoutEffect(() => {
-    const animationQuery = window.matchMedia(
-      '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
-    )
-    let ctx
-    let loading = false
-    let cancelled = false
-
-    const loadScrollProgress = () => {
-      if (!animationQuery.matches || loading || ctx) return
-
-      loading = true
-      Promise.all([
-        import('gsap'),
-        import('gsap/ScrollTrigger'),
-      ]).then(([{ gsap }, { ScrollTrigger }]) => {
-        loading = false
-        if (cancelled || !animationQuery.matches) return
-
-        gsap.registerPlugin(ScrollTrigger)
-        ctx = gsap.context(() => {
-          const media = gsap.matchMedia()
-
-          media.add(
-            '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
-            () => {
-              gsap.fromTo(progressRef.current, {
-                scaleY: 0,
-                transformOrigin: 'top',
-              }, {
-                scaleY: 1,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: document.body,
-                  start: 'top top',
-                  end: 'bottom bottom',
-                  scrub: 0.3,
-                },
-              })
-            },
-          )
-
-          return () => media.revert()
-        })
-      }).catch(() => {
-        loading = false
-      })
-    }
-
-    loadScrollProgress()
-    animationQuery.addEventListener('change', loadScrollProgress)
-
-    return () => {
-      cancelled = true
-      animationQuery.removeEventListener('change', loadScrollProgress)
-      ctx?.revert()
-    }
-  }, [])
-
-  return (
-    <nav className="sidebar-nav" aria-label={t('nav.sections')}>
-      <span className="sidebar-nav__progress" aria-hidden="true" ref={progressRef} />
-      <ul className="sidebar-nav__list">
-        {SIDEBAR_TARGETS.map((target) => (
-          <li key={target}>
-            <a
-              href={`${anchorBase}#${target}`}
-              className={`sidebar-nav__link${activeSection === target ? ' sidebar-nav__link--active' : ''}`}
-              aria-current={activeSection === target ? 'location' : undefined}
-            >
-              <span className="sidebar-nav__line" aria-hidden="true" />
-              <span>{t(`nav.${target}`)}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )
-}
-
 const Nav = () => {
   const { t } = useTranslation()
   const activeSection = useActiveSection()
@@ -175,15 +86,11 @@ const Nav = () => {
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
   const wasMenuOpenRef = useRef(false)
-  const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
-  const links = [
-    { target: 'home', label: t('nav.home') },
-    { target: 'portfolio', label: t('nav.portfolio') },
-    { target: 'about', label: t('nav.about') },
-    { target: 'experience', label: t('nav.experience') },
-    { target: 'stack', label: t('nav.stack') },
-    { target: 'contact', label: t('nav.contact') },
-  ]
+  const brandName = t('header.name')
+  const links = SECTION_TARGETS.map((target) => ({
+    target,
+    label: t(`nav.${target}`),
+  }))
 
   useEffect(() => {
     if (!isMenuOpen) return undefined
@@ -240,7 +147,7 @@ const Nav = () => {
   const closeMenu = () => setIsMenuOpen(false)
 
   return (
-    <nav className="portfolio-nav">
+    <nav className="portfolio-nav" aria-label={t('nav.sections')}>
       <div className="portfolio-nav__inner">
         <a
           href={`${anchorBase}#home`}

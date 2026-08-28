@@ -17,7 +17,7 @@
   "header": {
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · React, Node and Python",
-    "tagline": "I build web products with React and Node, and use Python when the problem calls for automation or data work.",
+    "tagline": "I build web products around concrete problems. I work with React and Node, and use Python to automate work that should not stay manual.",
     "evidence": "SaveMyMoneyNow: 21 endpoints and 113 tests · Atalaya: 174 tests",
     "view_projects": "View projects",
     "download_cv": "Download CV",
@@ -103,11 +103,12 @@
     }
   },
   "portfolio": {
-    "title": "My projects",
-    "subtitle": "Recent selection",
+    "title": "Selected work",
+    "subtitle": "Products I have taken from a concrete problem to a usable release",
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
-    "featured_label": "Featured project",
+    "primary_label": "Primary project",
+    "supporting_label": "Selected project",
     "metrics": {
       "job_boards": "job boards",
       "passing_tests": "passing tests",
@@ -115,29 +116,9 @@
     },
     "projects": [
       {
-        "title": "SaveMyMoneyNow",
-        "description": "Imports statements whose layout changes between files. The wizard finds the header, proposes the columns and asks for confirmation before saving. The public repository contains 21 endpoints and 113 test cases.",
-        "featured": true,
-        "tags": [
-          "React",
-          "Node",
-          "Express",
-          "MongoDB"
-        ],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
-          }
-        ],
-        "image": "savemymoneynow",
-        "image_alt": "SaveMyMoneyNow finding the header row of the statement and mapping Date, Description and Amount",
-        "image_caption": "Header detection before the import is confirmed.",
-        "slug": "savemymoneynow"
-      },
-      {
         "title": "Strev",
-        "description": "A web product for personal trainers that brings together routines, progress, payments and video technique analysis. The analysis runs in a queue, so the interface never waits for the model.",
+        "description": "Strev gives personal trainers one place to build routines, follow progress, handle payments and review technique on video. Analysis goes through a queue, so the interface stays available while the model works.",
+        "tier": "primary",
         "tags": [
           "React",
           "Node",
@@ -157,27 +138,9 @@
         "slug": "strev"
       },
       {
-        "title": "Atalaya",
-        "description": "Python CLI that pulls roles from several sources, removes duplicates, scores them against a profile and prepares a cover-letter draft for review.",
-        "tags": [
-          "Python",
-          "Typer",
-          "Claude CLI",
-          "SQLite"
-        ],
-        "links": [
-          {
-            "label": "Code",
-            "url": "https://github.com/ElRaxy/atalaya-cli"
-          }
-        ],
-        "image_alt": "Atalaya showing a dated health result for its job sources",
-        "image_caption": "A reproducible record of the sources checked by Atalaya.",
-        "slug": "atalaya"
-      },
-      {
         "title": "Sereno",
-        "description": "A single-file Python terminal UI that reads the local histories of Claude Code, Codex, Gemini and Antigravity. It separates sessions that are writing, running a command, waiting for a reply or already stopped.",
+        "description": "Sereno lets me see at a glance which agents are writing, running a command, waiting or stopped. It reads the local histories of Claude Code, Codex, Gemini and Antigravity without sending data off the machine.",
+        "tier": "primary",
         "tags": [
           "Python",
           "curses",
@@ -197,8 +160,48 @@
         "image": "sereno",
         "image_alt": "Sereno showing coding-agent sessions and their states in a terminal interface",
         "image_caption": "Demo with synthetic histories: writing, commands, waiting and stopped sessions.",
-        "slug": "sereno",
-        "wide": true
+        "slug": "sereno"
+      },
+      {
+        "title": "SaveMyMoneyNow",
+        "description": "I built it to import bank statements that do not always follow the same layout. It finds the header, suggests the mapping and asks for confirmation before saving. The public repository includes 21 endpoints and 113 tests.",
+        "tier": "supporting",
+        "tags": [
+          "React",
+          "Node",
+          "Express",
+          "MongoDB"
+        ],
+        "links": [
+          {
+            "label": "Code",
+            "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
+          }
+        ],
+        "image": "savemymoneynow",
+        "image_alt": "SaveMyMoneyNow finding the header row of the statement and mapping Date, Description and Amount",
+        "image_caption": "Header detection before the import is confirmed.",
+        "slug": "savemymoneynow"
+      },
+      {
+        "title": "Atalaya",
+        "description": "Atalaya pulls roles from several sources, removes duplicates and ranks them against a profile. It then prepares a cover-letter draft for review, while the person still decides which applications are worth pursuing.",
+        "tier": "supporting",
+        "tags": [
+          "Python",
+          "Typer",
+          "Claude CLI",
+          "SQLite"
+        ],
+        "links": [
+          {
+            "label": "Code",
+            "url": "https://github.com/ElRaxy/atalaya-cli"
+          }
+        ],
+        "image_alt": "Atalaya showing a dated health result for its job sources",
+        "image_caption": "A reproducible record of the sources checked by Atalaya.",
+        "slug": "atalaya"
       }
     ],
     "case_link": "Read the case study",
@@ -279,7 +282,7 @@
     "source": "Source of this site"
   },
   "meta": {
-    "description": "Alex Micó Robles is a Full Stack Developer working with React, Node.js and Python. Case studies cover SaveMyMoneyNow, Strev, Atalaya and Sereno in English and Spanish."
+    "description": "Alex Micó Robles is a Full Stack Developer working with React, Node.js and Python. Case studies cover Strev, Sereno, SaveMyMoneyNow and Atalaya in English and Spanish."
   },
   "case_study": {
     "back": "Back to projects",

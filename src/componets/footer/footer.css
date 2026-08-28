@@ -1,7 +1,9 @@
 .site-footer {
     display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
     gap: var(--space-8);
-    padding-top: var(--space-8);
+    padding-top: var(--space-10);
     border-top: thin solid var(--line-soft);
 }
 
@@ -32,6 +34,8 @@
     gap: var(--space-2) var(--space-4);
     color: var(--text-2);
     font-size: var(--fs-xs);
+    justify-content: flex-end;
+    text-align: right;
 }
 
 /* Sin acento ni subrayado no se distinguia del copyright que tiene al lado,
@@ -47,4 +51,15 @@
 
 .site-footer__legal a:hover {
     color: var(--accent-hover);
+}
+
+@media screen and (max-width: 700px) {
+    .site-footer {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .site-footer__legal {
+        justify-content: flex-start;
+        text-align: left;
+    }
 }

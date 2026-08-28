@@ -1,123 +1,119 @@
 .portfolio-nav {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  width: 100%;
+  height: var(--nav-height);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--surface-0);
+}
+
+.portfolio-nav__inner {
+  width: min(calc(100% - 4rem), var(--container-width-lg));
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-inline: auto;
+}
+
+.portfolio-nav__brand,
+.portfolio-nav__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-2);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.portfolio-nav__brand {
+  min-height: 44px;
+  flex: 0 0 auto;
+  color: var(--text-1);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.portfolio-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-left: auto;
+}
+
+.portfolio-nav__link {
+  position: relative;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.portfolio-nav__link::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.55rem;
+  left: 0;
+  height: 1px;
+  background: var(--accent);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition);
+}
+
+.portfolio-nav__brand:hover,
+.portfolio-nav__link:hover,
+.portfolio-nav__link--active {
+  color: var(--text-1);
+}
+
+.portfolio-nav__link:hover::after,
+.portfolio-nav__link--active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.portfolio-nav__controls {
+  height: var(--nav-height);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: var(--space-3);
+}
+
+.portfolio-nav__controls .language-selector {
+  height: 44px;
+}
+
+.portfolio-nav__controls .lang-btn,
+.portfolio-nav__controls .language-selector__option {
+  min-width: 44px;
+  height: 44px;
+}
+
+.portfolio-nav__controls .theme-toggle {
+  width: 44px;
+  height: 44px;
+}
+
+.portfolio-nav__menu-toggle {
   display: none;
 }
 
-.sidebar-nav {
-  position: relative;
-  width: 100%;
-}
-
-.sidebar-nav__progress {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: var(--accent);
-  transform: scaleY(0);
-  transform-origin: top;
-}
-
-.sidebar-nav__list {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.sidebar-nav__link {
-  width: max-content;
-  min-height: 2rem;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-1) 0;
-  color: var(--color-text-muted);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.4;
-  transition: color var(--transition);
-}
-
-.sidebar-nav__line {
-  width: var(--space-5);
-  height: 1px;
-  flex: 0 0 auto;
-  background: var(--line-soft);
-  transition: width var(--transition), background-color var(--transition);
-}
-
-.sidebar-nav__link:hover,
-.sidebar-nav__link--active {
-  color: var(--color-text-primary);
-}
-
-.sidebar-nav__link:hover .sidebar-nav__line,
-.sidebar-nav__link--active .sidebar-nav__line {
-  width: var(--space-8);
-}
-
-.sidebar-nav__link--active .sidebar-nav__line {
-  background: var(--color-primary);
-}
-
-.sidebar-nav__link:active {
-  color: var(--accent-active);
-}
-
-.sidebar-nav__link:active .sidebar-nav__line {
-  background: var(--accent-active);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar-nav__progress {
-    display: none;
-  }
-}
-
 @media screen and (max-width: 1024px) {
-  .sidebar-nav {
-    display: none;
-  }
-
   .portfolio-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 90;
-    width: 100%;
-    height: var(--nav-height);
-    display: block;
-    border-bottom: 1px solid var(--line-soft);
-    background: var(--color-bg);
+    background: var(--surface-0);
   }
 
   .portfolio-nav__inner {
     width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
     gap: var(--space-3);
-    padding: 0 var(--space-3);
-  }
-
-  .portfolio-nav__brand,
-  .portfolio-nav__link {
-    color: var(--color-text-primary);
-    cursor: pointer;
-    line-height: 1;
-    white-space: nowrap;
+    padding: 0 var(--space-5);
   }
 
   .portfolio-nav__brand {
-    flex: 0 0 auto;
     min-width: max-content;
-    text-overflow: clip;
-    font-weight: 700;
-    /* El alto táctil sigue el contrato del producto en móvil. */
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding-block: var(--space-1);
   }
 
   .portfolio-nav__links {
@@ -127,35 +123,31 @@
     width: 100%;
     max-height: calc(100vh - var(--nav-height));
     display: none;
-    padding: var(--space-2) var(--space-3) var(--space-4);
+    margin: 0;
+    padding: var(--space-3) var(--space-5) var(--space-5);
     overflow-y: auto;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     border-bottom: 1px solid var(--line-soft);
-    /* El cajon usaba el mismo fondo que la pagina, asi que su borde inferior
-       parecia un recorte roto justo encima de los iconos sociales del hero.
-       Con fondo propio y sombra se lee como un panel que flota. */
     background: var(--surface-1);
-    box-shadow: 0 24px 48px rgb(0 0 0 / 45%);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 32%);
   }
 
   :root[data-theme='light'] .portfolio-nav__links {
-    box-shadow: 0 24px 48px rgb(0 0 0 / 18%);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 14%);
   }
 
-  /* Velo bajo el cajon: sin el, su borde inferior caia a media altura de los
-     iconos sociales del hero y parecia un recorte, no un menu abierto. */
   .portfolio-nav:has(.portfolio-nav__links--open)::after {
     position: fixed;
     z-index: -1;
     inset: var(--nav-height) 0 0;
-    background: rgb(0 0 0 / 55%);
+    background: rgb(0 0 0 / 48%);
     content: '';
   }
 
   :root[data-theme='light'] .portfolio-nav:has(.portfolio-nav__links--open)::after {
-    background: rgb(0 0 0 / 35%);
+    background: rgb(0 0 0 / 28%);
   }
 
   .portfolio-nav__links--open {
@@ -164,64 +156,22 @@
 
   .portfolio-nav__link {
     width: 100%;
-    min-height: var(--space-12);
-    display: inline-flex;
-    align-items: center;
-    padding: var(--space-3);
-    color: var(--color-text-muted);
+    min-height: 48px;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--line-soft);
     font-size: var(--fs-base);
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition), color var(--transition);
   }
 
-  .portfolio-nav__brand:hover,
-  .portfolio-nav__link:hover,
-  .portfolio-nav__link--active {
-    color: var(--color-text-primary);
-  }
-
-  .portfolio-nav__link:hover {
-    background: var(--surface-2);
-  }
-
-  .portfolio-nav__brand:active,
-  .portfolio-nav__link:active {
-    color: var(--accent-active);
-  }
-
-  .portfolio-nav__link:active {
-    background: var(--surface-3);
+  .portfolio-nav__link::after {
+    display: none;
   }
 
   .portfolio-nav__link--active {
-    background: var(--surface-sel);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: var(--space-1);
+    color: var(--accent);
   }
 
   .portfolio-nav__controls {
-    height: var(--nav-height);
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
     margin-left: auto;
-  }
-
-  .portfolio-nav__controls .language-selector {
-    height: 44px;
-  }
-
-  .portfolio-nav__controls .lang-btn,
-  .portfolio-nav__controls .language-selector__option {
-    min-width: 44px;
-    height: 44px;
-  }
-
-  .portfolio-nav__controls .theme-toggle {
-    width: 44px;
-    height: 44px;
   }
 
   .portfolio-nav__menu-toggle {
@@ -232,11 +182,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border-radius: var(--radius-sm);
     background: transparent;
-    color: var(--color-text-primary);
-    font-size: var(--fs-base);
-    line-height: 1;
-    border-radius: var(--radius-md);
+    color: var(--text-1);
     cursor: pointer;
     transition: background-color var(--transition), color var(--transition);
   }
@@ -254,22 +202,23 @@
     background: var(--surface-3);
     color: var(--accent-active);
   }
-
-  .portfolio-nav__menu-toggle:disabled {
-    background: transparent;
-    color: var(--text-3);
-    cursor: not-allowed;
-  }
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 600px) {
   .portfolio-nav__inner {
     gap: var(--space-2);
+    padding-inline: var(--space-3);
   }
 
   .portfolio-nav__brand {
-    max-width: 4.75rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    max-width: 6.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .portfolio-nav__controls {
+    gap: var(--space-1);
   }
 }

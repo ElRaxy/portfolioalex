@@ -1,7 +1,7 @@
 # Alex Micó Robles
 
 > Desarrollador Full Stack con React, Node.js y Python.
-> Convierte problemas concretos en productos web que se pueden usar y revisar.
+> Construye productos web alrededor de problemas concretos y publica cómo los resolvió.
 > Villena, Alicante, España. Abierto a puestos Full Stack en remoto en España y la UE.
 
 Web: https://portfolioalex-mico.vercel.app/ (español) · /en/ (inglés)
@@ -17,28 +17,28 @@ GitHub: https://github.com/ElRaxy
 
 ## Casos de estudio
 
-- SaveMyMoneyNow: https://portfolioalex-mico.vercel.app/proyectos/savemymoneynow/ · /en/projects/savemymoneynow/
 - Strev: https://portfolioalex-mico.vercel.app/proyectos/strev/ · /en/projects/strev/
-- Atalaya: https://portfolioalex-mico.vercel.app/proyectos/atalaya/ · /en/projects/atalaya/
 - Sereno: https://portfolioalex-mico.vercel.app/proyectos/sereno/ · /en/projects/sereno/
+- SaveMyMoneyNow: https://portfolioalex-mico.vercel.app/proyectos/savemymoneynow/ · /en/projects/savemymoneynow/
+- Atalaya: https://portfolioalex-mico.vercel.app/proyectos/atalaya/ · /en/projects/atalaya/
 
 ## Proyectos
 
-- SaveMyMoneyNow · Importa extractos con estructuras distintas. Detecta la fila
-  de cabecera, propone el mapeo de columnas y pide confirmación antes de guardar.
-  21 endpoints y 113 casos de test en el repositorio público.
-  https://github.com/ElRaxy/SaveMyMoneyNow
 - Strev · Producto web para entrenadores con rutinas, seguimiento, pagos y
   análisis de técnica en vídeo que se procesa en segundo plano.
   Código cerrado. https://strev.app
-- Atalaya · CLI en Python que reúne ofertas, elimina duplicados, las puntúa
-  contra un perfil y prepara una carta de presentación para revisar.
-  13 comandos y 174 tests en el repositorio público.
-  https://github.com/ElRaxy/atalaya-cli
 - Sereno · Interfaz de terminal en un solo archivo Python que lee los
   historiales locales de Claude Code, Codex, Gemini y Antigravity. Distingue
   sesiones que escriben, ejecutan un comando, esperan o están paradas, sin red.
   https://github.com/ElRaxy/sereno
+- SaveMyMoneyNow · Importa extractos con estructuras distintas. Detecta la fila
+  de cabecera, propone el mapeo de columnas y pide confirmación antes de guardar.
+  21 endpoints y 113 casos de test en el repositorio público.
+  https://github.com/ElRaxy/SaveMyMoneyNow
+- Atalaya · CLI en Python que reúne ofertas, elimina duplicados, las puntúa
+  contra un perfil y prepara una carta de presentación para revisar.
+  13 comandos y 174 tests en el repositorio público.
+  https://github.com/ElRaxy/atalaya-cli
 
 ## Experiencia
 

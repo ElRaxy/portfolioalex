@@ -5,6 +5,7 @@ import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
 import serenoImage from '../../assets/projects/sereno-session-overview.webp'
+import serenoDemo from '../../assets/projects/sereno-demo.webp'
 import './portfolio.css'
 
 const PROJECT_MEDIA = {
@@ -27,46 +28,61 @@ const PROJECT_MEDIA = {
     position: 'center',
   },
   sereno: {
-    src: serenoImage,
-    width: 1560,
-    height: 720,
+    src: serenoDemo,
+    still: serenoImage,
+    width: 1200,
+    height: 554,
     position: 'center',
     fit: 'contain',
   },
 }
 
+const ProjectImage = ({ media, project, eager }) => {
+  const image = (
+    <img
+      src={media.src}
+      alt={project.image_alt || project.title}
+      width={media.width}
+      height={media.height}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      style={{ objectFit: media.fit || 'cover', objectPosition: media.position }}
+    />
+  )
+
+  if (!media.still) return image
+
+  return (
+    <picture>
+      <source media="(prefers-reduced-motion: reduce)" srcSet={media.still} />
+      {image}
+    </picture>
+  )
+}
+
 const ProjectCard = ({ project, projectIndex, language }) => {
   const media = PROJECT_MEDIA[project.slug]
-  const isFeatured = projectIndex === 0
-  const isWide = isFeatured || project.wide
+  const isPrimary = project.tier === 'primary'
   const itemClasses = [
     'portfolio__item',
-    isWide && 'portfolio__item--wide',
-    isFeatured && 'portfolio__item--featured',
+    `portfolio__item--${project.tier}`,
     `portfolio__item--${project.slug}`,
   ].filter(Boolean).join(' ')
 
   return (
-    <article className={itemClasses}>
+    <article className={itemClasses} data-tier={project.tier}>
       <figure className="portfolio__media">
         <div className="portfolio__media-frame">
-          <img
-            src={media.src}
-            alt={project.image_alt || project.title}
-            width={media.width}
-            height={media.height}
-            loading={isFeatured ? 'eager' : 'lazy'}
-            decoding="async"
-            style={{ objectFit: media.fit || 'cover', objectPosition: media.position }}
-          />
+          <ProjectImage media={media} project={project} eager={isPrimary} />
         </div>
         <figcaption>{project.image_caption || project.title}</figcaption>
       </figure>
 
       <div className="portfolio__body">
-        {isFeatured && (
-          <p className="portfolio__featured-label">{project.featured_label}</p>
-        )}
+        <p className="portfolio__eyebrow">
+          <span>{String(projectIndex + 1).padStart(2, '0')}</span>
+          <span>{project.tier_label}</span>
+        </p>
 
         <h3>{project.title}</h3>
         <p className="portfolio__description">{project.description}</p>
@@ -117,7 +133,7 @@ function Portfolio() {
     ...project,
     case_link: t('portfolio.case_link'),
     closed_label: t(project.internal ? 'portfolio.internal_label' : 'portfolio.closed_label'),
-    featured_label: t('portfolio.featured_label'),
+    tier_label: t(`portfolio.${project.tier}_label`),
   }))
 
   return (

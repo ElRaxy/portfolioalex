@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import './index.css'
 import Header from './componets/header/Header'
+import CTA from './componets/header/CTA'
 import Nav from './componets/nav/Nav'
 import About from './componets/about/About'
 import Stack, { ExperienceTimeline } from './componets/experience/Experience'
@@ -12,8 +13,6 @@ import Contact from './componets/contact/Contact'
 import Footer from './componets/footer/Footer'
 import CaseStudy from './componets/caseStudy/CaseStudy'
 import './componets/caseStudy/caseStudy.css'
-import LanguageSelector from './componets/language/LanguageSelector'
-import ThemeToggle from './componets/theme/ThemeToggle'
 import { ThemeProvider } from './componets/theme/ThemeContext'
 import { useSmoothAnchors, useLanguageFromHistory } from './lib/smoothScroll'
 import { parseRoute } from './lib/routing'
@@ -56,22 +55,15 @@ function App({ pathname }) {
         <div className={route.kind === 'case' ? 'site-shell site-shell--case' : 'site-shell'}>
           <Nav />
 
-          {/* Antes del sidebar en el DOM porque es donde estan en pantalla: dentro
-              del main se alcanzaban en la parada 11 y 12 del tabulador estando
-              arriba del todo (WCAG 2.4.3). La rejilla los recoloca. */}
-          <div className="site-shell__controls">
-            <LanguageSelector />
-            <ThemeToggle />
-          </div>
-
-          <div className="site-shell__sidebar">
-            <Header nameAs={route.kind === 'case' ? 'p' : 'h1'} />
-          </div>
+          {route.kind !== 'case' && <Header />}
 
           <main className="site-shell__content">
             {route.kind === 'case' ? (
               <>
                 <CaseStudy slug={route.slug} />
+                <aside className="site-shell__case-actions" aria-label={i18n.t('header.availability')}>
+                  <CTA />
+                </aside>
                 <Contact />
                 <Footer />
               </>

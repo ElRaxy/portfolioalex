@@ -20,7 +20,7 @@ describe('la web entera', () => {
   it('monta las cinco secciones como landmarks con nombre', () => {
     render(<App />)
 
-    const secciones = ['Sobre mí', 'Mis proyectos', 'Experiencia', 'Stack', 'Contáctame']
+    const secciones = ['Sobre mí', 'Trabajo seleccionado', 'Experiencia', 'Stack', 'Contáctame']
     secciones.forEach((nombre) => {
       expect(screen.getByRole('region', { name: nombre })).toBeInTheDocument()
     })
@@ -71,7 +71,7 @@ describe('la web entera', () => {
   it('da a cada imagen de proyecto un nombre accesible propio y descriptivo', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
     const imagenes = within(portfolio).getAllByRole('img')
 
     expect(imagenes).toHaveLength(4)
@@ -92,7 +92,7 @@ describe('la web entera', () => {
   it('deja visible como pie la descripcion de cada imagen de proyecto', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
     const diccionario = require('../i18n/locales/es/translation.json')
 
     diccionario.portfolio.projects.forEach((proyecto) => {
@@ -103,7 +103,7 @@ describe('la web entera', () => {
   it('presenta Sereno como proyecto completo y enlaza su caso, codigo y release', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
     const sereno = within(portfolio).getAllByRole('article')
       .find((article) => within(article).queryByRole('heading', { name: 'Sereno' }))
 
@@ -188,18 +188,15 @@ describe('la web entera', () => {
       render(<App />)
 
       const selectores = screen.getAllByRole('button', { name: /tema|theme/i })
-      expect(selectores).toHaveLength(2)
-      selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'true'))
+      expect(selectores).toHaveLength(1)
+      expect(selectores[0]).toHaveAttribute('aria-pressed', 'true')
 
       fireEvent.click(selectores[0])
 
-      selectores.forEach((selector) => expect(selector).toHaveAttribute('aria-pressed', 'false'))
+      expect(selectores[0]).toHaveAttribute('aria-pressed', 'false')
       expect(document.documentElement).toHaveAttribute('data-theme', 'light')
       expect(document.documentElement).toHaveAttribute('data-theme-transition')
       expect(document.startViewTransition).not.toHaveBeenCalled()
-
-      fireEvent.click(selectores[1])
-      expect(document.documentElement).toHaveAttribute('data-theme', 'light')
 
       act(() => jest.advanceTimersByTime(420))
       expect(document.documentElement).not.toHaveAttribute('data-theme-transition')
@@ -215,7 +212,7 @@ describe('la web entera', () => {
   it('los proyectos que dicen tener codigo lo enlazan de verdad', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
     const enlaces = within(portfolio).getAllByRole('link')
 
     expect(enlaces.length).toBeGreaterThan(0)
@@ -229,7 +226,7 @@ describe('la web entera', () => {
     expect(externos.every((href) => /^https?:\/\//.test(href))).toBe(true)
   })
 
-  it('conserva las tarjetas animadas al traducir contenido ya revelado', async () => {
+  it('conserva los nodos de proyecto al traducir contenido ya revelado', async () => {
     await act(() => i18n.changeLanguage('es'))
     render(<App pathname="/" />)
 
@@ -303,20 +300,25 @@ describe('el bloque LCP no espera al JavaScript', () => {
   })
 })
 
-// El 2026-08-22 se midio que idioma y tema eran las paradas 11 y 12 del
-// tabulador en escritorio estando en la posicion mas alta de la pagina
-// (WCAG 2.4.3): vivian dentro del <main>, despues del hero y de la nav
-// lateral. El orden de foco lo fija el DOM, no la rejilla, asi que la
-// comprobacion es sobre el DOM.
+// La masthead es la unica navegacion y contiene los unicos controles de idioma
+// y tema. Su orden en el DOM tiene que coincidir con el orden visual.
 describe('el orden de foco sigue al orden visual', () => {
-  it('la navegación lateral sigue el orden real de las secciones', () => {
+  it('la masthead sigue el orden real de las secciones', () => {
     render(<App />)
 
     const navegacion = screen.getByRole('navigation', { name: 'Navegación por secciones' })
     const etiquetas = within(navegacion).getAllByRole('link')
       .map((enlace) => enlace.textContent.trim())
 
-    expect(etiquetas).toEqual(['Proyectos', 'Sobre Mí', 'Experiencia', 'Stack', 'Contacto'])
+    expect(etiquetas).toEqual([
+      'Alex Micó Robles',
+      'Proyectos',
+      'Sobre Mí',
+      'Experiencia',
+      'Stack',
+      'Contacto',
+      'EN',
+    ])
   })
 
   it('el idioma va antes que el hero en el orden de tabulacion', () => {
@@ -344,11 +346,11 @@ describe('el orden de foco sigue al orden visual', () => {
       path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'), 'utf8',
     )
 
-    const marca = navCss.match(/\.portfolio-nav__brand \{[\s\S]*?\n {2}\}/)
+    const marca = navCss.match(/\.portfolio-nav__brand \{[\s\S]*?\n\}/)
     const idioma = navCss.match(
-      /\.portfolio-nav__controls \.lang-btn,\s*\n\s*\.portfolio-nav__controls \.language-selector__option \{[\s\S]*?\n {2}\}/,
+      /\.portfolio-nav__controls \.lang-btn,\s*\n\s*\.portfolio-nav__controls \.language-selector__option \{[\s\S]*?\n\}/,
     )
-    const tema = navCss.match(/\.portfolio-nav__controls \.theme-toggle \{[\s\S]*?\n {2}\}/)
+    const tema = navCss.match(/\.portfolio-nav__controls \.theme-toggle \{[\s\S]*?\n\}/)
     const volver = caseCss.match(/\.case__back \{[\s\S]*?\n\}/)
     const accion = caseCss.match(/\.case__link \{[\s\S]*?\n\}/)
 
@@ -591,15 +593,39 @@ describe('paginas de caso de estudio', () => {
     const diccionario = require('../i18n/locales/es/translation.json')
     const slugs = diccionario.portfolio.projects.map((proyecto) => proyecto.slug)
 
-    expect(slugs).toEqual(['savemymoneynow', 'strev', 'atalaya', 'sereno'])
-    expect(CASE_SLUGS).toEqual(slugs)
-    expect(diccionario.portfolio.projects.filter((proyecto) => proyecto.featured).map((proyecto) => proyecto.slug))
-      .toEqual(['savemymoneynow'])
+    expect(slugs).toEqual(['strev', 'sereno', 'savemymoneynow', 'atalaya'])
+    expect(new Set(CASE_SLUGS)).toEqual(new Set(slugs))
+    expect(diccionario.portfolio.projects.filter((proyecto) => proyecto.tier === 'primary').map((proyecto) => proyecto.slug))
+      .toEqual(['strev', 'sereno'])
+    expect(diccionario.portfolio.projects.filter((proyecto) => proyecto.tier === 'supporting').map((proyecto) => proyecto.slug))
+      .toEqual(['savemymoneynow', 'atalaya'])
     expect(slugs.filter(Boolean)).toHaveLength(diccionario.portfolio.projects.length)
     slugs.forEach((slug) => expect(CASE_SLUGS).toContain(slug))
     expect(caseHref('es', 'atalaya')).toBe('/proyectos/atalaya/')
     expect(caseHref('en', 'atalaya')).toBe('/en/projects/atalaya/')
     expect(caseHref('es', 'sereno')).toBe('/proyectos/sereno/')
     expect(caseHref('en', 'sereno')).toBe('/en/projects/sereno/')
+  })
+
+  it('da el mismo contrato visual a Strev y Sereno y respeta movimiento reducido', () => {
+    render(<App pathname="/" />)
+
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const principales = within(portfolio).getAllByRole('article')
+      .filter((article) => article.getAttribute('data-tier') === 'primary')
+
+    expect(principales).toHaveLength(2)
+    expect(principales.map((article) => (
+      within(article).getByRole('heading', { level: 3 }).textContent
+    ))).toEqual(['Strev', 'Sereno'])
+    principales.forEach((article) => expect(article).toHaveClass('portfolio__item--primary'))
+
+    const sereno = principales[1]
+    expect(within(sereno).getByRole('img')).toHaveAttribute(
+      'src',
+      expect.stringContaining('sereno-demo.webp'),
+    )
+    expect(sereno.querySelector('source[media="(prefers-reduced-motion: reduce)"]'))
+      .toHaveAttribute('srcset', expect.stringContaining('sereno-session-overview.webp'))
   })
 })

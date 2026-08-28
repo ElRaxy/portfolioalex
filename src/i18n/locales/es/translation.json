@@ -17,7 +17,7 @@
   "header": {
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · React, Node y Python",
-    "tagline": "Construyo productos web con React y Node, y uso Python cuando el problema pide automatización o tratamiento de datos.",
+    "tagline": "Construyo productos web alrededor de problemas concretos. Trabajo con React y Node, y uso Python para automatizar lo que no merece seguir haciéndose a mano.",
     "evidence": "SaveMyMoneyNow: 21 endpoints y 113 tests · Atalaya: 174 tests",
     "view_projects": "Ver proyectos",
     "download_cv": "Descargar CV",
@@ -103,11 +103,12 @@
     }
   },
   "portfolio": {
-    "title": "Mis proyectos",
-    "subtitle": "Selección reciente",
+    "title": "Trabajo seleccionado",
+    "subtitle": "Productos que he llevado del problema a una versión usable",
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
-    "featured_label": "Proyecto destacado",
+    "primary_label": "Proyecto principal",
+    "supporting_label": "Proyecto seleccionado",
     "metrics": {
       "job_boards": "job boards",
       "passing_tests": "tests en verde",
@@ -115,29 +116,9 @@
     },
     "projects": [
       {
-        "title": "SaveMyMoneyNow",
-        "description": "Importa extractos cuyo formato cambia entre archivos. El asistente encuentra la cabecera, propone las columnas y pide confirmación antes de guardar. El repositorio público reúne 21 endpoints y 113 casos de test.",
-        "featured": true,
-        "tags": [
-          "React",
-          "Node",
-          "Express",
-          "MongoDB"
-        ],
-        "links": [
-          {
-            "label": "Código",
-            "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
-          }
-        ],
-        "image": "savemymoneynow",
-        "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe",
-        "image_caption": "La detección de cabeceras antes de confirmar la importación.",
-        "slug": "savemymoneynow"
-      },
-      {
         "title": "Strev",
-        "description": "Producto web para entrenadores que reúne rutinas, seguimiento, pagos y análisis de técnica en vídeo. El análisis corre en una cola para que la interfaz no espere al modelo.",
+        "description": "Strev da a entrenadores un solo lugar para preparar rutinas, seguir progresos, cobrar y revisar técnica en vídeo. El análisis entra en una cola y la interfaz sigue disponible mientras el modelo trabaja.",
+        "tier": "primary",
         "tags": [
           "React",
           "Node",
@@ -157,27 +138,9 @@
         "slug": "strev"
       },
       {
-        "title": "Atalaya",
-        "description": "CLI en Python que reúne ofertas de varias fuentes, elimina duplicados, las puntúa contra un perfil y prepara una carta de presentación para revisar.",
-        "tags": [
-          "Python",
-          "Typer",
-          "Claude CLI",
-          "SQLite"
-        ],
-        "links": [
-          {
-            "label": "Código",
-            "url": "https://github.com/ElRaxy/atalaya-cli"
-          }
-        ],
-        "image_alt": "Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas",
-        "image_caption": "Registro reproducible de las fuentes consultadas por Atalaya.",
-        "slug": "atalaya"
-      },
-      {
         "title": "Sereno",
-        "description": "Interfaz de terminal en un solo archivo Python que lee los historiales locales de Claude Code, Codex, Gemini y Antigravity. Separa las sesiones que escriben, ejecutan un comando, esperan respuesta o ya están paradas.",
+        "description": "Sereno me deja ver de un vistazo qué agentes están escribiendo, ejecutando un comando, esperando o parados. Lee los historiales locales de Claude Code, Codex, Gemini y Antigravity y no envía datos fuera del equipo.",
+        "tier": "primary",
         "tags": [
           "Python",
           "curses",
@@ -197,8 +160,48 @@
         "image": "sereno",
         "image_alt": "Sereno mostrando sesiones de agentes y sus estados en una interfaz de terminal",
         "image_caption": "Demo con historiales sintéticos: trabajo, comandos, espera y sesiones paradas.",
-        "slug": "sereno",
-        "wide": true
+        "slug": "sereno"
+      },
+      {
+        "title": "SaveMyMoneyNow",
+        "description": "Lo hice para importar extractos bancarios que no respetan siempre el mismo formato. Encuentra la cabecera, propone el mapeo y pide confirmación antes de guardar. El repositorio público incluye 21 endpoints y 113 tests.",
+        "tier": "supporting",
+        "tags": [
+          "React",
+          "Node",
+          "Express",
+          "MongoDB"
+        ],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/SaveMyMoneyNow"
+          }
+        ],
+        "image": "savemymoneynow",
+        "image_alt": "SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe",
+        "image_caption": "La detección de cabeceras antes de confirmar la importación.",
+        "slug": "savemymoneynow"
+      },
+      {
+        "title": "Atalaya",
+        "description": "Atalaya reúne ofertas de varias fuentes, elimina duplicados y las ordena según un perfil. Después prepara una carta para revisar. La decisión de qué candidatura merece la pena sigue siendo de la persona.",
+        "tier": "supporting",
+        "tags": [
+          "Python",
+          "Typer",
+          "Claude CLI",
+          "SQLite"
+        ],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/atalaya-cli"
+          }
+        ],
+        "image_alt": "Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas",
+        "image_caption": "Registro reproducible de las fuentes consultadas por Atalaya.",
+        "slug": "atalaya"
       }
     ],
     "case_link": "Ver el caso",
@@ -279,7 +282,7 @@
     "source": "Código de esta web"
   },
   "meta": {
-    "description": "Alex Micó Robles, desarrollador Full Stack con React, Node.js y Python. Casos de SaveMyMoneyNow, Strev, Atalaya y Sereno en español e inglés."
+    "description": "Alex Micó Robles, desarrollador Full Stack con React, Node.js y Python. Casos de Strev, Sereno, SaveMyMoneyNow y Atalaya en español e inglés."
   },
   "case_study": {
     "back": "Volver a proyectos",

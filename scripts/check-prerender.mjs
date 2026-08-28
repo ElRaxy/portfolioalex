@@ -56,6 +56,7 @@ const MEDIA_POR_CASO = {
   atalaya: 'atalaya-health',
   sereno: 'sereno-session-overview',
 }
+const ORDEN_PORTADA = ['Strev', 'Sereno', 'SaveMyMoneyNow', 'Atalaya']
 
 const grafoDe = (html) => {
   const bloque = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
@@ -145,6 +146,23 @@ for (const pagina of PAGINAS) {
     if (ambitosVisibles !== H2_CON_AMBITO_ESPERADOS) {
       anota(pagina, `${ambitosVisibles} span de ambito, deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
     }
+  } else {
+    const posiciones = ORDEN_PORTADA.map((proyecto) => root[1].indexOf(`<h3>${proyecto}</h3>`))
+    if (posiciones.some((posicion) => posicion < 0)) {
+      anota(pagina, 'falta un proyecto de la portada editorial')
+    } else if (posiciones.some((posicion, index) => index > 0 && posicion < posiciones[index - 1])) {
+      anota(pagina, `orden de proyectos incorrecto: ${ORDEN_PORTADA.join(', ')}`)
+    }
+
+    const principales = (root[1].match(/data-tier="primary"/g) || []).length
+    if (principales !== 2) anota(pagina, `${principales} proyectos principales, deberia haber 2`)
+    if (!root[1].includes('sereno-demo')) anota(pagina, 'Sereno no sirve el demo animado')
+    if (!root[1].includes('prefers-reduced-motion: reduce') || !root[1].includes('sereno-session-overview')) {
+      anota(pagina, 'Sereno no sirve el still para movimiento reducido')
+    }
+
+    const temas = (root[1].match(/class="theme-toggle"/g) || []).length
+    if (temas !== 1) anota(pagina, `${temas} selectores de tema, deberia haber 1`)
   }
 }
 
