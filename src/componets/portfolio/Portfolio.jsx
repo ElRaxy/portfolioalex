@@ -122,6 +122,22 @@ function Portfolio() {
           />
         ))}
       </div>
+
+      <aside className="portfolio__side-project" aria-labelledby="portfolio-side-project-title">
+        <div className="portfolio__side-project-copy">
+          <p className="portfolio__side-project-label">{t('portfolio.side_project.eyebrow')}</p>
+          <h3 id="portfolio-side-project-title">{t('portfolio.side_project.title')}</h3>
+          <p>{t('portfolio.side_project.description')}</p>
+        </div>
+        <a
+          className="portfolio__side-project-link"
+          href={t('portfolio.side_project.url')}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('portfolio.side_project.link_label')}
+        </a>
+      </aside>
     </section>
   )
 }

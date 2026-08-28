@@ -24,6 +24,59 @@
   gap: var(--space-6);
 }
 
+.portfolio__side-project {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.portfolio__side-project-label {
+  margin-bottom: var(--space-2);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+
+.portfolio__side-project h3 {
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.portfolio__side-project-copy > p:last-child {
+  max-width: 62ch;
+  margin-top: var(--space-2);
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+.portfolio__side-project-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+
+.portfolio__side-project-link:hover {
+  color: var(--accent-hover);
+}
+
 .portfolio__item {
   min-width: 0;
   display: flex;
@@ -198,6 +251,17 @@
 
   .portfolio__body {
     padding: var(--space-5);
+  }
+
+  .portfolio__side-project {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+    padding: var(--space-5);
+  }
+
+  .portfolio__side-project-link {
+    justify-self: start;
   }
 }
 

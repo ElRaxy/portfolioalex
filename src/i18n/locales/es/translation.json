@@ -105,6 +105,13 @@
   "portfolio": {
     "title": "Mis proyectos",
     "subtitle": "Selección reciente",
+    "side_project": {
+      "eyebrow": "También estoy construyendo",
+      "title": "Sereno",
+      "description": "Una interfaz de terminal en un solo archivo Python, sin dependencias. Muestra si las sesiones de Claude Code, Codex, Gemini y Antigravity están trabajando, esperando o bloqueadas.",
+      "link_label": "Ver Sereno en GitHub",
+      "url": "https://github.com/ElRaxy/sereno"
+    },
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
     "featured_label": "Proyecto destacado",

@@ -100,6 +100,15 @@ describe('la web entera', () => {
     })
   })
 
+  it('presenta Sereno como proyecto en curso con enlace a su repositorio', () => {
+    render(<App />)
+
+    const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
+    expect(within(portfolio).getByRole('heading', { name: 'Sereno' })).toBeInTheDocument()
+    expect(within(portfolio).getByRole('link', { name: 'Ver Sereno en GitHub' }))
+      .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno')
+  })
+
   // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay
   // navegador que detectar y las paginas inglesas servian el CV castellano.
   it.each([
