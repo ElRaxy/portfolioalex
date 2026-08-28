@@ -20,6 +20,7 @@ GitHub: https://github.com/ElRaxy
 - SaveMyMoneyNow: https://portfolioalex-mico.vercel.app/proyectos/savemymoneynow/ · /en/projects/savemymoneynow/
 - Strev: https://portfolioalex-mico.vercel.app/proyectos/strev/ · /en/projects/strev/
 - Atalaya: https://portfolioalex-mico.vercel.app/proyectos/atalaya/ · /en/projects/atalaya/
+- Sereno: https://portfolioalex-mico.vercel.app/proyectos/sereno/ · /en/projects/sereno/
 
 ## Proyectos
 
@@ -34,6 +35,10 @@ GitHub: https://github.com/ElRaxy
   contra un perfil y prepara una carta de presentación para revisar.
   13 comandos y 174 tests en el repositorio público.
   https://github.com/ElRaxy/atalaya-cli
+- Sereno · Interfaz de terminal en un solo archivo Python que lee los
+  historiales locales de Claude Code, Codex, Gemini y Antigravity. Distingue
+  sesiones que escriben, ejecutan un comando, esperan o están paradas, sin red.
+  https://github.com/ElRaxy/sereno
 
 ## Experiencia
 

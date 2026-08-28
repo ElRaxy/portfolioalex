@@ -9,7 +9,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const buildDirectory = path.join(projectRoot, 'build')
 const baseUrl = 'https://portfolioalex-mico.vercel.app'
 // Mismo orden que en src/lib/routing.js. Si divergen, el test lo canta.
-const CASE_SLUGS = ['savemymoneynow', 'strev', 'atalaya']
+const CASE_SLUGS = ['savemymoneynow', 'strev', 'atalaya', 'sereno']
 const buildDate = new Date().toISOString().slice(0, 10)
 
 const escapeAttribute = (value) => String(value)
@@ -75,6 +75,7 @@ const CASE_ENTITY_IDS = {
   atalaya: '#atalaya',
   savemymoneynow: '#savemymoneynow',
   strev: '#strev',
+  sereno: '#sereno',
 }
 
 const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag(
@@ -93,7 +94,7 @@ const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag
     profilePage['@id'] = `${url}#page`
     profilePage.inLanguage = language
     // El nodo se copia del HTML base, que es la portada castellana: sin esto,
-    // las 9 paginas restantes decian llamarse "Alex Mico Robles | Full Stack
+    // las paginas restantes decian llamarse "Alex Mico Robles | Full Stack
     // Developer" y las inglesas lo decian en castellano.
     profilePage.name = metadata.name
     profilePage.description = metadata.description

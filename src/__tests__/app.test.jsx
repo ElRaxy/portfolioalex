@@ -74,7 +74,7 @@ describe('la web entera', () => {
     const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
     const imagenes = within(portfolio).getAllByRole('img')
 
-    expect(imagenes).toHaveLength(3)
+    expect(imagenes).toHaveLength(4)
     imagenes.forEach((imagen) => {
       // Antes se exigia /\S{10,}/, que en realidad medía la palabra mas
       // larga: un texto bueno sin ninguna palabra de 10 letras lo suspendia.
@@ -100,13 +100,23 @@ describe('la web entera', () => {
     })
   })
 
-  it('presenta Sereno como proyecto en curso con enlace a su repositorio', () => {
+  it('presenta Sereno como proyecto completo y enlaza su caso, codigo y release', () => {
     render(<App />)
 
     const portfolio = screen.getByRole('region', { name: 'Mis proyectos' })
-    expect(within(portfolio).getByRole('heading', { name: 'Sereno' })).toBeInTheDocument()
-    expect(within(portfolio).getByRole('link', { name: 'Ver Sereno en GitHub' }))
+    const sereno = within(portfolio).getAllByRole('article')
+      .find((article) => within(article).queryByRole('heading', { name: 'Sereno' }))
+
+    expect(sereno).toBeDefined()
+    expect(within(sereno).getByRole('link', { name: 'Ver el caso' }))
+      .toHaveAttribute('href', '/proyectos/sereno/')
+    expect(within(sereno).getByRole('link', { name: 'Código' }))
       .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno')
+    expect(within(sereno).getByRole('link', { name: 'Última versión' }))
+      .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno/releases/latest')
+
+    const diccionario = require('../i18n/locales/es/translation.json')
+    expect(diccionario.portfolio.side_project).toBeUndefined()
   })
 
   // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay
@@ -116,6 +126,8 @@ describe('la web entera', () => {
     ['/en/', '/Alex_Mico_Robles_CV_EN.pdf'],
     ['/proyectos/atalaya/', '/Alex_Mico_Robles_CV_ES.pdf'],
     ['/en/projects/atalaya/', '/Alex_Mico_Robles_CV_EN.pdf'],
+    ['/proyectos/sereno/', '/Alex_Mico_Robles_CV_ES.pdf'],
+    ['/en/projects/sereno/', '/Alex_Mico_Robles_CV_EN.pdf'],
   ])('en %s descarga el CV desde %s', (ruta, esperado) => {
     render(<App pathname={ruta} />)
 
@@ -355,7 +367,7 @@ describe('el orden de foco sigue al orden visual', () => {
   })
 })
 
-// El 2026-08-22 se vio que las 8 paginas de caso servian `#about`, `#portfolio`,
+// El 2026-08-22 se vio que las paginas de caso servian `#about`, `#portfolio`,
 // `#experience`, `#stack` y `#portfolio` (el CTA) apuntando a secciones que en
 // ese HTML no existen: la nav leia la ruta de `window`, que en el prerender no
 // hay, asi que todo se prerenderizaba como si fuera la portada. La ruta ahora
@@ -386,7 +398,7 @@ describe('las anclas de una pagina de caso apuntan a la portada', () => {
 })
 
 // El selector de idioma leia la ruta de `window`, que en el prerender no
-// existe: las 8 paginas de caso servian el enlace a la portada inglesa en vez
+// existe: las paginas de caso servian el enlace a la portada inglesa en vez
 // de al caso traducido, y el href servido no coincidia con el que calculaba el
 // cliente al hidratar.
 describe('el selector de idioma apunta a la traduccion de la pagina', () => {
@@ -400,6 +412,12 @@ describe('el selector de idioma apunta a la traduccion de la pagina', () => {
     render(<App pathname="/proyectos/atalaya/" />)
 
     expect(hrefDelSelector()).toBe('/en/projects/atalaya/')
+  })
+
+  it('mantiene Sereno en la misma ruta al pasar al ingles', () => {
+    render(<App pathname="/proyectos/sereno/" />)
+
+    expect(hrefDelSelector()).toBe('/en/projects/sereno/')
   })
 
   it('en la portada lleva a la portada del otro idioma', () => {
@@ -433,7 +451,7 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     const delCaso = titulos.filter((texto) => !/Contáctame/i.test(texto))
 
     expect(delCaso.length).toBeGreaterThanOrEqual(4)
-    // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las ocho
+    // Es el mismo hecho que cuenta scripts/check-prerender.mjs en las diez
     // paginas del build; aqui se mide sobre el arbol renderizado. El nombre va
     // en el texto del encabezado, no en un atributo: si alguien lo esconde,
     // esta lista se queda vacia y el test cae.
@@ -500,6 +518,7 @@ describe('paginas de caso de estudio', () => {
     ['savemymoneynow', 'savemymoneynow-detection.png'],
     ['strev', 'strev-product.png'],
     ['atalaya', 'atalaya-health.svg'],
+    ['sereno', 'sereno-session-overview.webp'],
   ])('muestra evidencia real en el caso %s', (slug, asset) => {
     const diccionario = require('../i18n/locales/es/translation.json')
     const proyecto = diccionario.portfolio.projects.find((item) => item.slug === slug)
@@ -526,6 +545,8 @@ describe('paginas de caso de estudio', () => {
   it('reconoce las rutas de caso en los dos idiomas y descarta las inventadas', () => {
     expect(parseRoute('/proyectos/atalaya/')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
     expect(parseRoute('/en/projects/strev/')).toEqual({ kind: 'case', language: 'en', slug: 'strev' })
+    expect(parseRoute('/proyectos/sereno/')).toEqual({ kind: 'case', language: 'es', slug: 'sereno' })
+    expect(parseRoute('/en/projects/sereno/')).toEqual({ kind: 'case', language: 'en', slug: 'sereno' })
     expect(parseRoute('/proyectos/atalaya')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
     expect(parseRoute('/proyectos/wordpress/').kind).toBe('home')
     expect(parseRoute('/proyectos/lo-que-sea/').kind).toBe('home')
@@ -552,11 +573,25 @@ describe('paginas de caso de estudio', () => {
     })
   })
 
+  it('mantiene el contrato factual de Sereno en los dos idiomas', () => {
+    const es = require('../i18n/locales/es/translation.json').case_study.cases.sereno
+    const en = require('../i18n/locales/en/translation.json').case_study.cases.sereno
+
+    expect(es.results.map((result) => result.value)).toEqual(['1 archivo', '0 dependencias', '4 CLI'])
+    expect(en.results.map((result) => result.value)).toEqual(['1 file', '0 dependencies', '4 CLIs'])
+    expect(es.decisions).toHaveLength(en.decisions.length)
+    expect(es.decisions).toHaveLength(5)
+    expect(JSON.stringify([es, en])).toMatch(/tool_use/)
+    expect(JSON.stringify([es, en])).toMatch(/tool_result/)
+    expect(JSON.stringify([es, en])).toMatch(/stop_reason/)
+    expect(JSON.stringify([es, en])).not.toMatch(/[—]/)
+  })
+
   it('cada proyecto de la portada enlaza a su caso', () => {
     const diccionario = require('../i18n/locales/es/translation.json')
     const slugs = diccionario.portfolio.projects.map((proyecto) => proyecto.slug)
 
-    expect(slugs).toEqual(['savemymoneynow', 'strev', 'atalaya'])
+    expect(slugs).toEqual(['savemymoneynow', 'strev', 'atalaya', 'sereno'])
     expect(CASE_SLUGS).toEqual(slugs)
     expect(diccionario.portfolio.projects.filter((proyecto) => proyecto.featured).map((proyecto) => proyecto.slug))
       .toEqual(['savemymoneynow'])
@@ -564,5 +599,7 @@ describe('paginas de caso de estudio', () => {
     slugs.forEach((slug) => expect(CASE_SLUGS).toContain(slug))
     expect(caseHref('es', 'atalaya')).toBe('/proyectos/atalaya/')
     expect(caseHref('en', 'atalaya')).toBe('/en/projects/atalaya/')
+    expect(caseHref('es', 'sereno')).toBe('/proyectos/sereno/')
+    expect(caseHref('en', 'sereno')).toBe('/en/projects/sereno/')
   })
 })

@@ -105,13 +105,6 @@
   "portfolio": {
     "title": "Mis proyectos",
     "subtitle": "Selección reciente",
-    "side_project": {
-      "eyebrow": "También estoy construyendo",
-      "title": "Sereno",
-      "description": "Una interfaz de terminal en un solo archivo Python, sin dependencias. Muestra si las sesiones de Claude Code, Codex, Gemini y Antigravity están trabajando, esperando o bloqueadas.",
-      "link_label": "Ver Sereno en GitHub",
-      "url": "https://github.com/ElRaxy/sereno"
-    },
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
     "featured_label": "Proyecto destacado",
@@ -181,6 +174,31 @@
         "image_alt": "Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas",
         "image_caption": "Registro reproducible de las fuentes consultadas por Atalaya.",
         "slug": "atalaya"
+      },
+      {
+        "title": "Sereno",
+        "description": "Interfaz de terminal en un solo archivo Python que lee los historiales locales de Claude Code, Codex, Gemini y Antigravity. Separa las sesiones que escriben, ejecutan un comando, esperan respuesta o ya están paradas.",
+        "tags": [
+          "Python",
+          "curses",
+          "JSONL",
+          "tmux"
+        ],
+        "links": [
+          {
+            "label": "Código",
+            "url": "https://github.com/ElRaxy/sereno"
+          },
+          {
+            "label": "Última versión",
+            "url": "https://github.com/ElRaxy/sereno/releases/latest"
+          }
+        ],
+        "image": "sereno",
+        "image_alt": "Sereno mostrando sesiones de agentes y sus estados en una interfaz de terminal",
+        "image_caption": "Demo con historiales sintéticos: trabajo, comandos, espera y sesiones paradas.",
+        "slug": "sereno",
+        "wide": true
       }
     ],
     "case_link": "Ver el caso",
@@ -261,7 +279,7 @@
     "source": "Código de esta web"
   },
   "meta": {
-    "description": "Alex Micó Robles, desarrollador Full Stack con React, Node.js y Python. Proyectos: SaveMyMoneyNow, Strev y Atalaya, con casos de estudio en español e inglés."
+    "description": "Alex Micó Robles, desarrollador Full Stack con React, Node.js y Python. Casos de SaveMyMoneyNow, Strev, Atalaya y Sereno en español e inglés."
   },
   "case_study": {
     "back": "Volver a proyectos",
@@ -413,6 +431,54 @@
         "note": "React, Node, Express, MongoDB, Redis con BullMQ, Stripe y Gemini. Código cerrado.",
         "short": "Strev",
         "scope": "Strev"
+      },
+      "sereno": {
+        "title": "Sereno",
+        "tagline": "Qué sesión trabaja, cuál espera y cuál está bloqueada",
+        "summary": "Sereno es una interfaz de terminal en un solo archivo Python que lee los historiales locales de Claude Code, Codex, Gemini y Antigravity. Distingue sesiones que escriben, ejecutan un comando, esperan respuesta o ya están paradas, sin enviar datos fuera del equipo.",
+        "problem": [
+          "Sereno nació al intentar seguir varias sesiones de agentes a la vez. Saber que un proceso sigue abierto no aclara si está escribiendo, dentro de un comando, esperando una respuesta o parado.",
+          "Los cuatro CLI guardan su actividad de forma distinta. Sereno lee sus historiales locales y devuelve estados comparables sin copiar prompts reales ni depender de un servicio remoto."
+        ],
+        "decisions": [
+          {
+            "title": "Los historiales se leen donde ya existen",
+            "body": "Sereno recorre la cola local de transcripts de Claude Code, Codex, Gemini y Antigravity. Cada lector traduce su formato al mismo conjunto de estados sin subir el contenido a otro servicio."
+          },
+          {
+            "title": "El estado sale del último evento útil",
+            "body": "Un tool_use sin su tool_result significa que la sesión está dentro de un comando. El stop_reason y los eventos posteriores permiten separar writing, waiting y stopped."
+          },
+          {
+            "title": "La caché sigue el mtime",
+            "body": "Cada transcript solo se vuelve a analizar cuando cambia su fecha de modificación. El refresco mantiene el coste acotado aunque haya muchas sesiones abiertas."
+          },
+          {
+            "title": "La ausencia de red tiene una prueba",
+            "body": "La aplicación no abre conexiones. Un test sobre el AST rechaza imports de módulos de red para que esa garantía no dependa de recordar una norma al editar el archivo."
+          },
+          {
+            "title": "La demo no toca sesiones reales",
+            "body": "El modo demo usa historiales sintéticos dentro de un entorno aislado. La captura pública enseña los estados sin nombres de clientes, prompts ni datos del equipo."
+          }
+        ],
+        "results": [
+          {
+            "value": "1 archivo",
+            "label": "Python 3.8+"
+          },
+          {
+            "value": "0 dependencias",
+            "label": "fuera de la biblioteca estándar"
+          },
+          {
+            "value": "4 CLI",
+            "label": "con estados comparables"
+          }
+        ],
+        "note": "macOS y Linux. Python 3.8+, curses y tmux. Licencia MIT. La demo usa datos sintéticos.",
+        "short": "Sereno",
+        "scope": "Sereno"
       }
     },
     "summary_label": "En una frase",

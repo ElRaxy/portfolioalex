@@ -24,59 +24,6 @@
   gap: var(--space-6);
 }
 
-.portfolio__side-project {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--space-6);
-  margin-top: var(--space-8);
-  padding: var(--space-6);
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-lg);
-  background: var(--surface-2);
-}
-
-.portfolio__side-project-label {
-  margin-bottom: var(--space-2);
-  color: var(--accent);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: var(--ls-label);
-  text-transform: uppercase;
-}
-
-.portfolio__side-project h3 {
-  color: var(--text-1);
-  font-size: var(--fs-lg);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.portfolio__side-project-copy > p:last-child {
-  max-width: 62ch;
-  margin-top: var(--space-2);
-  color: var(--text-2);
-  line-height: 1.55;
-}
-
-.portfolio__side-project-link {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--accent);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  white-space: nowrap;
-}
-
-.portfolio__side-project-link:hover {
-  color: var(--accent-hover);
-}
-
 .portfolio__item {
   min-width: 0;
   display: flex;
@@ -89,7 +36,7 @@
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.portfolio__item--featured {
+.portfolio__item--wide {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
@@ -108,8 +55,12 @@
   background: var(--surface-2);
 }
 
-.portfolio__item--featured .portfolio__media {
+.portfolio__item--wide .portfolio__media {
   border-right: 1px solid var(--line-soft);
+}
+
+.portfolio__item--sereno .portfolio__media-frame {
+  background: #0b1018;
 }
 
 .portfolio__media-frame {
@@ -160,7 +111,7 @@
   overflow-wrap: anywhere;
 }
 
-.portfolio__item--featured h3 {
+.portfolio__item--wide h3 {
   font-size: clamp(1.75rem, 2.5vw, 2.05rem);
 }
 
@@ -225,11 +176,11 @@
 }
 
 @media screen and (max-width: 760px) {
-  .portfolio__item--featured {
+  .portfolio__item--wide {
     display: flex;
   }
 
-  .portfolio__item--featured .portfolio__media {
+  .portfolio__item--wide .portfolio__media {
     border-right: 0;
   }
 }
@@ -245,7 +196,7 @@
     gap: var(--space-5);
   }
 
-  .portfolio__item--featured {
+  .portfolio__item--wide {
     grid-column: auto;
   }
 
@@ -253,16 +204,6 @@
     padding: var(--space-5);
   }
 
-  .portfolio__side-project {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
-    margin-top: var(--space-6);
-    padding: var(--space-5);
-  }
-
-  .portfolio__side-project-link {
-    justify-self: start;
-  }
 }
 
 /* La terminal solo se conserva como artefacto autentico dentro del caso de Atalaya. */

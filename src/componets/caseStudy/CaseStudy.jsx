@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
+import serenoImage from '../../assets/projects/sereno-session-overview.webp'
 
 const CASE_MEDIA = {
   savemymoneynow: {
@@ -19,6 +20,11 @@ const CASE_MEDIA = {
     src: atalayaImage,
     width: 1200,
     height: 675,
+  },
+  sereno: {
+    src: serenoImage,
+    width: 1560,
+    height: 720,
   },
 }
 
@@ -39,7 +45,7 @@ const CaseStudy = ({ slug }) => {
   const tagline = t(`case_study.cases.${slug}.tagline`)
   const summary = t(`case_study.cases.${slug}.summary`)
   const problema = t(`case_study.cases.${slug}.problem`, { returnObjects: true }) || []
-  // Solo lo tiene Atalaya: es el unico de los tres que compite con proyectos
+  // Solo lo tiene Atalaya: es el unico de los casos actuales que compite con proyectos
   // conocidos, y sin decirlo el caso no responde "por que esto y no aquello".
   const gap = t(`case_study.cases.${slug}.gap`, { returnObjects: true })
   const gapParrafos = Array.isArray(gap) ? gap : []
@@ -148,7 +154,7 @@ const CaseStudy = ({ slug }) => {
               href={link.url}
               key={link.url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               {link.label}
             </a>

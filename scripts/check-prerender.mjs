@@ -7,7 +7,7 @@
 // su idioma y su canonical, y que las paginas de caso no hereden lo de la
 // portada. Hasta el 2026-08-22 solo miraba las dos portadas, y por eso tres
 // defectos vivieron meses en las seis paginas de caso. Desde el 2026-08-23
-// mira las ocho que escribe el prerender: dos portadas y tres casos por idioma.
+// mira las diez que escribe el prerender: dos portadas y cuatro casos por idioma.
 // La lista va literal a proposito, no derivada de la del prerender:
 // una lista derivada seguiria el mismo fallo que tiene que cazar.
 import { readFileSync } from 'node:fs'
@@ -23,9 +23,11 @@ const PAGINAS = [
   { ruta: 'proyectos/atalaya/index.html', idioma: 'es', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/en/projects/atalaya/' },
   { ruta: 'proyectos/savemymoneynow/index.html', idioma: 'es', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/en/projects/savemymoneynow/' },
   { ruta: 'proyectos/strev/index.html', idioma: 'es', tipo: 'caso', slug: 'strev', idioma_alterno: '/en/projects/strev/' },
+  { ruta: 'proyectos/sereno/index.html', idioma: 'es', tipo: 'caso', slug: 'sereno', idioma_alterno: '/en/projects/sereno/' },
   { ruta: 'en/projects/atalaya/index.html', idioma: 'en', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/proyectos/atalaya/' },
   { ruta: 'en/projects/savemymoneynow/index.html', idioma: 'en', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/proyectos/savemymoneynow/' },
   { ruta: 'en/projects/strev/index.html', idioma: 'en', tipo: 'caso', slug: 'strev', idioma_alterno: '/proyectos/strev/' },
+  { ruta: 'en/projects/sereno/index.html', idioma: 'en', tipo: 'caso', slug: 'sereno', idioma_alterno: '/proyectos/sereno/' },
 ]
 
 // El ambito de cada caso sale del diccionario, que es de donde lo saca el
@@ -52,6 +54,7 @@ const MEDIA_POR_CASO = {
   savemymoneynow: 'savemymoneynow-detection',
   strev: 'strev-product',
   atalaya: 'atalaya-health',
+  sereno: 'sereno-session-overview',
 }
 
 const grafoDe = (html) => {
@@ -153,7 +156,7 @@ for (const [idioma, nombre] of Object.entries(CV_POR_IDIOMA)) {
 
 const sitemap = leer('sitemap.xml')
 const urls = (sitemap.match(/<loc>/g) || []).length
-if (urls !== 8) fallos.push(`sitemap.xml: ${urls} URLs, deberia haber 8`)
+if (urls !== 10) fallos.push(`sitemap.xml: ${urls} URLs, deberia haber 10`)
 if (/\/(?:proyectos|en\/projects)\/wordpress\//.test(sitemap)) {
   fallos.push('sitemap.xml: conserva la ruta retirada de WordPress')
 }

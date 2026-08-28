@@ -105,13 +105,6 @@
   "portfolio": {
     "title": "My projects",
     "subtitle": "Recent selection",
-    "side_project": {
-      "eyebrow": "Also building",
-      "title": "Sereno",
-      "description": "A Python terminal UI in one file, with no dependencies. It shows whether Claude Code, Codex, Gemini and Antigravity sessions are working, waiting or stuck.",
-      "link_label": "View Sereno on GitHub",
-      "url": "https://github.com/ElRaxy/sereno"
-    },
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
     "featured_label": "Featured project",
@@ -181,6 +174,31 @@
         "image_alt": "Atalaya showing a dated health result for its job sources",
         "image_caption": "A reproducible record of the sources checked by Atalaya.",
         "slug": "atalaya"
+      },
+      {
+        "title": "Sereno",
+        "description": "A single-file Python terminal UI that reads the local histories of Claude Code, Codex, Gemini and Antigravity. It separates sessions that are writing, running a command, waiting for a reply or already stopped.",
+        "tags": [
+          "Python",
+          "curses",
+          "JSONL",
+          "tmux"
+        ],
+        "links": [
+          {
+            "label": "Code",
+            "url": "https://github.com/ElRaxy/sereno"
+          },
+          {
+            "label": "Latest release",
+            "url": "https://github.com/ElRaxy/sereno/releases/latest"
+          }
+        ],
+        "image": "sereno",
+        "image_alt": "Sereno showing coding-agent sessions and their states in a terminal interface",
+        "image_caption": "Demo with synthetic histories: writing, commands, waiting and stopped sessions.",
+        "slug": "sereno",
+        "wide": true
       }
     ],
     "case_link": "Read the case study",
@@ -261,7 +279,7 @@
     "source": "Source of this site"
   },
   "meta": {
-    "description": "Alex Micó Robles is a Full Stack Developer working with React, Node.js and Python. Projects include SaveMyMoneyNow, Strev and Atalaya, with case studies in English and Spanish."
+    "description": "Alex Micó Robles is a Full Stack Developer working with React, Node.js and Python. Case studies cover SaveMyMoneyNow, Strev, Atalaya and Sereno in English and Spanish."
   },
   "case_study": {
     "back": "Back to projects",
@@ -413,6 +431,54 @@
         "note": "React, Node, Express, MongoDB, Redis with BullMQ, Stripe and Gemini. Closed source.",
         "short": "Strev",
         "scope": "Strev"
+      },
+      "sereno": {
+        "title": "Sereno",
+        "tagline": "See which session is working, waiting or stuck",
+        "summary": "Sereno is a single-file Python terminal UI that reads the local histories of Claude Code, Codex, Gemini and Antigravity. It separates sessions that are writing, running a command, waiting for a reply or already stopped, without sending data off the machine.",
+        "problem": [
+          "Sereno started with the problem of following several agent sessions at once. A live process does not tell you whether it is writing, inside a command, waiting for a reply or stopped.",
+          "The four CLIs record their activity in different formats. Sereno reads those local histories and returns comparable states without copying real prompts or depending on a remote service."
+        ],
+        "decisions": [
+          {
+            "title": "Histories stay where the tools wrote them",
+            "body": "Sereno reads the local transcript queues of Claude Code, Codex, Gemini and Antigravity. Each reader maps its format to the same states without uploading the content elsewhere."
+          },
+          {
+            "title": "The last useful event determines the state",
+            "body": "A tool_use without its tool_result means the session is in a command. The stop_reason and later events separate writing, waiting and stopped."
+          },
+          {
+            "title": "The cache follows mtime",
+            "body": "A transcript is only parsed again when its modification time changes. Refreshing stays cheap even with many sessions open."
+          },
+          {
+            "title": "No networking is enforced by a test",
+            "body": "The application opens no connections. An AST test rejects imports from networking modules, so that guarantee does not rely on someone remembering a rule while editing the file."
+          },
+          {
+            "title": "The demo never touches real sessions",
+            "body": "Demo mode uses synthetic histories in an isolated environment. The public capture shows the states without client names, prompts or machine data."
+          }
+        ],
+        "results": [
+          {
+            "value": "1 file",
+            "label": "Python 3.8+"
+          },
+          {
+            "value": "0 dependencies",
+            "label": "outside the standard library"
+          },
+          {
+            "value": "4 CLIs",
+            "label": "with comparable states"
+          }
+        ],
+        "note": "macOS and Linux. Python 3.8+, curses and tmux. MIT licence. The demo uses synthetic data.",
+        "short": "Sereno",
+        "scope": "Sereno"
       }
     },
     "summary_label": "In one line",

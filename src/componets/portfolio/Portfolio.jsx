@@ -4,6 +4,7 @@ import { caseHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
+import serenoImage from '../../assets/projects/sereno-session-overview.webp'
 import './portfolio.css'
 
 const PROJECT_MEDIA = {
@@ -25,14 +26,28 @@ const PROJECT_MEDIA = {
     height: 675,
     position: 'center',
   },
+  sereno: {
+    src: serenoImage,
+    width: 1560,
+    height: 720,
+    position: 'center',
+    fit: 'contain',
+  },
 }
 
 const ProjectCard = ({ project, projectIndex, language }) => {
   const media = PROJECT_MEDIA[project.slug]
   const isFeatured = projectIndex === 0
+  const isWide = isFeatured || project.wide
+  const itemClasses = [
+    'portfolio__item',
+    isWide && 'portfolio__item--wide',
+    isFeatured && 'portfolio__item--featured',
+    `portfolio__item--${project.slug}`,
+  ].filter(Boolean).join(' ')
 
   return (
-    <article className={`portfolio__item${isFeatured ? ' portfolio__item--featured' : ''}`}>
+    <article className={itemClasses}>
       <figure className="portfolio__media">
         <div className="portfolio__media-frame">
           <img
@@ -42,7 +57,7 @@ const ProjectCard = ({ project, projectIndex, language }) => {
             height={media.height}
             loading={isFeatured ? 'eager' : 'lazy'}
             decoding="async"
-            style={{ objectPosition: media.position }}
+            style={{ objectFit: media.fit || 'cover', objectPosition: media.position }}
           />
         </div>
         <figcaption>{project.image_caption || project.title}</figcaption>
@@ -122,22 +137,6 @@ function Portfolio() {
           />
         ))}
       </div>
-
-      <aside className="portfolio__side-project" aria-labelledby="portfolio-side-project-title">
-        <div className="portfolio__side-project-copy">
-          <p className="portfolio__side-project-label">{t('portfolio.side_project.eyebrow')}</p>
-          <h3 id="portfolio-side-project-title">{t('portfolio.side_project.title')}</h3>
-          <p>{t('portfolio.side_project.description')}</p>
-        </div>
-        <a
-          className="portfolio__side-project-link"
-          href={t('portfolio.side_project.url')}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('portfolio.side_project.link_label')}
-        </a>
-      </aside>
     </section>
   )
 }
