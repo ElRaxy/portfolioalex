@@ -124,15 +124,15 @@ const Nav = () => {
 
       if (event.shiftKey && (document.activeElement === firstLink || !menu?.contains(document.activeElement))) {
         event.preventDefault()
-        lastLink.focus()
+        lastLink.focus({ preventScroll: true })
       } else if (!event.shiftKey && (document.activeElement === lastLink || !menu?.contains(document.activeElement))) {
         event.preventDefault()
-        firstLink.focus()
+        firstLink.focus({ preventScroll: true })
       }
     }
 
     document.body.style.overflow = 'hidden'
-    firstLink?.focus()
+    firstLink?.focus({ preventScroll: true })
     document.addEventListener('keydown', containFocus)
     desktopQuery.addEventListener('change', closeOnDesktop)
 
@@ -148,7 +148,7 @@ const Nav = () => {
       wasMenuOpenRef.current = true
     } else if (wasMenuOpenRef.current) {
       wasMenuOpenRef.current = false
-      menuButtonRef.current?.focus()
+      menuButtonRef.current?.focus({ preventScroll: true })
     }
   }, [isMenuOpen])
 
