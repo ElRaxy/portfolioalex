@@ -25,9 +25,9 @@
   },
   "about": {
     "title": "Sobre mí",
-    "p2": "SaveMyMoneyNow busca la cabecera real de un extracto, propone las columnas y pide confirmación antes de importar. Atalaya reúne ofertas dispersas, las puntúa y deja ver por qué encajan.",
-    "p3": "Ese es el tipo de producto que quiero seguir construyendo: menos trabajo manual, decisiones visibles y tests que avisen cuando algo se rompe.",
-    "lead": "Soy Alex, desarrollador Full Stack en Villena. Me gusta el software que enseña qué está haciendo antes de guardar o decidir nada.",
+    "p2": "Sereno nació de una necesidad mía: saber qué sesiones de Claude Code, Codex, Gemini y Antigravity siguen trabajando y cuáles esperan. Lee los historiales locales en un solo archivo Python y no envía datos fuera del equipo.",
+    "p3": "Son proyectos distintos, pero los construyo con el mismo criterio: la interfaz debe explicar lo que ocurre y los tests deben cubrir las decisiones que más pueden romper el flujo.",
+    "lead": "Soy Alex, desarrollador Full Stack en Villena. En Strev trabajo sobre un producto real para entrenadores: rutinas, seguimiento, pagos y análisis de técnica en vídeo.",
     "facts_title": "En corto",
     "facts": [
       {

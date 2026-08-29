@@ -86,7 +86,7 @@ const Nav = () => {
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
   const wasMenuOpenRef = useRef(false)
-  const brandName = t('header.name')
+  const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
   const links = SECTION_TARGETS.map((target) => ({
     target,
     label: t(`nav.${target}`),

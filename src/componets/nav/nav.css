@@ -211,11 +211,8 @@
   }
 
   .portfolio-nav__brand {
-    min-width: 0;
-    flex: 1 1 auto;
-    max-width: 6.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    min-width: max-content;
+    flex: 0 0 auto;
   }
 
   .portfolio-nav__controls {

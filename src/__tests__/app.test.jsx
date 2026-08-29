@@ -311,7 +311,7 @@ describe('el orden de foco sigue al orden visual', () => {
       .map((enlace) => enlace.textContent.trim())
 
     expect(etiquetas).toEqual([
-      'Alex Micó Robles',
+      'Alex Micó',
       'Proyectos',
       'Sobre Mí',
       'Experiencia',
@@ -334,6 +334,23 @@ describe('el orden de foco sigue al orden visual', () => {
 
     expect(idioma).toBeGreaterThanOrEqual(0)
     expect(verProyectos).toBeGreaterThan(idioma)
+  })
+
+  it('resume la marca en la masthead y conserva el nombre completo como H1', () => {
+    render(<App pathname="/" />)
+
+    const navegacion = screen.getByRole('navigation', { name: 'Navegación por secciones' })
+    expect(within(navegacion).getByRole('link', { name: 'Alex Micó' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Alex Micó Robles' })).toBeInTheDocument()
+
+    const fs = require('fs')
+    const path = require('path')
+    const navCss = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'nav', 'nav.css'), 'utf8',
+    )
+    const brandRules = [...navCss.matchAll(/\.portfolio-nav__brand\s*\{([^}]*)\}/g)]
+      .map((match) => match[1])
+    expect(brandRules.join('\n')).not.toMatch(/overflow|text-overflow/)
   })
 
   it('los controles clave conservan un objetivo tactil de 44 px', () => {
@@ -395,7 +412,7 @@ describe('las anclas de una pagina de caso apuntan a la portada', () => {
     const titulos = screen.getAllByRole('heading', { level: 1 })
     expect(titulos).toHaveLength(1)
     expect(titulos[0]).toHaveTextContent('Atalaya')
-    expect(screen.getByText('Alex Micó Robles')).toBeInTheDocument()
+    expect(screen.getByText('Alex Micó')).toBeInTheDocument()
   })
 })
 
@@ -508,6 +525,17 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     render(<App pathname="/" />)
 
     expect(screen.getByText(/^Soy Alex,/)).toBeInTheDocument()
+  })
+
+  it('Sobre mi sostiene la narrativa de Strev y Sereno en ambos idiomas', () => {
+    ;['es', 'en'].forEach((idioma) => {
+      const { about } = require(`../i18n/locales/${idioma}/translation.json`)
+      const texto = [about.lead, about.p2, about.p3].join(' ')
+
+      expect(texto).toMatch(/\bStrev\b/)
+      expect(texto).toMatch(/\bSereno\b/)
+      expect(texto).not.toMatch(/—/)
+    })
   })
 })
 

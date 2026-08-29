@@ -25,9 +25,9 @@
   },
   "about": {
     "title": "About me",
-    "p2": "SaveMyMoneyNow finds the real header in a statement, proposes the columns and asks for confirmation before importing. Atalaya pulls scattered job listings into one scored list and shows why each role fits.",
-    "p3": "That is the kind of product I want to keep building: less manual work, visible decisions and tests that flag when something breaks.",
-    "lead": "I'm Alex, a Full Stack Developer based in Villena, Spain. I like software that shows its work before it saves or decides anything.",
+    "p2": "Sereno started from a need of my own: seeing which Claude Code, Codex, Gemini and Antigravity sessions are still working and which are waiting. It reads local histories from a single Python file and sends no data off the machine.",
+    "p3": "They are different products, but I build them with the same rule: the interface should explain what is happening, and tests should cover the decisions most likely to break the flow.",
+    "lead": "I'm Alex, a Full Stack Developer based in Villena, Spain. On Strev I work on a real product for personal trainers: routines, progress, payments and video technique analysis.",
     "facts_title": "In short",
     "facts": [
       {
