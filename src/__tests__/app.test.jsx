@@ -198,7 +198,7 @@ describe('la web entera', () => {
       expect(document.documentElement).toHaveAttribute('data-theme-transition')
       expect(document.startViewTransition).not.toHaveBeenCalled()
 
-      act(() => jest.advanceTimersByTime(420))
+      act(() => jest.advanceTimersByTime(260))
       expect(document.documentElement).not.toHaveAttribute('data-theme-transition')
     } finally {
       delete document.startViewTransition
@@ -297,6 +297,102 @@ describe('el bloque LCP no espera al JavaScript', () => {
     const reglas = css.match(/\.js \.about__title,[\s\S]*?\n\}/)
     expect(reglas).not.toBeNull()
     expect(reglas[0]).not.toMatch(/opacity/)
+  })
+})
+
+describe('el casebook usa movimiento como señal y no como bloqueo', () => {
+  const fs = require('fs')
+  const path = require('path')
+  const leer = (...partes) => fs.readFileSync(path.join(__dirname, '..', ...partes), 'utf8')
+
+  it('liga una línea de la masthead al progreso global y la retira con reduced motion', () => {
+    const nav = leer('componets', 'nav', 'Nav.jsx')
+    const css = leer('componets', 'nav', 'nav.css')
+
+    expect(nav).toMatch(/const \{ scrollYProgress \} = useScroll\(\)/)
+    expect(nav).toMatch(/useSpring\(scrollYProgress/)
+    expect(nav).toMatch(/className="portfolio-nav__progress"/)
+    expect(nav).toMatch(/originX:\s*0/)
+    expect(css).toMatch(/\.portfolio-nav__progress\s*\{[\s\S]*?height:\s*1px/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio-nav__progress\s*\{[\s\S]*?display:\s*none/)
+  })
+
+  it('reserva el progreso local para Strev y Sereno y anima solo la media interior', () => {
+    render(<App pathname="/" />)
+
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const articulos = within(portfolio).getAllByRole('article')
+    const principales = articulos.filter((article) => article.dataset.tier === 'primary')
+    const secundarios = articulos.filter((article) => article.dataset.tier === 'supporting')
+
+    expect(principales).toHaveLength(2)
+    principales.forEach((article) => {
+      expect(article.querySelector('.portfolio__media-motion')).toBeInTheDocument()
+      expect(article.querySelector('.portfolio__chapter-progress')).toBeInTheDocument()
+    })
+    secundarios.forEach((article) => {
+      expect(article.querySelector('.portfolio__media-motion')).not.toBeInTheDocument()
+      expect(article.querySelector('.portfolio__chapter-progress')).not.toBeInTheDocument()
+    })
+
+    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
+    expect(source.match(/useScroll\(\{/g)).toHaveLength(1)
+    expect(source).toMatch(/target:\s*cardRef/)
+    expect(source).toMatch(/\[-3, 0, 3\]/)
+    expect(source).toMatch(/\[1, 1\.018, 1\]/)
+    expect(source).not.toMatch(/opacity/)
+
+    const css = leer('componets', 'portfolio', 'portfolio.css')
+    expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?inset:\s*-4px/)
+    expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
+  })
+
+  it('invierte Sereno solo en escritorio y anula los transforms en móvil', () => {
+    const css = leer('componets', 'portfolio', 'portfolio.css')
+
+    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__media\s*\{[\s\S]*?grid-column:\s*2/)
+    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__body\s*\{[\s\S]*?grid-column:\s*1/)
+    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?\.portfolio__item--sereno \.portfolio__media,[\s\S]*?grid-column:\s*1/)
+    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?\.portfolio__media-motion,[\s\S]*?transform:\s*none !important/)
+  })
+
+  it('revela contenido visible con un gesto breve y adelantado', () => {
+    const source = leer('componets', 'common', 'Reveal.jsx')
+
+    expect(source).not.toMatch(/opacity:\s*0/)
+    expect(source).not.toMatch(/y:\s*(?:9|1[0-9])/)
+    expect(source).toMatch(/duration:\s*0\.22/)
+    expect(source).toMatch(/staggerChildren:\s*0\.02/)
+    expect(source).toMatch(/margin:\s*'0px 0px 12% 0px'/)
+  })
+
+  it('abre y cierra el menú sin display brusco y deja reduced motion estático', () => {
+    const css = leer('componets', 'nav', 'nav.css')
+    const menuClosed = css.match(/\.portfolio-nav__links\s*\{[\s\S]*?\n\s*\}/g)
+      ?.find((rule) => rule.includes('visibility: hidden'))
+
+    expect(menuClosed).toBeDefined()
+    expect(css).toMatch(/\.portfolio-nav__links\s*\{[\s\S]*?visibility:\s*hidden/)
+    expect(css).toMatch(/\.portfolio-nav__links--open\s*\{[\s\S]*?visibility:\s*visible/)
+    expect(css).toMatch(/opacity 180ms ease/)
+    expect(css).toMatch(/transition-duration:\s*200ms, 200ms, 0s/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio-nav__links,[\s\S]*?transition:\s*none/)
+    expect(menuClosed).not.toMatch(/display:\s*none/)
+  })
+
+  it('acorta tema e idioma y da a Stack una salida editorial responsive', () => {
+    const theme = leer('componets', 'theme', 'ThemeToggle.jsx')
+    const index = leer('index.css')
+    const language = leer('componets', 'language', 'language.css')
+    const experience = leer('componets', 'experience', 'experience.css')
+
+    expect(theme).toMatch(/THEME_TRANSITION_MS = 260/)
+    expect(index).not.toMatch(/:root\[data-theme-transition\][\s\S]*?360ms/)
+    expect(index).toMatch(/:root\[data-theme-transition\][\s\S]*?260ms/)
+    expect(language).toMatch(/language-content-settle 190ms/)
+    expect(language).toMatch(/prefers-reduced-motion: reduce[\s\S]*?animation:\s*none/)
+    expect(experience).toMatch(/min-width: 601px[\s\S]*?\.stack\s*\{[\s\S]*?min-height:\s*clamp\(22rem, 50vh, 28rem\)/)
+    expect(experience).toMatch(/max-width: 600px[\s\S]*?\.stack\s*\{[\s\S]*?min-height:\s*0/)
   })
 })
 

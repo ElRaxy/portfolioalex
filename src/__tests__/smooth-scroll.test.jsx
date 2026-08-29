@@ -246,7 +246,7 @@ describe('desplazamiento suave', () => {
       expect(document.startViewTransition).not.toHaveBeenCalled()
       expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
 
-      act(() => jest.advanceTimersByTime(280))
+      act(() => jest.advanceTimersByTime(190))
       expect(document.documentElement).not.toHaveAttribute('data-language-transition')
     } finally {
       delete document.startViewTransition

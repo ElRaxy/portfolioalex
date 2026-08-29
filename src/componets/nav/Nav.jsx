@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
 import LanguageSelector from '../language/LanguageSelector'
 import { parseRoute, homeHref } from '../../lib/routing'
 import { useRoutePathname } from '../../lib/routeContext'
@@ -86,6 +87,13 @@ const Nav = () => {
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
   const wasMenuOpenRef = useRef(false)
+  const shouldReduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll()
+  const documentProgress = useSpring(scrollYProgress, {
+    stiffness: 170,
+    damping: 32,
+    mass: 0.28,
+  })
   const brandName = t('header.name').split(/\s+/).slice(0, 2).join(' ')
   const links = SECTION_TARGETS.map((target) => ({
     target,
@@ -193,6 +201,14 @@ const Nav = () => {
             : <FaBars aria-hidden="true" />}
         </button>
       </div>
+      <motion.span
+        className="portfolio-nav__progress"
+        aria-hidden="true"
+        style={{
+          scaleX: shouldReduceMotion ? 1 : documentProgress,
+          originX: 0,
+        }}
+      />
     </nav>
   )
 }

@@ -8,6 +8,17 @@
   background: var(--surface-0);
 }
 
+.portfolio-nav__progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--accent);
+  pointer-events: none;
+  transform-origin: left center;
+}
+
 .portfolio-nav__inner {
   width: min(calc(100% - 4rem), var(--container-width-lg));
   height: 100%;
@@ -122,7 +133,7 @@
     left: 0;
     width: 100%;
     max-height: calc(100vh - var(--nav-height));
-    display: none;
+    display: flex;
     margin: 0;
     padding: var(--space-3) var(--space-5) var(--space-5);
     overflow-y: auto;
@@ -132,26 +143,52 @@
     border-bottom: 1px solid var(--line-soft);
     background: var(--surface-1);
     box-shadow: 0 24px 48px rgb(0 0 0 / 32%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    visibility: hidden;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease,
+      visibility 0s linear 180ms;
   }
 
   :root[data-theme='light'] .portfolio-nav__links {
     box-shadow: 0 24px 48px rgb(0 0 0 / 14%);
   }
 
-  .portfolio-nav:has(.portfolio-nav__links--open)::after {
+  .portfolio-nav::after {
     position: fixed;
     z-index: -1;
     inset: var(--nav-height) 0 0;
     background: rgb(0 0 0 / 48%);
     content: '';
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition:
+      opacity 180ms ease,
+      visibility 0s linear 180ms;
   }
 
-  :root[data-theme='light'] .portfolio-nav:has(.portfolio-nav__links--open)::after {
+  :root[data-theme='light'] .portfolio-nav::after {
     background: rgb(0 0 0 / 28%);
   }
 
   .portfolio-nav__links--open {
-    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    visibility: visible;
+    transition-duration: 200ms, 200ms, 0s;
+    transition-delay: 0s;
+  }
+
+  .portfolio-nav:has(.portfolio-nav__links--open)::after {
+    opacity: 1;
+    visibility: visible;
+    transition-duration: 200ms, 0s;
+    transition-delay: 0s;
   }
 
   .portfolio-nav__link {
@@ -201,6 +238,17 @@
   .portfolio-nav__menu-toggle:active {
     background: var(--surface-3);
     color: var(--accent-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-nav__progress {
+    display: none;
+  }
+
+  .portfolio-nav__links,
+  .portfolio-nav::after {
+    transition: none;
   }
 }
 

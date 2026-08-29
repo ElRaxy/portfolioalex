@@ -1,5 +1,12 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react'
 import { caseHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
@@ -60,20 +67,34 @@ const ProjectImage = ({ media, project, eager }) => {
   )
 }
 
-const ProjectCard = ({ project, projectIndex, language }) => {
+const getItemClasses = (project) => [
+  'portfolio__item',
+  `portfolio__item--${project.tier}`,
+  `portfolio__item--${project.slug}`,
+].filter(Boolean).join(' ')
+
+const ProjectCardContent = ({ project, projectIndex, language, mediaStyle, railStyle }) => {
   const media = PROJECT_MEDIA[project.slug]
   const isPrimary = project.tier === 'primary'
-  const itemClasses = [
-    'portfolio__item',
-    `portfolio__item--${project.tier}`,
-    `portfolio__item--${project.slug}`,
-  ].filter(Boolean).join(' ')
 
   return (
-    <article className={itemClasses} data-tier={project.tier}>
+    <>
       <figure className="portfolio__media">
         <div className="portfolio__media-frame">
-          <ProjectImage media={media} project={project} eager={isPrimary} />
+          {isPrimary ? (
+            <>
+              <motion.div className="portfolio__media-motion" style={mediaStyle}>
+                <ProjectImage media={media} project={project} eager />
+              </motion.div>
+              <motion.span
+                className="portfolio__chapter-progress"
+                aria-hidden="true"
+                style={railStyle}
+              />
+            </>
+          ) : (
+            <ProjectImage media={media} project={project} eager={false} />
+          )}
         </div>
         <figcaption>{project.image_caption || project.title}</figcaption>
       </figure>
@@ -117,9 +138,55 @@ const ProjectCard = ({ project, projectIndex, language }) => {
           )}
         </footer>
       </div>
+    </>
+  )
+}
+
+const PrimaryProjectCard = ({ project, projectIndex, language }) => {
+  const cardRef = useRef(null)
+  const shouldReduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start end', 'end start'],
+  })
+  const chapterProgress = useSpring(scrollYProgress, {
+    stiffness: 145,
+    damping: 30,
+    mass: 0.32,
+  })
+  const mediaY = useTransform(chapterProgress, [0, 0.5, 1], [-3, 0, 3])
+  const mediaScale = useTransform(chapterProgress, [0, 0.5, 1], [1, 1.018, 1])
+  const mediaStyle = shouldReduceMotion ? undefined : { y: mediaY, scale: mediaScale }
+  const railStyle = shouldReduceMotion ? undefined : { scaleX: chapterProgress, originX: 0 }
+
+  return (
+    <article ref={cardRef} className={getItemClasses(project)} data-tier={project.tier}>
+      <ProjectCardContent
+        project={project}
+        projectIndex={projectIndex}
+        language={language}
+        mediaStyle={mediaStyle}
+        railStyle={railStyle}
+      />
     </article>
   )
 }
+
+const SupportingProjectCard = ({ project, projectIndex, language }) => (
+  <article className={getItemClasses(project)} data-tier={project.tier}>
+    <ProjectCardContent
+      project={project}
+      projectIndex={projectIndex}
+      language={language}
+    />
+  </article>
+)
+
+const ProjectCard = (props) => (
+  props.project.tier === 'primary'
+    ? <PrimaryProjectCard {...props} />
+    : <SupportingProjectCard {...props} />
+)
 
 function Portfolio() {
   const { t, i18n } = useTranslation()

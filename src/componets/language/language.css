@@ -67,7 +67,7 @@
 }
 
 html[data-language-transition='settling'] #root {
-  animation: language-content-settle 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: language-content-settle 190ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes language-content-settle {

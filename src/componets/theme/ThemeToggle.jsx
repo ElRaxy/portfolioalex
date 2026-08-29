@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from './ThemeContext'
 import './theme.css'
 
-const THEME_TRANSITION_MS = 420
+const THEME_TRANSITION_MS = 260
 
 function ThemeToggle() {
   const { t } = useTranslation()

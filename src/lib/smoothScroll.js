@@ -51,7 +51,7 @@ export const syncDocument = (language, i18n, pathname = window.location.pathname
   }
 }
 
-const LANGUAGE_TRANSITION_MS = 280
+const LANGUAGE_TRANSITION_MS = 190
 
 export const runLanguageTransition = async (update) => {
   const root = document.documentElement
