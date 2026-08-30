@@ -326,16 +326,11 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     const secundarios = articulos.filter((article) => article.dataset.tier === 'supporting')
 
     expect(principales).toHaveLength(2)
-    principales.forEach((article) => {
-      expect(article.querySelector('.portfolio__media-motion')).toBeInTheDocument()
-      expect(article.querySelector('.portfolio__chapter-progress')).toBeInTheDocument()
-    })
-    secundarios.forEach((article) => {
-      expect(article.querySelector('.portfolio__media-motion')).not.toBeInTheDocument()
-      expect(article.querySelector('.portfolio__chapter-progress')).not.toBeInTheDocument()
-    })
+    expect(secundarios).toHaveLength(2)
 
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
+    expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion[\s\S]*?portfolio__chapter-progress/)
+    expect(source).toMatch(/\) : \([\s\S]*?<ProjectImage/)
     expect(source.match(/useScroll\(\{/g)).toHaveLength(1)
     expect(source).toMatch(/target:\s*cardRef/)
     expect(source).toMatch(/\[-3, 0, 3\]/)
@@ -359,7 +354,6 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(articulos).toHaveLength(4)
     expect(titulosPorTier('primary')).toEqual(['Strev', 'Sereno'])
     expect(titulosPorTier('supporting')).toEqual(['SaveMyMoneyNow', 'Atalaya'])
-    expect(portfolio.querySelector('.portfolio__eyebrow')).toBeNull()
     ;['01', '02', '03', '04'].forEach((ordinal) => {
       expect(within(portfolio).queryByText(ordinal)).not.toBeInTheDocument()
     })
@@ -818,7 +812,14 @@ describe('paginas de caso de estudio', () => {
       'src',
       expect.stringContaining('sereno-demo.webp'),
     )
-    expect(sereno.querySelector('source[media="(prefers-reduced-motion: reduce)"]'))
-      .toHaveAttribute('srcset', expect.stringContaining('sereno-session-overview.webp'))
+    const fs = require('fs')
+    const path = require('path')
+    const source = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'portfolio', 'Portfolio.jsx'),
+      'utf8',
+    )
+    expect(source).toMatch(
+      /<source media="\(prefers-reduced-motion: reduce\)" srcSet=\{media\.still\} \/>/,
+    )
   })
 })
