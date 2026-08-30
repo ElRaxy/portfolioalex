@@ -347,9 +347,39 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
   })
 
+  it('presenta cuatro casos con un top 2 real y sin rotulos ordinales', () => {
+    render(<App pathname="/" />)
+
+    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const articulos = within(portfolio).getAllByRole('article')
+    const titulosPorTier = (tier) => articulos
+      .filter((article) => article.dataset.tier === tier)
+      .map((article) => within(article).getByRole('heading', { level: 3 }).textContent)
+
+    expect(articulos).toHaveLength(4)
+    expect(titulosPorTier('primary')).toEqual(['Strev', 'Sereno'])
+    expect(titulosPorTier('supporting')).toEqual(['SaveMyMoneyNow', 'Atalaya'])
+    expect(portfolio.querySelector('.portfolio__eyebrow')).toBeNull()
+    ;['01', '02', '03', '04'].forEach((ordinal) => {
+      expect(within(portfolio).queryByText(ordinal)).not.toBeInTheDocument()
+    })
+
+    const diccionario = require('../i18n/locales/es/translation.json')
+    expect(within(portfolio).queryByText(diccionario.portfolio.primary_label)).not.toBeInTheDocument()
+    expect(within(portfolio).queryByText(diccionario.portfolio.supporting_label)).not.toBeInTheDocument()
+
+    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
+    expect(source).not.toMatch(/projectIndex|tier_label|padStart|portfolio__eyebrow/)
+  })
+
   it('invierte Sereno solo en escritorio y anula los transforms en móvil', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
+    const layoutSereno = css.match(/\.portfolio__item--sereno\s*\{[\s\S]*?\n\}/)
+    expect(layoutSereno).not.toBeNull()
+    expect(layoutSereno[0]).toMatch(
+      /grid-template-columns:\s*minmax\(18rem, 0\.76fr\) minmax\(0, 1\.24fr\)/,
+    )
     expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__media\s*\{[\s\S]*?grid-column:\s*2/)
     expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__body\s*\{[\s\S]*?grid-column:\s*1/)
     expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?\.portfolio__item--sereno \.portfolio__media,[\s\S]*?grid-column:\s*1/)
@@ -393,6 +423,9 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(language).toMatch(/prefers-reduced-motion: reduce[\s\S]*?animation:\s*none/)
 
     const grupo = experience.match(/\.stack__group\s*\{[\s\S]*?\n\}/)
+    const ledger = experience.match(/\.stack__grid\s*\{[\s\S]*?\n\}/)
+    expect(ledger).not.toBeNull()
+    expect(ledger[0]).toMatch(/grid-column:\s*1 \/ -1/)
     expect(grupo).not.toBeNull()
     expect(grupo[0]).toMatch(/display:\s*grid/)
     expect(grupo[0]).toMatch(/grid-template-columns:\s*minmax\(10rem, 0\.32fr\) minmax\(0, 0\.68fr\)/)
@@ -400,6 +433,20 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(experience).toMatch(/max-width: 600px[\s\S]*?\.stack__group\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
     expect(experience).not.toMatch(/\.stack\s*\{[^}]*min-height/)
     expect(experience).not.toMatch(/opacity:\s*0/)
+  })
+
+  it('comprime solo el ritmo de la portada y conserva el de los casos', () => {
+    const index = leer('index.css')
+
+    expect(index).toMatch(
+      /\.site-shell__content section \+ section,[\s\S]*?margin-top:\s*clamp\(6rem, 11vw, 10rem\)/,
+    )
+    expect(index).toMatch(
+      /\.site-shell:not\(\.site-shell--case\) \.site-shell__content section \+ section,[\s\S]*?margin-top:\s*clamp\(5rem, 8vw, 7rem\)/,
+    )
+    expect(index).toMatch(
+      /@media screen and \(max-width: 600px\)[\s\S]*?\.site-shell:not\(\.site-shell--case\)[\s\S]*?margin-top:\s*var\(--space-16\)/,
+    )
   })
 })
 
@@ -465,6 +512,12 @@ describe('el orden de foco sigue al orden visual', () => {
     const caseCss = fs.readFileSync(
       path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'), 'utf8',
     )
+    const contactCss = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'contact', 'contact.css'), 'utf8',
+    )
+    const footerCss = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'footer', 'footer.css'), 'utf8',
+    )
 
     const marca = navCss.match(/\.portfolio-nav__brand \{[\s\S]*?\n\}/)
     const idioma = navCss.match(
@@ -473,6 +526,9 @@ describe('el orden de foco sigue al orden visual', () => {
     const tema = navCss.match(/\.portfolio-nav__controls \.theme-toggle \{[\s\S]*?\n\}/)
     const volver = caseCss.match(/\.case__back \{[\s\S]*?\n\}/)
     const accion = caseCss.match(/\.case__link \{[\s\S]*?\n\}/)
+    const contacto = contactCss.match(/\.contact__detail dd a \{[\s\S]*?\n\}/)
+    const correoFinal = footerCss.match(/\.site-footer__mail \{[\s\S]*?\n\}/)
+    const legal = footerCss.match(/\.site-footer__legal a \{[\s\S]*?\n\}/)
 
     expect(marca).not.toBeNull()
     expect(marca[0]).toMatch(/min-height:\s*44px/)
@@ -486,6 +542,12 @@ describe('el orden de foco sigue al orden visual', () => {
     expect(volver[0]).toMatch(/min-height:\s*44px/)
     expect(accion).not.toBeNull()
     expect(accion[0]).toMatch(/min-height:\s*44px/)
+    expect(contacto).not.toBeNull()
+    expect(contacto[0]).toMatch(/min-height:\s*44px/)
+    expect(correoFinal).not.toBeNull()
+    expect(correoFinal[0]).toMatch(/min-height:\s*44px/)
+    expect(legal).not.toBeNull()
+    expect(legal[0]).toMatch(/min-height:\s*44px/)
   })
 })
 

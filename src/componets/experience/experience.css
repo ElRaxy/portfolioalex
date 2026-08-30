@@ -108,10 +108,11 @@
 }
 
 .stack__grid {
-    grid-column: 2;
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
+    margin-top: var(--space-2);
     border-bottom: 1px solid var(--line-soft);
 }
 
@@ -183,6 +184,7 @@
         grid-column: auto;
         grid-template-columns: minmax(0, 1fr);
         gap: 0;
+        margin-top: 0;
     }
 
     .stack__group {

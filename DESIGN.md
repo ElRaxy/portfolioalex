@@ -45,9 +45,8 @@ typography:
     lineHeight: 1.55
 rounded:
   sm: "6px"
-  md: "12px"
-  lg: "20px"
-  pill: "999px"
+  md: "8px"
+  lg: "12px"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -59,20 +58,20 @@ components:
   button-primary:
     backgroundColor: "{colors.cobalt}"
     textColor: "{colors.paper-raised}"
-    rounded: "{rounded.pill}"
+    rounded: "{rounded.sm}"
     padding: "12px 20px"
     height: "44px"
   button-secondary:
     backgroundColor: "{colors.paper-raised}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.pill}"
+    rounded: "{rounded.sm}"
     padding: "12px 20px"
     height: "44px"
-  project-card:
-    backgroundColor: "{colors.paper-raised}"
+  project-evidence:
+    backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    rounded: "{rounded.lg}"
-    padding: "24px"
+    rounded: "{rounded.sm}"
+    padding: "0"
 ---
 
 # Design System: Alex Micó Portfolio
@@ -81,7 +80,7 @@ components:
 
 **Creative North Star: "The Product Casebook"**
 
-The portfolio behaves like a concise casebook opened on a desk: a personal introduction, three pieces of work and the decisions behind them. It is sober and editorial without pretending to be a magazine. Real screens supply colour and specificity; the surrounding interface stays quiet enough to make those screens legible.
+The portfolio behaves like a concise casebook opened on a desk: a personal introduction, four pieces of work and the decisions behind them. Strev and Sereno are primary cases of equal weight; SaveMyMoneyNow and Atalaya support the story without competing with them. It is sober and editorial without pretending to be a magazine. Real screens supply colour and specificity; the surrounding interface stays quiet enough to make those screens legible.
 
 This system explicitly rejects the current operations-dashboard framing, generic developer portfolios and agency campaign pages whose art direction is louder than the work. The grid, terminal and status-light vocabulary is no longer the default visual language.
 
@@ -139,12 +138,12 @@ The palette combines warm paper neutrals with a restrained cobalt accent. Dark m
 
 ## Elevation
 
-The system is flat by default. Depth comes from tonal separation, hairline borders and the overlap of real project imagery. Shadows are ambient and subtle; they appear on raised project media and active hover states, never as a permanent glow.
+The system is flat by default. Depth comes from tonal separation, hairline borders and the overlap of real project imagery. Project media stays grounded without a permanent shadow or decorative glow.
 
 ### Shadow Vocabulary
 
-- **Raised media:** a wide, low-opacity shadow that separates a screenshot from its card without making it float.
-- **Interactive lift:** a slightly stronger version used only while a project or button is hovered.
+- **Evidence separation:** a functional hairline and tonal surface distinguish real screenshots from the page.
+- **Interactive response:** cobalt, underline and border changes communicate hover or focus without lifting the layout.
 
 ### Named Rules
 
@@ -154,7 +153,7 @@ The system is flat by default. Depth comes from tonal separation, hairline borde
 
 ### Buttons
 
-- **Shape:** restrained capsule (999px) with a 44px minimum target.
+- **Shape:** compact rectangle with 6px corners and a 44px minimum target.
 - **Primary:** cobalt surface, raised-paper text and compact horizontal padding.
 - **Hover / Focus:** darken the cobalt slightly; show a visible outer focus ring without translating the control.
 - **Secondary:** transparent or raised-paper surface with a hairline border and ink text.
@@ -166,31 +165,35 @@ The system is flat by default. Depth comes from tonal separation, hairline borde
 
 ### Cards / Containers
 
-- **Corner Style:** gently rounded project containers (20px) and tighter utility containers (12px).
-- **Background:** paper-raised or night-raised according to theme.
+- **Corner Style:** 6px for controls and media, 8px for compact feedback and 12px only for the largest utility surfaces.
+- **Project Structure:** project evidence is editorial and open, not enclosed in a padded 20px card. Scale, grid and real media communicate hierarchy.
+- **Background:** the page remains the default surface; raised paper or night surfaces are reserved for controls and functional feedback.
 - **Shadow Strategy:** flat at rest; raised-media treatment belongs to the image, not every container.
-- **Border:** one hairline, with no coloured side stripes.
-- **Internal Padding:** 24–40px depending on viewport and hierarchy.
+- **Border:** structural hairlines only, with no coloured side stripes.
+- **Internal Padding:** use spacing where content needs it; do not add container padding merely to simulate a card.
 
 ### Inputs / Fields
 
-- **Style:** quiet raised surface, hairline border and 12px corners.
+- **Style:** quiet surface, functional border and 6px corners.
 - **Focus:** cobalt border plus a visible low-opacity focus ring.
 - **Error / Disabled:** pair colour with concise text; never rely on colour alone.
 
 ### Navigation
 
 - Use sans-serif labels in normal case. Active state combines weight and a short cobalt rule or background wash. Mobile navigation remains compact, keyboard reachable and visually separate from language/theme controls.
+- Every interactive control and closing contact route keeps a minimum 44px target.
 
 ### Project Evidence
 
 - Every canonical project has one real 16:10 image or authentic output. A short caption explains what the visitor is seeing. Synthetic diagrams belong only inside a case when no direct screen can express the decision.
+- Strev and Sereno share the primary scale and visual weight. SaveMyMoneyNow and Atalaya use a quieter supporting treatment.
+- Screenshots provide the project-specific colour; cobalt remains the only interface accent.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** show Strev, SaveMyMoneyNow and Atalaya through real screens or authentic output.
+- **Do** show Strev and Sereno as equal primary cases, with SaveMyMoneyNow and Atalaya as supporting work, through real screens or authentic output.
 - **Do** place selected work immediately after the compact hero on mobile.
 - **Do** keep Anuubis Solutions in the experience timeline and the GitHub company field only.
 - **Do** retain WCAG AA contrast, reduced-motion handling, visible focus and bilingual parity.

@@ -10,7 +10,7 @@ Recruiters and technical leads evaluating Alex for Full Stack roles in Spain and
 
 ## Product Purpose
 
-Present Alex Micó Robles as a Full Stack developer who turns concrete problems into usable web products with React, Node.js and Python. Success means a visitor can identify his role, inspect three representative projects, understand his contribution and reach the correct CV or contact route without internal company operations becoming his public identity.
+Present Alex Micó Robles as a Full Stack developer who turns concrete problems into usable web products with React, Node.js and Python. Success means a visitor can identify his role, inspect four representative projects, understand his contribution and reach the correct CV or contact route without internal company operations becoming his public identity.
 
 Anuubis Solutions remains visible as Alex's current employer in the experience timeline and on his GitHub profile. Fleet metrics, client operations, internal tooling and the former WordPress case study are not part of the public proposition.
 
@@ -28,7 +28,7 @@ Sober, approachable and product-led. The voice is direct and specific, with calm
 ## Design Principles
 
 1. Show the work before describing the stack: real product screens and public source are the primary evidence.
-2. Let three projects carry the narrative: Strev, SaveMyMoneyNow and Atalaya each prove a different part of the profile.
+2. Let four projects carry the narrative with an explicit hierarchy: Strev and Sereno are primary cases of equal weight; SaveMyMoneyNow and Atalaya provide supporting evidence.
 3. Put employment in context: Anuubis belongs in experience, not in the hero or project selection.
 4. Make the first useful screen count: role, value, selected work and a clear next action must appear early.
 5. Keep every claim inspectable: prefer public repositories, live products, case studies and stable qualitative results over private counters.

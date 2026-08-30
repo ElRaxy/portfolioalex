@@ -16,6 +16,21 @@
     gap: var(--space-8);
 }
 
+.site-shell:not(.site-shell--case) #contact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+}
+
+.site-shell:not(.site-shell--case) .contact__container {
+    grid-template-columns: minmax(15rem, 0.38fr) minmax(0, 0.62fr);
+    gap: clamp(var(--space-8), 6vw, var(--space-16));
+    align-items: start;
+}
+
+.site-shell:not(.site-shell--case) .contact__form-area {
+    padding-top: 0;
+}
+
 .contact__details {
     overflow: hidden;
     border-top: thin solid var(--line-soft);
@@ -23,8 +38,9 @@
 
 .contact__detail {
     display: flex;
+    align-items: center;
     gap: var(--space-4);
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-1) var(--space-4);
     border-bottom: thin solid var(--line-soft);
 }
 
@@ -199,7 +215,7 @@
 
 .contact__detail dd a {
     display: inline-flex;
-    min-height: 24px;
+    min-height: 44px;
     align-items: center;
 }
 
@@ -220,4 +236,15 @@
     margin-top: var(--space-1);
     color: var(--color-error);
     font-size: var(--fs-xs);
+}
+
+@media screen and (max-width: 760px) {
+    .site-shell:not(.site-shell--case) .contact__container {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-8);
+    }
+
+    .site-shell:not(.site-shell--case) .contact__form-area {
+        padding-top: var(--space-5);
+    }
 }

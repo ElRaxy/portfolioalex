@@ -37,7 +37,7 @@
 @property --line-control {
   syntax: '<color>';
   inherits: true;
-  initial-value: #5d6068;
+  initial-value: #70747d;
 }
 
 @property --accent {
@@ -62,24 +62,6 @@
   syntax: '<color>';
   inherits: true;
   initial-value: #151619;
-}
-
-@property --project-strev {
-  syntax: '<color>';
-  inherits: true;
-  initial-value: #72c7d4;
-}
-
-@property --project-sereno {
-  syntax: '<color>';
-  inherits: true;
-  initial-value: #b89adf;
-}
-
-@property --project-sereno-warm {
-  syntax: '<color>';
-  inherits: true;
-  initial-value: #d5a85b;
 }
 
 @property --text-1 {
@@ -129,14 +111,11 @@
   --surface-3: #30333a;
   --surface-sel: #1c2a3b;
   --line-soft: #37393f;
-  --line-control: #5d6068;
+  --line-control: #70747d;
   --accent: #86b4e1;
   --accent-hover: #9cc4eb;
   --accent-active: #72a3d4;
   --accent-on: #151619;
-  --project-strev: #72c7d4;
-  --project-sereno: #b89adf;
-  --project-sereno-warm: #d5a85b;
   --text-1: #f2f1ed;
   --text-2: #b4b1aa;
   --text-3: #aaa8a2;
@@ -208,14 +187,11 @@
   --surface-3: #e5e2da;
   --surface-sel: #dce9f6;
   --line-soft: #d9d7d1;
-  --line-control: #8b8983;
+  --line-control: #7d7b75;
   --accent: #2f6ba8;
   --accent-hover: #27598c;
   --accent-active: #214c78;
   --accent-on: #ffffff;
-  --project-strev: #0b6f7c;
-  --project-sereno: #6d4aa0;
-  --project-sereno-warm: #8b5b0d;
   --text-1: #19191b;
   --text-2: #66656b;
   --text-3: #66656b;
@@ -239,9 +215,6 @@
     --accent-hover 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --accent-active 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --accent-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --project-strev 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --project-sereno 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --project-sereno-warm 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --text-1 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --text-2 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --text-3 260ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -407,6 +380,11 @@ select {
   margin-top: clamp(6rem, 11vw, 10rem);
 }
 
+.site-shell:not(.site-shell--case) .site-shell__content section + section,
+.site-shell:not(.site-shell--case) .site-shell__content > footer {
+  margin-top: clamp(5rem, 8vw, 7rem);
+}
+
 .site-shell__content > footer {
   padding-top: var(--space-8);
 }
@@ -430,6 +408,11 @@ select {
   .site-shell__content section + section,
   .site-shell__content > footer {
     margin-top: var(--space-20);
+  }
+
+  .site-shell:not(.site-shell--case) .site-shell__content section + section,
+  .site-shell:not(.site-shell--case) .site-shell__content > footer {
+    margin-top: var(--space-16);
   }
 }
 

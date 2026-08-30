@@ -73,7 +73,7 @@ const getItemClasses = (project) => [
   `portfolio__item--${project.slug}`,
 ].filter(Boolean).join(' ')
 
-const ProjectCardContent = ({ project, projectIndex, language, mediaStyle, railStyle }) => {
+const ProjectCardContent = ({ project, language, mediaStyle, railStyle }) => {
   const media = PROJECT_MEDIA[project.slug]
   const isPrimary = project.tier === 'primary'
 
@@ -100,11 +100,6 @@ const ProjectCardContent = ({ project, projectIndex, language, mediaStyle, railS
       </figure>
 
       <div className="portfolio__body">
-        <p className="portfolio__eyebrow">
-          <span>{String(projectIndex + 1).padStart(2, '0')}</span>
-          <span>{project.tier_label}</span>
-        </p>
-
         <h3>{project.title}</h3>
         <p className="portfolio__description">{project.description}</p>
 
@@ -142,7 +137,7 @@ const ProjectCardContent = ({ project, projectIndex, language, mediaStyle, railS
   )
 }
 
-const PrimaryProjectCard = ({ project, projectIndex, language }) => {
+const PrimaryProjectCard = ({ project, language }) => {
   const cardRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({
@@ -163,7 +158,6 @@ const PrimaryProjectCard = ({ project, projectIndex, language }) => {
     <article ref={cardRef} className={getItemClasses(project)} data-tier={project.tier}>
       <ProjectCardContent
         project={project}
-        projectIndex={projectIndex}
         language={language}
         mediaStyle={mediaStyle}
         railStyle={railStyle}
@@ -172,11 +166,10 @@ const PrimaryProjectCard = ({ project, projectIndex, language }) => {
   )
 }
 
-const SupportingProjectCard = ({ project, projectIndex, language }) => (
+const SupportingProjectCard = ({ project, language }) => (
   <article className={getItemClasses(project)} data-tier={project.tier}>
     <ProjectCardContent
       project={project}
-      projectIndex={projectIndex}
       language={language}
     />
   </article>
@@ -200,7 +193,6 @@ function Portfolio() {
     ...project,
     case_link: t('portfolio.case_link'),
     closed_label: t(project.internal ? 'portfolio.internal_label' : 'portfolio.closed_label'),
-    tier_label: t(`portfolio.${project.tier}_label`),
   }))
 
   return (
@@ -211,10 +203,9 @@ function Portfolio() {
       </header>
 
       <div className="portfolio__grid">
-        {enrichedProjects.map((project, projectIndex) => (
+        {enrichedProjects.map((project) => (
           <ProjectCard
             project={project}
-            projectIndex={projectIndex}
             language={language}
             key={project.slug}
           />

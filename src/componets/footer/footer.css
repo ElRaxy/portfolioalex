@@ -22,6 +22,9 @@
 }
 
 .site-footer__mail {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
     color: var(--accent);
     font-size: var(--fs-lg);
     text-decoration: underline;
@@ -42,7 +45,7 @@
    y es el unico enlace de la linea. */
 .site-footer__legal a {
     display: inline-flex;
-    min-height: 24px;
+    min-height: 44px;
     align-items: center;
     color: var(--accent);
     text-decoration: underline;

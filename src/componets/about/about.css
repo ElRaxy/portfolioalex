@@ -35,8 +35,8 @@
 .about__facts {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 clamp(var(--space-6), 5vw, var(--space-12));
-    margin-top: var(--space-3);
+    gap: var(--space-5) clamp(var(--space-6), 5vw, var(--space-12));
+    margin-top: var(--space-4);
     font-size: var(--fs-sm);
 }
 
@@ -44,8 +44,6 @@
     display: grid;
     gap: var(--space-1);
     align-content: start;
-    padding: var(--space-3) 0 var(--space-4);
-    border-top: 1px solid var(--line-soft);
 }
 
 .about__fact dt {
@@ -64,12 +62,9 @@
         gap: var(--space-6);
     }
 
-    .about__fact {
-        padding-block: var(--space-3);
-    }
-
     .about__facts {
         grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-4);
     }
 }
 
