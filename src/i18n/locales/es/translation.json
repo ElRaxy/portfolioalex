@@ -19,12 +19,15 @@
   "header": {
     "name": "Alex Micó Robles",
     "title": "Desarrollador Full Stack · React, Node y Python",
-    "tagline": "Construyo productos con trabajo en segundo plano. Quien los usa sabe qué está pasando.",
-    "support": "En Strev, un entrenador sigue usando la aplicación mientras corre el análisis de vídeo. Sereno me muestra qué sesiones están trabajando y cuáles esperan una respuesta.",
+    "tagline": "Diseño para que un proceso lento no pare la pantalla.",
+    "support": "Strev deja al entrenador seguir mientras analiza vídeo. Sereno me dice qué sesión está trabajando, ejecutando un comando o esperando una respuesta.",
     "evidence": "SaveMyMoneyNow: 21 endpoints y 113 tests · Atalaya: 174 tests",
-    "view_projects": "Ver Strev y Sereno",
+    "view_projects": "Abrir Strev y Sereno",
     "download_cv": "Descargar CV",
-    "availability": "Disponible para puestos Full Stack en España y la UE"
+    "availability": "Disponible para puestos Full Stack en España y la UE",
+    "product_canvas_label": "Casos principales: Strev y Sereno",
+    "product_selector_label": "Elegir producto destacado",
+    "open_case": "Abrir {{project}}"
   },
   "about": {
     "title": "Sobre mí",
@@ -106,9 +109,10 @@
     }
   },
   "portfolio": {
-    "title": "Strev y Sereno",
-    "subtitle": "Los dos productos en los que mejor se ve cómo trabajo.",
+    "title": "Lo que resuelve",
+    "subtitle": "Dos decisiones concretas: mantener el flujo y hacer visible el trabajo.",
     "supporting_title": "Más trabajo",
+    "story_label": "Decisiones de {{project}}",
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
     "primary_label": "Proyecto principal",
@@ -147,7 +151,7 @@
         "title": "Sereno",
         "label": "Herramienta local para sesiones de agentes",
         "description": "Veo qué sesión trabaja, ejecuta un comando o espera una respuesta.",
-        "proof": "1 archivo Python · 0 dependencias externas · 4 CLI",
+        "proof": "Estados locales de Claude Code, Codex, Gemini y Antigravity",
         "tier": "primary",
         "tags": [
           "Python",

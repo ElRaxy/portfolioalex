@@ -20,7 +20,7 @@ describe('la web entera', () => {
   it('monta las cinco secciones como landmarks con nombre', () => {
     render(<App />)
 
-    const secciones = ['Sobre mí', 'Strev y Sereno', 'Experiencia', 'Stack', 'Contáctame']
+    const secciones = ['Sobre mí', 'Lo que resuelve', 'Experiencia', 'Stack', 'Contáctame']
     secciones.forEach((nombre) => {
       expect(screen.getByRole('region', { name: nombre })).toBeInTheDocument()
     })
@@ -84,7 +84,7 @@ describe('la web entera', () => {
   it('da a cada imagen de proyecto un nombre accesible propio y descriptivo', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const imagenes = within(portfolio).getAllByRole('img')
 
     expect(imagenes).toHaveLength(4)
@@ -111,7 +111,7 @@ describe('la web entera', () => {
   it('deja visible como pie la descripcion de cada imagen de proyecto', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const diccionario = require('../i18n/locales/es/translation.json')
 
     diccionario.portfolio.projects.forEach((proyecto) => {
@@ -122,7 +122,7 @@ describe('la web entera', () => {
   it('presenta Sereno con dos acciones en portada y reserva la release para el caso', () => {
     const { unmount } = render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const sereno = within(portfolio).getAllByRole('article')
       .find((article) => within(article).queryByRole('heading', { name: 'Sereno' }))
 
@@ -236,7 +236,7 @@ describe('la web entera', () => {
   it('los proyectos que dicen tener codigo lo enlazan de verdad', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const enlaces = within(portfolio).getAllByRole('link')
 
     expect(enlaces.length).toBeGreaterThan(0)
@@ -337,10 +337,10 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(css).not.toMatch(/\.portfolio-nav__progress/)
   })
 
-  it('da entrada transform-only a Strev y Sereno sin parallax ni rail local', () => {
+  it('conecta tres decisiones reales al progreso de scroll de cada flagship', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const articulos = within(portfolio).getAllByRole('article')
     const principales = articulos.filter((article) => article.dataset.tier === 'primary')
     const secundarios = articulos.filter((article) => article.dataset.tier === 'supporting')
@@ -348,30 +348,116 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(principales).toHaveLength(2)
     expect(secundarios).toHaveLength(2)
 
+    const diccionario = require('../i18n/locales/es/translation.json')
+    principales.forEach((article, projectIndex) => {
+      const project = diccionario.portfolio.projects[projectIndex]
+      const decisions = diccionario.case_study.cases[project.slug].decisions.slice(0, 3)
+      const story = within(article).getByRole('list', {
+        name: diccionario.portfolio.story_label.replace('{{project}}', project.title),
+      })
+
+      expect(within(story).getAllByRole('listitem')).toHaveLength(3)
+      expect(within(story).getAllByRole('heading', { level: 4 }).map(({ textContent }) => textContent))
+        .toEqual(decisions.map(({ title }) => title))
+      decisions.forEach(({ body }) => expect(within(story).getByText(body)).toBeInTheDocument())
+    })
+
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
     expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion/)
     expect(source).toMatch(/\) : \([\s\S]*?<ProjectImage/)
-    expect(source).toMatch(/initial:\s*\{ y:\s*18, scale:\s*0\.985 \}/)
-    expect(source).toMatch(/whileInView:\s*\{ y:\s*0, scale:\s*1 \}/)
-    expect(source).not.toMatch(/useScroll|useSpring|useTransform|chapter-progress/)
+    expect(source).toMatch(/const PrimaryProjectCard[\s\S]*?useScroll\([\s\S]*?useTransform\([\s\S]*?useMotionValueEvent\(/)
+    expect(source).toMatch(/offset:\s*\['start start', 'end end'\]/)
+    expect(source).toMatch(/latest >= 0\.67 \? 2 : latest >= 0\.34 \? 1 : 0/)
+    expect(source).toMatch(/useMediaQuery\('\(min-width: 1051px\)'\)/)
+    expect(source).toMatch(/useMediaQuery\('\(prefers-reduced-motion: reduce\)'\)/)
+    expect(source).toMatch(/typeof window === 'undefined'/)
+    expect(source).toMatch(/matchMedia\(query\)/)
+    expect(source).toMatch(/addEventListener\('change'/)
+    expect(source).toMatch(/const storyEnabled = isDesktopStory && !shouldReduceMotion/)
+    expect(source).toMatch(/if \(!storyEnabled\)\s+setActiveStep\(0\)/)
+    expect(source).toMatch(/if \(!storyEnabled\) return/)
+    expect(source).toMatch(/data-step=\{storyEnabled \? activeStep : 0\}/)
+    expect(source).toMatch(/style=\{storyEnabled \? \{ scale: mediaScale \} : undefined\}/)
+    expect(source).toMatch(/scaleY: storyEnabled \? scrollYProgress : 1/)
+    expect(source).toMatch(/caseStudies\?\.\[project\.slug\]\?\.decisions \|\| \[\]\)\.slice\(0, 3\)/)
+    const supportingCard = source.match(/const ProjectCard = \([\s\S]*?\n\}\n\nconst PrimaryProjectCard/)
+    expect(supportingCard).not.toBeNull()
+    expect(supportingCard[0]).not.toMatch(/useScroll|useTransform|useMotionValueEvent/)
+    expect(source).not.toMatch(/useSpring|chapter-progress|whileInView/)
     expect(source).not.toMatch(/opacity/)
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
     expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
+    expect(css).toMatch(/\.portfolio__item--strev \.portfolio__media-motion\[data-step='2'\][\s\S]*?--media-position:/)
+    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__media-motion\[data-step='2'\][\s\S]*?--media-position:/)
     expect(css).not.toMatch(/portfolio__chapter-progress|will-change/)
     expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
+  })
+
+  it('activa el relato solo en desktop sin reduced motion y reacciona a ambos cambios', async () => {
+    const originalMatchMedia = window.matchMedia
+    const queries = new Map()
+    let view
+
+    window.matchMedia = jest.fn((query) => {
+      if (queries.has(query)) return queries.get(query)
+
+      const listeners = new Set()
+      const mediaQuery = {
+        matches: query === '(min-width: 1051px)',
+        media: query,
+        onchange: null,
+        addEventListener: (type, listener) => {
+          if (type === 'change') listeners.add(listener)
+        },
+        removeEventListener: (type, listener) => {
+          if (type === 'change') listeners.delete(listener)
+        },
+        addListener: (listener) => listeners.add(listener),
+        removeListener: (listener) => listeners.delete(listener),
+        dispatchEvent: () => false,
+        setMatches: (matches) => {
+          mediaQuery.matches = matches
+          listeners.forEach((listener) => listener({ matches, media: query }))
+        },
+      }
+      queries.set(query, mediaQuery)
+      return mediaQuery
+    })
+
+    try {
+      view = render(<App pathname="/" />)
+      const strev = screen.getByRole('article', { name: 'Strev' })
+
+      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'scroll'))
+
+      act(() => queries.get('(min-width: 1051px)').setMatches(false))
+      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
+      expect(strev).toHaveAttribute('data-story-step', '0')
+
+      act(() => queries.get('(min-width: 1051px)').setMatches(true))
+      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'scroll'))
+
+      act(() => queries.get('(prefers-reduced-motion: reduce)').setMatches(true))
+      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
+      expect(strev).toHaveAttribute('data-story-step', '0')
+    } finally {
+      view?.unmount()
+      window.matchMedia = originalMatchMedia
+    }
   })
 
   it('presenta cuatro casos con un top 2 real y sin rotulos ordinales', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const articulos = within(portfolio).getAllByRole('article')
     const titulosPorTier = (tier, level) => articulos
       .filter((article) => article.dataset.tier === tier)
       .map((article) => within(article).getByRole('heading', { level }).textContent)
 
     expect(articulos).toHaveLength(4)
+    expect(screen.getAllByRole('article')).toHaveLength(4)
     expect(titulosPorTier('primary', 3)).toEqual(['Strev', 'Sereno'])
     expect(titulosPorTier('supporting', 4)).toEqual(['SaveMyMoneyNow', 'Atalaya'])
     expect(within(portfolio).getByRole('heading', { level: 3, name: 'Más trabajo' }))
@@ -393,56 +479,138 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(source).toMatch(/className="portfolio__supporting"/)
     expect(source).toMatch(/t\('portfolio\.supporting_title'\)/)
 
+    const header = leer('componets', 'header', 'Header.jsx')
+    expect(header).not.toMatch(/<article/)
+    expect(header).toMatch(/<div[\s\S]*?className=\{`hero__preview/)
+
     const css = leer('componets', 'portfolio', 'portfolio.css')
     const supporting = css.match(/\.portfolio__grid > \.portfolio__supporting\s*\{[\s\S]*?\n\}/)
     expect(supporting).not.toBeNull()
     expect(supporting[0]).toMatch(/margin-top:\s*clamp\(/)
   })
 
-  it('usa el mismo stage para ambos productos y respeta el ratio panorámico de Sereno', () => {
+  it('usa escenas sticky cortas en desktop y capítulos estáticos en tablet y reduced motion', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
     const stage = css.match(/\.portfolio__item--primary\s*\{[\s\S]*?\n\}/)
     expect(stage).not.toBeNull()
-    expect(stage[0]).toMatch(/height:\s*clamp\(37rem, 67svh, 39rem\)/)
-    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(18rem, 0\.36fr\) minmax\(0, 0\.64fr\)/)
+    expect(stage[0]).toMatch(/min-height:\s*145svh/)
+    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(19rem, 0\.34fr\) minmax\(0, 0\.66fr\)/)
     expect(stage[0]).toMatch(/grid-template-areas:\s*'body media'/)
+    expect(stage[0]).toMatch(/background:\s*var\(--surface-0\)/)
+    expect(stage[0]).toMatch(/border-bottom:\s*1px solid var\(--line-soft\)/)
+    expect(css).toMatch(/\.portfolio__item--primary \.portfolio__media\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
+    expect(css).toMatch(/\.portfolio__item--primary \.portfolio__body\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
     expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
     expect(css).toMatch(/\.portfolio__item--sereno\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 0\.64fr\) minmax\(18rem, 0\.36fr\)[\s\S]*?grid-template-areas:\s*'media body'/)
     const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
     expect(serenoFrame).not.toBeNull()
-    expect(serenoFrame[0]).toMatch(/background:\s*#1d1c2d/)
-    expect(serenoFrame[0]).not.toMatch(/aspect-ratio/)
-    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio__media-motion[\s\S]*?transform:\s*none !important/)
+    expect(serenoFrame[0]).toMatch(/aspect-ratio:\s*16 \/ 9/)
+    expect(serenoFrame[0]).toMatch(/background:\s*color-mix\(in oklch, var\(--signal-sereno\) 12%, var\(--surface-1\)\)/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static[\s\S]*?transform:\s*none !important/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__item--primary \.portfolio__media img\s*\{[\s\S]*?transition:\s*none/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__item--strev \.portfolio__media-motion\[data-step\][\s\S]*?--media-position:[\s\S]*?\.portfolio__item--sereno \.portfolio__media-motion\[data-step\][\s\S]*?--media-position:/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static[\s\S]*?\.portfolio__media-motion[\s\S]*?transform:\s*none !important/)
   })
 
-  it('fija la identidad cobalto con evidencia real y una sola familia tipográfica', () => {
+  it('fija la identidad de producto con señales OKLCH y una sola familia tipográfica', () => {
     const header = leer('componets', 'header', 'Header.jsx')
     const headerCss = leer('componets', 'header', 'header.css')
     const portfolioCss = leer('componets', 'portfolio', 'portfolio.css')
     const index = leer('index.css')
     const html = fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'index.html'), 'utf8')
 
-    expect(index).toMatch(/--home-stage:\s*#2f6ba8/)
+    expect(index).toMatch(/--signal-alex:\s*oklch\(0\.72 0\.19 35\)/)
+    expect(index).toMatch(/--signal-strev:\s*oklch\(0\.82 0\.13 160\)/)
+    expect(index).toMatch(/--signal-sereno:\s*oklch\(0\.75 0\.17 300\)/)
+    expect(index).not.toMatch(/#2f6ba8|#173b60/)
     expect(index).toMatch(/--font-sans:\s*"Anek Latin"/)
     expect(index).toMatch(/--font-mono:\s*var\(--font-sans\)/)
     expect(html).toMatch(/Anek\+Latin:wght@400;500;600;700/)
     expect(html).not.toMatch(/IBM\+Plex/)
 
-    expect(header).toMatch(/className="hero__stage" aria-hidden="true"/)
-    expect(header.match(/className="hero__preview hero__preview--/g)).toHaveLength(2)
-    expect(header).toMatch(/<figcaption className="hero__preview-caption">Strev<\/figcaption>/)
-    expect(header).toMatch(/<figcaption className="hero__preview-caption">Sereno<\/figcaption>/)
-    expect(header).toMatch(/alex-editorial-portrait-v1\.webp/)
-    expect(header).not.toMatch(/alex-headshot/)
-    expect(header).not.toMatch(/hero__preview-bar/)
-    expect(headerCss).toMatch(/\.hero\s*\{[\s\S]*?background:\s*var\(--home-stage\)/)
-    expect(headerCss).toMatch(/\.hero__stage\s*\{[\s\S]*?grid-template-rows:\s*repeat\(2, minmax\(0, 1fr\)\)/)
-    expect(headerCss).toMatch(/\.hero__portrait\s*\{[\s\S]*?width:\s*5rem;[\s\S]*?height:\s*6\.25rem/)
-    expect(headerCss).toMatch(/\.hero :where\(a, button\):focus-visible\s*\{[\s\S]*?outline-color:\s*var\(--home-stage-on\)/)
+    render(<App pathname="/" />)
+    const canvas = screen.getByRole('navigation', { name: 'Casos principales: Strev y Sereno' })
+    expect(within(canvas).getAllByRole('link')).toHaveLength(2)
+    expect(within(canvas).getByRole('link', { name: 'Abrir Strev' })).toHaveAttribute('href', '/proyectos/strev/')
+    expect(within(canvas).getByRole('link', { name: 'Abrir Sereno' })).toHaveAttribute('href', '/proyectos/sereno/')
+    expect(within(canvas).queryByRole('button')).not.toBeInTheDocument()
+
+    const selector = screen.getByRole('group', { name: 'Elegir producto destacado' })
+    const selectStrev = within(selector).getByRole('button', { name: 'Strev' })
+    const selectSereno = within(selector).getByRole('button', { name: 'Sereno' })
+    expect(selectStrev).toHaveAttribute('aria-pressed', 'false')
+    expect(selectSereno).toHaveAttribute('aria-pressed', 'false')
+    expect(canvas).not.toHaveAttribute('data-active-product')
+    expect(selectSereno).toHaveAttribute('aria-controls', 'hero-product-sereno')
+    const pathBeforeSelection = window.location.pathname
+    fireEvent.click(selectSereno)
+    expect(selectStrev).toHaveAttribute('aria-pressed', 'false')
+    expect(selectSereno).toHaveAttribute('aria-pressed', 'true')
+    expect(canvas).toHaveAttribute('data-active-product', 'sereno')
+    expect(window.location.pathname).toBe(pathBeforeSelection)
+    const { caseHref } = require('../lib/routing')
+    expect(caseHref('en', 'strev')).toBe('/en/projects/strev/')
+    expect(caseHref('en', 'sereno')).toBe('/en/projects/sereno/')
+
+    expect(header).toMatch(/products\.map/)
+    expect(header).toMatch(/caseHref\(language, product\.slug\)/)
+    expect(header).not.toMatch(/portrait|headshot|alex-editorial-portrait/)
+    expect(headerCss).toMatch(/\.hero\s*\{[\s\S]*?background:\s*var\(--surface-0\)/)
+    expect(headerCss).toMatch(/\.hero::before\s*\{[\s\S]*?background:\s*var\(--signal-alex\)/)
+    const heroStage = headerCss.match(/\.hero__stage\s*\{[\s\S]*?\n\}/)
+    const heroPreview = headerCss.match(/\.hero__preview\s*\{[\s\S]*?\n\}/)
+    const heroImage = headerCss.match(/\.hero__preview img\s*\{[\s\S]*?\n\}/)
+    expect(heroStage).not.toBeNull()
+    expect(heroStage[0]).toMatch(/display:\s*flex/)
+    expect(heroStage[0]).toMatch(/flex-direction:\s*column/)
+    expect(heroPreview).not.toBeNull()
+    expect(heroPreview[0]).toMatch(/flex:\s*1 1 0/)
+    expect(heroPreview[0]).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) clamp\(10rem, 21%, 12\.5rem\)/)
+    expect(headerCss).toMatch(/\.hero__preview \+ \.hero__preview\s*\{[\s\S]*?border-top:\s*1px solid var\(--line-soft\)/)
+    expect(headerCss).toMatch(/\.hero__preview-caption\s*\{[\s\S]*?border-left:\s*4px solid var\(--preview-signal\)/)
+    expect(heroImage).not.toBeNull()
+    expect(heroImage[0]).toMatch(/object-fit:\s*contain/)
+    expect(heroImage[0]).toMatch(/object-position:\s*center/)
+    expect(heroImage[0]).not.toMatch(/object-fit:\s*cover|transform:\s*scale/)
+    expect(headerCss).not.toMatch(/\.hero__preview(?::focus-within|:hover)? img\s*\{[\s\S]*?transform:\s*scale/)
+    expect(headerCss).toMatch(/\.hero__stage:has\(\.hero__preview--strev:focus-within\)[\s\S]*?flex-grow:\s*1\.5/)
+    expect(headerCss).toMatch(/\.hero__stage:has\(\.hero__preview--strev:focus-within\)[\s\S]*?flex-grow:\s*1/)
+    expect(headerCss).toMatch(/\.hero__stage:not\(:has\(\.hero__preview:focus-within\)\):has\(\.hero__preview--strev:hover\)/)
+    expect(headerCss).toMatch(/\.hero__preview:focus-within\s*\{[\s\S]*?outline:\s*4px solid var\(--preview-signal\)/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?height:\s*clamp\(32rem, 67vw, 38rem\)/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__product-selector\s*\{[\s\S]*?display:\s*grid[\s\S]*?data-active-product='strev'[\s\S]*?flex-grow:\s*1\.5/)
+    expect(headerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.hero__preview\s*\{[\s\S]*?flex-grow:\s*1 !important;[\s\S]*?flex-basis:\s*0 !important/)
+    expect(headerCss).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?flex-grow:\s*1\.5 !important/)
+    expect(headerCss).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?flex-grow:\s*1\.85 !important/)
+    expect(headerCss).toMatch(/\.hero__preview-link\s*\{[\s\S]*?min-height:\s*44px;[\s\S]*?min-inline-size:\s*44px/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__socials a\s*\{[\s\S]*?width:\s*44px;[\s\S]*?height:\s*44px/)
+    expect(headerCss).toMatch(/\.hero__name\s*\{[\s\S]*?font-size:\s*clamp\(4\.5rem, 7\.6vw, 6rem\)/)
+    expect(portfolioCss).toMatch(/\.portfolio__item--primary \.portfolio__title\s*\{[\s\S]*?6rem/)
     expect(portfolioCss).toMatch(/\.portfolio__item--supporting \.portfolio__links a\s*\{[\s\S]*?min-inline-size:\s*44px/)
     expect(`${headerCss}\n${portfolioCss}`).not.toMatch(/var\(--font-mono\)/)
+  })
+
+  it('interpola las señales de identidad al cambiar de tema', () => {
+    const index = leer('index.css')
+    const tokens = [
+      'signal-alex',
+      'signal-strev',
+      'signal-strev-on',
+      'signal-sereno',
+      'signal-sereno-on',
+      'home-stage',
+      'home-stage-on',
+      'home-stage-muted',
+      'home-stage-deep',
+    ]
+
+    tokens.forEach((token) => {
+      expect(index).toMatch(new RegExp(`@property --${token} \\{[\\s\\S]*?syntax: '<color>'`))
+      expect(index).toMatch(new RegExp(`:root\\[data-theme-transition\\] \\{[\\s\\S]*?--${token} 260ms`))
+    })
+    expect(index).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?:root\[data-theme-transition\][\s\S]*?transition:\s*none/)
   })
 
   it('mantiene legibles los CTA compartidos fuera del scope del hero', () => {
@@ -473,13 +641,13 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const casos = css.match(/\.site-shell--case \.portfolio-nav \.language-selector,[\s\S]*?\.site-shell--case \.portfolio-nav \.portfolio-nav__menu-toggle \{[\s\S]*?border-radius:\s*3px;/)
 
     expect(idioma).not.toBeNull()
-    expect(idioma[0]).toMatch(/border-radius:\s*3px/)
+    expect(idioma[0]).toMatch(/border-radius:\s*var\(--radius-md\)/)
     expect(activo).not.toBeNull()
-    expect(activo[0]).toMatch(/background:\s*#ffffff/)
-    expect(activo[0]).toMatch(/color:\s*#173b60/)
+    expect(activo[0]).toMatch(/background:\s*var\(--signal-alex\)/)
+    expect(activo[0]).toMatch(/color:\s*var\(--accent-on\)/)
     expect(tema).not.toBeNull()
     expect(tema[0]).toMatch(/width:\s*30px/)
-    expect(tema[0]).toMatch(/border-radius:\s*3px/)
+    expect(tema[0]).toMatch(/border-radius:\s*var\(--radius-md\)/)
     expect(casos).not.toBeNull()
   })
 
@@ -488,26 +656,31 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const en = require('../i18n/locales/en/translation.json')
 
     expect(es.header.tagline).toBe(
-      'Construyo productos con trabajo en segundo plano. Quien los usa sabe qué está pasando.',
+      'Diseño para que un proceso lento no pare la pantalla.',
     )
     expect(es.header.support).toBe(
-      'En Strev, un entrenador sigue usando la aplicación mientras corre el análisis de vídeo. Sereno me muestra qué sesiones están trabajando y cuáles esperan una respuesta.',
+      'Strev deja al entrenador seguir mientras analiza vídeo. Sereno me dice qué sesión está trabajando, ejecutando un comando o esperando una respuesta.',
     )
     expect(en.header.tagline).toBe(
-      'I build products that do work in the background. The person using them can still see what is happening.',
+      'I build products where slow work never freezes the interface.',
     )
     expect(en.header.support).toBe(
-      'In Strev, a trainer keeps using the app while video analysis runs. Sereno shows me which sessions are working and which ones are waiting for a reply.',
+      'Strev lets the trainer carry on while it analyses video. Sereno tells me which session is working, running a command or waiting for a reply.',
     )
-    expect(es.portfolio.title).toBe('Strev y Sereno')
-    expect(en.portfolio.title).toBe('Strev and Sereno')
+    expect(es.header.product_canvas_label).toBe('Casos principales: Strev y Sereno')
+    expect(en.header.product_canvas_label).toBe('Main case studies: Strev and Sereno')
+    expect(es.portfolio.title).toBe('Lo que resuelve')
+    expect(en.portfolio.title).toBe('What it solves')
     expect(es.portfolio.supporting_title).toBe('Más trabajo')
     expect(en.portfolio.supporting_title).toBe('More work')
     expect(es.portfolio.projects.filter(({ tier }) => tier === 'primary').map(({ proof }) => proof))
       .toEqual([
         'React + Node · análisis en cola y cifrado por campo',
-        '1 archivo Python · 0 dependencias externas · 4 CLI',
+        'Estados locales de Claude Code, Codex, Gemini y Antigravity',
       ])
+    expect(en.portfolio.projects.find(({ slug }) => slug === 'sereno').proof).toBe(
+      'Local-only session states across Claude Code, Codex, Gemini and Antigravity',
+    )
   })
 
   it('revela contenido visible con un gesto breve y adelantado', () => {
@@ -603,7 +776,7 @@ describe('el orden de foco sigue al orden visual', () => {
     const idioma = enlaces.findIndex((enlace) => (
       /Cambiar idioma/i.test(enlace.getAttribute('aria-label') || '')
     ))
-    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Ver Strev y Sereno')
+    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Abrir Strev y Sereno')
 
     expect(idioma).toBeGreaterThanOrEqual(0)
     expect(verProyectos).toBeGreaterThan(idioma)
@@ -1045,7 +1218,7 @@ describe('paginas de caso de estudio', () => {
   it('da el mismo contrato visual a Strev y Sereno y respeta movimiento reducido', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
     const principales = within(portfolio).getAllByRole('article')
       .filter((article) => article.getAttribute('data-tier') === 'primary')
 

@@ -1,97 +1,151 @@
 @property --surface-0 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #151619;
+  initial-value: oklch(0.17 0.012 25);
 }
 
 @property --surface-1 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #1e2024;
+  initial-value: oklch(0.215 0.012 25);
 }
 
 @property --surface-2 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #27292e;
+  initial-value: oklch(0.27 0.014 25);
 }
 
 @property --surface-3 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #30333a;
+  initial-value: oklch(0.32 0.014 25);
 }
 
 @property --surface-sel {
   syntax: '<color>';
   inherits: true;
-  initial-value: #1c2a3b;
+  initial-value: oklch(0.30 0.08 35);
 }
 
 @property --line-soft {
   syntax: '<color>';
   inherits: true;
-  initial-value: #37393f;
+  initial-value: oklch(0.34 0.012 25);
 }
 
 @property --line-control {
   syntax: '<color>';
   inherits: true;
-  initial-value: #70747d;
+  initial-value: oklch(0.62 0.015 25);
 }
 
 @property --accent {
   syntax: '<color>';
   inherits: true;
-  initial-value: #86b4e1;
+  initial-value: oklch(0.72 0.19 35);
 }
 
 @property --accent-hover {
   syntax: '<color>';
   inherits: true;
-  initial-value: #9cc4eb;
+  initial-value: oklch(0.78 0.17 35);
 }
 
 @property --accent-active {
   syntax: '<color>';
   inherits: true;
-  initial-value: #72a3d4;
+  initial-value: oklch(0.65 0.20 35);
 }
 
 @property --accent-on {
   syntax: '<color>';
   inherits: true;
-  initial-value: #151619;
+  initial-value: oklch(0.17 0.012 25);
 }
 
 @property --text-1 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #f2f1ed;
+  initial-value: oklch(0.96 0.006 75);
 }
 
 @property --text-2 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #b4b1aa;
+  initial-value: oklch(0.76 0.015 75);
 }
 
 @property --text-3 {
   syntax: '<color>';
   inherits: true;
-  initial-value: #aaa8a2;
+  initial-value: oklch(0.70 0.015 75);
 }
 
 @property --color-success {
   syntax: '<color>';
   inherits: true;
-  initial-value: #78c792;
+  initial-value: oklch(0.78 0.13 155);
 }
 
 @property --color-error {
   syntax: '<color>';
   inherits: true;
-  initial-value: #f08a8a;
+  initial-value: oklch(0.74 0.18 25);
+}
+
+@property --signal-alex {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.72 0.19 35);
+}
+
+@property --signal-strev {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.82 0.13 160);
+}
+
+@property --signal-strev-on {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.18 0.035 165);
+}
+
+@property --signal-sereno {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.75 0.17 300);
+}
+
+@property --signal-sereno-on {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.16 0.025 300);
+}
+
+@property --home-stage {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.19 0.018 255);
+}
+
+@property --home-stage-on {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.98 0.004 245);
+}
+
+@property --home-stage-muted {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.78 0.018 245);
+}
+
+@property --home-stage-deep {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.135 0.018 255);
 }
 
 * {
@@ -105,27 +159,32 @@
 
 :root,
 :root[data-theme='dark'] {
-  --surface-0: #151619;
-  --surface-1: #1e2024;
-  --surface-2: #27292e;
-  --surface-3: #30333a;
-  --surface-sel: #1c2a3b;
-  --line-soft: #37393f;
-  --line-control: #70747d;
-  --accent: #86b4e1;
-  --accent-hover: #9cc4eb;
-  --accent-active: #72a3d4;
-  --accent-on: #151619;
-  --text-1: #f2f1ed;
-  --text-2: #b4b1aa;
-  --text-3: #aaa8a2;
-  --color-success: #78c792;
-  --color-error: #f08a8a;
+  --surface-0: oklch(0.17 0.012 25);
+  --surface-1: oklch(0.215 0.012 25);
+  --surface-2: oklch(0.27 0.014 25);
+  --surface-3: oklch(0.32 0.014 25);
+  --surface-sel: oklch(0.30 0.08 35);
+  --line-soft: oklch(0.34 0.012 25);
+  --line-control: oklch(0.62 0.015 25);
+  --accent: oklch(0.72 0.19 35);
+  --accent-hover: oklch(0.78 0.17 35);
+  --accent-active: oklch(0.65 0.20 35);
+  --accent-on: oklch(0.17 0.012 25);
+  --text-1: oklch(0.96 0.006 75);
+  --text-2: oklch(0.76 0.015 75);
+  --text-3: oklch(0.70 0.015 75);
+  --color-success: oklch(0.78 0.13 155);
+  --color-error: oklch(0.74 0.18 25);
 
-  --home-stage: #2f6ba8;
-  --home-stage-on: #ffffff;
-  --home-stage-muted: #dceaf7;
-  --home-stage-deep: #11171c;
+  --signal-alex: oklch(0.72 0.19 35);
+  --signal-strev: oklch(0.82 0.13 160);
+  --signal-strev-on: oklch(0.18 0.035 165);
+  --signal-sereno: oklch(0.75 0.17 300);
+  --signal-sereno-on: oklch(0.16 0.025 300);
+  --home-stage: oklch(0.19 0.018 255);
+  --home-stage-on: oklch(0.98 0.004 245);
+  --home-stage-muted: oklch(0.78 0.018 245);
+  --home-stage-deep: oklch(0.135 0.018 255);
 
   --color-bg: var(--surface-0);
   --color-card: var(--surface-1);
@@ -186,22 +245,31 @@
 }
 
 :root[data-theme='light'] {
-  --surface-0: #f7f6f2;
-  --surface-1: #ffffff;
-  --surface-2: #eeece6;
-  --surface-3: #e5e2da;
-  --surface-sel: #dce9f6;
-  --line-soft: #d9d7d1;
-  --line-control: #7d7b75;
-  --accent: #2f6ba8;
-  --accent-hover: #27598c;
-  --accent-active: #214c78;
-  --accent-on: #ffffff;
-  --text-1: #19191b;
-  --text-2: #66656b;
-  --text-3: #66656b;
-  --color-success: #287a45;
-  --color-error: #b42318;
+  --surface-0: oklch(0.97 0.008 245);
+  --surface-1: oklch(0.995 0.003 245);
+  --surface-2: oklch(0.935 0.01 245);
+  --surface-3: oklch(0.89 0.012 245);
+  --surface-sel: oklch(0.91 0.045 31);
+  --line-soft: oklch(0.83 0.012 245);
+  --line-control: oklch(0.45 0.018 255);
+  --accent: oklch(0.52 0.20 31);
+  --accent-hover: oklch(0.45 0.20 31);
+  --accent-active: oklch(0.39 0.18 31);
+  --accent-on: oklch(0.99 0.003 245);
+  --text-1: oklch(0.20 0.018 255);
+  --text-2: oklch(0.40 0.018 255);
+  --text-3: oklch(0.45 0.018 255);
+  --color-success: oklch(0.43 0.13 155);
+  --color-error: oklch(0.48 0.18 25);
+  --signal-alex: oklch(0.52 0.20 31);
+  --signal-strev: oklch(0.47 0.13 160);
+  --signal-strev-on: oklch(0.99 0.003 245);
+  --signal-sereno: oklch(0.50 0.16 300);
+  --signal-sereno-on: oklch(0.99 0.003 245);
+  --home-stage: oklch(0.28 0.022 255);
+  --home-stage-on: oklch(0.99 0.003 245);
+  --home-stage-muted: oklch(0.84 0.018 245);
+  --home-stage-deep: oklch(0.22 0.02 255);
   --media-shadow: none;
   --card-shadow: none;
   --card-shadow-hover: none;
@@ -224,7 +292,16 @@
     --text-2 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --text-3 260ms cubic-bezier(0.22, 1, 0.36, 1),
     --color-success 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --color-error 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    --color-error 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-alex 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-strev 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-strev-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-sereno 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-sereno-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-muted 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-deep 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {

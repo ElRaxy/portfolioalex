@@ -19,12 +19,15 @@
   "header": {
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · React, Node and Python",
-    "tagline": "I build products that do work in the background. The person using them can still see what is happening.",
-    "support": "In Strev, a trainer keeps using the app while video analysis runs. Sereno shows me which sessions are working and which ones are waiting for a reply.",
+    "tagline": "I build products where slow work never freezes the interface.",
+    "support": "Strev lets the trainer carry on while it analyses video. Sereno tells me which session is working, running a command or waiting for a reply.",
     "evidence": "SaveMyMoneyNow: 21 endpoints and 113 tests · Atalaya: 174 tests",
-    "view_projects": "View Strev and Sereno",
+    "view_projects": "Open Strev and Sereno",
     "download_cv": "Download CV",
-    "availability": "Open to Full Stack roles in Spain and across the EU"
+    "availability": "Open to Full Stack roles in Spain and across the EU",
+    "product_canvas_label": "Main case studies: Strev and Sereno",
+    "product_selector_label": "Choose a featured product",
+    "open_case": "Open {{project}}"
   },
   "about": {
     "title": "About me",
@@ -106,9 +109,10 @@
     }
   },
   "portfolio": {
-    "title": "Strev and Sereno",
-    "subtitle": "The two products that best show how I work.",
+    "title": "What it solves",
+    "subtitle": "Two concrete decisions: keep the flow moving and make the work visible.",
     "supporting_title": "More work",
+    "story_label": "{{project}} decisions",
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
     "primary_label": "Primary project",
@@ -147,7 +151,7 @@
         "title": "Sereno",
         "label": "Local tool for agent sessions",
         "description": "I can see which session is working, running a command or waiting for a reply.",
-        "proof": "1 Python file · 0 third-party dependencies · 4 CLIs",
+        "proof": "Local-only session states across Claude Code, Codex, Gemini and Antigravity",
         "tier": "primary",
         "tags": [
           "Python",
