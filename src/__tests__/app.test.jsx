@@ -434,6 +434,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const idioma = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector\s*\{[\s\S]*?\n\}/)
     const activo = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector__option--active\s*\{[\s\S]*?\n\}/)
     const tema = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.theme-toggle__track\s*\{[\s\S]*?\n\}/)
+    const casos = css.match(/\.site-shell--case \.portfolio-nav \.language-selector,[\s\S]*?border-radius:\s*3px;[\s\S]*?\.site-shell--case \.portfolio-nav \.theme-toggle__thumb[\s\S]*?border-radius:\s*2px;/)
 
     expect(idioma).not.toBeNull()
     expect(idioma[0]).toMatch(/border-radius:\s*3px/)
@@ -443,6 +444,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(tema).not.toBeNull()
     expect(tema[0]).toMatch(/width:\s*44px/)
     expect(tema[0]).toMatch(/border-radius:\s*3px/)
+    expect(casos).not.toBeNull()
   })
 
   it('publica sin ampliar el copy final de Humanízalo', () => {

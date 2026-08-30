@@ -282,8 +282,7 @@
   }
 }
 
-/* Controles de la home: piezas rectas del escenario editorial, sin la
-   geometria de capsula que se conserva en las paginas de caso. */
+/* Controles rectos del escenario editorial. */
 .portfolio-nav:has(+ .hero) .language-selector {
   gap: 0;
   border-color: var(--line-control);
@@ -353,4 +352,16 @@
 
 .portfolio-nav:has(+ .hero) .portfolio-nav__menu-toggle {
   border-radius: 3px;
+}
+
+.site-shell--case .portfolio-nav .language-selector,
+.site-shell--case .portfolio-nav .theme-toggle__track,
+.site-shell--case .portfolio-nav .portfolio-nav__menu-toggle {
+  border-radius: 3px;
+}
+
+.site-shell--case .portfolio-nav .lang-btn,
+.site-shell--case .portfolio-nav .language-selector__option,
+.site-shell--case .portfolio-nav .theme-toggle__thumb {
+  border-radius: 2px;
 }
