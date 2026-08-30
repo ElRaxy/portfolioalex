@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="15" fill="#151619"/>
-  <path d="M8 46 21.5 17h5L40 46h-7l-2.8-6.4H18.1L15.2 46Zm12.4-12.2H27l-3.3-8Z" fill="#86b4e1"/>
-  <path d="M35 46V18h5.2l7 10.7L54.2 18H59v28h-6V29l-5.8 8.4-6-8.4v17Z" fill="#f2f1ed"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="favicon-title">
+  <title id="favicon-title">Alex Micó Robles</title>
+  <rect width="64" height="64" fill="#2f6ba8"/>
+  <path d="M12 49 27.2 14h7.6L50 49h-8.7l-3-7.6H23.6L20.7 49H12Zm14.3-14.6h9.4L31 22.5l-4.7 11.9Z" fill="#f7fbff"/>
+  <rect x="51" y="42" width="6" height="7" fill="#f7fbff"/>
 </svg>

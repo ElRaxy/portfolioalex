@@ -16,12 +16,13 @@
   },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Full Stack Developer · React, Node y Python",
-    "tagline": "Construyo productos web alrededor de problemas concretos. Trabajo con React y Node, y uso Python para automatizar lo que no merece seguir haciéndose a mano.",
+    "title": "Desarrollador Full Stack · React, Node y Python",
+    "tagline": "Construyo productos con trabajo en segundo plano. Quien los usa sabe qué está pasando.",
+    "support": "En Strev, un entrenador sigue usando la aplicación mientras corre el análisis de vídeo. Sereno me muestra qué sesiones están trabajando y cuáles esperan una respuesta.",
     "evidence": "SaveMyMoneyNow: 21 endpoints y 113 tests · Atalaya: 174 tests",
-    "view_projects": "Ver proyectos",
+    "view_projects": "Ver Strev y Sereno",
     "download_cv": "Descargar CV",
-    "availability": "Abierto a oportunidades Full Stack · Remoto, España y UE"
+    "availability": "Disponible para puestos Full Stack en España y la UE"
   },
   "about": {
     "title": "Sobre mí",
@@ -103,8 +104,9 @@
     }
   },
   "portfolio": {
-    "title": "Trabajo seleccionado",
-    "subtitle": "Productos que he llevado del problema a una versión usable",
+    "title": "Strev y Sereno",
+    "subtitle": "Los dos productos en los que mejor se ve cómo trabajo.",
+    "supporting_title": "Más trabajo",
     "closed_label": "Código cerrado, demo bajo petición",
     "internal_label": "Herramienta interna, código cerrado",
     "primary_label": "Proyecto principal",
@@ -117,7 +119,9 @@
     "projects": [
       {
         "title": "Strev",
-        "description": "Strev da a entrenadores un solo lugar para preparar rutinas, seguir progresos, cobrar y revisar técnica en vídeo. El análisis entra en una cola y la interfaz sigue disponible mientras el modelo trabaja.",
+        "label": "Producto web para entrenadores",
+        "description": "El entrenador sigue usando la aplicación mientras corre el análisis de vídeo.",
+        "proof": "React + Node · análisis en cola y cifrado por campo",
         "tier": "primary",
         "tags": [
           "React",
@@ -127,7 +131,7 @@
         ],
         "links": [
           {
-            "label": "Ver Strev",
+            "label": "Abrir Strev",
             "url": "https://strev.app"
           }
         ],
@@ -139,7 +143,9 @@
       },
       {
         "title": "Sereno",
-        "description": "Sereno me deja ver de un vistazo qué agentes están escribiendo, ejecutando un comando, esperando o parados. Lee los historiales locales de Claude Code, Codex, Gemini y Antigravity y no envía datos fuera del equipo.",
+        "label": "Herramienta local para sesiones de agentes",
+        "description": "Veo qué sesión trabaja, ejecuta un comando o espera una respuesta.",
+        "proof": "1 archivo Python · 0 dependencias externas · 4 CLI",
         "tier": "primary",
         "tags": [
           "Python",
@@ -149,7 +155,7 @@
         ],
         "links": [
           {
-            "label": "Código",
+            "label": "Abrir el código",
             "url": "https://github.com/ElRaxy/sereno"
           },
           {
@@ -204,7 +210,7 @@
         "slug": "atalaya"
       }
     ],
-    "case_link": "Ver el caso",
+    "case_link": "Ver las decisiones",
     "diagrams": {
       "savemymoneynow": {
         "prompt": "",

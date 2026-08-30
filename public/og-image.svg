@@ -1,27 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Alex Micó Robles — Full Stack Developer</title>
-  <desc id="desc">Portfolio cover for Alex Micó Robles, Full Stack Developer working with React, Node.js and Python.</desc>
+  <title id="title">Alex Micó Robles · Full Stack Developer · Strev + Sereno</title>
+  <desc id="desc">Cobalt portfolio cover for Alex Micó Robles with Strev and Sereno at equal scale.</desc>
 
-  <rect width="1200" height="630" fill="#f7f6f2"/>
-  <rect x="48" y="48" width="1104" height="534" rx="32" fill="#ffffff" stroke="#d9d7d1" stroke-width="2"/>
+  <rect width="1200" height="630" fill="#2f6ba8"/>
+
+  <g fill="#f7fbff" font-family="sans-serif">
+    <path d="M74 105 91 66h8l17 39h-9l-3-8H87l-3 8H74Zm16-16h11l-5.5-14L90 89Z"/>
+    <rect x="119" y="97" width="7" height="8"/>
+
+    <text x="72" y="255" font-size="76" font-weight="700">Alex Micó</text>
+    <text x="72" y="332" font-size="76" font-weight="700">Robles</text>
+    <text x="76" y="392" fill="#e4eff9" font-size="30" font-weight="500">Full Stack Developer</text>
+  </g>
 
   <g font-family="sans-serif">
-    <text x="92" y="124" fill="#66656b" font-size="20" font-weight="500">Alex Micó Robles · Portfolio</text>
-
-    <text x="92" y="213" fill="#19191b" font-size="68" font-weight="600">Alex Micó</text>
-    <text x="92" y="278" fill="#19191b" font-size="68" font-weight="600">Robles</text>
-    <text x="92" y="348" fill="#2f6ba8" font-size="34" font-weight="600">Full Stack Developer</text>
-    <text x="92" y="399" fill="#66656b" font-size="26" font-weight="400">React · Node.js · Python</text>
-
-    <path d="M92 458H718" stroke="#d9d7d1" stroke-width="2"/>
-    <text x="92" y="500" fill="#66656b" font-size="18" font-weight="500">Selected work</text>
-    <text x="92" y="538" fill="#19191b" font-size="22" font-weight="500">SaveMyMoneyNow · Strev · Atalaya</text>
+    <text x="734" y="260" fill="#ffffff" font-size="74" font-weight="700">Strev</text>
+    <text x="738" y="325" fill="#e4eff9" font-size="38" font-weight="400">+</text>
+    <text x="734" y="420" fill="#ffffff" font-size="74" font-weight="700">Sereno</text>
   </g>
 
-  <rect x="792" y="80" width="328" height="470" rx="28" fill="#dce9f6"/>
-  <g transform="translate(807 186) scale(4.65)">
-    <path d="M8 46 21.5 17h5L40 46h-7l-2.8-6.4H18.1L15.2 46Zm12.4-12.2H27l-3.3-8Z" fill="#2f6ba8"/>
-    <path d="M35 46V18h5.2l7 10.7L54.2 18H59v28h-6V29l-5.8 8.4-6-8.4v17Z" fill="#19191b"/>
-  </g>
-  <text x="956" y="454" text-anchor="middle" fill="#27598c" font-family="sans-serif" font-size="18" font-weight="500">Product casebook</text>
+  <text x="72" y="572" fill="#e4eff9" font-family="sans-serif" font-size="22" font-weight="500">portfolioalex-mico.vercel.app</text>
 </svg>

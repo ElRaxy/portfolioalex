@@ -1,52 +1,48 @@
 ---
 name: Alex Micó Portfolio
-description: A restrained product casebook built around real work and clear technical decisions.
+description: Cobalt Product Stage built around Alex, Strev, Sereno and inspectable product evidence.
 colors:
   cobalt: "#2f6ba8"
   cobalt-hover: "#27598c"
-  cobalt-soft: "#dce9f6"
+  cobalt-deep: "#11171c"
+  cobalt-matte: "#1d1c2d"
+  cobalt-on: "#ffffff"
+  cobalt-muted: "#e4eff9"
   paper: "#f7f6f2"
   paper-raised: "#ffffff"
   ink: "#19191b"
   muted-ink: "#66656b"
-  hairline: "#d9d7d1"
   night: "#151619"
   night-raised: "#1e2024"
   night-ink: "#f2f1ed"
-  night-muted: "#aaa8a2"
+  night-muted: "#b4b1aa"
 typography:
   display:
-    fontFamily: "IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    fontSize: "clamp(2.75rem, 6vw, 5.5rem)"
+    fontFamily: "Anek Latin, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontSize: "clamp(3.25rem, 8vw, 6rem)"
     fontWeight: 600
-    lineHeight: 0.98
+    lineHeight: 0.92
     letterSpacing: "-0.045em"
   headline:
-    fontFamily: "IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Anek Latin, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(2rem, 4vw, 3.5rem)"
     fontWeight: 600
     lineHeight: 1.05
     letterSpacing: "-0.035em"
   body:
-    fontFamily: "IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Anek Latin, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.65
   label:
-    fontFamily: "IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    fontSize: "0.8125rem"
-    fontWeight: 500
-    lineHeight: 1.3
-    letterSpacing: "0.02em"
-  code:
-    fontFamily: "IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontFamily: "Anek Latin, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "0.875rem"
-    fontWeight: 400
-    lineHeight: 1.55
+    fontWeight: 600
+    lineHeight: 1.4
 rounded:
-  sm: "6px"
-  md: "8px"
-  lg: "12px"
+  stage: "3px"
+  control: "3px"
+  utility: "6px"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -57,152 +53,184 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.cobalt}"
-    textColor: "{colors.paper-raised}"
-    rounded: "{rounded.sm}"
+    textColor: "{colors.cobalt-on}"
+    rounded: "{rounded.control}"
     padding: "12px 20px"
     height: "44px"
-  button-secondary:
-    backgroundColor: "{colors.paper-raised}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.sm}"
-    padding: "12px 20px"
-    height: "44px"
-  project-evidence:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.sm}"
-    padding: "0"
+  case-cover:
+    backgroundColor: "{colors.cobalt}"
+    textColor: "{colors.cobalt-on}"
+    rounded: "{rounded.stage}"
+    minHeight: "clamp(16rem, 30vw, 22rem)"
+  evidence-frame:
+    backgroundColor: "{colors.cobalt-deep}"
+    rounded: "{rounded.stage}"
+    aspectRatio: "16 / 10"
 ---
 
 # Design System: Alex Micó Portfolio
 
 ## Overview
 
-**Creative North Star: "The Product Casebook"**
+**Creative North Star: Cobalt Product Stage**
 
-The portfolio behaves like a concise casebook opened on a desk: a personal introduction, four pieces of work and the decisions behind them. Strev and Sereno are primary cases of equal weight; SaveMyMoneyNow and Atalaya support the story without competing with them. It is sober and editorial without pretending to be a magazine. Real screens supply colour and specificity; the surrounding interface stays quiet enough to make those screens legible.
+The portfolio uses one committed cobalt surface to connect Alex with Strev and Sereno. The home is
+the stage: full-width identity, real evidence and equal flagship scale. A case page is the cover:
+compact title surface inside the reading column, followed by neutral long-form content.
 
-This system explicitly rejects the current operations-dashboard framing, generic developer portfolios and agency campaign pages whose art direction is louder than the work. The grid, terminal and status-light vocabulary is no longer the default visual language.
+The system is direct, product-led and personal. Real screens carry specificity. Cobalt carries
+recognition. Anek Latin carries voice. Space and scale carry hierarchy.
 
-**Key Characteristics:**
+## Core Rules
 
-- Product evidence appears before long biography or stack inventories.
-- Warm neutral surfaces and one accessible cobalt accent support both themes.
-- Large sans-serif typography creates hierarchy without display gimmicks.
-- Monospace is reserved for authentic commands, output and code metadata.
-- Motion confirms state and sequence; it never performs for its own sake.
+### Stage and cover are related, not duplicated
 
-## Colors
+- The home stage may fill the viewport and contain Alex, portrait, actions and two product previews.
+- The case cover stays inside 68rem, between 16rem and 22rem tall, and contains only H1 plus tagline.
+- A case never repeats the portrait, hero previews, hero CTA or entrance choreography.
+- Long-form content returns to the theme surface immediately after the cover.
 
-The palette combines warm paper neutrals with a restrained cobalt accent. Dark mode is ink-like rather than pure black, so product imagery remains the most saturated material on the page.
+### The one field rule
 
-### Primary
+Cobalt is allowed to be large when it establishes identity. It is not scattered across cards,
+badges or decorative stripes. Product screenshots retain their own colors.
 
-- **Working Cobalt:** the only interactive accent. Use it for primary actions, active navigation, links and focus indication.
-- **Soft Cobalt Wash:** a quiet selected or supporting surface, never a large decorative gradient.
+### The evidence is real rule
 
-### Neutral
+Every project uses its real image and visible caption. A 16:10 exterior frame gives the cases one
+system. Strev fills the frame. Sereno, SaveMyMoneyNow and Atalaya use `contain` on a matte so no data
+is cropped. Synthetic windows and fake product chrome are forbidden.
 
-- **Warm Paper / Raised Paper:** light-theme page and component surfaces.
-- **Editorial Ink / Muted Ink:** primary and secondary light-theme text.
-- **Night Paper / Raised Night:** dark-theme page and component surfaces.
-- **Night Ink / Night Muted:** primary and secondary dark-theme text.
-- **Hairline:** structural borders and dividers in either theme.
+### The structure survives the styling rule
 
-### Named Rules
+The case keeps one H1, semantic sections, a real `<ol>` for decisions, visible project scope and
+selectable results. CSS removes ornamental numbers without changing document order.
 
-**The One Accent Rule.** Cobalt carries interaction; screenshots carry personality. Do not add a second decorative hue to make a section feel different.
+## Color
 
-**The No Status Palette Rule.** Green, amber and red are reserved for real feedback. They must not decorate the hero, favicon or availability copy.
+### Identity
+
+- **Stage cobalt `#2f6ba8`:** hero, flagship field, case cover, Contact and social card.
+- **On cobalt `#ffffff`:** headings and high-emphasis controls. Contrast 5.54:1.
+- **Muted on cobalt `#e4eff9`:** supporting text. Contrast 4.75:1.
+- **Deep stage `#11171c`:** Strev stage and evidence matte.
+- **Sereno matte `#1d1c2d`:** preserves the complete panoramic screenshot.
+
+Do not use `#dbe9f6` as normal-size text over stage cobalt; it sits below the 4.5:1 target after
+rounding.
+
+### Reading surfaces
+
+- Light: `#f7f6f2` page, `#ffffff` raised, `#19191b` text, `#66656b` muted.
+- Dark: `#151619` page, `#1e2024` raised, `#f2f1ed` text, `#b4b1aa` muted.
+- `--surface-sel` is the single results band. It is not a collection of result cards.
 
 ## Typography
 
-**Display Font:** IBM Plex Sans with system sans-serif fallbacks
+**Interface family:** Anek Latin with system fallbacks.
 
-**Body Font:** IBM Plex Sans with system sans-serif fallbacks
-**Label/Mono Font:** IBM Plex Sans for labels; IBM Plex Mono only for authentic technical artefacts
+- Display: names and case titles, 600 weight, compact line height.
+- Headline: major sections and decisive statements.
+- Body: 1rem minimum and a 68ch maximum for long prose.
+- Labels: normal case, sans-serif, 0.875rem minimum where evidence matters.
+- Monospace: no ornamental use. Authentic code may use the environment's code font inside a real
+  technical artifact, but ordinary labels, dates and navigation use Anek Latin.
 
-**Character:** one clear sans-serif family gives the page confidence and continuity. Personality comes from scale, line breaks and evidence, not from mixing fashionable display faces.
+## Geometry
 
-### Hierarchy
+- Stage and product frames: 3px radius.
+- Interactive controls: 3px radius and 44px minimum target.
+- Utility feedback: 6px only when a status surface needs grouping.
+- No pills for language, theme, case links or project tags in the current interface.
+- No colored side stripes, repeated cards or universal divider lines.
 
-- **Display** (600, fluid 2.75–5.5rem, 0.98): Alex's name and project case titles only.
-- **Headline** (600, fluid 2–3.5rem, 1.05): major home sections and decisive statements.
-- **Title** (600, 1.25–1.5rem, 1.25): project names and experience roles.
-- **Body** (400, 1rem, 1.65): prose constrained to 68ch.
-- **Label** (500, 0.8125rem, modest tracking): dates, project type and concise metadata in normal case.
+## Home Stage
 
-### Named Rules
+- Hero and two flagship chapters may use full-bleed cobalt/deep surfaces.
+- Strev and Sereno receive the same exterior 16:10 evidence area and two actions each.
+- Supporting work uses open rows at a smaller scale.
+- About, Experience, Stack, Contact and Footer continue the same type and geometry without copying
+  the hero.
 
-**The Mono Must Be True Rule.** If text is not code, a command or machine output, it uses the sans family. Navigation, section labels, contact labels and dates are not code.
+## Case Cover and Reading Flow
 
-## Elevation
+1. Neutral back link with 44px target.
+2. Compact cobalt cover with H1 and tagline only.
+3. Summary label, summary prose and real evidence.
+4. Problem and optional gap as open reading blocks.
+5. Decisions in a two-column desktop grid and one column on mobile. The `<ol>` remains semantic;
+   `::before` renders no ordinal.
+6. Results in one tonal band with selectable values and labels.
+7. Rectangular external links and the shared localized CTA.
+8. Shared Contact and Footer remain neutral on cases.
 
-The system is flat by default. Depth comes from tonal separation, hairline borders and the overlap of real project imagery. Project media stays grounded without a permanent shadow or decorative glow.
+Case content is static. Theme and language transitions remain global state feedback; cases do not
+add scroll-linked movement, reveal opacity or decorative animation.
 
-### Shadow Vocabulary
+## Project Evidence
 
-- **Evidence separation:** a functional hairline and tonal surface distinguish real screenshots from the page.
-- **Interactive response:** cobalt, underline and border changes communicate hover or focus without lifting the layout.
+- Exterior ratio: 16:10 on every case route.
+- Strev: `object-fit: cover`, because its source is already 16:10.
+- Sereno: `object-fit: contain` on `#1d1c2d`.
+- SaveMyMoneyNow: `object-fit: contain` on deep matte.
+- Atalaya: `object-fit: contain` on deep matte.
+- Captions remain visible, normal case and at least WCAG AA contrast.
 
-### Named Rules
+## Social Identity
 
-**The Flat-at-Rest Rule.** A component at rest must still read correctly with its shadow removed. Borders, spacing and typography carry the structure.
+### Favicon
 
-## Components
+The mark is `A.` in one ink: full cobalt square, geometric white A and a small white square as the
+period. No M, inner card, gradient, shadow, text node or transparent double mask.
 
-### Buttons
+`favicon.svg` is canonical. `apple-touch-icon.png` is a 180x180 RGB derivative with opaque cobalt
+background.
 
-- **Shape:** compact rectangle with 6px corners and a 44px minimum target.
-- **Primary:** cobalt surface, raised-paper text and compact horizontal padding.
-- **Hover / Focus:** darken the cobalt slightly; show a visible outer focus ring without translating the control.
-- **Secondary:** transparent or raised-paper surface with a hairline border and ink text.
+### Open Graph
 
-### Chips
+The card is a full 1200x630 cobalt field. Alex and his role occupy the left side. Strev and Sereno
+occupy the right side at exactly the same size. There are no boxes, fake windows, stack inventories
+or secondary projects.
 
-- **Style:** small quiet labels on tonal surfaces, normal case and sans-serif.
-- **State:** chips describe technology; they are never fake filters or decorative badge walls.
+The neutral alt is `Alex Micó Robles · Full Stack Developer · Strev + Sereno`.
 
-### Cards / Containers
+### Raster commands
 
-- **Corner Style:** 6px for controls and media, 8px for compact feedback and 12px only for the largest utility surfaces.
-- **Project Structure:** project evidence is editorial and open, not enclosed in a padded 20px card. Scale, grid and real media communicate hierarchy.
-- **Background:** the page remains the default surface; raised paper or night surfaces are reserved for controls and functional feedback.
-- **Shadow Strategy:** flat at rest; raised-media treatment belongs to the image, not every container.
-- **Border:** structural hairlines only, with no coloured side stripes.
-- **Internal Padding:** use spacing where content needs it; do not add container padding merely to simulate a card.
+The installed ImageMagick build has no configured font registry, so OG rasterization pins the local
+Arial TTF explicitly. The SVG retains `sans-serif` for browser display.
 
-### Inputs / Fields
+```sh
+magick -background '#2f6ba8' -density 384 public/favicon.svg -resize 180x180! -alpha off -depth 8 -colorspace sRGB -strip -define png:exclude-chunk=date,time -define png:color-type=2 public/apple-touch-icon.png
+magick -font '/System/Library/Fonts/Supplemental/Arial.ttf' -background '#2f6ba8' -density 192 public/og-image.svg -resize 1200x630! -alpha off -depth 8 -colorspace sRGB -strip -define png:exclude-chunk=date,time -define png:color-type=2 public/og-image.png
+```
 
-- **Style:** quiet surface, functional border and 6px corners.
-- **Focus:** cobalt border plus a visible low-opacity focus ring.
-- **Error / Disabled:** pair colour with concise text; never rely on colour alone.
+The committed PNGs must be RGB, sRGB, 8-bit and exactly 180x180 or 1200x630. Public references use
+`?v=3` in OG, Twitter, JSON-LD, favicon, apple touch icon and the 404 page.
 
-### Navigation
+The prerender gate also pins the approved SHA-256 values so a stale raster with valid dimensions
+cannot silently replace the v9 artwork: `86d3162b...39d02` for OG and `420e9780...109d3` for Apple.
 
-- Use sans-serif labels in normal case. Active state combines weight and a short cobalt rule or background wash. Mobile navigation remains compact, keyboard reachable and visually separate from language/theme controls.
-- Every interactive control and closing contact route keeps a minimum 44px target.
+## Interaction and Accessibility
 
-### Project Evidence
+- Visible focus uses a 3px accent outline with offset.
+- Text uses 4.5:1 minimum; controls and focus use 3:1 minimum.
+- Theme, language, menu, back, case links, CTA and Contact remain keyboard reachable.
+- `prefers-reduced-motion` removes global transitions and never hides essential content.
+- At 320px, SaveMyMoneyNow may wrap but must not clip or overflow.
+- Case routes preserve localized back link, alternate language route and CV filename.
 
-- Every canonical project has one real 16:10 image or authentic output. A short caption explains what the visitor is seeing. Synthetic diagrams belong only inside a case when no direct screen can express the decision.
-- Strev and Sereno share the primary scale and visual weight. SaveMyMoneyNow and Atalaya use a quieter supporting treatment.
-- Screenshots provide the project-specific colour; cobalt remains the only interface accent.
+## Do
 
-## Do's and Don'ts
+- Show Strev and Sereno at equal visual weight.
+- Use cobalt as a committed field of identity.
+- Use real screenshots and preserve their data.
+- Let a compact cover connect each case to the home.
+- Keep copy, results, links and captions selectable and inspectable.
 
-### Do:
+## Do Not
 
-- **Do** show Strev and Sereno as equal primary cases, with SaveMyMoneyNow and Atalaya as supporting work, through real screens or authentic output.
-- **Do** place selected work immediately after the compact hero on mobile.
-- **Do** keep Anuubis Solutions in the experience timeline and the GitHub company field only.
-- **Do** retain WCAG AA contrast, reduced-motion handling, visible focus and bilingual parity.
-- **Do** use warm whitespace and strong type hierarchy before adding another container.
-
-### Don't:
-
-- **Don't** reuse the current operations-dashboard framing: no fleet counters, server metrics, monitoring signals or decorative status dots.
-- **Don't** build a generic developer portfolio from neon gradients, badge walls, fake consoles or interchangeable stack slogans.
-- **Don't** turn the profile into an agency campaign page whose art direction is louder than the work.
-- **Don't** present internal Anuubis tools, client operations or closed operational metrics as Alex's personal projects.
-- **Don't** use monospace for navigation, section labels, dates or ordinary prose.
+- Duplicate the hero on case pages.
+- Reintroduce decorative terminals, status dots, card walls or badge inventories.
+- Crop Sereno or supporting evidence to force a ratio.
+- Use visual ordinals, pill links or hairlines on every section.
+- Change shared routing, CV, Contact or prerender contracts for visual convenience.

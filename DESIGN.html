@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Especificación visual de Cobalt Product Stage para el portfolio de Alex Micó Robles.">
+  <title>Cobalt Product Stage | Design contract</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f13;
+      --surface: #11171c;
+      --surface-2: #172027;
+      --border: #34404a;
+      --text: #f6f8fa;
+      --text-dim: #b9c0c7;
+      --accent: #5d9bd3;
+      --cobalt: #2f6ba8;
+      --cobalt-soft: #e4eff9;
+      --ok: #75b898;
+      --warn: #e3b56e;
+      --bad: #dc8080;
+      --radius: 3px;
+      --measure: 72rem;
+      --font: "Anek Latin", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); color: var(--text); font-family: var(--font); }
+    body { margin: 0; background: var(--bg); }
+    main { width: min(calc(100% - 32px), var(--measure)); margin: 0 auto; padding: 32px 0 96px; }
+    header { padding: clamp(48px, 8vw, 96px) 0 56px; }
+    section { padding: 56px 0; border-top: 1px solid var(--border); }
+    h1, h2, h3 { margin: 0; text-wrap: balance; }
+    h1 { max-width: 12ch; font-size: clamp(48px, 8vw, 96px); line-height: .9; letter-spacing: -.045em; }
+    h2 { max-width: 18ch; font-size: clamp(30px, 5vw, 52px); line-height: 1; letter-spacing: -.03em; }
+    h3 { font-size: 18px; line-height: 1.25; }
+    p { color: var(--text-dim); line-height: 1.65; text-wrap: pretty; }
+    code { color: var(--cobalt-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .eyebrow { margin: 0 0 18px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .lede { max-width: 58ch; margin: 24px 0 0; font-size: 19px; }
+    .status { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .tag { min-height: 32px; display: inline-flex; align-items: center; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-dim); font-size: 13px; }
+    .tag strong { color: var(--ok); font-weight: 700; }
+    .section-head { display: grid; grid-template-columns: minmax(0, .85fr) minmax(18rem, 1.15fr); gap: 40px; align-items: end; margin-bottom: 36px; }
+    .section-head p { max-width: 56ch; margin: 0; }
+    .comparison { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; align-items: stretch; }
+    .specimen { min-width: 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    .specimen__label { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 16px; border-bottom: 1px solid var(--border); color: var(--text-dim); font-size: 13px; }
+    .specimen__label strong { color: var(--text); }
+    .home-stage { min-height: 29rem; display: grid; grid-template-rows: auto 1fr auto; gap: 40px; padding: clamp(28px, 5vw, 56px); background: #0d1217; }
+    .home-stage__mark { display: flex; align-items: center; justify-content: space-between; color: var(--text-dim); font-size: 12px; }
+    .home-stage__mark b { color: var(--accent); font-size: 18px; }
+    .home-stage h3 { align-self: end; max-width: 9ch; font-size: clamp(48px, 7vw, 86px); line-height: .88; letter-spacing: -.05em; }
+    .home-stage__projects { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .home-stage__projects div { min-height: 92px; display: flex; align-items: flex-end; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+    .home-stage__projects b { font-size: 20px; }
+    .case-cover { min-height: 20rem; display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; padding: clamp(28px, 5vw, 52px); background: var(--cobalt); }
+    .case-cover h3 { max-width: 9ch; color: #fff; font-size: clamp(48px, 7vw, 82px); line-height: .9; letter-spacing: -.045em; }
+    .case-cover p { max-width: 36ch; margin: 0; color: var(--cobalt-soft); font-size: 17px; }
+    .annotation { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .annotation article { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .annotation p { margin: 8px 0 0; font-size: 14px; }
+    .tokens { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; }
+    .palette { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .swatch { min-height: 128px; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); }
+    .swatch b { font-size: 15px; }
+    .swatch code { font-size: 12px; }
+    .swatch--cobalt { background: var(--cobalt); color: #fff; }
+    .swatch--cobalt code { color: var(--cobalt-soft); }
+    .swatch--ink { background: var(--bg); }
+    .swatch--surface { background: var(--surface-2); }
+    .swatch--paper { background: #f5f7f9; color: #101820; }
+    .swatch--paper code { color: #31404d; }
+    .type-sheet { padding: 28px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .type-display { margin: 8px 0 28px; color: var(--text); font-size: clamp(44px, 7vw, 78px); font-weight: 600; line-height: .9; letter-spacing: -.045em; }
+    .type-body { max-width: 44ch; margin: 0 0 24px; font-size: 17px; }
+    .type-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .type-meta div { padding-top: 12px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; }
+    .frames { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; }
+    figure { margin: 0; }
+    .evidence { aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; border: 1px solid #46525c; border-radius: var(--radius); background: #10171d; }
+    .evidence--cover { background: linear-gradient(145deg, #234a72, #10171d 65%); }
+    .evidence--contain { padding: 8%; background: #1d1c2d; }
+    .artifact { width: 80%; min-height: 58%; display: grid; align-content: center; gap: 10px; padding: 24px; border: 1px solid #7b8b99; border-radius: var(--radius); background: #eef2f5; color: #111820; }
+    .artifact span { height: 8px; border-radius: 2px; background: #b8c7d3; }
+    .artifact span:first-child { width: 52%; height: 20px; background: var(--cobalt); }
+    figcaption { margin-top: 12px; color: var(--text-dim); font-size: 13px; line-height: 1.55; }
+    .frame-notes { display: grid; gap: 12px; margin-top: 18px; }
+    .frame-notes article { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .frame-notes p { margin: 7px 0 0; font-size: 14px; }
+    .social-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(11rem, .7fr); gap: 18px; }
+    .og { aspect-ratio: 1200 / 630; display: grid; grid-template-columns: 1fr 1fr; padding: clamp(24px, 5vw, 52px); border-radius: var(--radius); background: var(--cobalt); color: #fff; }
+    .og__left { display: flex; flex-direction: column; justify-content: space-between; }
+    .og__mark { font-size: clamp(28px, 5vw, 52px); font-weight: 700; }
+    .og__name { max-width: 8ch; font-size: clamp(32px, 5vw, 66px); font-weight: 600; line-height: .9; letter-spacing: -.04em; }
+    .og__name small { display: block; margin-top: 12px; color: var(--cobalt-soft); font-size: clamp(12px, 1.8vw, 20px); line-height: 1.3; letter-spacing: 0; }
+    .og__projects { display: grid; align-content: center; gap: 12px; font-size: clamp(30px, 5vw, 64px); font-weight: 600; line-height: 1; }
+    .favicon-card { display: grid; place-items: center; min-height: 100%; padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .favicon { width: min(100%, 180px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 28%; background: var(--cobalt); color: #fff; font-size: 68px; font-weight: 700; letter-spacing: -.08em; }
+    .contract-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .contract-card { padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .contract-card ol, .contract-card ul { display: grid; gap: 12px; margin: 18px 0 0; padding-inline-start: 20px; color: var(--text-dim); line-height: 1.55; }
+    .risk-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    .risk-table th, .risk-table td { padding: 14px 12px; border-top: 1px solid var(--border); text-align: start; vertical-align: top; }
+    .risk-table th { color: var(--text); font-size: 13px; }
+    .risk-table td { color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+    .risk-table td:first-child { color: var(--warn); font-weight: 700; }
+    .flow { margin-top: 22px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .flow svg { display: block; width: 100%; height: auto; }
+    .flow text { font-family: var(--font); fill: var(--text); font-size: 13px; }
+    .flow .muted { fill: var(--text-dim); font-size: 11px; }
+    .flow rect { fill: var(--surface-2); stroke: var(--border); rx: 3; }
+    .flow path { fill: none; stroke: var(--accent); stroke-width: 2; }
+    footer { padding: 36px 0 0; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 13px; }
+    @media (max-width: 780px) {
+      main { width: min(calc(100% - 24px), var(--measure)); }
+      .section-head, .comparison, .tokens, .frames, .social-grid, .contract-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: start; gap: 18px; }
+      .annotation { grid-template-columns: 1fr; }
+      .home-stage { min-height: 24rem; }
+      .case-cover { min-height: 16rem; }
+      .type-meta { grid-template-columns: 1fr; }
+      .favicon-card { min-height: 15rem; }
+      .risk-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Design contract · Gate B2 · 30.08.2026</p>
+      <h1>Cobalt Product Stage</h1>
+      <p class="lede">Un sistema editorial sobrio para presentar a Alex, Strev y Sereno con evidencia real. La home crea reconocimiento. Cada caso reduce intensidad y deja que el producto demuestre el trabajo.</p>
+      <div class="status" aria-label="Estado del contrato">
+        <span class="tag"><strong>Aprobado</strong>&nbsp; para implementación</span>
+        <span class="tag">Estático y accesible</span>
+        <span class="tag">Sin recursos externos</span>
+      </div>
+    </header>
+
+    <section aria-labelledby="stage-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">01 · Jerarquía</p>
+          <h2 id="stage-title">Home stage y Case cover</h2>
+        </div>
+        <p>Son miembros de la misma familia, no duplicados. La home puede ser escénica y expansiva. El caso abre con un bloque compacto, resume la tesis y entrega el protagonismo a la evidencia.</p>
+      </div>
+      <div class="comparison">
+        <article class="specimen">
+          <div class="specimen__label"><strong>Home stage</strong><span>Reconocimiento</span></div>
+          <div class="home-stage">
+            <div class="home-stage__mark"><b>A.</b><span>Full Stack Developer</span></div>
+            <h3>Construyo productos que funcionan.</h3>
+            <div class="home-stage__projects"><div><b>Strev</b></div><div><b>Sereno</b></div></div>
+          </div>
+        </article>
+        <article class="specimen">
+          <div class="specimen__label"><strong>Case cover</strong><span>16 a 22 rem</span></div>
+          <div class="case-cover">
+            <h3>Sereno</h3>
+            <p>Una interfaz operativa que convierte sesiones complejas en trabajo recuperable.</p>
+          </div>
+        </article>
+      </div>
+      <div class="annotation">
+        <article><h3>Escala</h3><p>La home ocupa escena. El caso permanece dentro de 68 rem y nunca actúa como un segundo hero.</p></article>
+        <article><h3>Orden</h3><p>Resumen primero, evidencia después, decisiones abiertas, resultados en una única banda tonal.</p></article>
+        <article><h3>Movimiento</h3><p>Las rutas de caso son estáticas. No añaden scroll effects, parallax ni entrada coreografiada.</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="tokens-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">02 · Voz visual</p>
+          <h2 id="tokens-title">Paleta y tipografía</h2>
+        </div>
+        <p>El cobalto es firma, no decoración. Anek Latin da una voz única a títulos, navegación y lectura. El resto del sistema se apoya en fondos neutros y contraste comprobable.</p>
+      </div>
+      <div class="tokens">
+        <div class="palette" aria-label="Paleta principal">
+          <div class="swatch swatch--cobalt"><b>Cobalt</b><code>#2f6ba8</code></div>
+          <div class="swatch swatch--ink"><b>Ink</b><code>#0b0f13</code></div>
+          <div class="swatch swatch--surface"><b>Surface</b><code>#172027</code></div>
+          <div class="swatch swatch--paper"><b>Paper</b><code>#f5f7f9</code></div>
+        </div>
+        <div class="type-sheet">
+          <p class="eyebrow">Anek Latin · 400 500 600 700</p>
+          <div class="type-display">Producto con criterio.</div>
+          <p class="type-body">La escala crea jerarquía. El peso crea énfasis. El color solo señala identidad, estado o acción.</p>
+          <div class="type-meta"><div>Display<br><code>clamp(52px, 8vw, 96px)</code></div><div>Body<br><code>16px / 1.65</code></div><div>Label<br><code>13px / 1.35</code></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="frames-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">03 · Evidencia</p>
+          <h2 id="frames-title">Un marco, dos tratamientos</h2>
+        </div>
+        <p>Los cuatro casos usan un marco exterior 16:10. Strev puede cubrirlo. Sereno, SaveMyMoneyNow y Atalaya conservan la imagen completa sobre un matte propio.</p>
+      </div>
+      <div class="frames">
+        <figure>
+          <div class="evidence evidence--cover"><div class="artifact"><span></span><span></span><span></span><span></span></div></div>
+          <figcaption>Cover: Strev llena el marco cuando el recorte conserva la lectura principal.</figcaption>
+        </figure>
+        <figure>
+          <div class="evidence evidence--contain"><div class="artifact"><span></span><span></span><span></span><span></span></div></div>
+          <figcaption>Contain: la captura permanece completa y el matte absorbe la diferencia de formato.</figcaption>
+        </figure>
+      </div>
+      <div class="frame-notes">
+        <article><h3>Regla de contenido</h3><p>La captura debe enseñar producto, no una maqueta genérica. El pie explica qué evidencia demuestra.</p></article>
+        <article><h3>Regla de estructura</h3><p>El aspect ratio vive en el contenedor exterior. La imagen decide entre <code>cover</code> y <code>contain</code> sin deformación.</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="social-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">04 · Identidad social</p>
+          <h2 id="social-title">Una firma legible a cualquier escala</h2>
+        </div>
+        <p>La tarjeta social coloca Strev y Sereno al mismo nivel. El favicon reduce la firma a una sola tinta y mantiene el reconocimiento en 16 píxeles.</p>
+      </div>
+      <div class="social-grid">
+        <div class="og" role="img" aria-label="Vista previa de tarjeta social con Alex Micó Robles, Strev y Sereno">
+          <div class="og__left"><div class="og__mark">A.</div><div class="og__name">Alex Micó Robles<small>Full Stack Developer</small></div></div>
+          <div class="og__projects"><span>Strev</span><span>Sereno</span></div>
+        </div>
+        <div class="favicon-card"><div class="favicon" role="img" aria-label="Favicon A punto">A.</div></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="contract-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">05 · Contrato</p>
+          <h2 id="contract-title">Riesgos y requisitos</h2>
+        </div>
+        <p>El rediseño pertenece al producto solo si mantiene las rutas, el idioma, el tema y los puntos de conversión que ya funcionan.</p>
+      </div>
+      <div class="contract-grid">
+        <article class="contract-card">
+          <h3>EARS</h3>
+          <ol>
+            <li>Cuando una ruta de caso cargue, el sistema mostrará back, cover, resumen, evidencia, decisiones, resultados y CTA compartido en ese orden.</li>
+            <li>Cuando el viewport sea menor de 760 píxeles, el sistema convertirá las decisiones de dos columnas a una sin ocultar contenido.</li>
+            <li>Cuando el tema cambie, el sistema conservará texto, scopes, captions y acciones con contraste suficiente.</li>
+            <li>Si el usuario solicita movimiento reducido, el sistema no introducirá animación nueva en las rutas de caso.</li>
+            <li>Cuando una página se prerenderice, el sistema mantendrá idioma, SEO, tarjeta social versión 3 y rutas localizadas del CV.</li>
+          </ol>
+        </article>
+        <article class="contract-card">
+          <h3>Fuera de alcance</h3>
+          <ul>
+            <li>No se reescribe JSX, routing ni traducciones.</li>
+            <li>No se cambia Contact, Footer, Header, Nav ni Portfolio.</li>
+            <li>No se alteran capturas de producto.</li>
+            <li>No se añaden librerías de motion.</li>
+            <li>No se crea una tarjeta por cada bloque narrativo.</li>
+          </ul>
+        </article>
+      </div>
+      <table class="risk-table">
+        <thead><tr><th>Riesgo</th><th>Señal</th><th>Control</th></tr></thead>
+        <tbody>
+          <tr><td>Hero duplicado</td><td>El caso compite en altura y dramatismo con la home.</td><td>Cover limitado entre 16 y 22 rem dentro de 68 rem.</td></tr>
+          <tr><td>Evidencia recortada</td><td>Texto, navegación o interfaz desaparecen del frame.</td><td>Contain sobre matte para tres casos y cover solo para Strev.</td></tr>
+          <tr><td>Ordinal artificial</td><td>La lista añade números decorativos mediante pseudo elementos.</td><td>Se conserva el <code>ol</code> semántico y se elimina el ordinal visual.</td></tr>
+          <tr><td>Marca fragmentada</td><td>Favicon, HTML y tarjeta social anuncian versiones distintas.</td><td>Referencias versión 3 y guardians de dimensiones, contenido y raster.</td></tr>
+        </tbody>
+      </table>
+      <div class="flow">
+        <svg viewBox="0 0 980 170" role="img" aria-labelledby="flow-title flow-desc">
+          <title id="flow-title">Flujo de validación de Gate B2</title>
+          <desc id="flow-desc">El contrato visual pasa por CSS de casos, assets sociales, pruebas, prerender y revisión de navegador.</desc>
+          <rect x="20" y="45" width="150" height="70"></rect>
+          <rect x="220" y="45" width="150" height="70"></rect>
+          <rect x="420" y="45" width="150" height="70"></rect>
+          <rect x="620" y="45" width="150" height="70"></rect>
+          <rect x="820" y="45" width="140" height="70"></rect>
+          <path d="M170 80h50M370 80h50M570 80h50M770 80h50"></path>
+          <text x="95" y="76" text-anchor="middle">Case CSS</text><text class="muted" x="95" y="94" text-anchor="middle">estructura</text>
+          <text x="295" y="76" text-anchor="middle">Social assets</text><text class="muted" x="295" y="94" text-anchor="middle">identidad</text>
+          <text x="495" y="76" text-anchor="middle">Tests</text><text class="muted" x="495" y="94" text-anchor="middle">contrato</text>
+          <text x="695" y="76" text-anchor="middle">Prerender</text><text class="muted" x="695" y="94" text-anchor="middle">10 rutas</text>
+          <text x="890" y="76" text-anchor="middle">Browser QA</text><text class="muted" x="890" y="94" text-anchor="middle">32 estados</text>
+        </svg>
+      </div>
+    </section>
+
+    <footer>Documento vivo · Cobalt Product Stage · Alex Micó Robles</footer>
+  </main>
+</body>
+</html>

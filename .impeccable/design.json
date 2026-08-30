@@ -1,14 +1,14 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-30T08:21:33Z",
+  "generatedAt": "2026-08-30T10:00:00Z",
   "title": "Design System: Alex Micó Portfolio",
   "extensions": {
     "colorMeta": {
       "cobalt": {
         "role": "primary",
-        "displayName": "Working Cobalt",
+        "displayName": "Stage Cobalt",
         "canonical": "#2f6ba8",
-        "tonalRamp": ["#0d2338", "#173b5f", "#215386", "#2f6ba8", "#5b8bbc", "#8fb1d4", "#bfd3e7", "#edf4fa"]
+        "tonalRamp": ["#11171c", "#173b5f", "#215386", "#2f6ba8", "#5b8bbc", "#8fb1d4", "#e4eff9", "#f7fbff"]
       },
       "paper": {
         "role": "neutral",
@@ -25,33 +25,34 @@
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Display",
-        "purpose": "Alex's name and project case titles only."
+        "displayName": "Anek Display",
+        "purpose": "Alex's name, flagship names and case titles."
       },
       "body": {
-        "displayName": "Body",
-        "purpose": "Readable product and experience prose up to 68ch."
+        "displayName": "Anek Body",
+        "purpose": "Readable product, case and experience prose up to 68ch."
       },
-      "code": {
-        "displayName": "Authentic Code",
-        "purpose": "Commands and machine output, never ordinary labels."
+      "label": {
+        "displayName": "Anek Label",
+        "purpose": "Normal-case evidence captions, dates and controls."
       }
     },
     "shadows": [],
     "motion": [
       {
         "name": "state",
-        "value": "180ms cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "Controls, focus and local hover feedback."
+        "value": "180ms ease",
+        "purpose": "Controls, theme and language state feedback."
       },
       {
-        "name": "reveal",
-        "value": "420ms cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "One-time evidence reveal with reduced-motion fallback."
+        "name": "case-content",
+        "value": "none",
+        "purpose": "Case reading content remains static."
       }
     ],
     "breakpoints": [
       { "name": "mobile", "value": "600px" },
+      { "name": "case-grid", "value": "760px" },
       { "name": "shell", "value": "1024px" }
     ]
   },
@@ -60,66 +61,76 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The single high-emphasis action in a section.",
-      "html": "<button class=\"ds-btn-primary\">View selected work</button>",
-      "css": ".ds-btn-primary{min-height:44px;padding:12px 20px;border:0;border-radius:6px;background:var(--accent,#2f6ba8);color:#fff;font:600 14px/1 IBM Plex Sans,sans-serif;transition:background 180ms,box-shadow 180ms}.ds-btn-primary:hover{background:var(--accent-hover,#27598c)}.ds-btn-primary:focus-visible{outline:3px solid color-mix(in srgb,var(--accent,#2f6ba8) 35%,transparent);outline-offset:3px}"
+      "description": "The single high-emphasis action in a section, including the scoped case CTA.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#work\">View work</a>",
+      "css": ".ds-btn-primary{min-height:44px;display:inline-flex;align-items:center;padding:0 20px;border:1px solid #2f6ba8;border-radius:3px;background:#2f6ba8;color:#fff;font:600 14px/1 Anek Latin,sans-serif}.ds-btn-primary:focus-visible{outline:3px solid #2f6ba8;outline-offset:3px}"
     },
     {
-      "name": "Secondary Button",
-      "kind": "button",
-      "refersTo": "button-secondary",
-      "description": "A quiet alternate route such as the CV download.",
-      "html": "<button class=\"ds-btn-secondary\">Download CV</button>",
-      "css": ".ds-btn-secondary{min-height:44px;padding:12px 20px;border:1px solid var(--line-soft,#d9d7d1);border-radius:6px;background:var(--surface-1,#fff);color:var(--text-1,#19191b);font:600 14px/1 IBM Plex Sans,sans-serif;transition:border-color 180ms,background 180ms}.ds-btn-secondary:hover{border-color:var(--accent,#2f6ba8);background:var(--surface-2,#f0efeb)}.ds-btn-secondary:focus-visible{outline:3px solid color-mix(in srgb,var(--accent,#2f6ba8) 35%,transparent);outline-offset:3px}"
+      "name": "Case Cover",
+      "kind": "container",
+      "refersTo": "case-cover",
+      "description": "Compact cobalt title surface inside the 68rem reading shell. It is related to the home stage but never duplicates its hero content.",
+      "html": "<header class=\"ds-case-cover\"><h1>Sereno</h1><p>Local session control with explicit state.</p></header>",
+      "css": ".ds-case-cover{min-height:clamp(16rem,30vw,22rem);display:flex;flex-direction:column;justify-content:flex-end;gap:20px;padding:clamp(32px,6vw,64px);border-radius:3px;background:#2f6ba8;color:#fff}.ds-case-cover h1{margin:0;color:#fff;font:600 clamp(52px,8vw,96px)/.92 Anek Latin,sans-serif}.ds-case-cover p{max-width:48rem;margin:0;color:#e4eff9;font:400 18px/1.45 Anek Latin,sans-serif}"
     },
     {
-      "name": "Project Evidence",
-      "kind": "card",
-      "refersTo": "project-evidence",
-      "description": "Open editorial evidence: a real product screen followed by concise contribution and links, without a padded card shell.",
-      "html": "<article class=\"ds-project\"><figure class=\"ds-project-media\"><img src=\"product.webp\" alt=\"Real product screen\"></figure><h3>Sereno</h3><p>Public full-stack product</p><a href=\"#work\">Read case study</a></article>",
-      "css": ".ds-project{padding-top:20px;border-top:1px solid var(--line-soft,#d9d7d1);background:transparent;color:var(--text-1,#19191b)}.ds-project-media{aspect-ratio:16/10;margin-bottom:20px;overflow:hidden;border:1px solid var(--line-soft,#d9d7d1);border-radius:6px;background:var(--surface-2,#f0efeb)}.ds-project-media img{width:100%;height:100%;display:block;object-fit:cover}.ds-project p{margin:8px 0 16px;color:var(--text-2,#66656b);font:400 16px/1.65 IBM Plex Sans,sans-serif}.ds-project h3{margin:0;font:600 24px/1.2 IBM Plex Sans,sans-serif}.ds-project a{min-height:44px;display:inline-flex;align-items:center;color:var(--accent,#2f6ba8);font-weight:600}.ds-project a:focus-visible{outline:3px solid color-mix(in srgb,var(--accent,#2f6ba8) 35%,transparent);outline-offset:3px}"
+      "name": "Evidence Frame",
+      "kind": "media",
+      "refersTo": "evidence-frame",
+      "description": "One 16:10 exterior frame for every case. Only a naturally matching source fills it; panoramic and square evidence remain complete on matte.",
+      "html": "<figure class=\"ds-evidence\"><div><img src=\"real-product.webp\" alt=\"Real product evidence\"></div><figcaption>What the screen proves.</figcaption></figure>",
+      "css": ".ds-evidence div{aspect-ratio:16/10;display:grid;place-items:center;overflow:hidden;border:1px solid rgb(255 255 255/.16);border-radius:3px;background:#11171c}.ds-evidence img{width:100%;height:100%;object-fit:contain}.ds-evidence figcaption{margin-top:12px;color:var(--text-3);font:400 13px/1.5 Anek Latin,sans-serif}"
     },
     {
-      "name": "Text Field",
-      "kind": "input",
-      "description": "A quiet contact field with a visible focus state.",
-      "html": "<label class=\"ds-field\">Your email<input type=\"email\" placeholder=\"name@example.com\"></label>",
-      "css": ".ds-field{display:grid;gap:8px;color:var(--text-1,#19191b);font:500 14px/1.3 IBM Plex Sans,sans-serif}.ds-field input{min-height:48px;padding:12px 14px;border:1px solid var(--line-soft,#d9d7d1);border-radius:6px;background:var(--surface-1,#fff);color:var(--text-1,#19191b);font:400 16px/1.4 IBM Plex Sans,sans-serif}.ds-field input:focus{border-color:var(--accent,#2f6ba8);outline:3px solid color-mix(in srgb,var(--accent,#2f6ba8) 25%,transparent)}"
+      "name": "Decision Grid",
+      "kind": "list",
+      "description": "A semantic ordered list with open two-column desktop reading and no visual ordinal.",
+      "html": "<ol class=\"ds-decisions\"><li><h3>Decision</h3><p>Reason and consequence.</p></li></ol>",
+      "css": ".ds-decisions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px}.ds-decisions li::before{content:none}.ds-decisions h3{font:600 18px/1.3 Anek Latin,sans-serif}.ds-decisions p{font:400 16px/1.65 Anek Latin,sans-serif}@media(max-width:760px){.ds-decisions{grid-template-columns:1fr}}"
     },
     {
-      "name": "Section Navigation",
-      "kind": "nav",
-      "description": "Normal-case navigation that reads as language, not machine metadata.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Sections\"><a class=\"is-active\" href=\"#work\">Work</a><a href=\"#experience\">Experience</a><a href=\"#contact\">Contact</a></nav>",
-      "css": ".ds-nav{display:flex;gap:20px;font:500 14px/1.3 IBM Plex Sans,sans-serif}.ds-nav a{min-height:44px;display:inline-flex;align-items:center;color:var(--text-2,#66656b);text-decoration:none}.ds-nav a:hover,.ds-nav a.is-active{color:var(--text-1,#19191b)}.ds-nav a.is-active{box-shadow:inset 0 -2px var(--accent,#2f6ba8)}.ds-nav a:focus-visible{outline:3px solid color-mix(in srgb,var(--accent,#2f6ba8) 35%,transparent);outline-offset:3px}"
+      "name": "Results Band",
+      "kind": "container",
+      "description": "One tonal band for selectable values and labels, not a collection of cards.",
+      "html": "<ul class=\"ds-results\"><li><strong>4 CLI</strong><span>Explicit entry points</span></li></ul>",
+      "css": ".ds-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:24px;padding:40px;border-radius:3px;background:var(--surface-sel)}.ds-results strong{display:block;font:600 32px/1 Anek Latin,sans-serif}.ds-results span{font:400 14px/1.45 Anek Latin,sans-serif}"
+    },
+    {
+      "name": "Social Mark",
+      "kind": "brand",
+      "description": "A one-ink A and period on an opaque cobalt square. It remains legible at 16px and supplies the 180px apple icon.",
+      "html": "<svg viewBox=\"0 0 64 64\" role=\"img\" aria-label=\"Alex Micó Robles\"><rect width=\"64\" height=\"64\" fill=\"#2f6ba8\"/><path d=\"M12 49 27.2 14h7.6L50 49h-8.7l-3-7.6H23.6L20.7 49H12Zm14.3-14.6h9.4L31 22.5l-4.7 11.9Z\" fill=\"#f7fbff\"/><rect x=\"51\" y=\"42\" width=\"6\" height=\"7\" fill=\"#f7fbff\"/></svg>",
+      "css": ".ds-social-mark{width:64px;height:64px;display:block}"
     }
   ],
   "narrative": {
-    "northStar": "The Product Casebook",
-    "overview": "A concise personal casebook where four real products and clear technical decisions carry the identity. Strev and Sereno are equal primary cases; SaveMyMoneyNow and Atalaya provide supporting evidence.",
+    "northStar": "Cobalt Product Stage",
+    "overview": "A committed cobalt identity where Alex, Strev and Sereno are remembered together. The home uses a full stage; each case uses a compact cover followed by neutral evidence-led reading.",
     "keyCharacteristics": [
-      "Product evidence before biography or stack inventories.",
-      "Warm neutral surfaces with one accessible cobalt accent.",
-      "Large sans-serif hierarchy and authentic monospace only.",
-      "State-confirming motion with reduced-motion parity."
+      "Alex, Strev and Sereno appear at the same moment of recognition.",
+      "Anek Latin supplies one clear interface voice.",
+      "Cobalt is a large field of identity, not a scattered decorative accent.",
+      "Case content remains semantic, static and inspectable.",
+      "Real evidence uses one 16:10 exterior frame without cropping data."
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "Cobalt carries interaction; screenshots carry personality.", "section": "colors" },
-      { "name": "The Mono Must Be True Rule", "body": "If text is not code, a command or machine output, it uses the sans family.", "section": "typography" },
-      { "name": "The Flat-at-Rest Rule", "body": "Components must read correctly without a shadow.", "section": "elevation" },
-      { "name": "The Honest Geometry Rule", "body": "Use 6, 8 and 12px radii; project evidence stays open instead of becoming a rounded card.", "section": "components" },
-      { "name": "The Reachable Closing Rule", "body": "Interactive controls and closing contact routes keep a 44px minimum target.", "section": "components" }
+      { "name": "The One Field Rule", "body": "Use cobalt as a committed identity surface, never as repeated card decoration.", "section": "colors" },
+      { "name": "The Stage and Cover Rule", "body": "The home may fill the viewport; a case cover stays compact and contains only title plus tagline.", "section": "components" },
+      { "name": "The Evidence Is Real Rule", "body": "Real screenshots remain complete and carry a visible caption.", "section": "components" },
+      { "name": "The Structure Survives Rule", "body": "Semantic order, visible scope and selectable results survive visual simplification.", "section": "components" },
+      { "name": "The Reachable Closing Rule", "body": "Back, case links, CTA and Contact keep a 44px minimum target.", "section": "accessibility" }
     ],
     "dos": [
-      "Show Strev and Sereno as equal primary cases, with SaveMyMoneyNow and Atalaya as supporting work, through real screens or authentic output.",
-      "Place selected work immediately after the compact hero on mobile.",
-      "Keep Anuubis Solutions in the experience timeline and GitHub company field only."
+      "Show Strev and Sereno at equal weight.",
+      "Use a compact cobalt cover to connect cases to the home.",
+      "Use Anek Latin and real product evidence.",
+      "Keep case content static and readable in both themes."
     ],
     "donts": [
-      "Do not reuse fleet counters, server metrics, monitoring signals or decorative status dots.",
-      "Do not build the identity from neon gradients, badge walls, fake consoles or stack slogans.",
-      "Do not present internal Anuubis tools or client operations as Alex's projects."
+      "Do not duplicate the hero inside a case.",
+      "Do not crop evidence to force its interior ratio.",
+      "Do not use ornamental ordinals, pill links, card walls or universal hairlines.",
+      "Do not present internal Anuubis operations as Alex's public identity."
     ]
   }
 }

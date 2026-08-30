@@ -64,5 +64,50 @@
     .site-footer__legal {
         justify-content: flex-start;
         text-align: left;
+  }
+}
+
+.site-shell:not(.site-shell--case) .site-footer {
+    --text-1: #ffffff;
+    --text-2: #dceaf7;
+    --color-text-primary: #ffffff;
+    --accent: #ffffff;
+    --accent-hover: #eef6fd;
+    --accent-active: #dceaf7;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding:
+        var(--space-8)
+        max(var(--space-8), calc((100vw - var(--container-width-lg)) / 2))
+        var(--space-12);
+    border: 0;
+    background: var(--home-stage);
+    color: var(--text-1);
+}
+
+.site-shell:not(.site-shell--case) .site-footer__availability,
+.site-shell:not(.site-shell--case) .site-footer__mail,
+.site-shell:not(.site-shell--case) .site-footer__legal a {
+    color: var(--text-1);
+}
+
+.site-shell:not(.site-shell--case) .site-footer__legal {
+    color: var(--text-2);
+}
+
+.site-shell:not(.site-shell--case) .site-footer__mail:hover,
+.site-shell:not(.site-shell--case) .site-footer__legal a:hover {
+    color: var(--accent-hover);
+}
+
+.site-shell:not(.site-shell--case) .site-footer__mail:active,
+.site-shell:not(.site-shell--case) .site-footer__legal a:active {
+    color: var(--accent-active);
+}
+
+@media screen and (max-width: 700px) {
+    .site-shell:not(.site-shell--case) .site-footer {
+        gap: var(--space-4);
+        padding: var(--space-5) var(--space-5) var(--space-6);
     }
 }

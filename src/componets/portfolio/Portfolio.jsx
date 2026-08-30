@@ -1,12 +1,6 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { caseHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
@@ -73,25 +67,27 @@ const getItemClasses = (project) => [
   `portfolio__item--${project.slug}`,
 ].filter(Boolean).join(' ')
 
-const ProjectCardContent = ({ project, language, mediaStyle, railStyle }) => {
+const ProjectCardContent = ({ project, language, shouldReduceMotion }) => {
   const media = PROJECT_MEDIA[project.slug]
   const isPrimary = project.tier === 'primary'
+  const visibleLinks = (project.links || []).slice(0, 1)
+  const entrance = shouldReduceMotion
+    ? undefined
+    : {
+        initial: { y: 18, scale: 0.985 },
+        whileInView: { y: 0, scale: 1 },
+        viewport: { once: true, margin: '0px 0px -10% 0px' },
+        transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+      }
 
   return (
     <>
       <figure className="portfolio__media">
         <div className="portfolio__media-frame">
           {isPrimary ? (
-            <>
-              <motion.div className="portfolio__media-motion" style={mediaStyle}>
-                <ProjectImage media={media} project={project} eager />
-              </motion.div>
-              <motion.span
-                className="portfolio__chapter-progress"
-                aria-hidden="true"
-                style={railStyle}
-              />
-            </>
+            <motion.div className="portfolio__media-motion" {...entrance}>
+              <ProjectImage media={media} project={project} eager />
+            </motion.div>
           ) : (
             <ProjectImage media={media} project={project} eager={false} />
           )}
@@ -100,14 +96,19 @@ const ProjectCardContent = ({ project, language, mediaStyle, railStyle }) => {
       </figure>
 
       <div className="portfolio__body">
+        {isPrimary && <p className="portfolio__label">{project.label}</p>}
         <h3>{project.title}</h3>
         <p className="portfolio__description">{project.description}</p>
 
-        <ul className="portfolio__tags">
-          {(project.tags || []).map((tag) => (
-            <li className="portfolio__tag" key={tag}>{tag}</li>
-          ))}
-        </ul>
+        {isPrimary ? (
+          <p className="portfolio__proof">{project.proof}</p>
+        ) : (
+          <ul className="portfolio__tags">
+            {(project.tags || []).map((tag) => (
+              <li className="portfolio__tag" key={tag}>{tag}</li>
+            ))}
+          </ul>
+        )}
 
         <footer className="portfolio__footer">
           <div className="portfolio__links">
@@ -116,7 +117,7 @@ const ProjectCardContent = ({ project, language, mediaStyle, railStyle }) => {
                 {project.case_link}
               </a>
             )}
-            {(project.links || []).map((link) => (
+            {visibleLinks.map((link) => (
               <a
                 key={link.url}
                 href={link.url}
@@ -137,49 +138,19 @@ const ProjectCardContent = ({ project, language, mediaStyle, railStyle }) => {
   )
 }
 
-const PrimaryProjectCard = ({ project, language }) => {
-  const cardRef = useRef(null)
+const ProjectCard = ({ project, language }) => {
   const shouldReduceMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ['start end', 'end start'],
-  })
-  const chapterProgress = useSpring(scrollYProgress, {
-    stiffness: 145,
-    damping: 30,
-    mass: 0.32,
-  })
-  const mediaY = useTransform(chapterProgress, [0, 0.5, 1], [-3, 0, 3])
-  const mediaScale = useTransform(chapterProgress, [0, 0.5, 1], [1, 1.018, 1])
-  const mediaStyle = shouldReduceMotion ? undefined : { y: mediaY, scale: mediaScale }
-  const railStyle = shouldReduceMotion ? undefined : { scaleX: chapterProgress, originX: 0 }
 
   return (
-    <article ref={cardRef} className={getItemClasses(project)} data-tier={project.tier}>
+    <article className={getItemClasses(project)} data-tier={project.tier}>
       <ProjectCardContent
         project={project}
         language={language}
-        mediaStyle={mediaStyle}
-        railStyle={railStyle}
+        shouldReduceMotion={shouldReduceMotion}
       />
     </article>
   )
 }
-
-const SupportingProjectCard = ({ project, language }) => (
-  <article className={getItemClasses(project)} data-tier={project.tier}>
-    <ProjectCardContent
-      project={project}
-      language={language}
-    />
-  </article>
-)
-
-const ProjectCard = (props) => (
-  props.project.tier === 'primary'
-    ? <PrimaryProjectCard {...props} />
-    : <SupportingProjectCard {...props} />
-)
 
 function Portfolio() {
   const { t, i18n } = useTranslation()
@@ -194,6 +165,8 @@ function Portfolio() {
     case_link: t('portfolio.case_link'),
     closed_label: t(project.internal ? 'portfolio.internal_label' : 'portfolio.closed_label'),
   }))
+  const primaryProjects = enrichedProjects.filter((project) => project.tier === 'primary')
+  const supportingProjects = enrichedProjects.filter((project) => project.tier === 'supporting')
 
   return (
     <section id="portfolio" className="portfolio" aria-labelledby="portfolio-title">
@@ -203,13 +176,26 @@ function Portfolio() {
       </header>
 
       <div className="portfolio__grid">
-        {enrichedProjects.map((project) => (
+        {primaryProjects.map((project) => (
           <ProjectCard
             project={project}
             language={language}
             key={project.slug}
           />
         ))}
+
+        <div className="portfolio__supporting">
+          <p className="portfolio__supporting-title">{t('portfolio.supporting_title')}</p>
+          <div className="portfolio__supporting-list">
+            {supportingProjects.map((project) => (
+              <ProjectCard
+                project={project}
+                language={language}
+                key={project.slug}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )

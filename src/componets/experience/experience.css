@@ -1,209 +1,228 @@
-.experience,
-.stack {
-    display: grid;
-    grid-template-columns: minmax(12rem, 0.34fr) minmax(0, 0.66fr);
-    gap: var(--space-8) clamp(var(--space-10), 8vw, var(--space-24));
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--line-soft);
+.site-shell:not(.site-shell--case) .experience,
+.site-shell:not(.site-shell--case) .stack {
+  --dark-ink: #f7fbff;
+  --dark-muted: #b9c4cc;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-inline: max(var(--space-8), calc((100vw - var(--container-width-lg)) / 2));
+  background: var(--home-stage-deep);
+  color: var(--dark-ink);
 }
 
-.experience > h2,
-.stack > h2 {
-    margin: 0;
+.site-shell:not(.site-shell--case) .experience {
+  display: block;
+  padding-top: clamp(var(--space-16), 5vw, var(--space-20));
+  padding-bottom: clamp(var(--space-10), 4vw, var(--space-12));
+}
+
+.site-shell:not(.site-shell--case) .experience > h2 {
+  max-width: 9ch;
+  margin: 0 0 clamp(var(--space-8), 3vw, var(--space-10));
+  color: var(--dark-ink);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
 .experience__content {
-    display: grid;
-    gap: var(--space-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.65fr);
+  align-items: start;
+  gap: clamp(var(--space-10), 7vw, var(--space-24));
 }
 
 .experience__education {
-    display: grid;
-    gap: var(--space-4);
+  display: grid;
+  gap: var(--space-5);
 }
 
 .experience__education h3 {
-    color: var(--text-2);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.4;
+  color: var(--dark-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
 }
 
-/* ---- Timeline ---- */
-
 .timeline {
-    display: grid;
-    gap: var(--space-8);
-    margin: 0;
-    list-style: none;
+  display: grid;
+  gap: clamp(var(--space-6), 3vw, var(--space-10));
+  margin: 0;
+  list-style: none;
 }
 
 .timeline__item {
-    min-width: 0;
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--line-soft);
+  min-width: 0;
 }
 
 .timeline__dot {
-    display: none;
+  display: none;
 }
 
 .timeline__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-2) var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
 }
 
 .timeline__role {
-    color: var(--text-1);
-    font-weight: 600;
+  color: var(--dark-ink);
+  font-size: clamp(var(--fs-md), 1.8vw, var(--fs-xl));
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 .timeline__when {
-    color: var(--text-3);
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    letter-spacing: 0;
-    white-space: nowrap;
+  color: var(--dark-muted);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
 }
 
 .timeline__org {
-    margin: var(--space-1) 0 var(--space-3);
-    color: var(--text-2);
-    font-size: var(--fs-sm);
+  margin: var(--space-1) 0 var(--space-3);
+  color: var(--dark-muted);
+  font-size: var(--fs-sm);
 }
 
 .timeline__bullets {
-    display: grid;
-    gap: var(--space-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .timeline__bullets li {
-    position: relative;
-    padding-left: var(--space-4);
-    color: var(--text-2);
-    text-wrap: pretty;
+  position: relative;
+  max-width: 58ch;
+  padding-left: var(--space-4);
+  color: var(--dark-muted);
+  line-height: 1.5;
+  text-wrap: pretty;
 }
 
 .timeline__bullets li::before {
-    content: "";
-    position: absolute;
-    top: 0.7em;
-    left: 0;
-    width: 6px;
-    height: 1px;
-    background: var(--line-control);
+  position: absolute;
+  top: 0.72em;
+  left: 0;
+  width: 5px;
+  height: 2px;
+  background: var(--dark-muted);
+  content: '';
 }
 
-/* ---- Stack ---- */
-
-.stack > h2 {
-    color: var(--color-text-primary);
+.site-shell:not(.site-shell--case) .stack {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.3fr) minmax(0, 0.7fr);
+  gap: var(--space-6) clamp(var(--space-10), 8vw, var(--space-24));
+  padding-top: var(--space-8);
+  padding-bottom: clamp(var(--space-20), 7vw, var(--space-24));
 }
 
-.stack__grid {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-    margin-top: var(--space-2);
-    border-bottom: 1px solid var(--line-soft);
-}
-
-.stack__group {
-    min-width: 0;
-    display: grid;
-    grid-template-columns: minmax(10rem, 0.32fr) minmax(0, 0.68fr);
-    gap: var(--space-6);
-    align-items: baseline;
-    padding: var(--space-4) 0;
-    border-top: 1px solid var(--line-soft);
-}
-
-.stack__group h3 {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.4;
-}
-
-.stack__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-3);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.stack__chip {
-    color: var(--text-2);
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    line-height: 1.6;
-}
-
-.stack__chip + .stack__chip::before {
-    margin-right: var(--space-3);
-    color: var(--line-control);
-    content: '/';
+.site-shell:not(.site-shell--case) .stack > h2 {
+  grid-row: 1 / 3;
+  margin: 0;
+  color: var(--dark-ink);
+  font-size: clamp(2.75rem, 5vw, 4.5rem);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
 }
 
 .stack__note {
-    grid-column: 2;
-    margin-bottom: var(--space-4);
-    color: var(--text-2);
-    font-size: var(--fs-xs);
-    text-align: left;
+  grid-column: 2;
+  margin: 0;
+  color: var(--dark-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
 }
 
+.stack__grid {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(var(--space-6), 4vw, var(--space-12));
+}
+
+.stack__group {
+  min-width: 0;
+}
+
+.stack__group h3 {
+  margin: 0 0 var(--space-3);
+  color: var(--dark-ink);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.stack__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack__chip,
 .stack__chip.is-key {
-    color: var(--accent);
+  color: var(--dark-muted);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
 }
 
-@media screen and (max-width: 600px) {
-    .experience,
-    .stack {
-        grid-template-columns: minmax(0, 1fr);
-        gap: var(--space-6);
-    }
+@media screen and (max-width: 900px) {
+  .site-shell:not(.site-shell--case) .experience,
+  .site-shell:not(.site-shell--case) .stack {
+    padding-inline: var(--space-5);
+  }
 
-    .stack__note {
-        grid-column: auto;
-    }
+  .site-shell:not(.site-shell--case) .experience {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-8);
+  }
 
-    .stack__grid {
-        grid-column: auto;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 0;
-        margin-top: 0;
-    }
+  .site-shell:not(.site-shell--case) .experience > h2 {
+    margin-bottom: var(--space-6);
+    font-size: clamp(3.3rem, 16vw, 4.75rem);
+  }
 
-    .stack__group {
-        grid-template-columns: minmax(0, 1fr);
-        gap: var(--space-2);
-        padding-block: var(--space-4);
-    }
+  .experience__content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
 
-    .timeline {
-        gap: var(--space-5);
-    }
-}
+  .timeline {
+    gap: var(--space-6);
+  }
 
-@media screen and (max-width: 600px) {
-    /* `space-between` + `wrap`: cuando el puesto llenaba la linea, la fecha
-       bajaba y se quedaba a la izquierda; cuando cabia, iba a la derecha. Dos
-       entradas seguidas la ponian en sitios distintos. */
-    .timeline__head {
-        flex-direction: column;
-        gap: var(--space-1);
-    }
+  .timeline__head {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .site-shell:not(.site-shell--case) .stack {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+
+  .site-shell:not(.site-shell--case) .stack > h2,
+  .stack__note,
+  .stack__grid {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .stack__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
 }

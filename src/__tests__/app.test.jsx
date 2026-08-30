@@ -20,7 +20,7 @@ describe('la web entera', () => {
   it('monta las cinco secciones como landmarks con nombre', () => {
     render(<App />)
 
-    const secciones = ['Sobre mí', 'Trabajo seleccionado', 'Experiencia', 'Stack', 'Contáctame']
+    const secciones = ['Sobre mí', 'Strev y Sereno', 'Experiencia', 'Stack', 'Contáctame']
     secciones.forEach((nombre) => {
       expect(screen.getByRole('region', { name: nombre })).toBeInTheDocument()
     })
@@ -37,7 +37,7 @@ describe('la web entera', () => {
   it('hace encontrables el objetivo Full Stack y las herramientas de calidad', () => {
     render(<App pathname="/" />)
 
-    expect(screen.getAllByText(/oportunidades Full Stack/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/puestos Full Stack/i).length).toBeGreaterThan(0)
     const stack = screen.getByRole('region', { name: 'Stack' })
     const grupos = ['Producto web', 'Automatización aplicada', 'Calidad de entrega']
 
@@ -71,7 +71,7 @@ describe('la web entera', () => {
   it('da a cada imagen de proyecto un nombre accesible propio y descriptivo', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const imagenes = within(portfolio).getAllByRole('img')
 
     expect(imagenes).toHaveLength(4)
@@ -92,7 +92,7 @@ describe('la web entera', () => {
   it('deja visible como pie la descripcion de cada imagen de proyecto', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const diccionario = require('../i18n/locales/es/translation.json')
 
     diccionario.portfolio.projects.forEach((proyecto) => {
@@ -100,23 +100,28 @@ describe('la web entera', () => {
     })
   })
 
-  it('presenta Sereno como proyecto completo y enlaza su caso, codigo y release', () => {
-    render(<App />)
+  it('presenta Sereno con dos acciones en portada y reserva la release para el caso', () => {
+    const { unmount } = render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const sereno = within(portfolio).getAllByRole('article')
       .find((article) => within(article).queryByRole('heading', { name: 'Sereno' }))
 
     expect(sereno).toBeDefined()
-    expect(within(sereno).getByRole('link', { name: 'Ver el caso' }))
+    expect(within(sereno).getByRole('link', { name: 'Ver las decisiones' }))
       .toHaveAttribute('href', '/proyectos/sereno/')
-    expect(within(sereno).getByRole('link', { name: 'Código' }))
+    expect(within(sereno).getByRole('link', { name: 'Abrir el código' }))
       .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno')
-    expect(within(sereno).getByRole('link', { name: 'Última versión' }))
-      .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno/releases/latest')
+    expect(within(sereno).getAllByRole('link')).toHaveLength(2)
+    expect(within(sereno).queryByRole('link', { name: 'Última versión' })).toBeNull()
 
     const diccionario = require('../i18n/locales/es/translation.json')
     expect(diccionario.portfolio.side_project).toBeUndefined()
+
+    unmount()
+    render(<App pathname="/proyectos/sereno/" />)
+    expect(screen.getByRole('link', { name: 'Última versión' }))
+      .toHaveAttribute('href', 'https://github.com/ElRaxy/sereno/releases/latest')
   })
 
   // El PDF sale de la ruta, no del idioma de i18next: en el prerender no hay
@@ -212,7 +217,7 @@ describe('la web entera', () => {
   it('los proyectos que dicen tener codigo lo enlazan de verdad', () => {
     render(<App />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const enlaces = within(portfolio).getAllByRole('link')
 
     expect(enlaces.length).toBeGreaterThan(0)
@@ -300,27 +305,23 @@ describe('el bloque LCP no espera al JavaScript', () => {
   })
 })
 
-describe('el casebook usa movimiento como señal y no como bloqueo', () => {
+describe('el escenario de producto usa movimiento como señal y no como bloqueo', () => {
   const fs = require('fs')
   const path = require('path')
   const leer = (...partes) => fs.readFileSync(path.join(__dirname, '..', ...partes), 'utf8')
 
-  it('liga una línea de la masthead al progreso global y la retira con reduced motion', () => {
+  it('retira los railes de progreso de la masthead', () => {
     const nav = leer('componets', 'nav', 'Nav.jsx')
     const css = leer('componets', 'nav', 'nav.css')
 
-    expect(nav).toMatch(/const \{ scrollYProgress \} = useScroll\(\)/)
-    expect(nav).toMatch(/useSpring\(scrollYProgress/)
-    expect(nav).toMatch(/className="portfolio-nav__progress"/)
-    expect(nav).toMatch(/originX:\s*0/)
-    expect(css).toMatch(/\.portfolio-nav__progress\s*\{[\s\S]*?height:\s*1px/)
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio-nav__progress\s*\{[\s\S]*?display:\s*none/)
+    expect(nav).not.toMatch(/useScroll|useSpring|useReducedMotion|portfolio-nav__progress/)
+    expect(css).not.toMatch(/\.portfolio-nav__progress/)
   })
 
-  it('reserva el progreso local para Strev y Sereno y anima solo la media interior', () => {
+  it('da entrada transform-only a Strev y Sereno sin parallax ni rail local', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const articulos = within(portfolio).getAllByRole('article')
     const principales = articulos.filter((article) => article.dataset.tier === 'primary')
     const secundarios = articulos.filter((article) => article.dataset.tier === 'supporting')
@@ -329,23 +330,23 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(secundarios).toHaveLength(2)
 
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
-    expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion[\s\S]*?portfolio__chapter-progress/)
+    expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion/)
     expect(source).toMatch(/\) : \([\s\S]*?<ProjectImage/)
-    expect(source.match(/useScroll\(\{/g)).toHaveLength(1)
-    expect(source).toMatch(/target:\s*cardRef/)
-    expect(source).toMatch(/\[-3, 0, 3\]/)
-    expect(source).toMatch(/\[1, 1\.018, 1\]/)
+    expect(source).toMatch(/initial:\s*\{ y:\s*18, scale:\s*0\.985 \}/)
+    expect(source).toMatch(/whileInView:\s*\{ y:\s*0, scale:\s*1 \}/)
+    expect(source).not.toMatch(/useScroll|useSpring|useTransform|chapter-progress/)
     expect(source).not.toMatch(/opacity/)
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
-    expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?inset:\s*-4px/)
+    expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
+    expect(css).not.toMatch(/portfolio__chapter-progress|will-change/)
     expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
   })
 
   it('presenta cuatro casos con un top 2 real y sin rotulos ordinales', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const articulos = within(portfolio).getAllByRole('article')
     const titulosPorTier = (tier) => articulos
       .filter((article) => article.dataset.tier === tier)
@@ -364,20 +365,111 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
 
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
     expect(source).not.toMatch(/projectIndex|tier_label|padStart|portfolio__eyebrow/)
+    expect(within(portfolio).getByText('Más trabajo').tagName).toBe('P')
+    expect(source).toMatch(/className="portfolio__supporting"/)
+    expect(source).toMatch(/t\('portfolio\.supporting_title'\)/)
   })
 
-  it('invierte Sereno solo en escritorio y anula los transforms en móvil', () => {
+  it('usa el mismo stage para ambos productos y respeta el ratio panorámico de Sereno', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
-    const layoutSereno = css.match(/\.portfolio__item--sereno\s*\{[\s\S]*?\n\}/)
-    expect(layoutSereno).not.toBeNull()
-    expect(layoutSereno[0]).toMatch(
-      /grid-template-columns:\s*minmax\(18rem, 0\.76fr\) minmax\(0, 1\.24fr\)/,
+    const stage = css.match(/\.portfolio__item--primary\s*\{[\s\S]*?\n\}/)
+    expect(stage).not.toBeNull()
+    expect(stage[0]).toMatch(/height:\s*clamp\(37rem, 67svh, 39rem\)/)
+    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(18rem, 0\.36fr\) minmax\(0, 0\.64fr\)/)
+    expect(stage[0]).toMatch(/grid-template-areas:\s*'body media'/)
+    expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
+    expect(css).toMatch(/\.portfolio__item--sereno\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 0\.64fr\) minmax\(18rem, 0\.36fr\)[\s\S]*?grid-template-areas:\s*'media body'/)
+    const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
+    expect(serenoFrame).not.toBeNull()
+    expect(serenoFrame[0]).toMatch(/background:\s*#1d1c2d/)
+    expect(serenoFrame[0]).not.toMatch(/aspect-ratio/)
+    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio__media-motion[\s\S]*?transform:\s*none !important/)
+  })
+
+  it('fija la identidad cobalto con evidencia real y una sola familia tipográfica', () => {
+    const header = leer('componets', 'header', 'Header.jsx')
+    const headerCss = leer('componets', 'header', 'header.css')
+    const portfolioCss = leer('componets', 'portfolio', 'portfolio.css')
+    const index = leer('index.css')
+    const html = fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'index.html'), 'utf8')
+
+    expect(index).toMatch(/--home-stage:\s*#2f6ba8/)
+    expect(index).toMatch(/--font-sans:\s*"Anek Latin"/)
+    expect(index).toMatch(/--font-mono:\s*var\(--font-sans\)/)
+    expect(html).toMatch(/Anek\+Latin:wght@400;500;600;700/)
+    expect(html).not.toMatch(/IBM\+Plex/)
+
+    expect(header).toMatch(/className="hero__stage" aria-hidden="true"/)
+    expect(header.match(/className="hero__preview hero__preview--/g)).toHaveLength(2)
+    expect(header).toMatch(/<figcaption className="hero__preview-caption">Strev<\/figcaption>/)
+    expect(header).toMatch(/<figcaption className="hero__preview-caption">Sereno<\/figcaption>/)
+    expect(header).toMatch(/alex-editorial-portrait-v1\.webp/)
+    expect(header).not.toMatch(/alex-headshot/)
+    expect(header).not.toMatch(/hero__preview-bar/)
+    expect(headerCss).toMatch(/\.hero\s*\{[\s\S]*?background:\s*var\(--home-stage\)/)
+    expect(headerCss).toMatch(/\.hero__stage\s*\{[\s\S]*?grid-template-rows:\s*repeat\(2, minmax\(0, 1fr\)\)/)
+    expect(headerCss).toMatch(/\.hero__portrait\s*\{[\s\S]*?width:\s*5rem;[\s\S]*?height:\s*6\.25rem/)
+    expect(headerCss).toMatch(/\.hero :where\(a, button\):focus-visible\s*\{[\s\S]*?outline-color:\s*var\(--home-stage-on\)/)
+    expect(portfolioCss).toMatch(/\.portfolio__item--supporting \.portfolio__links a\s*\{[\s\S]*?min-inline-size:\s*44px/)
+    expect(`${headerCss}\n${portfolioCss}`).not.toMatch(/var\(--font-mono\)/)
+  })
+
+  it('mantiene legibles los CTA compartidos fuera del scope del hero', () => {
+    const css = leer('componets', 'header', 'header.css')
+    const caso = css.match(/\.site-shell__case-actions \.hero__button\s*\{[\s\S]*?\n\}/)
+    const principal = css.match(/\.site-shell__case-actions \.hero__button--projects\s*\{[\s\S]*?\n\}/)
+
+    expect(caso).not.toBeNull()
+    expect(caso[0]).toMatch(/border:\s*1px solid var\(--line-control\)/)
+    expect(caso[0]).toMatch(/color:\s*var\(--text-1\)/)
+    expect(principal).not.toBeNull()
+    expect(principal[0]).toMatch(/background:\s*var\(--accent\)/)
+    expect(principal[0]).toMatch(/color:\s*var\(--accent-on\)/)
+  })
+
+  it('rectifica los controles de la home sin reducir sus targets', () => {
+    const css = leer('componets', 'nav', 'nav.css')
+    const idioma = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector\s*\{[\s\S]*?\n\}/)
+    const activo = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector__option--active\s*\{[\s\S]*?\n\}/)
+    const tema = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.theme-toggle__track\s*\{[\s\S]*?\n\}/)
+
+    expect(idioma).not.toBeNull()
+    expect(idioma[0]).toMatch(/border-radius:\s*3px/)
+    expect(activo).not.toBeNull()
+    expect(activo[0]).toMatch(/background:\s*#ffffff/)
+    expect(activo[0]).toMatch(/color:\s*#173b60/)
+    expect(tema).not.toBeNull()
+    expect(tema[0]).toMatch(/width:\s*44px/)
+    expect(tema[0]).toMatch(/border-radius:\s*3px/)
+  })
+
+  it('publica sin ampliar el copy final de Humanízalo', () => {
+    const es = require('../i18n/locales/es/translation.json')
+    const en = require('../i18n/locales/en/translation.json')
+
+    expect(es.header.tagline).toBe(
+      'Construyo productos con trabajo en segundo plano. Quien los usa sabe qué está pasando.',
     )
-    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__media\s*\{[\s\S]*?grid-column:\s*2/)
-    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__body\s*\{[\s\S]*?grid-column:\s*1/)
-    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?\.portfolio__item--sereno \.portfolio__media,[\s\S]*?grid-column:\s*1/)
-    expect(css).toMatch(/@media screen and \(max-width: 860px\)[\s\S]*?\.portfolio__media-motion,[\s\S]*?transform:\s*none !important/)
+    expect(es.header.support).toBe(
+      'En Strev, un entrenador sigue usando la aplicación mientras corre el análisis de vídeo. Sereno me muestra qué sesiones están trabajando y cuáles esperan una respuesta.',
+    )
+    expect(en.header.tagline).toBe(
+      'I build products that do work in the background. The person using them can still see what is happening.',
+    )
+    expect(en.header.support).toBe(
+      'In Strev, a trainer keeps using the app while video analysis runs. Sereno shows me which sessions are working and which ones are waiting for a reply.',
+    )
+    expect(es.portfolio.title).toBe('Strev y Sereno')
+    expect(en.portfolio.title).toBe('Strev and Sereno')
+    expect(es.portfolio.supporting_title).toBe('Más trabajo')
+    expect(en.portfolio.supporting_title).toBe('More work')
+    expect(es.portfolio.projects.filter(({ tier }) => tier === 'primary').map(({ proof }) => proof))
+      .toEqual([
+        'React + Node · análisis en cola y cifrado por campo',
+        '1 archivo Python · 0 dependencias externas · 4 CLI',
+      ])
   })
 
   it('revela contenido visible con un gesto breve y adelantado', () => {
@@ -404,7 +496,7 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(menuClosed).not.toMatch(/display:\s*none/)
   })
 
-  it('acorta tema e idioma y presenta Stack como un ledger responsive', () => {
+  it('acorta tema e idioma y continua Experience y Stack sin ledger', () => {
     const theme = leer('componets', 'theme', 'ThemeToggle.jsx')
     const index = leer('index.css')
     const language = leer('componets', 'language', 'language.css')
@@ -416,15 +508,14 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(language).toMatch(/language-content-settle 190ms/)
     expect(language).toMatch(/prefers-reduced-motion: reduce[\s\S]*?animation:\s*none/)
 
-    const grupo = experience.match(/\.stack__group\s*\{[\s\S]*?\n\}/)
-    const ledger = experience.match(/\.stack__grid\s*\{[\s\S]*?\n\}/)
-    expect(ledger).not.toBeNull()
-    expect(ledger[0]).toMatch(/grid-column:\s*1 \/ -1/)
-    expect(grupo).not.toBeNull()
-    expect(grupo[0]).toMatch(/display:\s*grid/)
-    expect(grupo[0]).toMatch(/grid-template-columns:\s*minmax\(10rem, 0\.32fr\) minmax\(0, 0\.68fr\)/)
-    expect(grupo[0]).toMatch(/border-top:\s*1px solid var\(--line-soft\)/)
-    expect(experience).toMatch(/max-width: 600px[\s\S]*?\.stack__group\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
+    const stackGrid = experience.match(/\.stack__grid\s*\{[\s\S]*?\n\}/)
+    expect(stackGrid).not.toBeNull()
+    expect(stackGrid[0]).toMatch(/grid-column:\s*2/)
+    expect(stackGrid[0]).toMatch(/grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/)
+    expect(experience).toMatch(/\.site-shell:not\(\.site-shell--case\) \.experience,[\s\S]*?\.stack[\s\S]*?background:\s*var\(--home-stage-deep\)/)
+    expect(experience).not.toMatch(/border-top|border-bottom/)
+    expect(experience).not.toMatch(/\.stack__chip \+ \.stack__chip::before/)
+    expect(experience).not.toMatch(/font-family:\s*var\(--font-mono\)/)
     expect(experience).not.toMatch(/\.stack\s*\{[^}]*min-height/)
     expect(experience).not.toMatch(/opacity:\s*0/)
   })
@@ -436,10 +527,10 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
       /\.site-shell__content section \+ section,[\s\S]*?margin-top:\s*clamp\(6rem, 11vw, 10rem\)/,
     )
     expect(index).toMatch(
-      /\.site-shell:not\(\.site-shell--case\) \.site-shell__content section \+ section,[\s\S]*?margin-top:\s*clamp\(5rem, 8vw, 7rem\)/,
+      /\.site-shell:not\(\.site-shell--case\) \.site-shell__content section \+ section,[\s\S]*?margin-top:\s*0/,
     )
     expect(index).toMatch(
-      /@media screen and \(max-width: 600px\)[\s\S]*?\.site-shell:not\(\.site-shell--case\)[\s\S]*?margin-top:\s*var\(--space-16\)/,
+      /@media screen and \(max-width: 600px\)[\s\S]*?\.site-shell:not\(\.site-shell--case\)[\s\S]*?margin-top:\s*0/,
     )
   })
 })
@@ -474,7 +565,7 @@ describe('el orden de foco sigue al orden visual', () => {
     const idioma = enlaces.findIndex((enlace) => (
       /Cambiar idioma/i.test(enlace.getAttribute('aria-label') || '')
     ))
-    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Ver proyectos')
+    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Ver Strev y Sereno')
 
     expect(idioma).toBeGreaterThanOrEqual(0)
     expect(verProyectos).toBeGreaterThan(idioma)
@@ -731,6 +822,90 @@ describe('paginas de caso de estudio', () => {
     expect(source).not.toMatch(/ProjectDiagram|TypewriterTerminal/)
   })
 
+  it('pertenece al stage cobalt sin duplicar el hero', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const css = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'),
+      'utf8',
+    )
+    const cover = css.match(/\.case__header\s*\{[\s\S]*?\n\}/)
+    const title = css.match(/\.case__header h1\s*\{[\s\S]*?\n\}/)
+
+    expect(cover).not.toBeNull()
+    expect(cover[0]).toMatch(/min-height:\s*clamp\(16rem,[^;]+22rem\)/)
+    expect(cover[0]).toMatch(/background:\s*var\(--home-stage\)/)
+    expect(title).not.toBeNull()
+    expect(title[0]).toMatch(/color:\s*#fff(?:fff)?/)
+    expect(css).not.toMatch(/\.case__header[\s\S]*?(?:hero__stage|hero__preview|hero__portrait)/)
+  })
+
+  it('usa evidencia 16:10 y mantiene las decisiones semanticas sin ordinal visual', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const css = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'),
+      'utf8',
+    )
+    const frame = css.match(/\.case__media-frame\s*\{[\s\S]*?\n\}/)
+    const media = css.match(/\.case__media img\s*\{[\s\S]*?\n\}/)
+    const strev = css.match(/\.case__media--strev \.case__media-frame img\s*\{[\s\S]*?\n\}/)
+    const decisions = css.match(/\.case__decisions\s*\{[\s\S]*?\n\}/)
+    const ordinal = css.match(/\.case__decision::before\s*\{[\s\S]*?\n\}/)
+    const results = css.match(/\.case__results\s*\{[\s\S]*?\n\}/)
+
+    expect(frame).not.toBeNull()
+    expect(frame[0]).toMatch(/aspect-ratio:\s*16\s*\/\s*10/)
+    expect(media).not.toBeNull()
+    expect(media[0]).toMatch(/object-fit:\s*contain/)
+    expect(strev).not.toBeNull()
+    expect(strev[0]).toMatch(/object-fit:\s*cover/)
+    expect(decisions).not.toBeNull()
+    expect(decisions[0]).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/)
+    expect(ordinal).not.toBeNull()
+    expect(ordinal[0]).toMatch(/content:\s*none/)
+    expect(results).not.toBeNull()
+    expect(results[0]).toMatch(/background:\s*var\(--surface-sel\)/)
+    expect(results[0]).not.toMatch(/border-(?:top|bottom)/)
+    expect(css).not.toMatch(/@keyframes|animation:/)
+  })
+
+  it('sincroniza la identidad social y los documentos vivos con Cobalt Product Stage', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const root = path.join(__dirname, '..', '..')
+    const publicPath = path.join(root, 'public')
+    const og = fs.readFileSync(path.join(publicPath, 'og-image.svg'), 'utf8')
+    const favicon = fs.readFileSync(path.join(publicPath, 'favicon.svg'), 'utf8')
+    const head = fs.readFileSync(path.join(publicPath, 'index.html'), 'utf8')
+    const notFound = fs.readFileSync(path.join(publicPath, '404.html'), 'utf8')
+    const product = fs.readFileSync(path.join(root, 'PRODUCT.md'), 'utf8')
+    const design = fs.readFileSync(path.join(root, 'DESIGN.md'), 'utf8')
+    const designJson = fs.readFileSync(path.join(root, '.impeccable', 'design.json'), 'utf8')
+    const designHtmlPath = path.join(root, 'DESIGN.html')
+
+    expect(og).toMatch(/Strev/)
+    expect(og).toMatch(/Sereno/)
+    expect(og).not.toMatch(/Product casebook/i)
+    expect(favicon).toMatch(/<title(?:\s[^>]*)?>Alex Micó Robles<\/title>/)
+    expect(favicon).not.toMatch(/<text\b/)
+    expect(head.match(/og-image\.png\?v=3/g)).toHaveLength(3)
+    expect(head).toMatch(/favicon\.svg\?v=3/)
+    expect(head).toMatch(/apple-touch-icon\.png\?v=3/)
+    expect(notFound).toMatch(/favicon\.svg\?v=3/)
+
+    expect(`${product}\n${design}\n${designJson}`).toMatch(/Cobalt Product Stage/)
+    expect(`${design}\n${designJson}`).toMatch(/Anek Latin/)
+    expect(`${design}\n${designJson}`).not.toMatch(/Product Casebook|IBM Plex/)
+    expect(fs.existsSync(designHtmlPath)).toBe(true)
+    if (fs.existsSync(designHtmlPath)) {
+      const designHtml = fs.readFileSync(designHtmlPath, 'utf8')
+      expect(designHtml).toMatch(/Home stage/)
+      expect(designHtml).toMatch(/Case cover/)
+      expect(designHtml).not.toMatch(/<script\b[^>]*src=|<link\b[^>]*href=/)
+    }
+  })
+
   it('reconoce las rutas de caso en los dos idiomas y descarta las inventadas', () => {
     expect(parseRoute('/proyectos/atalaya/')).toEqual({ kind: 'case', language: 'es', slug: 'atalaya' })
     expect(parseRoute('/en/projects/strev/')).toEqual({ kind: 'case', language: 'en', slug: 'strev' })
@@ -797,7 +972,7 @@ describe('paginas de caso de estudio', () => {
   it('da el mismo contrato visual a Strev y Sereno y respeta movimiento reducido', () => {
     render(<App pathname="/" />)
 
-    const portfolio = screen.getByRole('region', { name: 'Trabajo seleccionado' })
+    const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const principales = within(portfolio).getAllByRole('article')
       .filter((article) => article.getAttribute('data-tier') === 'primary')
 
@@ -805,7 +980,11 @@ describe('paginas de caso de estudio', () => {
     expect(principales.map((article) => (
       within(article).getByRole('heading', { level: 3 }).textContent
     ))).toEqual(['Strev', 'Sereno'])
-    principales.forEach((article) => expect(article).toHaveClass('portfolio__item--primary'))
+    principales.forEach((article) => {
+      expect(article).toHaveClass('portfolio__item--primary')
+      expect(within(article).getAllByRole('link')).toHaveLength(2)
+      expect(within(article).queryByRole('link', { name: /Última versión|Latest release/i })).toBeNull()
+    })
 
     const sereno = principales[1]
     expect(within(sereno).getByRole('img')).toHaveAttribute(

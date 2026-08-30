@@ -1,7 +1,7 @@
 .case {
     display: flex;
     flex-direction: column;
-    gap: var(--space-12);
+    gap: clamp(var(--space-12), 6vw, var(--space-20));
     padding: 0 0 var(--space-20);
 }
 
@@ -24,37 +24,40 @@
     color: var(--color-text-primary);
 }
 
+/* El cover identifica el caso sin repetir el hero: no retrato, previews ni CTA. */
 .case__header {
+    min-height: clamp(16rem, 30vw, 22rem);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    justify-content: flex-end;
+    gap: var(--space-5);
+    padding: clamp(var(--space-8), 6vw, var(--space-16));
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--home-stage);
+    color: #ffffff;
 }
 
 .case__header h1 {
-    font-size: var(--fs-display);
+    max-width: 13ch;
+    color: #ffffff;
+    font-size: clamp(3.25rem, 8vw, 6rem);
     font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
 }
 
-/* Iba en color de acento sin ser enlace: en una pagina donde todo lo azul se
-   pulsa, un parrafo azul invita a un clic que no existe. */
 .case__tagline {
-    color: var(--color-text-muted);
-    font-size: var(--fs-lg);
-    line-height: 1.5;
+    max-width: 48rem;
+    color: #e4eff9;
+    font-size: clamp(var(--fs-md), 2vw, var(--fs-lg));
+    line-height: 1.45;
+    text-wrap: pretty;
 }
 
-.case__summary {
-    color: var(--color-text-muted);
-    font-size: var(--fs-md);
-    line-height: 1.6;
-    max-width: 62ch;
-}
-
-/* Las reglas globales de `section` (margen de 8rem entre hermanas, padding y
-   h2 centrado con 2rem debajo) estan pensadas para las secciones de la
-   portada. Dentro de un caso el ritmo lo lleva el gap del article. */
+/* Las reglas globales de section son de la portada. El caso lleva su propio ritmo. */
 .case__block,
 .site-shell__content .case__block,
 .site-shell__content .case__block + .case__block {
@@ -68,200 +71,168 @@
 .case__block h2,
 .case .case__block > h2 {
     margin: 0;
-    text-align: left;
-}
-
-/* La linea abre cada capitulo sin convertir el rotulo en una etiqueta tecnica. */
-.case__block h2 {
     color: var(--color-text-primary);
-    font-size: var(--fs-xl);
+    font-size: clamp(var(--fs-xl), 3.3vw, 2.5rem);
     font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--line-soft);
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    text-align: left;
+    text-wrap: balance;
 }
 
-.case__block--summary h2 {
-    border-top: 0;
-    padding-top: 0;
+.case__summary {
+    max-width: 58ch;
+    color: var(--color-text-primary);
+    font-size: clamp(var(--fs-md), 2vw, 1.4rem);
+    line-height: 1.55;
+    text-wrap: pretty;
 }
 
-/* Rail de ambito. Los pasajes de las decisiones y de los numeros viajan solos
-   cuando alguien (o un LLM) los extrae, y salian sin sujeto. El nombre tiene
-   que ser texto visible: medido con defuddle el 2026-08-23, un aria-label o un
-   span con clase sr-only no salen del documento. Sin caja alta a proposito:
-   "SAVEMYMONEYNOW" no es como se escribe el proyecto, y el nombre es el dato.
-   Un peldano por debajo del rotulo en tamano y color para que el ojo lo lea
-   como un pie y no como un segundo titulo. */
+/* El nombre visible mantiene el contexto cuando un extractor separa el pasaje. */
 .case__scope {
     display: block;
-    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+    color: var(--accent);
     font-size: var(--fs-sm);
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0;
     line-height: 1.4;
 }
 
-/* El separador es del ojo, no del documento: en ::after no lo extrae nadie y
-   el pasaje sale limpio ("Atalaya Como funciona"). */
-.case__scope::after {
-    content: '';
-    display: block;
-    width: var(--space-5);
-    height: 1px;
-    margin: var(--space-2) 0 var(--space-3);
-    background: var(--line-soft);
-}
-
 .case__block > p {
+    max-width: 68ch;
     color: var(--color-text-muted);
     line-height: 1.7;
-    max-width: 68ch;
+    text-wrap: pretty;
 }
 
+/* El OL conserva el orden semántico, pero la interfaz no añade ordinales decorativos. */
 .case__decisions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-    counter-reset: decision;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(var(--space-8), 5vw, var(--space-12));
 }
 
 .case__decision {
-    counter-increment: decision;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding-left: var(--space-8);
-    position: relative;
-    max-width: 68ch;
+    gap: var(--space-3);
 }
 
-/* El numero es del contador y no del texto: si manana se reordenan las
-   decisiones, no hay que renumerar nada a mano. */
 .case__decision::before {
-    content: counter(decision, decimal-leading-zero);
-    position: absolute;
-    left: 0;
-    top: 0.15em;
-    color: var(--accent);
-    font-size: var(--fs-sm);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
+    content: none;
 }
 
 .case__decision h3 {
-    font-size: var(--fs-base);
+    color: var(--color-text-primary);
+    font-size: clamp(var(--fs-base), 1.8vw, var(--fs-md));
     font-weight: 600;
-    line-height: 1.35;
+    line-height: 1.3;
+    text-wrap: balance;
 }
 
 .case__decision p {
     color: var(--color-text-muted);
-    line-height: 1.7;
+    line-height: 1.65;
+    text-wrap: pretty;
 }
 
 .case__results {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: var(--space-6);
-    border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-    padding: var(--space-6) 0;
+    padding: clamp(var(--space-6), 5vw, var(--space-10));
+    border-radius: 3px;
+    background: var(--surface-sel);
 }
 
 .case__result {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 .case__result-value {
     min-width: 0;
     color: var(--color-text-primary);
-    font-size: var(--fs-2xl);
+    font-size: clamp(1.7rem, 4vw, var(--fs-2xl));
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     line-height: 1;
+    overflow-wrap: anywhere;
 }
 
 .case__result-label {
-    color: var(--text-3);
+    color: var(--color-text-muted);
     font-size: var(--fs-sm);
     line-height: 1.45;
 }
 
 .case__note {
+    max-width: 68ch;
     color: var(--text-3);
     font-size: var(--fs-sm);
     line-height: 1.6;
-    max-width: 68ch;
-}
-
-@media screen and (max-width: 900px) {
-    .case {
-        gap: var(--space-8);
-    }
-
-    .case__decisions {
-        gap: var(--space-6);
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .case__result-value {
-        font-size: clamp(1.5rem, 6vw, var(--fs-2xl));
-    }
 }
 
 .case__links {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
-    margin-top: var(--space-6);
+    margin-top: var(--space-2);
 }
 
 .case__link {
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
     padding: 0 var(--space-5);
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius-full);
+    border: 1px solid var(--line-control);
+    border-radius: 3px;
     color: var(--color-text-primary);
     font-size: var(--fs-sm);
-    font-weight: 500;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    font-weight: 600;
 }
 
 .case__link:hover {
     border-color: var(--accent);
     background: var(--surface-2);
+    color: var(--color-text-primary);
 }
 
-/* Evidencia del producto: la captura conserva su proporcion y el marco queda
-   en segundo plano, como una lamina dentro del casebook. */
+/* Todos los casos comparten marco exterior. Solo Strev llena el 16:10 sin matte. */
 .case__media {
-    margin-top: var(--space-6);
+    width: 100%;
     max-width: 56rem;
-}
-
-.case__media--savemymoneynow {
-    max-width: 48rem;
+    margin-top: var(--space-6);
 }
 
 .case__media-frame {
+    aspect-ratio: 16 / 10;
+    display: grid;
+    place-items: center;
     overflow: hidden;
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius-sm);
-    background: var(--surface-1);
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 3px;
+    background: var(--home-stage-deep);
 }
 
 .case__media img {
-    display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+}
+
+.case__media--strev .case__media-frame img {
+    object-fit: cover;
+}
+
+.case__media--sereno .case__media-frame {
+    background: #1d1c2d;
 }
 
 .case__media figcaption {
@@ -269,4 +240,35 @@
     color: var(--text-3);
     font-size: var(--fs-xs);
     line-height: 1.5;
+    text-wrap: pretty;
+}
+
+@media screen and (max-width: 760px) {
+    .case {
+        gap: var(--space-12);
+    }
+
+    .case__decisions {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-8);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .case__header {
+        min-height: 16rem;
+        padding: var(--space-6);
+    }
+
+    .case__header h1 {
+        font-size: clamp(2.25rem, 12vw, 3.5rem);
+    }
+
+    .case__tagline {
+        font-size: var(--fs-base);
+    }
+
+    .case__results {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

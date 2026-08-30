@@ -17,11 +17,12 @@
   "header": {
     "name": "Alex Micó Robles",
     "title": "Full Stack Developer · React, Node and Python",
-    "tagline": "I build web products around concrete problems. I work with React and Node, and use Python to automate work that should not stay manual.",
+    "tagline": "I build products that do work in the background. The person using them can still see what is happening.",
+    "support": "In Strev, a trainer keeps using the app while video analysis runs. Sereno shows me which sessions are working and which ones are waiting for a reply.",
     "evidence": "SaveMyMoneyNow: 21 endpoints and 113 tests · Atalaya: 174 tests",
-    "view_projects": "View projects",
+    "view_projects": "View Strev and Sereno",
     "download_cv": "Download CV",
-    "availability": "Open to Full Stack roles · Remote in Spain and the EU"
+    "availability": "Open to Full Stack roles in Spain and across the EU"
   },
   "about": {
     "title": "About me",
@@ -103,8 +104,9 @@
     }
   },
   "portfolio": {
-    "title": "Selected work",
-    "subtitle": "Products I have taken from a concrete problem to a usable release",
+    "title": "Strev and Sereno",
+    "subtitle": "The two products that best show how I work.",
+    "supporting_title": "More work",
     "closed_label": "Closed source, demo on request",
     "internal_label": "Internal tool, closed source",
     "primary_label": "Primary project",
@@ -117,7 +119,9 @@
     "projects": [
       {
         "title": "Strev",
-        "description": "Strev gives personal trainers one place to build routines, follow progress, handle payments and review technique on video. Analysis goes through a queue, so the interface stays available while the model works.",
+        "label": "Web product for personal trainers",
+        "description": "A trainer keeps using the app while video analysis runs.",
+        "proof": "React + Node · queued analysis and field-level encryption",
         "tier": "primary",
         "tags": [
           "React",
@@ -139,7 +143,9 @@
       },
       {
         "title": "Sereno",
-        "description": "Sereno lets me see at a glance which agents are writing, running a command, waiting or stopped. It reads the local histories of Claude Code, Codex, Gemini and Antigravity without sending data off the machine.",
+        "label": "Local tool for agent sessions",
+        "description": "I can see which session is working, running a command or waiting for a reply.",
+        "proof": "1 Python file · 0 third-party dependencies · 4 CLIs",
         "tier": "primary",
         "tags": [
           "Python",
@@ -149,7 +155,7 @@
         ],
         "links": [
           {
-            "label": "Code",
+            "label": "View source",
             "url": "https://github.com/ElRaxy/sereno"
           },
           {
@@ -204,7 +210,7 @@
         "slug": "atalaya"
       }
     ],
-    "case_link": "Read the case study",
+    "case_link": "Read the decisions",
     "diagrams": {
       "savemymoneynow": {
         "prompt": "",
