@@ -898,12 +898,10 @@ describe('paginas de caso de estudio', () => {
     expect(`${design}\n${designJson}`).toMatch(/Anek Latin/)
     expect(`${design}\n${designJson}`).not.toMatch(/Product Casebook|IBM Plex/)
     expect(fs.existsSync(designHtmlPath)).toBe(true)
-    if (fs.existsSync(designHtmlPath)) {
-      const designHtml = fs.readFileSync(designHtmlPath, 'utf8')
-      expect(designHtml).toMatch(/Home stage/)
-      expect(designHtml).toMatch(/Case cover/)
-      expect(designHtml).not.toMatch(/<script\b[^>]*src=|<link\b[^>]*href=/)
-    }
+    const designHtml = fs.readFileSync(designHtmlPath, 'utf8')
+    expect(designHtml).toMatch(/Home stage/)
+    expect(designHtml).toMatch(/Case cover/)
+    expect(designHtml).not.toMatch(/<script\b[^>]*src=|<link\b[^>]*href=/)
   })
 
   it('reconoce las rutas de caso en los dos idiomas y descarta las inventadas', () => {
