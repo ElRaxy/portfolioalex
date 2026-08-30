@@ -60,7 +60,7 @@ function App({ pathname }) {
           <main className="site-shell__content">
             {route.kind === 'case' ? (
               <>
-                <CaseStudy slug={route.slug} />
+                <CaseStudy language={route.language} slug={route.slug} />
                 <aside className="site-shell__case-actions" aria-label={i18n.t('header.availability')}>
                   <CTA />
                 </aside>

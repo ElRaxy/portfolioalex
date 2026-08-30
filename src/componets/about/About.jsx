@@ -17,8 +17,10 @@ const About = () => {
       <div className="about__content">
         <p className="about__lead">{t('about.lead')}</p>
 
-        <p>{t('about.p2')}</p>
-        <p>{t('about.p3')}</p>
+        <div className="about__narrative">
+          <p>{t('about.p2')}</p>
+          <p>{t('about.p3')}</p>
+        </div>
 
         {/* Los cuatro datos que se preguntan primero, como lista de
             definiciones: un extractor se los lleva emparejados. */}

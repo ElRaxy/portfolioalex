@@ -49,6 +49,19 @@ describe('la web entera', () => {
       .forEach((skill) => expect(within(stack).getByText(skill)).toBeInTheDocument())
   })
 
+  it('ordena experiencia y formacion con headings acordes a su nivel', () => {
+    render(<App pathname="/" />)
+
+    const experiencia = screen.getByRole('region', { name: 'Experiencia' })
+    expect(within(experiencia).getAllByRole('heading', { level: 3 }).map(({ textContent }) => textContent))
+      .toEqual(['Desarrollador Full Stack', 'Técnico de Soporte IT · Prácticas', 'Formación'])
+    expect(within(experiencia).getAllByRole('heading', { level: 4 }).map(({ textContent }) => textContent))
+      .toEqual([
+        'Grado Superior en Desarrollo de Aplicaciones Web',
+        'Ciclo Medio en Sistemas Microinformáticos y Redes',
+      ])
+  })
+
   it('mantiene fuera de la narrativa publica las cifras y el lenguaje de flota', () => {
     render(<App pathname="/" />)
 
@@ -87,6 +100,12 @@ describe('la web entera', () => {
 
     const nombres = imagenes.map((imagen) => imagen.getAttribute('alt'))
     expect(new Set(nombres).size).toBe(imagenes.length)
+
+    const porNombre = Object.fromEntries(imagenes.map((imagen) => [imagen.getAttribute('alt'), imagen]))
+    expect(porNombre['SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe'])
+      .toHaveAttribute('loading', 'eager')
+    expect(porNombre['Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas'])
+      .toHaveAttribute('loading', 'lazy')
   })
 
   it('deja visible como pie la descripcion de cada imagen de proyecto', () => {
@@ -192,13 +211,13 @@ describe('la web entera', () => {
     try {
       render(<App />)
 
-      const selectores = screen.getAllByRole('button', { name: /tema|theme/i })
+      const selectores = screen.getAllByRole('button', { name: 'Cambiar a tema claro' })
       expect(selectores).toHaveLength(1)
-      expect(selectores[0]).toHaveAttribute('aria-pressed', 'true')
+      expect(selectores[0]).not.toHaveAttribute('aria-pressed')
 
       fireEvent.click(selectores[0])
 
-      expect(selectores[0]).toHaveAttribute('aria-pressed', 'false')
+      expect(selectores[0]).toHaveAccessibleName('Cambiar a tema oscuro')
       expect(document.documentElement).toHaveAttribute('data-theme', 'light')
       expect(document.documentElement).toHaveAttribute('data-theme-transition')
       expect(document.startViewTransition).not.toHaveBeenCalled()
@@ -348,13 +367,18 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     const portfolio = screen.getByRole('region', { name: 'Strev y Sereno' })
     const articulos = within(portfolio).getAllByRole('article')
-    const titulosPorTier = (tier) => articulos
+    const titulosPorTier = (tier, level) => articulos
       .filter((article) => article.dataset.tier === tier)
-      .map((article) => within(article).getByRole('heading', { level: 3 }).textContent)
+      .map((article) => within(article).getByRole('heading', { level }).textContent)
 
     expect(articulos).toHaveLength(4)
-    expect(titulosPorTier('primary')).toEqual(['Strev', 'Sereno'])
-    expect(titulosPorTier('supporting')).toEqual(['SaveMyMoneyNow', 'Atalaya'])
+    expect(titulosPorTier('primary', 3)).toEqual(['Strev', 'Sereno'])
+    expect(titulosPorTier('supporting', 4)).toEqual(['SaveMyMoneyNow', 'Atalaya'])
+    expect(within(portfolio).getByRole('heading', { level: 3, name: 'Más trabajo' }))
+      .toBeInTheDocument()
+    ;['Strev', 'Sereno', 'SaveMyMoneyNow', 'Atalaya'].forEach((nombre) => {
+      expect(within(portfolio).getByRole('article', { name: nombre })).toBeInTheDocument()
+    })
     ;['01', '02', '03', '04'].forEach((ordinal) => {
       expect(within(portfolio).queryByText(ordinal)).not.toBeInTheDocument()
     })
@@ -365,9 +389,14 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
     expect(source).not.toMatch(/projectIndex|tier_label|padStart|portfolio__eyebrow/)
-    expect(within(portfolio).getByText('Más trabajo').tagName).toBe('P')
+    expect(within(portfolio).getByText('Más trabajo').tagName).toBe('H3')
     expect(source).toMatch(/className="portfolio__supporting"/)
     expect(source).toMatch(/t\('portfolio\.supporting_title'\)/)
+
+    const css = leer('componets', 'portfolio', 'portfolio.css')
+    const supporting = css.match(/\.portfolio__grid > \.portfolio__supporting\s*\{[\s\S]*?\n\}/)
+    expect(supporting).not.toBeNull()
+    expect(supporting[0]).toMatch(/margin-top:\s*clamp\(/)
   })
 
   it('usa el mismo stage para ambos productos y respeta el ratio panorámico de Sereno', () => {
@@ -429,12 +458,19 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(principal[0]).toMatch(/color:\s*var\(--accent-on\)/)
   })
 
+  it('mantiene entero SaveMyMoneyNow en el indice de 320px', () => {
+    const css = leer('componets', 'portfolio', 'portfolio.css')
+
+    expect(css).toMatch(/@media screen and \(max-width: 360px\)[\s\S]*?grid-template-columns:\s*4\.5rem minmax\(0, 1fr\)/)
+    expect(css).toMatch(/\.portfolio__item--savemymoneynow\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*nowrap/)
+  })
+
   it('rectifica los controles de la home sin reducir sus targets', () => {
     const css = leer('componets', 'nav', 'nav.css')
     const idioma = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector\s*\{[\s\S]*?\n\}/)
     const activo = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.language-selector__option--active\s*\{[\s\S]*?\n\}/)
     const tema = css.match(/\.portfolio-nav:has\(\+ \.hero\) \.theme-toggle__track\s*\{[\s\S]*?\n\}/)
-    const casos = css.match(/\.site-shell--case \.portfolio-nav \.language-selector,[\s\S]*?border-radius:\s*3px;[\s\S]*?\.site-shell--case \.portfolio-nav \.theme-toggle__thumb[\s\S]*?border-radius:\s*2px;/)
+    const casos = css.match(/\.site-shell--case \.portfolio-nav \.language-selector,[\s\S]*?\.site-shell--case \.portfolio-nav \.portfolio-nav__menu-toggle \{[\s\S]*?border-radius:\s*3px;/)
 
     expect(idioma).not.toBeNull()
     expect(idioma[0]).toMatch(/border-radius:\s*3px/)
@@ -442,7 +478,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(activo[0]).toMatch(/background:\s*#ffffff/)
     expect(activo[0]).toMatch(/color:\s*#173b60/)
     expect(tema).not.toBeNull()
-    expect(tema[0]).toMatch(/width:\s*44px/)
+    expect(tema[0]).toMatch(/width:\s*30px/)
     expect(tema[0]).toMatch(/border-radius:\s*3px/)
     expect(casos).not.toBeNull()
   })
@@ -708,11 +744,11 @@ describe('el selector de idioma apunta a la traduccion de la pagina', () => {
 // tartamudeaba tres veces seguidas. La cobertura no baja: el resumen ya se
 // nombraba solo y al problema se le anadio la frase que le faltaba.
 //
-// Rail de ambito del 23/08: quedaban dos bloques cuyos pasajes no se nombran ni
+// Rail de ambito del 23/08: quedan dos bloques cuyos pasajes no se nombran ni
 // en el rotulo ni en el cuerpo, y son los mas citables de la pagina ("174
-// tests", "Los duplicados los corta la base de datos"). Esos dos, y solo esos,
-// abren con el nombre en un span visible: en aria-label o en sr-only el
-// extractor no lo ve, medido con defuddle.
+// tests", "Los duplicados los corta la base de datos"). El nombre sigue en el
+// texto del DOM para extractores, pero la v10 lo retira del plano visual y del
+// nombre accesible para que el heading no tartamudee.
 describe('cada seccion se entiende fuera de su pagina', () => {
   it('solo las decisiones y los numeros abren con el nombre del proyecto', () => {
     render(<App pathname="/proyectos/atalaya/" />)
@@ -773,19 +809,20 @@ describe('cada seccion se entiende fuera de su pagina', () => {
     expect(valores.every((valor) => valor.textContent.trim().length > 0)).toBe(true)
   })
 
-  it('el primer parrafo de Sobre mi se nombra a si mismo', () => {
+  it('Sobre mi expresa criterio propio sin presentar a Alex ni repetir los proyectos', () => {
     render(<App pathname="/" />)
 
-    expect(screen.getByText(/^Soy Alex,/)).toBeInTheDocument()
+    expect(screen.getByText(/^Me importa que un producto explique/)).toBeInTheDocument()
+    expect(screen.queryByText(/^Soy Alex,/)).not.toBeInTheDocument()
   })
 
-  it('Sobre mi sostiene la narrativa de Strev y Sereno en ambos idiomas', () => {
+  it('Sobre mi mantiene una narrativa breve de criterio y verificacion en ambos idiomas', () => {
     ;['es', 'en'].forEach((idioma) => {
       const { about } = require(`../i18n/locales/${idioma}/translation.json`)
       const texto = [about.lead, about.p2, about.p3].join(' ')
 
-      expect(texto).toMatch(/\bStrev\b/)
-      expect(texto).toMatch(/\bSereno\b/)
+      expect(texto).not.toMatch(/\b(?:Strev|Sereno)\b/)
+      expect(texto.length).toBeLessThan(320)
       expect(texto).not.toMatch(/—/)
     })
   })
@@ -795,6 +832,25 @@ describe('cada seccion se entiende fuera de su pagina', () => {
 // es que la ruta elija la pagina correcta y que el contenido llegue entero.
 describe('paginas de caso de estudio', () => {
   const { parseRoute, caseHref, CASE_SLUGS } = require('../lib/routing')
+
+  it.each([
+    ['/proyectos/strev/', '/#portfolio'],
+    ['/en/projects/strev/', '/en/#portfolio'],
+  ])('vuelve desde %s al inicio de Proyectos', (ruta, destino) => {
+    render(<App pathname={ruta} />)
+
+    expect(screen.getByRole('link', { name: /Volver a proyectos|Back to projects/ }))
+      .toHaveAttribute('href', destino)
+  })
+
+  it('nombra decisiones y resultados sin repetir el proyecto en la jerarquia visible', () => {
+    render(<App pathname="/proyectos/strev/" />)
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Cómo funciona' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Dónde está el listón' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Strev Cómo funciona/ })).toBeNull()
+    expect(screen.queryByRole('heading', { name: /Strev Dónde está el listón/ })).toBeNull()
+  })
 
   it.each([
     ['savemymoneynow', 'savemymoneynow-detection.png'],
@@ -840,6 +896,23 @@ describe('paginas de caso de estudio', () => {
     expect(title).not.toBeNull()
     expect(title[0]).toMatch(/color:\s*#fff(?:fff)?/)
     expect(css).not.toMatch(/\.case__header[\s\S]*?(?:hero__stage|hero__preview|hero__portrait)/)
+  })
+
+  it('preserva completo el nombre largo de SaveMyMoneyNow en movil', () => {
+    const fs = require('fs')
+    const path = require('path')
+    const source = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'CaseStudy.jsx'),
+      'utf8',
+    )
+    const css = fs.readFileSync(
+      path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'),
+      'utf8',
+    )
+
+    expect(source).toMatch(/case__header--\$\{slug\}/)
+    expect(css).toMatch(/\.case__header h1\s*\{[\s\S]*?overflow-wrap:\s*normal;[\s\S]*?word-break:\s*normal;/)
+    expect(css).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.case__header--savemymoneynow h1\s*\{[\s\S]*?font-size:\s*clamp\(1\.875rem, 8\.8vw, 2\.4rem\)/)
   })
 
   it('usa evidencia 16:10 y mantiene las decisiones semanticas sin ordinal visual', () => {

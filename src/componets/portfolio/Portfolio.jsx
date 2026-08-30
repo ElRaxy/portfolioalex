@@ -67,9 +67,17 @@ const getItemClasses = (project) => [
   `portfolio__item--${project.slug}`,
 ].filter(Boolean).join(' ')
 
-const ProjectCardContent = ({ project, language, shouldReduceMotion }) => {
+const ProjectCardContent = ({
+  project,
+  language,
+  shouldReduceMotion,
+  headingLevel,
+}) => {
   const media = PROJECT_MEDIA[project.slug]
   const isPrimary = project.tier === 'primary'
+  const ProjectHeading = headingLevel === 4 ? 'h4' : 'h3'
+  const headingId = `project-${project.slug}-title`
+  const shouldLoadImmediately = isPrimary || project.slug === 'savemymoneynow'
   const visibleLinks = (project.links || []).slice(0, 1)
   const entrance = shouldReduceMotion
     ? undefined
@@ -89,7 +97,11 @@ const ProjectCardContent = ({ project, language, shouldReduceMotion }) => {
               <ProjectImage media={media} project={project} eager />
             </motion.div>
           ) : (
-            <ProjectImage media={media} project={project} eager={false} />
+            <ProjectImage
+              media={media}
+              project={project}
+              eager={shouldLoadImmediately}
+            />
           )}
         </div>
         <figcaption>{project.image_caption || project.title}</figcaption>
@@ -97,7 +109,9 @@ const ProjectCardContent = ({ project, language, shouldReduceMotion }) => {
 
       <div className="portfolio__body">
         {isPrimary && <p className="portfolio__label">{project.label}</p>}
-        <h3>{project.title}</h3>
+        <ProjectHeading className="portfolio__title" id={headingId}>
+          {project.title}
+        </ProjectHeading>
         <p className="portfolio__description">{project.description}</p>
 
         {isPrimary ? (
@@ -138,12 +152,18 @@ const ProjectCardContent = ({ project, language, shouldReduceMotion }) => {
   )
 }
 
-const ProjectCard = ({ project, language }) => {
+const ProjectCard = ({ project, language, headingLevel }) => {
   const shouldReduceMotion = useReducedMotion()
+  const headingId = `project-${project.slug}-title`
 
   return (
-    <article className={getItemClasses(project)} data-tier={project.tier}>
+    <article
+      aria-labelledby={headingId}
+      className={getItemClasses(project)}
+      data-tier={project.tier}
+    >
       <ProjectCardContent
+        headingLevel={headingLevel}
         project={project}
         language={language}
         shouldReduceMotion={shouldReduceMotion}
@@ -180,22 +200,29 @@ function Portfolio() {
           <ProjectCard
             project={project}
             language={language}
+            headingLevel={3}
             key={project.slug}
           />
         ))}
 
-        <div className="portfolio__supporting">
-          <p className="portfolio__supporting-title">{t('portfolio.supporting_title')}</p>
+        <section
+          aria-labelledby="portfolio-supporting-title"
+          className="portfolio__supporting"
+        >
+          <h3 className="portfolio__supporting-title" id="portfolio-supporting-title">
+            {t('portfolio.supporting_title')}
+          </h3>
           <div className="portfolio__supporting-list">
             {supportingProjects.map((project) => (
               <ProjectCard
                 project={project}
                 language={language}
+                headingLevel={4}
                 key={project.slug}
               />
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </section>
   )

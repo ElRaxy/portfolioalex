@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { homeHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
@@ -28,8 +29,8 @@ const CASE_MEDIA = {
   },
 }
 
-const CaseStudy = ({ slug }) => {
-  const { t, i18n } = useTranslation()
+const CaseStudy = ({ language, slug }) => {
+  const { t } = useTranslation()
   const titleKey = `case_study.cases.${slug}.title`
   const title = t(titleKey)
 
@@ -61,13 +62,13 @@ const CaseStudy = ({ slug }) => {
   const media = CASE_MEDIA[slug]
   const mediaLabel = card?.image_alt || title
   const mediaCaption = card?.image_caption || title
-  const backHref = i18n.language.startsWith('en') ? '/en/' : '/'
+  const backHref = `${homeHref(language)}#portfolio`
 
   return (
     <article className="case">
       <a className="case__back" href={backHref}>{t('case_study.back')}</a>
 
-      <header className="case__header">
+      <header className={`case__header case__header--${slug}`}>
         <h1>{title}</h1>
         <p className="case__tagline">{tagline}</p>
       </header>
@@ -106,9 +107,8 @@ const CaseStudy = ({ slug }) => {
       )}
 
       <section className="case__block">
-        <h2>
-          <span className="case__scope">{scope}</span>
-          {/* Espacio de verdad: sin el, un extractor pega el ambito al rotulo. */}
+        <h2 aria-label={t('case_study.decisions_label')}>
+          <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
           {t('case_study.decisions_label')}
         </h2>
@@ -123,9 +123,8 @@ const CaseStudy = ({ slug }) => {
       </section>
 
       <section className="case__block">
-        <h2>
-          <span className="case__scope">{scope}</span>
-          {/* Espacio de verdad: sin el, un extractor pega el ambito al rotulo. */}
+        <h2 aria-label={t('case_study.results_label')}>
+          <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
           {t('case_study.results_label')}
         </h2>

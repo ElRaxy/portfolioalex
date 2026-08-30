@@ -12,7 +12,9 @@
   },
   "controls": {
     "language": "Idioma",
-    "theme": "Cambiar tema de color"
+    "theme": "Cambiar tema de color",
+    "theme_to_light": "Cambiar a tema claro",
+    "theme_to_dark": "Cambiar a tema oscuro"
   },
   "header": {
     "name": "Alex Micó Robles",
@@ -26,9 +28,9 @@
   },
   "about": {
     "title": "Sobre mí",
-    "p2": "Sereno nació de una necesidad mía: saber qué sesiones de Claude Code, Codex, Gemini y Antigravity siguen trabajando y cuáles esperan. Lee los historiales locales en un solo archivo Python y no envía datos fuera del equipo.",
-    "p3": "Son proyectos distintos, pero los construyo con el mismo criterio: la interfaz debe explicar lo que ocurre y los tests deben cubrir las decisiones que más pueden romper el flujo.",
-    "lead": "Soy Alex, desarrollador Full Stack en Villena. En Strev trabajo sobre un producto real para entrenadores: rutinas, seguimiento, pagos y análisis de técnica en vídeo.",
+    "p2": "Trabajo de extremo a extremo: interfaz, API, automatización, despliegue y diagnóstico de incidencias.",
+    "p3": "Antes de cerrar una entrega, pruebo los flujos frágiles y compruebo el resultado en el entorno real.",
+    "lead": "Me importa que un producto explique lo que hace, incluso cuando trabaja en segundo plano.",
     "facts_title": "En corto",
     "facts": [
       {

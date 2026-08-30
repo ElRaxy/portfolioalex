@@ -9,56 +9,34 @@
   color: var(--color-text-muted);
   font-size: var(--fs-base);
   line-height: 1;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: color var(--transition), transform var(--transition);
 }
 
 .theme-toggle__track {
-  position: relative;
+  width: 1.875rem;
+  height: 1.875rem;
   display: grid;
-  grid-template-columns: repeat(2, 1.5rem);
-  align-items: center;
-  justify-items: center;
-  width: 3.25rem;
-  height: 1.75rem;
-  padding: 0.125rem;
+  place-items: center;
   color: var(--color-text-muted);
   background: var(--surface-2);
   border: 1px solid var(--line-control);
-  border-radius: var(--radius-full);
-  transition: background-color var(--transition), border-color var(--transition);
-}
-
-.theme-toggle__thumb {
-  position: absolute;
-  left: 0.125rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  background: var(--surface-0);
-  border: 1px solid var(--line-control);
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), background-color var(--transition);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .theme-toggle__icon {
-  position: relative;
-  z-index: 1;
-  width: 0.75rem;
-  height: 0.75rem;
-  opacity: 0.46;
+  display: none;
+  width: 0.8rem;
+  height: 0.8rem;
   transition: color var(--transition), opacity var(--transition), transform var(--transition);
 }
 
-:root[data-theme='light'] .theme-toggle__icon--sun,
-:root[data-theme='dark'] .theme-toggle__icon--moon {
-  color: var(--color-text-primary);
-  opacity: 1;
-}
-
-:root[data-theme='dark'] .theme-toggle__thumb {
-  transform: translateX(1.5rem);
+:root:not([data-theme]) .theme-toggle__icon--to-light,
+:root[data-theme='dark'] .theme-toggle__icon--to-light,
+:root[data-theme='light'] .theme-toggle__icon--to-dark {
+  display: block;
 }
 
 .theme-toggle:hover {
@@ -81,7 +59,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .theme-toggle__thumb,
   .theme-toggle__icon {
     transition: none;
   }

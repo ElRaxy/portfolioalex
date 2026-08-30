@@ -45,13 +45,10 @@ const CV_POR_IDIOMA = {
   en: 'Alex_Mico_Robles_CV_EN.pdf',
 }
 
-// Rail de ambito (2026-08-23). El nombre del proyecto no vuelve al rotulo: lo
-// dice un span propio encima, y solo en los dos bloques cuyos pasajes viajan
-// sin sujeto cuando un extractor los levanta sueltos, las decisiones y los
-// numeros. Dos y no cinco: el resumen, el problema y el hueco ya se nombran en
-// su propia prosa, asi que ahi el ambito seria repeticion. Se cuenta el hecho y
-// el veredicto lo compone el script, para que mover la decision rompa CI en vez
-// de pasar inadvertida como paso con el hallazgo 13.
+// Rail de ambito (2026-08-23, editado en v10). El nombre del proyecto sigue en
+// el texto del DOM de los dos bloques cuyos pasajes viajan sin sujeto, pero se
+// retira del plano visual y del nombre accesible: el H1 ya ha establecido el
+// caso. Dos y no cinco: resumen, problema y hueco ya se nombran en su prosa.
 const H2_CON_AMBITO_ESPERADOS = 2
 const MEDIA_POR_CASO = {
   savemymoneynow: 'savemymoneynow-detection',
@@ -182,14 +179,18 @@ for (const pagina of PAGINAS) {
       anota(pagina, `${conAmbito} h2 nombran "${ambito}", deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
     }
 
-    // El ambito solo sirve si sale del documento: escondido en un aria-label o
-    // en un sr-only, el extractor no lo ve y el cambio no existe.
-    const ambitosVisibles = (html.match(/<span class="case__scope">/g) || []).length
-    if (ambitosVisibles !== H2_CON_AMBITO_ESPERADOS) {
-      anota(pagina, `${ambitosVisibles} span de ambito, deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
+    const ambitosEnDom = (html.match(/<span\b[^>]*\bclass="case__scope"[^>]*>/g) || [])
+    if (ambitosEnDom.length !== H2_CON_AMBITO_ESPERADOS) {
+      anota(pagina, `${ambitosEnDom.length} span de ambito, deberia haber ${H2_CON_AMBITO_ESPERADOS}`)
+    }
+    if (ambitosEnDom.some((span) => !span.includes('aria-hidden="true"'))) {
+      anota(pagina, 'el ambito vuelve a contaminar el nombre accesible del heading')
     }
   } else {
-    const posiciones = ORDEN_PORTADA.map((proyecto) => root[1].indexOf(`<h3>${proyecto}</h3>`))
+    const posiciones = ORDEN_PORTADA.map((proyecto, index) => {
+      const nivel = index < 2 ? 3 : 4
+      return root[1].search(new RegExp(`<h${nivel}\\b[^>]*>${proyecto}</h${nivel}>`))
+    })
     if (posiciones.some((posicion) => posicion < 0)) {
       anota(pagina, 'falta un proyecto de la portada editorial')
     } else if (posiciones.some((posicion, index) => index > 0 && posicion < posiciones[index - 1])) {
@@ -205,6 +206,12 @@ for (const pagina of PAGINAS) {
 
     const temas = (root[1].match(/class="theme-toggle"/g) || []).length
     if (temas !== 1) anota(pagina, `${temas} selectores de tema, deberia haber 1`)
+  }
+
+  const accionTema = DICCIONARIOS[pagina.idioma].controls.theme
+  const botonTema = root[1].match(/<button class="theme-toggle"[\s\S]*?<\/button>/)?.[0]
+  if (!botonTema?.includes(`aria-label="${accionTema}"`)) {
+    anota(pagina, `el tema prerenderizado no usa el nombre neutro "${accionTema}"`)
   }
 }
 

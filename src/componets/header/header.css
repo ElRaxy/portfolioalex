@@ -291,7 +291,7 @@ p.hero__name {
   animation: hero-stage-in 520ms 70ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 920px) {
   .hero {
     min-height: 0;
     grid-template-columns: minmax(0, 1fr);

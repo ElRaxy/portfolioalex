@@ -10,6 +10,11 @@ function ThemeToggle() {
   const { t } = useTranslation()
   const { theme, toggleTheme } = useContext(ThemeContext)
   const transitionRef = useRef(false)
+  // Antes de hidratar, el HTML no conoce el tema guardado del navegador. Un
+  // nombre neutro evita anunciar la accion inversa si el head pinta light.
+  const actionLabel = theme === null
+    ? t('controls.theme')
+    : t(theme === 'dark' ? 'controls.theme_to_light' : 'controls.theme_to_dark')
 
   const handleThemeToggle = () => {
     const root = document.documentElement
@@ -43,14 +48,12 @@ function ThemeToggle() {
     <button
       className="theme-toggle"
       onClick={handleThemeToggle}
-      aria-label={t('controls.theme')}
-      aria-pressed={theme === null ? undefined : theme === 'dark'}
+      aria-label={actionLabel}
       type="button"
     >
       <span className="theme-toggle__track" aria-hidden="true">
-        <span className="theme-toggle__thumb" />
-        <FaSun className="theme-toggle__icon theme-toggle__icon--sun" />
-        <FaMoon className="theme-toggle__icon theme-toggle__icon--moon" />
+        <FaSun className="theme-toggle__icon theme-toggle__icon--to-light" />
+        <FaMoon className="theme-toggle__icon theme-toggle__icon--to-dark" />
       </span>
     </button>
   )

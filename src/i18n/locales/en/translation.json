@@ -12,7 +12,9 @@
   },
   "controls": {
     "language": "Language",
-    "theme": "Change color theme"
+    "theme": "Change color theme",
+    "theme_to_light": "Switch to light theme",
+    "theme_to_dark": "Switch to dark theme"
   },
   "header": {
     "name": "Alex Micó Robles",
@@ -26,9 +28,9 @@
   },
   "about": {
     "title": "About me",
-    "p2": "Sereno started from a need of my own: seeing which Claude Code, Codex, Gemini and Antigravity sessions are still working and which are waiting. It reads local histories from a single Python file and sends no data off the machine.",
-    "p3": "They are different products, but I build them with the same rule: the interface should explain what is happening, and tests should cover the decisions most likely to break the flow.",
-    "lead": "I'm Alex, a Full Stack Developer based in Villena, Spain. On Strev I work on a real product for personal trainers: routines, progress, payments and video technique analysis.",
+    "p2": "I work end to end: interface, API, automation, deployment and incident diagnosis.",
+    "p3": "Before I close a delivery, I test the fragile flows and check the result in the real environment.",
+    "lead": "I care about products that explain what they are doing, even while they work in the background.",
     "facts_title": "In short",
     "facts": [
       {

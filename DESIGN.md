@@ -97,14 +97,17 @@ badges or decorative stripes. Product screenshots retain their own colors.
 
 ### The evidence is real rule
 
-Every project uses its real image and visible caption. A 16:10 exterior frame gives the cases one
-system. Strev fills the frame. Sereno, SaveMyMoneyNow and Atalaya use `contain` on a matte so no data
-is cropped. Synthetic windows and fake product chrome are forbidden.
+Every project uses its real image and a caption in the document. The caption remains visible on
+desktop and in every case; the compact mobile supporting index clips it visually because the case
+keeps the full evidence. A 16:10 exterior frame gives the cases one system. Strev fills the frame.
+Sereno, SaveMyMoneyNow and Atalaya use `contain` on a matte so no data is cropped. Synthetic windows
+and fake product chrome are forbidden.
 
 ### The structure survives the styling rule
 
-The case keeps one H1, semantic sections, a real `<ol>` for decisions, visible project scope and
-selectable results. CSS removes ornamental numbers without changing document order.
+The case keeps one H1, semantic sections, a real `<ol>` for decisions, project scope in the DOM and
+selectable results. Scope is hidden from the visual and accessible heading because the case H1 has
+already established it. CSS removes ornamental numbers without changing document order.
 
 ## Color
 
@@ -148,7 +151,13 @@ rounding.
 
 - Hero and two flagship chapters may use full-bleed cobalt/deep surfaces.
 - Strev and Sereno receive the same exterior 16:10 evidence area and two actions each.
-- Supporting work uses open rows at a smaller scale.
+- Supporting work uses open rows at a smaller scale. At 600px and below it becomes a compact index:
+  6.25rem evidence thumbnail, H4 title, complete description, stack and actions. The case keeps the
+  full evidence and caption.
+- About uses one lead beside one narrative column on desktop, then facts below. It must advance the
+  Strev/Sereno story rather than introducing Alex for a second time.
+- Experience exposes roles as H3 and studies as H4 below the Formation H3.
+- Contact closes the stage but its title never exceeds the identity or flagship names.
 - About, Experience, Stack, Contact and Footer continue the same type and geometry without copying
   the hero.
 
@@ -215,9 +224,14 @@ cannot silently replace the v9 artwork: `86d3162b...39d02` for OG and `420e9780.
 - Visible focus uses a 3px accent outline with offset.
 - Text uses 4.5:1 minimum; controls and focus use 3:1 minimum.
 - Theme, language, menu, back, case links, CTA and Contact remain keyboard reachable.
+- The theme control shows one icon for the available action and names that action explicitly:
+  switch to light or switch to dark. It is an action button, not an `aria-pressed` state toggle, and
+  remains a 44px target. Before hydration its accessible name is neutral because the static HTML
+  cannot know the saved client theme; after synchronization it names the exact action.
 - `prefers-reduced-motion` removes global transitions and never hides essential content.
-- At 320px, SaveMyMoneyNow may wrap but must not clip or overflow.
-- Case routes preserve localized back link, alternate language route and CV filename.
+- At 320px, SaveMyMoneyNow stays intact as a product name in both the index and its case; it must
+  not split inside the word, clip or overflow.
+- Case routes preserve localized back link to `#portfolio`, alternate language route and CV filename.
 
 ## Do
 

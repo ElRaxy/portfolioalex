@@ -45,8 +45,15 @@
     font-weight: 600;
     letter-spacing: -0.045em;
     line-height: 0.92;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
     text-wrap: balance;
+}
+
+/* El nombre largo es una marca: escala como una unidad y nunca se parte dentro de la palabra. */
+.case__header--savemymoneynow h1 {
+    max-width: none;
+    font-size: clamp(2.4rem, 6vw, 4.75rem);
 }
 
 .case__tagline {
@@ -88,15 +95,16 @@
     text-wrap: pretty;
 }
 
-/* El nombre visible mantiene el contexto cuando un extractor separa el pasaje. */
+/* El nombre permanece en el HTML para extractores, sin competir con el heading visible. */
 .case__scope {
-    display: block;
-    margin-bottom: var(--space-2);
-    color: var(--accent);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 1.4;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 .case__block > p {
@@ -262,6 +270,10 @@
 
     .case__header h1 {
         font-size: clamp(2.25rem, 12vw, 3.5rem);
+    }
+
+    .case__header--savemymoneynow h1 {
+        font-size: clamp(1.875rem, 8.8vw, 2.4rem);
     }
 
     .case__tagline {

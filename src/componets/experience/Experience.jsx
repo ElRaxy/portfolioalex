@@ -5,29 +5,33 @@ import './experience.css'
 
 const stackGroups = ['product', 'automation', 'quality']
 
-const TimelineList = ({ entries, identity }) => (
-  <RevealGroup as="ul" className="timeline">
-    {entries.map((entry, index) => (
-      <RevealItem
-        as="li"
-        key={`${identity}-${index}`}
-        className={`timeline__item${entry.current ? ' is-current' : ''}`}
-      >
-        <span className="timeline__dot" aria-hidden="true" />
-        <div className="timeline__head">
-          <span className="timeline__role">{entry.role}</span>
-          <span className="timeline__when">{entry.when}</span>
-        </div>
-        <p className="timeline__org">{entry.org}</p>
-        {entry.bullets?.length > 0 && (
-          <ul className="timeline__bullets">
-            {entry.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
-          </ul>
-        )}
-      </RevealItem>
-    ))}
-  </RevealGroup>
-)
+const TimelineList = ({ entries, headingLevel, identity }) => {
+  const EntryHeading = headingLevel === 4 ? 'h4' : 'h3'
+
+  return (
+    <RevealGroup as="ul" className="timeline">
+      {entries.map((entry, index) => (
+        <RevealItem
+          as="li"
+          key={`${identity}-${index}`}
+          className={`timeline__item${entry.current ? ' is-current' : ''}`}
+        >
+          <span className="timeline__dot" aria-hidden="true" />
+          <div className="timeline__head">
+            <EntryHeading className="timeline__role">{entry.role}</EntryHeading>
+            <span className="timeline__when">{entry.when}</span>
+          </div>
+          <p className="timeline__org">{entry.org}</p>
+          {entry.bullets?.length > 0 && (
+            <ul className="timeline__bullets">
+              {entry.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+            </ul>
+          )}
+        </RevealItem>
+      ))}
+    </RevealGroup>
+  )
+}
 
 export const ExperienceTimeline = () => {
   const { t } = useTranslation()
@@ -37,11 +41,19 @@ export const ExperienceTimeline = () => {
       <h2 id="experience-title">{t('experience.title')}</h2>
 
       <div className="container experience__content">
-        <TimelineList identity="role" entries={t('experience.roles', { returnObjects: true })} />
+        <TimelineList
+          entries={t('experience.roles', { returnObjects: true })}
+          headingLevel={3}
+          identity="role"
+        />
 
         <div className="experience__education">
           <h3>{t('experience.education')}</h3>
-          <TimelineList identity="study" entries={t('experience.studies', { returnObjects: true })} />
+          <TimelineList
+            entries={t('experience.studies', { returnObjects: true })}
+            headingLevel={4}
+            identity="study"
+          />
         </div>
       </div>
     </section>
