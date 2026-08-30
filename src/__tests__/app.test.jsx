@@ -380,7 +380,7 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(menuClosed).not.toMatch(/display:\s*none/)
   })
 
-  it('acorta tema e idioma y da a Stack una salida editorial responsive', () => {
+  it('acorta tema e idioma y presenta Stack como un ledger responsive', () => {
     const theme = leer('componets', 'theme', 'ThemeToggle.jsx')
     const index = leer('index.css')
     const language = leer('componets', 'language', 'language.css')
@@ -391,8 +391,15 @@ describe('el casebook usa movimiento como señal y no como bloqueo', () => {
     expect(index).toMatch(/:root\[data-theme-transition\][\s\S]*?260ms/)
     expect(language).toMatch(/language-content-settle 190ms/)
     expect(language).toMatch(/prefers-reduced-motion: reduce[\s\S]*?animation:\s*none/)
-    expect(experience).toMatch(/min-width: 601px[\s\S]*?\.stack\s*\{[\s\S]*?min-height:\s*clamp\(22rem, 50vh, 28rem\)/)
-    expect(experience).toMatch(/max-width: 600px[\s\S]*?\.stack\s*\{[\s\S]*?min-height:\s*0/)
+
+    const grupo = experience.match(/\.stack__group\s*\{[\s\S]*?\n\}/)
+    expect(grupo).not.toBeNull()
+    expect(grupo[0]).toMatch(/display:\s*grid/)
+    expect(grupo[0]).toMatch(/grid-template-columns:\s*minmax\(10rem, 0\.32fr\) minmax\(0, 0\.68fr\)/)
+    expect(grupo[0]).toMatch(/border-top:\s*1px solid var\(--line-soft\)/)
+    expect(experience).toMatch(/max-width: 600px[\s\S]*?\.stack__group\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
+    expect(experience).not.toMatch(/\.stack\s*\{[^}]*min-height/)
+    expect(experience).not.toMatch(/opacity:\s*0/)
   })
 })
 

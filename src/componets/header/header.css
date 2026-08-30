@@ -1,23 +1,21 @@
 .hero {
   width: min(calc(100% - 4rem), var(--container-width-lg));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
-  gap: var(--space-10) clamp(var(--space-12), 7vw, var(--space-24));
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.38fr);
+  align-items: end;
+  gap: var(--space-10) clamp(var(--space-12), 6vw, var(--space-20));
   margin-inline: auto;
-  padding: clamp(var(--space-16), 10vw, var(--space-32)) 0 clamp(var(--space-16), 9vw, var(--space-24));
+  padding: clamp(var(--space-14), 8vw, var(--space-24)) 0 clamp(var(--space-14), 7vw, var(--space-20));
   border-bottom: 1px solid var(--line-soft);
 }
 
-.hero__topline {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-6);
+.hero__identity {
+  min-width: 0;
+  max-width: 56rem;
 }
 
 .hero__portrait {
-  width: clamp(6.5rem, 9vw, 8rem);
+  width: clamp(6rem, 8vw, 7.5rem);
   flex: 0 0 auto;
   aspect-ratio: 1;
   padding: 3px;
@@ -37,11 +35,11 @@
 
 .hero__intro {
   width: 100%;
-  max-width: 54rem;
 }
 
 .hero__title {
   max-width: 28rem;
+  margin-bottom: var(--space-8);
   color: var(--text-2);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
@@ -54,7 +52,7 @@
 .hero__name {
   max-width: 11ch;
   color: var(--text-1);
-  font-size: clamp(3.8rem, 9vw, 7.7rem);
+  font-size: clamp(3.8rem, 8vw, 7rem);
   font-weight: 600;
   letter-spacing: -0.065em;
   line-height: 0.88;
@@ -67,7 +65,7 @@ p.hero__name {
 
 .hero__tagline {
   max-width: 42rem;
-  margin-top: var(--space-8);
+  margin-top: var(--space-6);
   color: var(--text-2);
   font-size: clamp(var(--fs-md), 2.2vw, var(--fs-lg));
   line-height: 1.5;
@@ -77,9 +75,14 @@ p.hero__name {
 .hero__footer {
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: var(--space-10);
+  align-self: stretch;
+  align-items: flex-end;
+  padding-left: clamp(var(--space-8), 4vw, var(--space-12));
+  border-left: 1px solid var(--line-soft);
+}
+
+.hero__footer .hero__actions {
+  margin-top: 0;
 }
 
 .hero__actions {
@@ -141,6 +144,18 @@ p.hero__name {
 
 .hero__meta {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.hero__profile {
+  display: grid;
+  grid-template-columns: minmax(6rem, 7.5rem) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: end;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .hero__socials {
@@ -178,9 +193,6 @@ p.hero__name {
 
 .hero__availability {
   max-width: 23rem;
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--line-soft);
   color: var(--text-2);
   font-size: var(--fs-sm);
   line-height: 1.5;
@@ -193,15 +205,20 @@ p.hero__name {
     gap: var(--space-10);
   }
 
+  .hero__identity {
+    max-width: 54rem;
+  }
+
   .hero__footer {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: end;
+    align-items: flex-start;
+    padding-top: var(--space-6);
+    padding-left: 0;
+    border-top: 1px solid var(--line-soft);
+    border-left: 0;
   }
 
   .hero__meta {
-    justify-self: end;
-    max-width: 24rem;
+    max-width: 32rem;
   }
 }
 
@@ -209,7 +226,7 @@ p.hero__name {
   .hero {
     width: calc(100% - 2.5rem);
     gap: var(--space-8);
-    padding: var(--space-16) 0 var(--space-14);
+    padding: var(--space-14) 0 var(--space-14);
   }
 
   .hero__portrait {
@@ -219,7 +236,8 @@ p.hero__name {
 
   .hero__title {
     min-width: 0;
-    max-width: calc(100% - 5.5rem);
+    max-width: 28rem;
+    margin-bottom: var(--space-6);
   }
 
   .hero__name {
@@ -232,12 +250,17 @@ p.hero__name {
   }
 
   .hero__footer {
-    display: flex;
-    align-items: flex-start;
+    padding-top: var(--space-5);
   }
 
   .hero__meta {
-    justify-self: auto;
+    gap: var(--space-4);
+  }
+
+  .hero__profile {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
   }
 }
 
