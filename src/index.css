@@ -103,25 +103,25 @@
 @property --signal-strev {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.82 0.13 160);
+  initial-value: oklch(0.78 0.105 251.3);
 }
 
 @property --signal-strev-on {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.18 0.035 165);
+  initial-value: oklch(0.18 0.012 251.3);
 }
 
 @property --signal-sereno {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.75 0.17 300);
+  initial-value: oklch(0.70 0.115 251.3);
 }
 
 @property --signal-sereno-on {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.16 0.025 300);
+  initial-value: oklch(0.18 0.012 251.3);
 }
 
 @property --home-stage {
@@ -165,16 +165,16 @@
   --ref-cobalt-400: #66a3e4;
   --ref-cobalt-300: #7eb6f2;
   --ref-cobalt-100: #e4eff9;
-  --ref-paper: #f7f6f2;
+  --ref-paper: #f3f0e9;
   --ref-white: #ffffff;
-  --ref-ink: #19191b;
+  --ref-ink: #17191c;
   --ref-ink-muted: #66656b;
-  --ref-night: #151619;
-  --ref-night-raised: #1e2024;
-  --ref-night-ink: #f2f1ed;
-  --ref-night-muted: #b4b1aa;
-  --ref-evidence-deep: #11171c;
-  --ref-sereno-matte: #1d1c2d;
+  --ref-night: #121416;
+  --ref-night-raised: #1a1d21;
+  --ref-night-ink: #f3f0e9;
+  --ref-night-muted: #aaa7a0;
+  --ref-evidence-deep: #0d1217;
+  --ref-sereno-matte: #151923;
 
   --surface-0: oklch(0.200 0.006 271.1);
   --surface-1: oklch(0.243 0.008 264.4);
@@ -194,10 +194,10 @@
   --color-error: oklch(0.74 0.18 25);
 
   --signal-alex: var(--accent);
-  --signal-strev: oklch(0.82 0.13 160);
-  --signal-strev-on: oklch(0.18 0.035 165);
-  --signal-sereno: oklch(0.75 0.17 300);
-  --signal-sereno-on: oklch(0.16 0.025 300);
+  --signal-strev: var(--ref-cobalt-300);
+  --signal-strev-on: var(--ref-night);
+  --signal-sereno: var(--ref-cobalt-400);
+  --signal-sereno-on: var(--ref-night);
   --home-stage: var(--ref-cobalt-600);
   --home-stage-on: var(--ref-white);
   --home-stage-muted: var(--ref-cobalt-100);
@@ -253,9 +253,9 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
   --radius-full: 999px;
   --transition: 180ms ease;
   --nav-height: 4rem;
@@ -288,9 +288,9 @@
   --color-success: oklch(0.430 0.100 195);
   --color-error: oklch(0.48 0.18 25);
   --signal-alex: var(--accent);
-  --signal-strev: oklch(0.47 0.13 160);
+  --signal-strev: var(--ref-cobalt-600);
   --signal-strev-on: var(--ref-white);
-  --signal-sereno: oklch(0.50 0.16 300);
+  --signal-sereno: var(--ref-cobalt-700);
   --signal-sereno-on: var(--ref-white);
   --home-stage: var(--ref-cobalt-600);
   --home-stage-on: var(--ref-white);

@@ -167,7 +167,7 @@ describe('la web entera', () => {
     render(<App />)
 
     try {
-      fireEvent.click(screen.getAllByRole('link', { name: 'Switch language to Spanish' })[0])
+      fireEvent.click(screen.getAllByRole('link', { name: 'ES · Switch language to Spanish' })[0])
 
       await waitFor(() => expect(
         screen.getByRole('link', { name: 'Descargar CV' }),
@@ -395,7 +395,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(source).not.toMatch(/opacity/)
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
-    expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
+    expect(css).toMatch(/\.portfolio__media-motion,[\s\S]*?\.portfolio__media img\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
     expect(css).not.toMatch(/--media-position|\.portfolio__media-motion\[data-step|transform:\s*scale\(/)
     expect(css).not.toMatch(/object-position\s+\d+ms|\.portfolio__item--supporting[^}]+transform:\s*scale\(/)
     expect(css).not.toMatch(/portfolio__chapter-progress|will-change/)
@@ -423,22 +423,18 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(source).not.toMatch(/portfolio__chapter-label/)
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
-    const motionStart = css.indexOf(".portfolio__item--strev[data-story-mode='scroll'] .portfolio__story-step h4")
+    const motionStart = css.indexOf('.portfolio__story-step h4')
     const motionEnd = css.indexOf('.portfolio__tags')
     const motionRules = css.slice(motionStart, motionEnd)
-    const distances = [...motionRules.matchAll(/translateX\((-?\d+)px\)/g)]
-      .map((match) => Math.abs(Number(match[1])))
 
     expect(motionStart).toBeGreaterThan(-1)
     expect(motionEnd).toBeGreaterThan(motionStart)
-    expect(distances.length).toBeGreaterThan(0)
-    expect(Math.max(...distances)).toBeLessThanOrEqual(12)
-    expect(motionRules).toMatch(/portfolio__item--strev[\s\S]*?translateX\(-12px\)/)
-    expect(motionRules).toMatch(/portfolio__item--sereno[\s\S]*?translateX\(12px\)/)
-    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\][\s\S]*?transform:\s*translateX\(0\)/)
-    expect(motionRules).not.toMatch(/opacity|portfolio__media|picture|img|scale\(/)
-    expect(css).toMatch(/portfolio__item--sereno\[data-story-mode='scroll'\] \.portfolio__story-track\s*\{[\s\S]*?display:\s*none/)
-    expect(css).toMatch(/portfolio__item--sereno\[data-story-mode='scroll'\] \.portfolio__story-steps\s*\{[\s\S]*?border-top:/)
+    expect(motionRules).toMatch(/transition:\s*color 220ms ease/)
+    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\] h4[\s\S]*?color:\s*var\(--project-signal\)/)
+    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\] p[\s\S]*?color:\s*var\(--text-2\)/)
+    expect(motionRules).not.toMatch(/opacity|portfolio__media|picture|img|scale\(|translateX\(/)
+    expect(css).toMatch(/\.portfolio__story-track\s*\{[\s\S]*?width:\s*1px;[\s\S]*?background:\s*var\(--line-soft\)/)
+    expect(css).toMatch(/\.portfolio__story-progress\s*\{[\s\S]*?background:\s*var\(--project-signal\);[\s\S]*?transform-origin:\s*top/)
     expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
   })
@@ -560,22 +556,20 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const stage = css.match(/\.portfolio__item--primary\s*\{[\s\S]*?\n\}/)
     expect(stage).not.toBeNull()
     expect(stage[0]).not.toMatch(/min-height:/)
-    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(19rem, 0\.34fr\) minmax\(0, 0\.66fr\)/)
+    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(19rem, 0\.36fr\) minmax\(0, 0\.64fr\)/)
     expect(stage[0]).toMatch(/grid-template-areas:\s*'body media'/)
-    expect(stage[0]).toMatch(/background:\s*var\(--surface-0\)/)
-    expect(stage[0]).toMatch(/border-bottom:\s*1px solid var\(--line-soft\)/)
+    expect(stage[0]).toMatch(/background:[\s\S]*?linear-gradient\([\s\S]*?var\(--surface-0\)/)
+    expect(stage[0]).toMatch(/border-top:\s*1px solid var\(--line-soft\)/)
+    expect(css).toMatch(/\.portfolio__item--primary:last-of-type\s*\{[\s\S]*?border-bottom:\s*1px solid var\(--line-soft\)/)
     expect(css).toMatch(/\.portfolio__item--primary \.portfolio__media\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
     const body = css.match(/\.portfolio__item--primary \.portfolio__body\s*\{[\s\S]*?\n\}/)
     expect(body).not.toBeNull()
     expect(body[0]).toMatch(/grid-area:\s*body/)
     expect(body[0]).not.toMatch(/position:\s*sticky|top:/)
     expect(css).toMatch(/data-story-mode='scroll'[\s\S]*?min-height:\s*clamp\(8\.75rem, 18svh, 12rem\)/)
-    expect(css).toMatch(/\.portfolio__item--sereno\[data-story-mode='scroll'\][\s\S]*?min-height:\s*clamp\(7\.5rem, 14\.5svh, 9\.5rem\)/)
     expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
-    expect(css).toMatch(/\.portfolio__item--sereno\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 0\.64fr\) minmax\(18rem, 0\.36fr\)[\s\S]*?grid-template-areas:\s*'media body'/)
     const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
     expect(serenoFrame).not.toBeNull()
-    expect(serenoFrame[0]).toMatch(/aspect-ratio:\s*1200 \/ 554/)
     expect(serenoFrame[0]).toMatch(/background:\s*var\(--sereno-matte\)/)
     expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
     expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static/)
@@ -592,8 +586,9 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     expect(index).toMatch(/--ref-cobalt-600:\s*#2f6ba8/)
     expect(index).toMatch(/--signal-alex:\s*var\(--accent\)/)
-    expect(index).toMatch(/--signal-strev:\s*oklch\(0\.82 0\.13 160\)/)
-    expect(index).toMatch(/--signal-sereno:\s*oklch\(0\.75 0\.17 300\)/)
+    expect(index).toMatch(/--signal-strev:\s*var\(--ref-cobalt-300\)/)
+    expect(index).toMatch(/--signal-sereno:\s*var\(--ref-cobalt-400\)/)
+    expect(index).not.toMatch(/oklch\(0\.82 0\.13 160\)|oklch\(0\.75 0\.17 300\)/)
     expect(index).not.toMatch(/oklch\(0\.72 0\.19 35\)|oklch\(0\.52 0\.20 31\)/)
     expect(index).toMatch(/--font-sans:\s*"Anek Latin"/)
     expect(index).toMatch(/--font-mono:\s*var\(--font-sans\)/)
@@ -705,11 +700,14 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(principal[0]).toMatch(/color:\s*var\(--accent-on\)/)
   })
 
-  it('convierte los secundarios en un indice de una columna sin truncar sus nombres', () => {
+  it('mantiene visibles las evidencias secundarias en una columna movil sin truncar nombres', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
-    expect(css).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.portfolio__item--supporting\s*\{[\s\S]*?display:\s*block[\s\S]*?\.portfolio__item--supporting \.portfolio__media\s*\{[\s\S]*?display:\s*none/)
-    expect(css).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*normal/)
+    expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__supporting-list\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
+    expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__media\s*\{[\s\S]*?display:\s*flex/)
+    expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*normal/)
+    const supportingMediaRules = [...css.matchAll(/\.portfolio__item--supporting \.portfolio__media\s*\{([^}]*)\}/g)]
+    expect(supportingMediaRules.every(([, rule]) => !/display:\s*none/.test(rule))).toBe(true)
     expect(css).not.toMatch(/\.portfolio__item--savemymoneynow\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*nowrap/)
   })
 

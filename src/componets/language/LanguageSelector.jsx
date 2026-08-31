@@ -17,8 +17,8 @@ const LanguageSelector = () => {
   const currentLanguage = (i18n.resolvedLanguage || i18n.language || 'es').split('-')[0]
   const nextLanguage = currentLanguage === 'es' ? 'en' : 'es'
   const changeLabel = currentLanguage === 'es'
-    ? 'Cambiar idioma a inglés'
-    : 'Switch language to Spanish'
+    ? 'EN · Cambiar idioma a inglés'
+    : 'ES · Switch language to Spanish'
   // En una pagina de caso no se cambia en caliente: cada caso tiene su HTML
   // por idioma y su URL propia, asi que el enlace navega de verdad.
   // La ruta viene del contexto y no de `window`: en el prerender no hay

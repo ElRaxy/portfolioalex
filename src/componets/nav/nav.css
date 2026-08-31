@@ -4,13 +4,15 @@
   z-index: 90;
   width: 100%;
   height: var(--nav-height);
-  border-bottom: 1px solid var(--line-soft);
-  background: var(--surface-0);
+  border-bottom: 1px solid color-mix(in oklch, var(--line-soft) 76%, transparent);
+  background: color-mix(in oklch, var(--surface-0) 91%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
 }
 
 .portfolio-nav:has(+ .hero) {
-  border-bottom-color: var(--line-soft);
-  background: var(--surface-0);
+  border-bottom-color: color-mix(in oklch, var(--line-soft) 72%, transparent);
+  background: color-mix(in oklch, var(--surface-0) 91%, transparent);
 }
 
 .portfolio-nav:has(+ .hero) .theme-toggle__icon {
@@ -40,8 +42,9 @@
   min-height: 44px;
   flex: 0 0 auto;
   color: var(--text-1);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 650;
+  letter-spacing: -0.028em;
+  transition: color var(--transition), transform var(--transition);
 }
 
 .portfolio-nav__links {
@@ -54,15 +57,16 @@
 .portfolio-nav__link {
   position: relative;
   font-size: var(--fs-sm);
-  font-weight: 500;
+  font-weight: 550;
+  letter-spacing: 0.005em;
 }
 
 .portfolio-nav__link::after {
   position: absolute;
   right: 0;
-  bottom: 0.55rem;
+  bottom: 0.45rem;
   left: 0;
-  height: 1px;
+  height: 2px;
   background: var(--accent);
   content: '';
   transform: scaleX(0);
@@ -74,6 +78,11 @@
 .portfolio-nav__link:hover,
 .portfolio-nav__link--active {
   color: var(--text-1);
+}
+
+.portfolio-nav__brand:hover {
+  color: var(--signal-alex);
+  transform: translateY(-1px);
 }
 
 .portfolio-nav__link:hover::after,
@@ -139,7 +148,7 @@
     align-items: stretch;
     gap: 0;
     border-bottom: 1px solid var(--line-soft);
-    background: var(--surface-1);
+    background: color-mix(in oklch, var(--surface-1) 97%, var(--signal-alex));
     box-shadow: 0 24px 48px rgb(0 0 0 / 32%);
     opacity: 0;
     pointer-events: none;
@@ -217,7 +226,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    border-radius: 0.65rem;
     background: transparent;
     color: var(--text-1);
     cursor: pointer;
@@ -230,6 +240,7 @@
   }
 
   .portfolio-nav__menu-toggle:hover {
+    border-color: var(--line-soft);
     background: var(--surface-2);
   }
 
@@ -269,12 +280,12 @@
   gap: 0;
   border-color: var(--line-control);
   border-radius: var(--radius-md);
-  background: transparent;
+  background: color-mix(in oklch, var(--surface-1) 72%, transparent);
 }
 
 .portfolio-nav:has(+ .hero) .lang-btn,
 .portfolio-nav:has(+ .hero) .language-selector__option {
-  border-radius: var(--radius-sm);
+  border-radius: 0.48rem;
   color: var(--text-2);
 }
 
@@ -286,7 +297,7 @@
 .portfolio-nav:has(+ .hero) .language-selector__option--active {
   border-color: var(--signal-alex);
   background: var(--signal-alex);
-  box-shadow: none;
+  box-shadow: 0 5px 14px color-mix(in oklch, var(--signal-alex) 20%, transparent);
   color: var(--accent-on);
 }
 
@@ -295,7 +306,7 @@
   height: 30px;
   border-color: var(--line-control);
   border-radius: var(--radius-md);
-  background: transparent;
+  background: color-mix(in oklch, var(--surface-1) 72%, transparent);
 }
 
 .portfolio-nav:has(+ .hero) .theme-toggle__icon {

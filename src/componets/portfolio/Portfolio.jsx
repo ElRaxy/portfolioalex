@@ -17,7 +17,8 @@ const PROJECT_MEDIA = {
     src: saveMyMoneyNowImage,
     width: 914,
     height: 911,
-    position: 'top',
+    position: 'center',
+    fit: 'contain',
   },
   strev: {
     src: strevImage,
@@ -31,6 +32,7 @@ const PROJECT_MEDIA = {
     width: 1200,
     height: 675,
     position: 'center',
+    fit: 'contain',
   },
   sereno: {
     src: serenoImage,
