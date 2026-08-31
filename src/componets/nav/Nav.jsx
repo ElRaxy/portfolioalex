@@ -67,6 +67,7 @@ const subscribeToActiveSection = (listener) => {
     if (!activeSectionListeners.size) {
       activeSectionObserver?.disconnect()
       activeSectionObserver = undefined
+      activeSection = 'home'
     }
   }
 }

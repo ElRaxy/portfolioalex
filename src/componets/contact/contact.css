@@ -249,134 +249,44 @@
   }
 }
 
-/* La home cierra sobre la misma superficie cobalto del hero. Los casos
-   conservan la ficha de contacto neutra que comparten con sus contenidos. */
 .site-shell:not(.site-shell--case) #contact {
-    --text-1: #ffffff;
-    --text-2: #dceaf7;
-    --text-3: #dceaf7;
-    --color-text-primary: #ffffff;
-    --color-text-muted: #dceaf7;
-    --accent: #ffffff;
-    --accent-hover: #eef6fd;
-    --accent-active: #dceaf7;
-    --accent-on: #173b60;
-    --line-soft: rgb(255 255 255 / 30%);
-    --line-control: rgb(255 255 255 / 64%);
-    --color-success: #dcf6e4;
-    --color-error: #ffe1de;
     width: 100vw;
     display: block;
     margin-left: calc(50% - 50vw);
     padding:
-        clamp(var(--space-16), 4vw, var(--space-16))
+        clamp(var(--space-12), 4vw, var(--space-16))
         max(var(--space-8), calc((100vw - var(--container-width-lg)) / 2));
-    background: var(--home-stage);
+    border-top: 1px solid var(--line-soft);
+    background: var(--surface-0);
     color: var(--text-1);
 }
 
 .site-shell:not(.site-shell--case) #contact > h2 {
     max-width: 8ch;
-    margin: 0 0 clamp(var(--space-8), 4vw, var(--space-12));
+    margin: 0 0 clamp(var(--space-6), 3vw, var(--space-10));
     color: var(--text-1);
-    font-size: clamp(3.5rem, 7vw, 5.5rem);
-    letter-spacing: -0.05em;
-    line-height: 0.88;
+    font-size: clamp(2.75rem, 4.5vw, 3.5rem);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
 }
 
 .site-shell:not(.site-shell--case) .contact__container {
     grid-template-columns: minmax(15rem, 0.34fr) minmax(0, 0.66fr);
-    gap: clamp(var(--space-10), 8vw, var(--space-24));
-}
-
-.site-shell:not(.site-shell--case) .contact__details,
-.site-shell:not(.site-shell--case) .contact__form-area,
-.site-shell:not(.site-shell--case) .contact__required {
-    border: 0;
+    gap: clamp(var(--space-8), 6vw, var(--space-16));
 }
 
 .site-shell:not(.site-shell--case) .contact__detail {
     align-items: flex-start;
     gap: var(--space-3);
-    padding: 0 0 var(--space-4);
-    border: 0;
+    padding-inline: 0;
 }
 
 .site-shell:not(.site-shell--case) .contact__detail dt {
     width: 5.75rem;
-    color: var(--text-2);
-}
-
-.site-shell:not(.site-shell--case) .contact__detail a,
-.site-shell:not(.site-shell--case) .contact__fallback a {
-    color: var(--text-1);
-}
-
-.site-shell:not(.site-shell--case) .contact__detail a:hover,
-.site-shell:not(.site-shell--case) .contact__fallback a:hover {
-    color: var(--accent-hover);
-}
-
-.site-shell:not(.site-shell--case) .contact__detail a:active,
-.site-shell:not(.site-shell--case) .contact__fallback a:active {
-    color: var(--accent-active);
 }
 
 .site-shell:not(.site-shell--case) .contact__form-area {
     padding-top: 0;
-}
-
-.site-shell:not(.site-shell--case) .contact__required {
-    padding-bottom: var(--space-1);
-    color: var(--text-2);
-}
-
-.site-shell:not(.site-shell--case) .contact__field > span {
-    color: var(--text-2);
-}
-
-.site-shell:not(.site-shell--case) .contact__form input,
-.site-shell:not(.site-shell--case) .contact__form textarea {
-    border-color: var(--line-control);
-    border-radius: 3px;
-    background: rgb(17 42 67 / 16%);
-    color: var(--text-1);
-}
-
-.site-shell:not(.site-shell--case) .contact__form input:hover,
-.site-shell:not(.site-shell--case) .contact__form textarea:hover,
-.site-shell:not(.site-shell--case) .contact__form input:focus,
-.site-shell:not(.site-shell--case) .contact__form textarea:focus {
-    border-color: var(--accent);
-    background: rgb(17 42 67 / 25%);
-}
-
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid input,
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid textarea,
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid input:hover,
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid textarea:hover,
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid input:focus,
-.site-shell:not(.site-shell--case) .contact__form .contact__field--invalid textarea:focus {
-    border-color: var(--color-error);
-}
-
-.site-shell:not(.site-shell--case) .contact__form .btn-primary {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-on);
-}
-
-.site-shell:not(.site-shell--case) .contact__form .btn-primary:hover {
-    border-color: var(--accent-hover);
-    background: var(--accent-hover);
-    color: var(--accent-on);
-}
-
-.site-shell:not(.site-shell--case) .contact__form .btn-primary:disabled {
-    border-color: var(--line-soft);
-    background: rgb(17 42 67 / 32%);
-    color: var(--text-2);
-    cursor: not-allowed;
 }
 
 @media screen and (max-width: 760px) {
@@ -386,7 +296,7 @@
 
     .site-shell:not(.site-shell--case) #contact > h2 {
         margin-bottom: var(--space-6);
-        font-size: clamp(3.25rem, 15vw, 4.25rem);
+        font-size: clamp(2.75rem, 13vw, 3.5rem);
     }
 
     .site-shell:not(.site-shell--case) .contact__container {
@@ -404,5 +314,40 @@
 
     .site-shell:not(.site-shell--case) .contact__form {
         gap: var(--space-3);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .site-shell:not(.site-shell--case) #contact {
+        padding: var(--space-5) var(--space-5);
+    }
+
+    .site-shell:not(.site-shell--case) #contact > h2 {
+        margin-bottom: var(--space-2);
+    }
+
+    .site-shell:not(.site-shell--case) .contact__container {
+        gap: var(--space-4);
+    }
+
+    .site-shell:not(.site-shell--case) .contact__detail {
+        padding-block: 0;
+    }
+
+    .site-shell:not(.site-shell--case) .contact__required {
+        padding-bottom: var(--space-1);
+    }
+
+    .site-shell:not(.site-shell--case) .contact__field {
+        gap: var(--space-1);
+    }
+
+    .site-shell:not(.site-shell--case) .contact__form textarea {
+        height: 6rem;
+        min-height: 6rem;
+    }
+
+    .site-shell:not(.site-shell--case) .contact__form {
+        gap: var(--space-2);
     }
 }

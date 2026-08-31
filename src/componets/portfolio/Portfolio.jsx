@@ -4,14 +4,12 @@ import {
   motion,
   useMotionValueEvent,
   useScroll,
-  useTransform,
 } from 'motion/react'
 import { caseHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
 import serenoImage from '../../assets/projects/sereno-session-overview.webp'
-import serenoDemo from '../../assets/projects/sereno-demo.webp'
 import './portfolio.css'
 
 const PROJECT_MEDIA = {
@@ -26,6 +24,7 @@ const PROJECT_MEDIA = {
     width: 1440,
     height: 900,
     position: 'center',
+    fit: 'contain',
   },
   atalaya: {
     src: atalayaImage,
@@ -34,12 +33,11 @@ const PROJECT_MEDIA = {
     position: 'center',
   },
   sereno: {
-    src: serenoDemo,
-    still: serenoImage,
-    width: 1200,
-    height: 554,
+    src: serenoImage,
+    width: 1560,
+    height: 720,
     position: 'center',
-    fit: 'cover',
+    fit: 'contain',
   },
 }
 
@@ -67,8 +65,8 @@ const useMediaQuery = (query) => {
   return matches
 }
 
-const ProjectImage = ({ media, project, eager, dynamicCrop = false }) => {
-  const image = (
+const ProjectImage = ({ media, project, eager }) => {
+  return (
     <img
       src={media.src}
       alt={project.image_alt || project.title}
@@ -78,18 +76,9 @@ const ProjectImage = ({ media, project, eager, dynamicCrop = false }) => {
       decoding="async"
       style={{
         objectFit: media.fit || 'cover',
-        objectPosition: dynamicCrop ? 'var(--media-position, center)' : media.position,
+        objectPosition: media.position,
       }}
     />
-  )
-
-  if (!media.still) return image
-
-  return (
-    <picture>
-      <source media="(prefers-reduced-motion: reduce)" srcSet={media.still} />
-      {image}
-    </picture>
   )
 }
 
@@ -103,7 +92,6 @@ const ProjectCardContent = ({
   project,
   language,
   storyEnabled,
-  mediaScale,
   scrollYProgress,
   activeStep,
   decisions,
@@ -122,13 +110,9 @@ const ProjectCardContent = ({
       <figure className="portfolio__media">
         <div className="portfolio__media-frame">
           {isPrimary ? (
-            <motion.div
-              className="portfolio__media-motion"
-              data-step={storyEnabled ? activeStep : 0}
-              style={storyEnabled ? { scale: mediaScale } : undefined}
-            >
-              <ProjectImage media={media} project={project} eager dynamicCrop />
-            </motion.div>
+            <div className="portfolio__media-motion">
+              <ProjectImage media={media} project={project} eager />
+            </div>
           ) : (
             <ProjectImage
               media={media}
@@ -137,7 +121,14 @@ const ProjectCardContent = ({
             />
           )}
         </div>
-        <figcaption>{project.image_caption || project.title}</figcaption>
+        <figcaption>
+          {isPrimary && (
+            <>
+              <strong>{project.title}</strong>{' '}
+            </>
+          )}
+          {project.image_caption || project.title}
+        </figcaption>
       </figure>
 
       <div className="portfolio__body">
@@ -154,15 +145,15 @@ const ProjectCardContent = ({
               <span className="portfolio__story-track" aria-hidden="true">
                 <motion.span
                   className="portfolio__story-progress"
-                  style={{ scaleY: storyEnabled ? scrollYProgress : 1 }}
+                  style={{ scaleY: storyEnabled ? scrollYProgress : 0 }}
                 />
               </span>
               <ol className="portfolio__story-steps" aria-label={storyLabel}>
                 {decisions.map((decision, index) => (
                   <li
-                    aria-current={index === activeStep ? 'step' : undefined}
+                    aria-current={storyEnabled && index === activeStep ? 'step' : undefined}
                     className="portfolio__story-step"
-                    data-active={index === activeStep}
+                    data-active={storyEnabled && index === activeStep ? true : undefined}
                     key={decision.title}
                   >
                     <h4>{decision.title}</h4>
@@ -214,7 +205,6 @@ const ProjectCard = ({
   headingLevel,
   articleRef,
   storyEnabled,
-  mediaScale,
   scrollYProgress,
   activeStep,
   decisions = [],
@@ -228,7 +218,7 @@ const ProjectCard = ({
       aria-labelledby={headingId}
       className={getItemClasses(project)}
       data-story-mode={project.tier === 'primary' ? (storyEnabled ? 'scroll' : 'static') : undefined}
-      data-story-step={project.tier === 'primary' ? activeStep : undefined}
+      data-story-step={project.tier === 'primary' && storyEnabled ? activeStep : undefined}
       data-tier={project.tier}
     >
       <ProjectCardContent
@@ -236,7 +226,6 @@ const ProjectCard = ({
         project={project}
         language={language}
         storyEnabled={storyEnabled}
-        mediaScale={mediaScale}
         scrollYProgress={scrollYProgress}
         activeStep={activeStep}
         decisions={decisions}
@@ -254,13 +243,8 @@ const PrimaryProjectCard = ({ project, language, headingLevel, decisions, storyL
   const storyEnabled = isDesktopStory && !shouldReduceMotion
   const { scrollYProgress } = useScroll({
     target: articleRef,
-    offset: ['start start', 'end end'],
+    offset: ['start start', 'end 70%'],
   })
-  const mediaScale = useTransform(
-    scrollYProgress,
-    [0, 0.34, 0.67, 1],
-    [1.015, 1.045, 1.08, 1.11],
-  )
 
   useEffect(() => {
     if (!storyEnabled) setActiveStep(0)
@@ -280,7 +264,6 @@ const PrimaryProjectCard = ({ project, language, headingLevel, decisions, storyL
       project={project}
       language={language}
       storyEnabled={storyEnabled}
-      mediaScale={mediaScale}
       scrollYProgress={scrollYProgress}
       activeStep={storyEnabled ? activeStep : 0}
       decisions={decisions}

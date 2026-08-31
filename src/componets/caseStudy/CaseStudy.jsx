@@ -63,35 +63,53 @@ const CaseStudy = ({ language, slug }) => {
   const mediaLabel = card?.image_alt || title
   const mediaCaption = card?.image_caption || title
   const backHref = `${homeHref(language)}#portfolio`
+  const isPrimary = slug === 'strev' || slug === 'sereno'
+  const mediaFigure = media && (
+    <figure className={`case__media case__media--${slug}`}>
+      <div className="case__media-frame">
+        <img
+          src={media.src}
+          alt={mediaLabel}
+          width={media.width}
+          height={media.height}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <figcaption>{mediaCaption}</figcaption>
+    </figure>
+  )
 
   return (
     <article className="case">
       <a className="case__back" href={backHref}>{t('case_study.back')}</a>
 
-      <header className={`case__header case__header--${slug}`}>
-        <h1>{title}</h1>
-        <p className="case__tagline">{tagline}</p>
+      <header
+        aria-label={isPrimary ? title : undefined}
+        className={`case__header case__header--${slug}${isPrimary ? ' case__header--primary' : ''}`}
+        role={isPrimary ? 'group' : undefined}
+      >
+        {isPrimary ? (
+          <>
+            <div className="case__header-copy">
+              <h1>{title}</h1>
+              <p className="case__tagline">{tagline}</p>
+            </div>
+            {mediaFigure}
+          </>
+        ) : (
+          <>
+            <h1>{title}</h1>
+            <p className="case__tagline">{tagline}</p>
+          </>
+        )}
       </header>
 
       <section className="case__block case__block--summary">
         <h2>{t('case_study.summary_label')}</h2>
         <p className="case__summary">{summary}</p>
 
-        {media && (
-          <figure className={`case__media case__media--${slug}`}>
-            <div className="case__media-frame">
-              <img
-                src={media.src}
-                alt={mediaLabel}
-                width={media.width}
-                height={media.height}
-                loading="eager"
-                decoding="async"
-              />
-            </div>
-            <figcaption>{mediaCaption}</figcaption>
-          </figure>
-        )}
+        {!isPrimary && mediaFigure}
       </section>
 
       <section className="case__block">

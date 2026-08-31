@@ -64,6 +64,65 @@
     text-wrap: pretty;
 }
 
+/* Los flagships abren como páginas de producto, con su evidencia dentro del primer relato. */
+.case__header--primary {
+    --case-signal: var(--signal-strev);
+    min-height: clamp(22rem, 42vw, 32rem);
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    grid-template-areas: 'copy media';
+    align-items: center;
+    justify-content: stretch;
+    gap: clamp(var(--space-8), 5vw, var(--space-16));
+    padding: clamp(var(--space-8), 4vw, var(--space-12)) 0;
+    border-top: 2px solid var(--case-signal);
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+}
+
+.case__header--sereno {
+    --case-signal: var(--signal-sereno);
+    grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 0.65fr);
+    grid-template-areas: 'media copy';
+}
+
+.case__header-copy {
+    min-width: 0;
+    grid-area: copy;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.case__header--primary h1 {
+    max-width: 10ch;
+    color: var(--color-text-primary);
+    font-size: clamp(3.25rem, 7vw, 5.5rem);
+}
+
+.case__header--primary .case__tagline {
+    max-width: 28ch;
+    color: var(--color-text-muted);
+}
+
+.case__header--primary .case__media {
+    min-width: 0;
+    max-width: none;
+    grid-area: media;
+    margin: 0;
+}
+
+.case__header--primary .case__media-frame {
+    border-color: var(--line-soft);
+    border-radius: var(--radius-lg);
+}
+
+.case__header--primary .case__media figcaption {
+    color: var(--color-text-muted);
+}
+
 /* Las reglas globales de section son de la portada. El caso lleva su propio ritmo. */
 .case__block,
 .site-shell__content .case__block,
@@ -210,7 +269,7 @@
     color: var(--color-text-primary);
 }
 
-/* Todos los casos comparten marco exterior. Solo Strev llena el 16:10 sin matte. */
+/* Los casos secundarios comparten 16:10; cada flagship explicita su tratamiento real. */
 .case__media {
     width: 100%;
     max-width: 56rem;
@@ -236,11 +295,12 @@
 }
 
 .case__media--strev .case__media-frame img {
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .case__media--sereno .case__media-frame {
-    background: #1d1c2d;
+    aspect-ratio: 13 / 6;
+    background: var(--sereno-matte);
 }
 
 .case__media figcaption {
@@ -256,6 +316,17 @@
         gap: var(--space-12);
     }
 
+    .case__header--primary,
+    .case__header--sereno {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'copy'
+            'media';
+        gap: var(--space-8);
+        padding: var(--space-8) 0;
+    }
+
     .case__decisions {
         grid-template-columns: minmax(0, 1fr);
         gap: var(--space-8);
@@ -266,6 +337,11 @@
     .case__header {
         min-height: 16rem;
         padding: var(--space-6);
+    }
+
+    .case__header--primary {
+        min-height: 0;
+        padding: var(--space-6) 0;
     }
 
     .case__header h1 {

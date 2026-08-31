@@ -151,7 +151,9 @@ for (const pagina of PAGINAS) {
   }
 
   if (pagina.tipo === 'caso') {
-    const figura = html.match(/<figure class="case__media(?:\s|")[\s\S]*?<\/figure>/)?.[0]
+    const figuras = [...html.matchAll(/<figure class="case__media(?:\s|")[\s\S]*?<\/figure>/g)]
+      .map((coincidencia) => coincidencia[0])
+    const figura = figuras[0]
     if (!figura) {
       anota(pagina, 'el caso no pinta su figura de evidencia')
     } else {
@@ -161,6 +163,20 @@ for (const pagina of PAGINAS) {
       const asset = MEDIA_POR_CASO[pagina.slug]
       if (!asset || !figura.includes(asset)) {
         anota(pagina, `la figura no usa el asset real esperado (${asset || 'sin mapa'})`)
+      }
+    }
+
+    if (pagina.slug === 'strev' || pagina.slug === 'sereno') {
+      const apertura = html.match(/<header\b[^>]*class="[^"]*case__header--primary[^"]*"[^>]*>[\s\S]*?<\/header>/)?.[0]
+      if (figuras.length !== 1) {
+        anota(pagina, `el flagship pinta ${figuras.length} figuras; deberia pintar exactamente 1`)
+      }
+      if (!apertura || !apertura.includes('class="case__media')) {
+        anota(pagina, 'la evidencia flagship no vive dentro de la apertura primary')
+      }
+      const resumen = html.match(/<section class="case__block case__block--summary"[\s\S]*?<\/section>/)?.[0]
+      if (resumen?.includes('class="case__media')) {
+        anota(pagina, 'la evidencia flagship se repite dentro del resumen')
       }
     }
 
@@ -199,10 +215,10 @@ for (const pagina of PAGINAS) {
 
     const principales = (root[1].match(/data-tier="primary"/g) || []).length
     if (principales !== 2) anota(pagina, `${principales} proyectos principales, deberia haber 2`)
-    if (!root[1].includes('sereno-demo')) anota(pagina, 'Sereno no sirve el demo animado')
-    if (!root[1].includes('prefers-reduced-motion: reduce') || !root[1].includes('sereno-session-overview')) {
-      anota(pagina, 'Sereno no sirve el still para movimiento reducido')
+    if (!root[1].includes('sereno-session-overview')) {
+      anota(pagina, 'Sereno no sirve la evidencia estatica')
     }
+    if (root[1].includes('sereno-demo')) anota(pagina, 'Sereno todavia sirve la demo animada')
 
     const temas = (root[1].match(/class="theme-toggle"/g) || []).length
     if (temas !== 1) anota(pagina, `${temas} selectores de tema, deberia haber 1`)

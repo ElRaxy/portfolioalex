@@ -171,7 +171,7 @@
         ],
         "image": "sereno",
         "image_alt": "Sereno showing coding-agent sessions and their states in a terminal interface",
-        "image_caption": "Demo with synthetic histories: writing, commands, waiting and stopped sessions.",
+        "image_caption": "Sereno in demo mode: writing, commands, waiting and stopped sessions.",
         "slug": "sereno"
       },
       {

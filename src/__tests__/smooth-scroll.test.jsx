@@ -15,6 +15,7 @@ import {
 } from '../lib/smoothScroll'
 
 const scrollToDescriptor = Object.getOwnPropertyDescriptor(window, 'scrollTo')
+const scrollYDescriptor = Object.getOwnPropertyDescriptor(window, 'scrollY')
 const matchMediaDescriptor = Object.getOwnPropertyDescriptor(window, 'matchMedia')
 const requestAnimationFrameDescriptor = Object.getOwnPropertyDescriptor(
   window,
@@ -93,6 +94,7 @@ describe('desplazamiento suave', () => {
     window.history.pushState({}, '', '/')
     document.documentElement.lang = initialLanguage
     restoreProperty(window, 'scrollTo', scrollToDescriptor)
+    restoreProperty(window, 'scrollY', scrollYDescriptor)
     restoreProperty(window, 'matchMedia', matchMediaDescriptor)
     restoreProperty(window, 'requestAnimationFrame', requestAnimationFrameDescriptor)
     restoreProperty(window, 'innerHeight', innerHeightDescriptor)
@@ -234,6 +236,11 @@ describe('desplazamiento suave', () => {
   it('bloquea un segundo cambio de idioma mientras la transición sigue activa', async () => {
     jest.useFakeTimers()
     document.startViewTransition = jest.fn()
+    const frames = []
+    window.requestAnimationFrame = jest.fn((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
     const first = jest.fn()
     const second = jest.fn()
 
@@ -246,10 +253,58 @@ describe('desplazamiento suave', () => {
       expect(document.startViewTransition).not.toHaveBeenCalled()
       expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
 
+      act(() => frames.shift()(16))
+      act(() => frames.shift()(32))
       act(() => jest.advanceTimersByTime(190))
+      expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
+      act(() => frames.shift()(206))
       expect(document.documentElement).not.toHaveAttribute('data-language-transition')
     } finally {
       delete document.startViewTransition
+      document.documentElement.removeAttribute('data-language-transition')
+      jest.runOnlyPendingTimers()
+      jest.useRealTimers()
+    }
+  })
+
+  it('conserva la posicion vertical al traducir el contenido', async () => {
+    jest.useFakeTimers()
+    const frames = []
+    window.requestAnimationFrame = jest.fn((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: 1300,
+    })
+
+    try {
+      expect(await runLanguageTransition(jest.fn())).toBe(true)
+      expect(window.scrollTo).toHaveBeenLastCalledWith(0, 1300)
+      expect(frames).toHaveLength(1)
+
+      act(() => frames.shift()(16))
+      expect(frames).toHaveLength(1)
+      act(() => frames.shift()(32))
+      expect(window.scrollTo).toHaveBeenCalledTimes(2)
+      expect(window.scrollTo).toHaveBeenLastCalledWith(0, 1300)
+
+      act(() => jest.advanceTimersByTime(190))
+      expect(window.scrollTo).toHaveBeenCalledTimes(3)
+      expect(window.scrollTo).toHaveBeenLastCalledWith(0, 1300)
+      expect(document.documentElement).toHaveAttribute('data-language-transition', 'settling')
+      expect(frames).toHaveLength(1)
+
+      act(() => frames.shift()(206))
+      expect(window.scrollTo).toHaveBeenCalledTimes(4)
+      expect(document.documentElement).not.toHaveAttribute('data-language-transition')
+      expect(frames).toHaveLength(1)
+
+      act(() => frames.shift()(222))
+      expect(window.scrollTo).toHaveBeenCalledTimes(5)
+      expect(window.scrollTo).toHaveBeenLastCalledWith(0, 1300)
+    } finally {
       document.documentElement.removeAttribute('data-language-transition')
       jest.runOnlyPendingTimers()
       jest.useRealTimers()

@@ -9,7 +9,7 @@ import HeaderSocials from './HeaderSocials'
 
 const Header = () => {
   const { t, i18n } = useTranslation()
-  const [activeProduct, setActiveProduct] = useState(null)
+  const [activeProduct, setActiveProduct] = useState('strev')
   const language = (i18n.resolvedLanguage || i18n.language || 'es').split('-')[0]
   const projects = t('portfolio.projects', { returnObjects: true })
   const productBySlug = Array.isArray(projects)
@@ -97,6 +97,7 @@ const Header = () => {
             </span>
             <span className="hero__preview-caption">
               <strong>{product.title}</strong>
+              <span className="hero__preview-label">{product.label}</span>
               <span className="hero__preview-proof">{product.proof}</span>
               <a
                 className="hero__preview-link"

@@ -61,9 +61,15 @@ export const runLanguageTransition = async (update) => {
   ) return false
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const scrollYBeforeUpdate = window.scrollY
+  const restoreScroll = () => window.scrollTo(0, scrollYBeforeUpdate)
   root.setAttribute('data-language-transition', 'updating')
   try {
     await update()
+    restoreScroll()
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(restoreScroll)
+    })
   } catch (error) {
     root.removeAttribute('data-language-transition')
     throw error
@@ -72,7 +78,17 @@ export const runLanguageTransition = async (update) => {
   if (reducedMotion) root.removeAttribute('data-language-transition')
   else {
     root.setAttribute('data-language-transition', 'settling')
-    window.setTimeout(() => root.removeAttribute('data-language-transition'), LANGUAGE_TRANSITION_MS)
+    window.setTimeout(() => {
+      // Las traducciones cambian la altura del relato sticky después de los
+      // primeros frames. Conservamos overflow-anchor:none durante la primera
+      // corrección y reponemos la posición también después de reactivarlo.
+      restoreScroll()
+      window.requestAnimationFrame(() => {
+        root.removeAttribute('data-language-transition')
+        restoreScroll()
+        window.requestAnimationFrame(restoreScroll)
+      })
+    }, LANGUAGE_TRANSITION_MS)
   }
   return true
 }

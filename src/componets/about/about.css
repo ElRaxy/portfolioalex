@@ -118,6 +118,33 @@
   }
 }
 
+@media screen and (max-width: 600px) {
+  .site-shell:not(.site-shell--case) .about {
+    padding-block: var(--space-5);
+  }
+
+  .site-shell:not(.site-shell--case) .about > h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .about__content {
+    gap: var(--space-2);
+  }
+
+  .site-shell:not(.site-shell--case) .about__content .about__lead {
+    margin-bottom: 0;
+  }
+
+  .about__narrative {
+    gap: var(--space-2);
+  }
+
+  .about__facts {
+    gap: var(--space-2);
+    margin-top: 0;
+  }
+}
+
 /* Entrada visible desde el primer frame: transform-only para no retrasar el LCP. */
 @keyframes about-block-in {
   from { transform: translateY(12px); }

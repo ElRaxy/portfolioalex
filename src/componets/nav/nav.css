@@ -242,6 +242,8 @@
 @media (prefers-reduced-motion: reduce) {
   .portfolio-nav__links,
   .portfolio-nav::after {
+    animation: none;
+    transform: none;
     transition: none;
   }
 }

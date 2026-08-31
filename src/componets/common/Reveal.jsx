@@ -2,20 +2,17 @@ import React from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 
 const revealTransition = {
-  duration: 0.22,
+  duration: 0.34,
   ease: [0.22, 1, 0.36, 1],
 }
 
-// El margen inferior positivo adelanta el disparo antes de que el bloque
-// cruce el viewport. El HTML sigue visible aunque Motion no llegue a arrancar.
 const viewportOptions = {
   once: true,
-  amount: 0.05,
-  margin: '0px 0px 12% 0px',
+  amount: 0.15,
 }
 
 const itemVariants = {
-  hidden: { y: 8 },
+  hidden: { y: 12 },
   visible: {
     y: 0,
     transition: revealTransition,
@@ -26,7 +23,7 @@ const groupVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.02,
+      staggerChildren: 0.045,
     },
   },
 }
@@ -67,7 +64,7 @@ const Reveal = ({ as = 'div', delay = 0, className, children, ...props }) => {
   return (
     <MotionComponent
       className={className}
-      initial={{ y: 8 }}
+      initial={{ y: 12 }}
       whileInView={{ y: 0 }}
       viewport={viewportOptions}
       transition={{ ...revealTransition, delay: Math.min(Math.max(delay, 0), 0.06) }}

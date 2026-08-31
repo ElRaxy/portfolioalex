@@ -1,91 +1,91 @@
 @property --surface-0 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.17 0.012 25);
+  initial-value: oklch(0.200 0.006 271.1);
 }
 
 @property --surface-1 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.215 0.012 25);
+  initial-value: oklch(0.243 0.008 264.4);
 }
 
 @property --surface-2 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.27 0.014 25);
+  initial-value: oklch(0.285 0.009 264.4);
 }
 
 @property --surface-3 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.32 0.014 25);
+  initial-value: oklch(0.330 0.010 264.4);
 }
 
 @property --surface-sel {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.30 0.08 35);
+  initial-value: oklch(0.290 0.055 251.3);
 }
 
 @property --line-soft {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.34 0.012 25);
+  initial-value: oklch(0.340 0.008 264.4);
 }
 
 @property --line-control {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.62 0.015 25);
+  initial-value: oklch(0.761 0.010 87.5);
 }
 
 @property --accent {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.72 0.19 35);
+  initial-value: oklch(0.700 0.115 251.3);
 }
 
 @property --accent-hover {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.78 0.17 35);
+  initial-value: oklch(0.760 0.105 251.3);
 }
 
 @property --accent-active {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.65 0.20 35);
+  initial-value: oklch(0.640 0.120 251.3);
 }
 
 @property --accent-on {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.17 0.012 25);
+  initial-value: oklch(0.200 0.006 271.1);
 }
 
 @property --text-1 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.96 0.006 75);
+  initial-value: oklch(0.958 0.005 95.1);
 }
 
 @property --text-2 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.76 0.015 75);
+  initial-value: oklch(0.761 0.010 87.5);
 }
 
 @property --text-3 {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.70 0.015 75);
+  initial-value: oklch(0.680 0.010 87.5);
 }
 
 @property --color-success {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.78 0.13 155);
+  initial-value: oklch(0.760 0.100 195);
 }
 
 @property --color-error {
@@ -97,7 +97,7 @@
 @property --signal-alex {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.72 0.19 35);
+  initial-value: oklch(0.700 0.115 251.3);
 }
 
 @property --signal-strev {
@@ -127,25 +127,25 @@
 @property --home-stage {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.19 0.018 255);
+  initial-value: oklch(0.518 0.115 251.3);
 }
 
 @property --home-stage-on {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.98 0.004 245);
+  initial-value: oklch(1 0 0);
 }
 
 @property --home-stage-muted {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.78 0.018 245);
+  initial-value: oklch(0.947 0.018 245.4);
 }
 
 @property --home-stage-deep {
   syntax: '<color>';
   inherits: true;
-  initial-value: oklch(0.135 0.018 255);
+  initial-value: oklch(0.201 0.014 243.6);
 }
 
 * {
@@ -159,32 +159,58 @@
 
 :root,
 :root[data-theme='dark'] {
-  --surface-0: oklch(0.17 0.012 25);
-  --surface-1: oklch(0.215 0.012 25);
-  --surface-2: oklch(0.27 0.014 25);
-  --surface-3: oklch(0.32 0.014 25);
-  --surface-sel: oklch(0.30 0.08 35);
-  --line-soft: oklch(0.34 0.012 25);
-  --line-control: oklch(0.62 0.015 25);
-  --accent: oklch(0.72 0.19 35);
-  --accent-hover: oklch(0.78 0.17 35);
-  --accent-active: oklch(0.65 0.20 35);
-  --accent-on: oklch(0.17 0.012 25);
-  --text-1: oklch(0.96 0.006 75);
-  --text-2: oklch(0.76 0.015 75);
-  --text-3: oklch(0.70 0.015 75);
-  --color-success: oklch(0.78 0.13 155);
+  --ref-cobalt-700: #27598c;
+  --ref-cobalt-600: #2f6ba8;
+  --ref-cobalt-500: #5190d2;
+  --ref-cobalt-400: #66a3e4;
+  --ref-cobalt-300: #7eb6f2;
+  --ref-cobalt-100: #e4eff9;
+  --ref-paper: #f7f6f2;
+  --ref-white: #ffffff;
+  --ref-ink: #19191b;
+  --ref-ink-muted: #66656b;
+  --ref-night: #151619;
+  --ref-night-raised: #1e2024;
+  --ref-night-ink: #f2f1ed;
+  --ref-night-muted: #b4b1aa;
+  --ref-evidence-deep: #11171c;
+  --ref-sereno-matte: #1d1c2d;
+
+  --surface-0: oklch(0.200 0.006 271.1);
+  --surface-1: oklch(0.243 0.008 264.4);
+  --surface-2: oklch(0.285 0.009 264.4);
+  --surface-3: oklch(0.330 0.010 264.4);
+  --surface-sel: oklch(0.290 0.055 251.3);
+  --line-soft: oklch(0.340 0.008 264.4);
+  --line-control: oklch(0.761 0.010 87.5);
+  --accent: var(--ref-cobalt-400);
+  --accent-hover: var(--ref-cobalt-300);
+  --accent-active: var(--ref-cobalt-500);
+  --accent-on: var(--ref-night);
+  --text-1: var(--ref-night-ink);
+  --text-2: var(--ref-night-muted);
+  --text-3: oklch(0.680 0.010 87.5);
+  --color-success: oklch(0.760 0.100 195);
   --color-error: oklch(0.74 0.18 25);
 
-  --signal-alex: oklch(0.72 0.19 35);
+  --signal-alex: var(--accent);
   --signal-strev: oklch(0.82 0.13 160);
   --signal-strev-on: oklch(0.18 0.035 165);
   --signal-sereno: oklch(0.75 0.17 300);
   --signal-sereno-on: oklch(0.16 0.025 300);
-  --home-stage: oklch(0.19 0.018 255);
-  --home-stage-on: oklch(0.98 0.004 245);
-  --home-stage-muted: oklch(0.78 0.018 245);
-  --home-stage-deep: oklch(0.135 0.018 255);
+  --home-stage: var(--ref-cobalt-600);
+  --home-stage-on: var(--ref-white);
+  --home-stage-muted: var(--ref-cobalt-100);
+  --home-stage-deep: var(--ref-evidence-deep);
+
+  --surface-canvas: var(--surface-0);
+  --surface-raised: var(--surface-1);
+  --surface-evidence: var(--ref-evidence-deep);
+  --sereno-matte: var(--ref-sereno-matte);
+  --brand-action: var(--accent);
+  --brand-hover: var(--accent-hover);
+  --brand-active: var(--accent-active);
+  --focus-ring: var(--accent);
 
   --color-bg: var(--surface-0);
   --color-card: var(--surface-1);
@@ -227,9 +253,9 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 12px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
   --radius-full: 999px;
   --transition: 180ms ease;
   --nav-height: 4rem;
@@ -239,69 +265,69 @@
   --section-padding-lg: var(--space-20);
   --section-padding-md: var(--space-16);
   --section-padding-sm: var(--space-12);
-  --media-shadow: none;
+  --media-shadow: 0 20px 48px rgb(0 0 0 / 28%);
   --card-shadow: none;
   --card-shadow-hover: none;
 }
 
 :root[data-theme='light'] {
-  --surface-0: oklch(0.97 0.008 245);
-  --surface-1: oklch(0.995 0.003 245);
-  --surface-2: oklch(0.935 0.01 245);
-  --surface-3: oklch(0.89 0.012 245);
-  --surface-sel: oklch(0.91 0.045 31);
-  --line-soft: oklch(0.83 0.012 245);
-  --line-control: oklch(0.45 0.018 255);
-  --accent: oklch(0.52 0.20 31);
-  --accent-hover: oklch(0.45 0.20 31);
-  --accent-active: oklch(0.39 0.18 31);
-  --accent-on: oklch(0.99 0.003 245);
-  --text-1: oklch(0.20 0.018 255);
-  --text-2: oklch(0.40 0.018 255);
-  --text-3: oklch(0.45 0.018 255);
-  --color-success: oklch(0.43 0.13 155);
+  --surface-0: var(--ref-paper);
+  --surface-1: var(--ref-white);
+  --surface-2: oklch(0.940 0.006 95.1);
+  --surface-3: oklch(0.900 0.007 95.1);
+  --surface-sel: var(--ref-cobalt-100);
+  --line-soft: oklch(0.840 0.008 95.1);
+  --line-control: var(--ref-ink-muted);
+  --accent: var(--ref-cobalt-600);
+  --accent-hover: var(--ref-cobalt-700);
+  --accent-active: var(--ref-cobalt-700);
+  --accent-on: var(--ref-white);
+  --text-1: var(--ref-ink);
+  --text-2: var(--ref-ink-muted);
+  --text-3: var(--ref-ink-muted);
+  --color-success: oklch(0.430 0.100 195);
   --color-error: oklch(0.48 0.18 25);
-  --signal-alex: oklch(0.52 0.20 31);
+  --signal-alex: var(--accent);
   --signal-strev: oklch(0.47 0.13 160);
-  --signal-strev-on: oklch(0.99 0.003 245);
+  --signal-strev-on: var(--ref-white);
   --signal-sereno: oklch(0.50 0.16 300);
-  --signal-sereno-on: oklch(0.99 0.003 245);
-  --home-stage: oklch(0.28 0.022 255);
-  --home-stage-on: oklch(0.99 0.003 245);
-  --home-stage-muted: oklch(0.84 0.018 245);
-  --home-stage-deep: oklch(0.22 0.02 255);
-  --media-shadow: none;
+  --signal-sereno-on: var(--ref-white);
+  --home-stage: var(--ref-cobalt-600);
+  --home-stage-on: var(--ref-white);
+  --home-stage-muted: var(--ref-cobalt-100);
+  --home-stage-deep: var(--ref-evidence-deep);
+  --media-shadow: 0 1px 3px rgb(25 25 27 / 8%);
   --card-shadow: none;
   --card-shadow-hover: none;
 }
 
 :root[data-theme-transition] {
   transition:
-    --surface-0 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --surface-1 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --surface-2 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --surface-3 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --surface-sel 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --line-soft 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --line-control 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --accent 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --accent-hover 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --accent-active 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --accent-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --text-1 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --text-2 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --text-3 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --color-success 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --color-error 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --signal-alex 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --signal-strev 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --signal-strev-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --signal-sereno 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --signal-sereno-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --home-stage 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --home-stage-on 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --home-stage-muted 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    --home-stage-deep 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    --surface-0 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --surface-1 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --surface-2 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --surface-3 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --surface-sel 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --line-soft 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --line-control 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --accent 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --accent-hover 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --accent-active 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --accent-on 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --text-1 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --text-2 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --text-3 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --color-success 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --color-error 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-alex 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-strev 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-strev-on 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-sereno 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --signal-sereno-on 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-on 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-muted 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    --home-stage-deep 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -424,7 +450,7 @@ select {
 }
 
 :where(a, button, input, textarea, select):focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 

@@ -222,7 +222,7 @@ describe('la web entera', () => {
       expect(document.documentElement).toHaveAttribute('data-theme-transition')
       expect(document.startViewTransition).not.toHaveBeenCalled()
 
-      act(() => jest.advanceTimersByTime(260))
+      act(() => jest.advanceTimersByTime(180))
       expect(document.documentElement).not.toHaveAttribute('data-theme-transition')
     } finally {
       delete document.startViewTransition
@@ -337,6 +337,11 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(css).not.toMatch(/\.portfolio-nav__progress/)
   })
 
+  it('evita que el navegador salte de capitulo durante el cambio de idioma', () => {
+    const css = leer('componets', 'language', 'language.css')
+    expect(css).toMatch(/html\[data-language-transition\]\s*\{[\s\S]*?overflow-anchor:\s*none/)
+  })
+
   it('conecta tres decisiones reales al progreso de scroll de cada flagship', () => {
     render(<App pathname="/" />)
 
@@ -365,8 +370,8 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const source = leer('componets', 'portfolio', 'Portfolio.jsx')
     expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion/)
     expect(source).toMatch(/\) : \([\s\S]*?<ProjectImage/)
-    expect(source).toMatch(/const PrimaryProjectCard[\s\S]*?useScroll\([\s\S]*?useTransform\([\s\S]*?useMotionValueEvent\(/)
-    expect(source).toMatch(/offset:\s*\['start start', 'end end'\]/)
+    expect(source).toMatch(/const PrimaryProjectCard[\s\S]*?useScroll\([\s\S]*?useMotionValueEvent\(/)
+    expect(source).toMatch(/offset:\s*\['start start', 'end 70%'\]/)
     expect(source).toMatch(/latest >= 0\.67 \? 2 : latest >= 0\.34 \? 1 : 0/)
     expect(source).toMatch(/useMediaQuery\('\(min-width: 1051px\)'\)/)
     expect(source).toMatch(/useMediaQuery\('\(prefers-reduced-motion: reduce\)'\)/)
@@ -376,9 +381,12 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(source).toMatch(/const storyEnabled = isDesktopStory && !shouldReduceMotion/)
     expect(source).toMatch(/if \(!storyEnabled\)\s+setActiveStep\(0\)/)
     expect(source).toMatch(/if \(!storyEnabled\) return/)
-    expect(source).toMatch(/data-step=\{storyEnabled \? activeStep : 0\}/)
-    expect(source).toMatch(/style=\{storyEnabled \? \{ scale: mediaScale \} : undefined\}/)
-    expect(source).toMatch(/scaleY: storyEnabled \? scrollYProgress : 1/)
+    expect(source).toMatch(/scaleY: storyEnabled \? scrollYProgress : 0/)
+    expect(source).toMatch(/aria-current=\{storyEnabled && index === activeStep \? 'step' : undefined\}/)
+    expect(source).toMatch(/data-active=\{storyEnabled && index === activeStep \? true : undefined\}/)
+    expect(source).not.toMatch(/useTransform|mediaScale|dynamicCrop|data-step/)
+    expect(source).toMatch(/strev:[\s\S]*?position: 'center',[\s\S]*?fit: 'contain'/)
+    expect(source).toMatch(/sereno:[\s\S]*?position: 'center',[\s\S]*?fit: 'contain'/)
     expect(source).toMatch(/caseStudies\?\.\[project\.slug\]\?\.decisions \|\| \[\]\)\.slice\(0, 3\)/)
     const supportingCard = source.match(/const ProjectCard = \([\s\S]*?\n\}\n\nconst PrimaryProjectCard/)
     expect(supportingCard).not.toBeNull()
@@ -388,10 +396,63 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
     expect(css).toMatch(/\.portfolio__media-motion\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
-    expect(css).toMatch(/\.portfolio__item--strev \.portfolio__media-motion\[data-step='2'\][\s\S]*?--media-position:/)
-    expect(css).toMatch(/\.portfolio__item--sereno \.portfolio__media-motion\[data-step='2'\][\s\S]*?--media-position:/)
+    expect(css).not.toMatch(/--media-position|\.portfolio__media-motion\[data-step|transform:\s*scale\(/)
+    expect(css).not.toMatch(/object-position\s+\d+ms|\.portfolio__item--supporting[^}]+transform:\s*scale\(/)
     expect(css).not.toMatch(/portfolio__chapter-progress|will-change/)
     expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
+  })
+
+  it('da ritmo editorial al paso activo sin duplicarlo ni mover la evidencia', () => {
+    render(<App pathname="/" />)
+
+    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
+    const principales = within(portfolio).getAllByRole('article')
+      .filter((article) => article.dataset.tier === 'primary')
+    const diccionario = require('../i18n/locales/es/translation.json')
+
+    principales.forEach((article, projectIndex) => {
+      const project = diccionario.portfolio.projects[projectIndex]
+      const firstDecision = diccionario.case_study.cases[project.slug].decisions[0]
+
+      expect(within(article).getAllByText(firstDecision.title)).toHaveLength(1)
+      expect(within(article).getByText(project.image_caption, { selector: 'figcaption' }))
+        .toBeInTheDocument()
+    })
+
+    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
+    expect(source).not.toMatch(/portfolio__chapter-label/)
+
+    const css = leer('componets', 'portfolio', 'portfolio.css')
+    const motionStart = css.indexOf(".portfolio__item--strev[data-story-mode='scroll'] .portfolio__story-step h4")
+    const motionEnd = css.indexOf('.portfolio__tags')
+    const motionRules = css.slice(motionStart, motionEnd)
+    const distances = [...motionRules.matchAll(/translateX\((-?\d+)px\)/g)]
+      .map((match) => Math.abs(Number(match[1])))
+
+    expect(motionStart).toBeGreaterThan(-1)
+    expect(motionEnd).toBeGreaterThan(motionStart)
+    expect(distances.length).toBeGreaterThan(0)
+    expect(Math.max(...distances)).toBeLessThanOrEqual(12)
+    expect(motionRules).toMatch(/portfolio__item--strev[\s\S]*?translateX\(-12px\)/)
+    expect(motionRules).toMatch(/portfolio__item--sereno[\s\S]*?translateX\(12px\)/)
+    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\][\s\S]*?transform:\s*translateX\(0\)/)
+    expect(motionRules).not.toMatch(/opacity|portfolio__media|picture|img|scale\(/)
+    expect(css).toMatch(/portfolio__item--sereno\[data-story-mode='scroll'\] \.portfolio__story-track\s*\{[\s\S]*?display:\s*none/)
+    expect(css).toMatch(/portfolio__item--sereno\[data-story-mode='scroll'\] \.portfolio__story-steps\s*\{[\s\S]*?border-top:/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
+  })
+
+  it('mantiene un unico observer de seccion sin duplicar el enlace activo', () => {
+    render(<App pathname="/" />)
+    const nav = leer('componets', 'nav', 'Nav.jsx')
+    const css = leer('componets', 'nav', 'nav.css')
+
+    expect(nav.match(/new IntersectionObserver/g)).toHaveLength(1)
+    expect(nav).not.toMatch(/addEventListener\(['"]scroll|requestAnimationFrame/)
+    expect(nav).toMatch(/if \(!activeSectionListeners\.size\)[\s\S]*?activeSection = 'home'/)
+    expect(nav).not.toMatch(/activeSectionLabel|portfolio-nav__section-context/)
+    expect(css).not.toMatch(/portfolio-nav__section-context|portfolio-nav-context-in/)
   })
 
   it('activa el relato solo en desktop sin reduced motion y reacciona a ambos cambios', async () => {
@@ -433,14 +494,18 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
       act(() => queries.get('(min-width: 1051px)').setMatches(false))
       await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
-      expect(strev).toHaveAttribute('data-story-step', '0')
+      expect(strev).not.toHaveAttribute('data-story-step')
+      within(strev).getAllByRole('listitem').forEach((step) => {
+        expect(step).not.toHaveAttribute('aria-current')
+        expect(step).not.toHaveAttribute('data-active')
+      })
 
       act(() => queries.get('(min-width: 1051px)').setMatches(true))
       await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'scroll'))
 
       act(() => queries.get('(prefers-reduced-motion: reduce)').setMatches(true))
       await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
-      expect(strev).toHaveAttribute('data-story-step', '0')
+      expect(strev).not.toHaveAttribute('data-story-step')
     } finally {
       view?.unmount()
       window.matchMedia = originalMatchMedia
@@ -489,42 +554,47 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(supporting[0]).toMatch(/margin-top:\s*clamp\(/)
   })
 
-  it('usa escenas sticky cortas en desktop y capítulos estáticos en tablet y reduced motion', () => {
+  it('mantiene solo el medio sticky y deja que las decisiones den altura al relato', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
     const stage = css.match(/\.portfolio__item--primary\s*\{[\s\S]*?\n\}/)
     expect(stage).not.toBeNull()
-    expect(stage[0]).toMatch(/min-height:\s*145svh/)
+    expect(stage[0]).not.toMatch(/min-height:/)
     expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(19rem, 0\.34fr\) minmax\(0, 0\.66fr\)/)
     expect(stage[0]).toMatch(/grid-template-areas:\s*'body media'/)
     expect(stage[0]).toMatch(/background:\s*var\(--surface-0\)/)
     expect(stage[0]).toMatch(/border-bottom:\s*1px solid var\(--line-soft\)/)
     expect(css).toMatch(/\.portfolio__item--primary \.portfolio__media\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
-    expect(css).toMatch(/\.portfolio__item--primary \.portfolio__body\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
+    const body = css.match(/\.portfolio__item--primary \.portfolio__body\s*\{[\s\S]*?\n\}/)
+    expect(body).not.toBeNull()
+    expect(body[0]).toMatch(/grid-area:\s*body/)
+    expect(body[0]).not.toMatch(/position:\s*sticky|top:/)
+    expect(css).toMatch(/data-story-mode='scroll'[\s\S]*?min-height:\s*clamp\(8\.75rem, 18svh, 12rem\)/)
+    expect(css).toMatch(/\.portfolio__item--sereno\[data-story-mode='scroll'\][\s\S]*?min-height:\s*clamp\(7\.5rem, 14\.5svh, 9\.5rem\)/)
     expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
     expect(css).toMatch(/\.portfolio__item--sereno\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 0\.64fr\) minmax\(18rem, 0\.36fr\)[\s\S]*?grid-template-areas:\s*'media body'/)
     const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
     expect(serenoFrame).not.toBeNull()
-    expect(serenoFrame[0]).toMatch(/aspect-ratio:\s*16 \/ 9/)
-    expect(serenoFrame[0]).toMatch(/background:\s*color-mix\(in oklch, var\(--signal-sereno\) 12%, var\(--surface-1\)\)/)
+    expect(serenoFrame[0]).toMatch(/aspect-ratio:\s*1200 \/ 554/)
+    expect(serenoFrame[0]).toMatch(/background:\s*var\(--sereno-matte\)/)
     expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static[\s\S]*?transform:\s*none !important/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__item--primary \.portfolio__media img\s*\{[\s\S]*?transition:\s*none/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__item--strev \.portfolio__media-motion\[data-step\][\s\S]*?--media-position:[\s\S]*?\.portfolio__item--sereno \.portfolio__media-motion\[data-step\][\s\S]*?--media-position:/)
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static[\s\S]*?\.portfolio__media-motion[\s\S]*?transform:\s*none !important/)
+    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static/)
+    expect(css).not.toMatch(/--media-position|transform:\s*scale\(|object-position\s+\d+ms/)
   })
 
-  it('fija la identidad de producto con señales OKLCH y una sola familia tipográfica', () => {
+  it('fija el cobalto como identidad global y mantiene las señales de producto localizadas', () => {
     const header = leer('componets', 'header', 'Header.jsx')
     const headerCss = leer('componets', 'header', 'header.css')
     const portfolioCss = leer('componets', 'portfolio', 'portfolio.css')
     const index = leer('index.css')
     const html = fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'index.html'), 'utf8')
 
-    expect(index).toMatch(/--signal-alex:\s*oklch\(0\.72 0\.19 35\)/)
+    expect(index).toMatch(/--ref-cobalt-600:\s*#2f6ba8/)
+    expect(index).toMatch(/--signal-alex:\s*var\(--accent\)/)
     expect(index).toMatch(/--signal-strev:\s*oklch\(0\.82 0\.13 160\)/)
     expect(index).toMatch(/--signal-sereno:\s*oklch\(0\.75 0\.17 300\)/)
-    expect(index).not.toMatch(/#2f6ba8|#173b60/)
+    expect(index).not.toMatch(/oklch\(0\.72 0\.19 35\)|oklch\(0\.52 0\.20 31\)/)
     expect(index).toMatch(/--font-sans:\s*"Anek Latin"/)
     expect(index).toMatch(/--font-mono:\s*var\(--font-sans\)/)
     expect(html).toMatch(/Anek\+Latin:wght@400;500;600;700/)
@@ -540,9 +610,9 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const selector = screen.getByRole('group', { name: 'Elegir producto destacado' })
     const selectStrev = within(selector).getByRole('button', { name: 'Strev' })
     const selectSereno = within(selector).getByRole('button', { name: 'Sereno' })
-    expect(selectStrev).toHaveAttribute('aria-pressed', 'false')
+    expect(selectStrev).toHaveAttribute('aria-pressed', 'true')
     expect(selectSereno).toHaveAttribute('aria-pressed', 'false')
-    expect(canvas).not.toHaveAttribute('data-active-product')
+    expect(canvas).toHaveAttribute('data-active-product', 'strev')
     expect(selectSereno).toHaveAttribute('aria-controls', 'hero-product-sereno')
     const pathBeforeSelection = window.location.pathname
     fireEvent.click(selectSereno)
@@ -558,7 +628,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(header).toMatch(/caseHref\(language, product\.slug\)/)
     expect(header).not.toMatch(/portrait|headshot|alex-editorial-portrait/)
     expect(headerCss).toMatch(/\.hero\s*\{[\s\S]*?background:\s*var\(--surface-0\)/)
-    expect(headerCss).toMatch(/\.hero::before\s*\{[\s\S]*?background:\s*var\(--signal-alex\)/)
+    expect(headerCss).not.toMatch(/\.hero::before|border-left/)
     const heroStage = headerCss.match(/\.hero__stage\s*\{[\s\S]*?\n\}/)
     const heroPreview = headerCss.match(/\.hero__preview\s*\{[\s\S]*?\n\}/)
     const heroImage = headerCss.match(/\.hero__preview img\s*\{[\s\S]*?\n\}/)
@@ -569,25 +639,34 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(heroPreview[0]).toMatch(/flex:\s*1 1 0/)
     expect(heroPreview[0]).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) clamp\(10rem, 21%, 12\.5rem\)/)
     expect(headerCss).toMatch(/\.hero__preview \+ \.hero__preview\s*\{[\s\S]*?border-top:\s*1px solid var\(--line-soft\)/)
-    expect(headerCss).toMatch(/\.hero__preview-caption\s*\{[\s\S]*?border-left:\s*4px solid var\(--preview-signal\)/)
+    expect(headerCss).toMatch(/\.hero__preview-caption\s*\{[\s\S]*?background-color 240ms ease/)
     expect(heroImage).not.toBeNull()
     expect(heroImage[0]).toMatch(/object-fit:\s*contain/)
     expect(heroImage[0]).toMatch(/object-position:\s*center/)
+    expect(heroImage[0]).toMatch(/min-height:\s*0;[\s\S]*?max-height:\s*100%/)
     expect(heroImage[0]).not.toMatch(/object-fit:\s*cover|transform:\s*scale/)
     expect(headerCss).not.toMatch(/\.hero__preview(?::focus-within|:hover)? img\s*\{[\s\S]*?transform:\s*scale/)
-    expect(headerCss).toMatch(/\.hero__stage:has\(\.hero__preview--strev:focus-within\)[\s\S]*?flex-grow:\s*1\.5/)
-    expect(headerCss).toMatch(/\.hero__stage:has\(\.hero__preview--strev:focus-within\)[\s\S]*?flex-grow:\s*1/)
-    expect(headerCss).toMatch(/\.hero__stage:not\(:has\(\.hero__preview:focus-within\)\):has\(\.hero__preview--strev:hover\)/)
-    expect(headerCss).toMatch(/\.hero__preview:focus-within\s*\{[\s\S]*?outline:\s*4px solid var\(--preview-signal\)/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?height:\s*clamp\(32rem, 67vw, 38rem\)/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__product-selector\s*\{[\s\S]*?display:\s*grid[\s\S]*?data-active-product='strev'[\s\S]*?flex-grow:\s*1\.5/)
-    expect(headerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.hero__preview\s*\{[\s\S]*?flex-grow:\s*1 !important;[\s\S]*?flex-basis:\s*0 !important/)
-    expect(headerCss).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?flex-grow:\s*1\.5 !important/)
-    expect(headerCss).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?flex-grow:\s*1\.85 !important/)
+    expect(headerCss).not.toMatch(/flex-grow|flex-basis|data-active-product=/)
+    expect(headerCss).toMatch(/\.hero__preview:focus-within\s*\{[\s\S]*?outline:\s*3px solid var\(--focus-ring\)/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?height:\s*clamp\(28rem, 58vw, 34rem\)/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__product-selector\s*\{[\s\S]*?display:\s*grid[\s\S]*?\.hero__preview\[data-active='true'\] \.hero__preview-caption/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__stage\s*\{[\s\S]*?height:\s*clamp\(16rem, 65vw, 18rem\)/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 360px\)[\s\S]*?\.hero__stage\s*\{[\s\S]*?height:\s*12rem/)
+    const narrowHeader = headerCss.slice(
+      headerCss.indexOf('@media screen and (max-width: 360px)'),
+      headerCss.indexOf('@media (prefers-reduced-motion: reduce)'),
+    )
+    expect(narrowHeader).not.toMatch(/\.hero__availability\s*\{[\s\S]*?display:\s*none/)
+    expect(narrowHeader).toMatch(/\.hero__signature\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\) auto/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__preview\s*\{[\s\S]*?position:\s*absolute[\s\S]*?visibility:\s*hidden[\s\S]*?pointer-events:\s*none/)
+    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?grid-template-rows:\s*minmax\(0, 1fr\) auto[\s\S]*?\.hero__preview-label\s*\{[\s\S]*?display:\s*block[\s\S]*?\.hero__preview-proof\s*\{[\s\S]*?display:\s*none/)
+    expect(headerCss).toMatch(/\.hero__preview\[data-active='true'\]\s*\{[\s\S]*?visibility:\s*visible[\s\S]*?pointer-events:\s*auto/)
+    expect(headerCss).not.toMatch(/visibility\s+0s\s+linear\s+200ms/)
+    expect(headerCss).toMatch(/@media \(prefers-reduced-motion: reduce\) and \(max-width: 600px\)[\s\S]*?\.hero__preview[\s\S]*?transition:\s*none/)
     expect(headerCss).toMatch(/\.hero__preview-link\s*\{[\s\S]*?min-height:\s*44px;[\s\S]*?min-inline-size:\s*44px/)
     expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__socials a\s*\{[\s\S]*?width:\s*44px;[\s\S]*?height:\s*44px/)
     expect(headerCss).toMatch(/\.hero__name\s*\{[\s\S]*?font-size:\s*clamp\(4\.5rem, 7\.6vw, 6rem\)/)
-    expect(portfolioCss).toMatch(/\.portfolio__item--primary \.portfolio__title\s*\{[\s\S]*?6rem/)
+    expect(portfolioCss).toMatch(/\.portfolio__item--primary \.portfolio__title\s*\{[\s\S]*?5rem/)
     expect(portfolioCss).toMatch(/\.portfolio__item--supporting \.portfolio__links a\s*\{[\s\S]*?min-inline-size:\s*44px/)
     expect(`${headerCss}\n${portfolioCss}`).not.toMatch(/var\(--font-mono\)/)
   })
@@ -608,7 +687,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     tokens.forEach((token) => {
       expect(index).toMatch(new RegExp(`@property --${token} \\{[\\s\\S]*?syntax: '<color>'`))
-      expect(index).toMatch(new RegExp(`:root\\[data-theme-transition\\] \\{[\\s\\S]*?--${token} 260ms`))
+      expect(index).toMatch(new RegExp(`:root\\[data-theme-transition\\] \\{[\\s\\S]*?--${token} 180ms`))
     })
     expect(index).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?:root\[data-theme-transition\][\s\S]*?transition:\s*none/)
   })
@@ -626,11 +705,12 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(principal[0]).toMatch(/color:\s*var\(--accent-on\)/)
   })
 
-  it('mantiene entero SaveMyMoneyNow en el indice de 320px', () => {
+  it('convierte los secundarios en un indice de una columna sin truncar sus nombres', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
-    expect(css).toMatch(/@media screen and \(max-width: 360px\)[\s\S]*?grid-template-columns:\s*4\.5rem minmax\(0, 1fr\)/)
-    expect(css).toMatch(/\.portfolio__item--savemymoneynow\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*nowrap/)
+    expect(css).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.portfolio__item--supporting\s*\{[\s\S]*?display:\s*block[\s\S]*?\.portfolio__item--supporting \.portfolio__media\s*\{[\s\S]*?display:\s*none/)
+    expect(css).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*normal/)
+    expect(css).not.toMatch(/\.portfolio__item--savemymoneynow\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*nowrap/)
   })
 
   it('rectifica los controles de la home sin reducir sus targets', () => {
@@ -683,14 +763,15 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     )
   })
 
-  it('revela contenido visible con un gesto breve y adelantado', () => {
+  it('revela contenido visible con un gesto editorial breve', () => {
     const source = leer('componets', 'common', 'Reveal.jsx')
 
     expect(source).not.toMatch(/opacity:\s*0/)
-    expect(source).not.toMatch(/y:\s*(?:9|1[0-9])/)
-    expect(source).toMatch(/duration:\s*0\.22/)
-    expect(source).toMatch(/staggerChildren:\s*0\.02/)
-    expect(source).toMatch(/margin:\s*'0px 0px 12% 0px'/)
+    expect(source).toMatch(/hidden:\s*\{ y:\s*12 \}/)
+    expect(source).toMatch(/duration:\s*0\.34/)
+    expect(source).toMatch(/staggerChildren:\s*0\.045/)
+    expect(source).toMatch(/amount:\s*0\.15/)
+    expect(source).not.toMatch(/margin:/)
   })
 
   it('abre y cierra el menú sin display brusco y deja reduced motion estático', () => {
@@ -707,15 +788,18 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(menuClosed).not.toMatch(/display:\s*none/)
   })
 
-  it('acorta tema e idioma y continua Experience y Stack sin ledger', () => {
+  it('acorta tema e idioma y unifica el cierre sobre superficies neutrales', () => {
     const theme = leer('componets', 'theme', 'ThemeToggle.jsx')
     const index = leer('index.css')
     const language = leer('componets', 'language', 'language.css')
     const experience = leer('componets', 'experience', 'experience.css')
+    const contact = leer('componets', 'contact', 'contact.css')
+    const footer = leer('componets', 'footer', 'footer.css')
+    const diagram = leer('componets', 'portfolio', 'projectDiagram.css')
 
-    expect(theme).toMatch(/THEME_TRANSITION_MS = 260/)
+    expect(theme).toMatch(/THEME_TRANSITION_MS = 180/)
     expect(index).not.toMatch(/:root\[data-theme-transition\][\s\S]*?360ms/)
-    expect(index).toMatch(/:root\[data-theme-transition\][\s\S]*?260ms/)
+    expect(index).toMatch(/:root\[data-theme-transition\][\s\S]*?180ms/)
     expect(language).toMatch(/language-content-settle 190ms/)
     expect(language).toMatch(/prefers-reduced-motion: reduce[\s\S]*?animation:\s*none/)
 
@@ -723,12 +807,19 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(stackGrid).not.toBeNull()
     expect(stackGrid[0]).toMatch(/grid-column:\s*2/)
     expect(stackGrid[0]).toMatch(/grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/)
-    expect(experience).toMatch(/\.site-shell:not\(\.site-shell--case\) \.experience,[\s\S]*?\.stack[\s\S]*?background:\s*var\(--home-stage-deep\)/)
+    expect(experience).toMatch(/\.site-shell:not\(\.site-shell--case\) \.experience,[\s\S]*?\.stack[\s\S]*?background:\s*var\(--surface-1\)/)
+    expect(experience).not.toMatch(/--dark-|home-stage|#[0-9a-f]{3,8}\b/i)
+    expect(contact).toMatch(/\.site-shell:not\(\.site-shell--case\) #contact[\s\S]*?background:\s*var\(--surface-0\)/)
+    expect(footer).toMatch(/\.site-shell:not\(\.site-shell--case\) \.site-footer[\s\S]*?background:\s*var\(--surface-0\)/)
+    expect(`${contact}\n${footer}`).not.toMatch(/--text-1:|--accent:|home-stage|rgb\(|#[0-9a-f]{3,8}\b/i)
     expect(experience).not.toMatch(/border-top|border-bottom/)
     expect(experience).not.toMatch(/\.stack__chip \+ \.stack__chip::before/)
     expect(experience).not.toMatch(/font-family:\s*var\(--font-mono\)/)
     expect(experience).not.toMatch(/\.stack\s*\{[^}]*min-height/)
     expect(experience).not.toMatch(/opacity:\s*0/)
+    expect(diagram).not.toMatch(/linear-gradient|radial-gradient|background-image|radius-full|box-shadow/)
+    expect(diagram).toMatch(/\.pdiag__prompt\s*\{[\s\S]*?display:\s*none/)
+    expect(diagram).toMatch(/\.pdiag__after\s*\{[\s\S]*?border-top:\s*2px solid var\(--accent\)/)
   })
 
   it('comprime solo el ritmo de la portada y conserva el de los casos', () => {
@@ -1042,6 +1133,19 @@ describe('paginas de caso de estudio', () => {
     expect(within(caso).getByText(proyecto.image_caption)).toBeInTheDocument()
   })
 
+  it.each(['strev', 'sereno'])('mantiene una sola evidencia dentro de la apertura primary de %s', (slug) => {
+    const diccionario = require('../i18n/locales/es/translation.json')
+    const proyecto = diccionario.portfolio.projects.find((item) => item.slug === slug)
+    render(<App pathname={`/proyectos/${slug}/`} />)
+
+    const caso = screen.getByRole('article')
+    const apertura = within(caso).getByRole('group', { name: proyecto.title })
+
+    expect(within(apertura).getAllByRole('figure')).toHaveLength(1)
+    expect(within(apertura).getAllByRole('img')).toHaveLength(1)
+    expect(within(caso).getAllByRole('figure')).toHaveLength(1)
+  })
+
   it('no depende de diagramas ni terminales sinteticos', () => {
     const fs = require('fs')
     const path = require('path')
@@ -1095,7 +1199,7 @@ describe('paginas de caso de estudio', () => {
       path.join(__dirname, '..', 'componets', 'caseStudy', 'caseStudy.css'),
       'utf8',
     )
-    const frame = css.match(/\.case__media-frame\s*\{[\s\S]*?\n\}/)
+    const frame = css.match(/(?:^|\n)\.case__media-frame\s*\{[\s\S]*?\n\}/)
     const media = css.match(/\.case__media img\s*\{[\s\S]*?\n\}/)
     const strev = css.match(/\.case__media--strev \.case__media-frame img\s*\{[\s\S]*?\n\}/)
     const decisions = css.match(/\.case__decisions\s*\{[\s\S]*?\n\}/)
@@ -1107,7 +1211,8 @@ describe('paginas de caso de estudio', () => {
     expect(media).not.toBeNull()
     expect(media[0]).toMatch(/object-fit:\s*contain/)
     expect(strev).not.toBeNull()
-    expect(strev[0]).toMatch(/object-fit:\s*cover/)
+    expect(strev[0]).toMatch(/object-fit:\s*contain/)
+    expect(css).toMatch(/\.case__media--sereno \.case__media-frame\s*\{[\s\S]*?aspect-ratio:\s*13\s*\/\s*6[\s\S]*?background:\s*var\(--sereno-matte\)/)
     expect(decisions).not.toBeNull()
     expect(decisions[0]).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/)
     expect(ordinal).not.toBeNull()
@@ -1230,12 +1335,14 @@ describe('paginas de caso de estudio', () => {
       expect(article).toHaveClass('portfolio__item--primary')
       expect(within(article).getAllByRole('link')).toHaveLength(2)
       expect(within(article).queryByRole('link', { name: /Última versión|Latest release/i })).toBeNull()
+      const image = within(article).getByRole('img')
+      expect(image).toHaveStyle({ objectFit: 'contain', objectPosition: 'center' })
     })
 
     const sereno = principales[1]
     expect(within(sereno).getByRole('img')).toHaveAttribute(
       'src',
-      expect.stringContaining('sereno-demo.webp'),
+      expect.stringContaining('sereno-session-overview.webp'),
     )
     const fs = require('fs')
     const path = require('path')
@@ -1243,8 +1350,6 @@ describe('paginas de caso de estudio', () => {
       path.join(__dirname, '..', 'componets', 'portfolio', 'Portfolio.jsx'),
       'utf8',
     )
-    expect(source).toMatch(
-      /<source media="\(prefers-reduced-motion: reduce\)" srcSet=\{media\.still\} \/>/,
-    )
+    expect(source).not.toMatch(/sereno-demo|media\.still|<picture>/)
   })
 })

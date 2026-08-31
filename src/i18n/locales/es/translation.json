@@ -171,7 +171,7 @@
         ],
         "image": "sereno",
         "image_alt": "Sereno mostrando sesiones de agentes y sus estados en una interfaz de terminal",
-        "image_caption": "Demo con historiales sintéticos: trabajo, comandos, espera y sesiones paradas.",
+        "image_caption": "Sereno en modo demo: trabajo, comandos, espera y sesiones paradas.",
         "slug": "sereno"
       },
       {
