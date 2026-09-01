@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { homeHref } from '../../lib/routing'
+import { caseHref, homeHref } from '../../lib/routing'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
@@ -58,6 +58,13 @@ const CaseStudy = ({ language, slug }) => {
   // momento. Los proyectos cerrados no tienen ninguno y no pintan el bloque.
   const projects = t('portfolio.projects', { returnObjects: true }) || []
   const card = projects.find((project) => project.slug === slug)
+  const projectIndex = projects.findIndex((project) => project.slug === slug)
+  const nextProject = projectIndex >= 0
+    ? projects[(projectIndex + 1) % projects.length]
+    : null
+  const nextTagline = nextProject
+    ? t(`case_study.cases.${nextProject.slug}.tagline`)
+    : ''
   const links = card?.links || []
   const media = CASE_MEDIA[slug]
   const mediaLabel = card?.image_alt || title
@@ -105,26 +112,41 @@ const CaseStudy = ({ language, slug }) => {
         )}
       </header>
 
-      <section className="case__block case__block--summary">
+      <nav className="case__index" aria-labelledby="case-index-label">
+        <p className="case__index-label" id="case-index-label">
+          {t('case_study.index_label')}
+        </p>
+        <ol className="case__index-list">
+          <li><a href="#case-summary">{t('case_study.summary_label')}</a></li>
+          <li><a href="#case-problem">{t('case_study.problem_label')}</a></li>
+          {gapParrafos.length > 0 && (
+            <li><a href="#case-gap">{t('case_study.gap_label')}</a></li>
+          )}
+          <li><a href="#case-decisions">{t('case_study.decisions_label')}</a></li>
+          <li><a href="#case-results">{t('case_study.results_label')}</a></li>
+        </ol>
+      </nav>
+
+      <section className="case__block case__block--summary" id="case-summary">
         <h2>{t('case_study.summary_label')}</h2>
         <p className="case__summary">{summary}</p>
 
         {!isPrimary && mediaFigure}
       </section>
 
-      <section className="case__block">
+      <section className="case__block" id="case-problem">
         <h2>{t('case_study.problem_label')}</h2>
         {problema.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </section>
 
       {gapParrafos.length > 0 && (
-        <section className="case__block">
+        <section className="case__block" id="case-gap">
           <h2>{t('case_study.gap_label')}</h2>
           {gapParrafos.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </section>
       )}
 
-      <section className="case__block">
+      <section className="case__block" id="case-decisions">
         <h2 aria-label={t('case_study.decisions_label')}>
           <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
@@ -140,7 +162,7 @@ const CaseStudy = ({ language, slug }) => {
         </ol>
       </section>
 
-      <section className="case__block">
+      <section className="case__block" id="case-results">
         <h2 aria-label={t('case_study.results_label')}>
           <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
@@ -176,6 +198,16 @@ const CaseStudy = ({ language, slug }) => {
               {link.label}
             </a>
           ))}
+        </nav>
+      )}
+
+      {nextProject && (
+        <nav className="case__next" aria-label={t('case_study.next_case')}>
+          <a className="case__next-link" href={caseHref(language, nextProject.slug)}>
+            <span className="case__next-label">{t('case_study.next_case')}</span>
+            <strong className="case__next-title">{nextProject.title}</strong>
+            <span className="case__next-tagline">{nextTagline}</span>
+          </a>
         </nav>
       )}
     </article>

@@ -299,6 +299,8 @@
   "case_study": {
     "back": "Back to projects",
     "index_title": "Case study",
+    "index_label": "Inside this case",
+    "next_case": "Next project",
     "problem_label": "The problem",
     "decisions_label": "How it works",
     "results_label": "Where the bar sits",

@@ -20,6 +20,11 @@ const getScrollPadding = () => {
   return Number.isFinite(value) ? value : 0
 }
 
+const getTargetOffset = (target) => {
+  const margin = parseFloat(getComputedStyle(target).scrollMarginTop)
+  return Number.isFinite(margin) && margin > 0 ? margin : getScrollPadding()
+}
+
 const getDuration = (distance) => Math.min(900, Math.max(420, Math.abs(distance) * 0.32))
 
 const updateMeta = (selector, value, attribute = 'content') => {
@@ -99,7 +104,7 @@ export const scrollToSection = (id) => {
 
   const from = window.scrollY
   const max = document.documentElement.scrollHeight - window.innerHeight
-  const to = Math.min(max, Math.max(0, from + target.getBoundingClientRect().top - getScrollPadding()))
+  const to = Math.min(max, Math.max(0, from + target.getBoundingClientRect().top - getTargetOffset(target)))
   const distance = to - from
 
   if (prefersReducedMotion() || Math.abs(distance) < 2) {
@@ -149,6 +154,10 @@ export const useSmoothAnchors = () => {
 
       if (scrollToSection(id)) {
         event.preventDefault()
+        document.querySelectorAll('[data-anchor-target]').forEach((target) => {
+          target.removeAttribute('data-anchor-target')
+        })
+        document.getElementById(id)?.setAttribute('data-anchor-target', '')
         // El hash se escribe sin provocar el salto que haria location.hash.
         window.history.pushState(null, '', `#${id}`)
       }

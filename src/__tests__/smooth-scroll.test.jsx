@@ -122,6 +122,20 @@ describe('desplazamiento suave', () => {
     expect(window.requestAnimationFrame).not.toHaveBeenCalled()
   })
 
+  it('prioriza el margen del capitulo para no ocultarlo bajo un indice sticky', () => {
+    reducedMotion = true
+    render(
+      <section id="capitulo" style={{ scrollMarginTop: '152px' }}>
+        Capitulo del caso
+      </section>,
+    )
+    const destino = document.getElementById('capitulo')
+    destino.getBoundingClientRect = jest.fn(() => ({ top: 500 }))
+
+    expect(scrollToSection('capitulo')).toBe(true)
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 348)
+  })
+
   it('mantiene el destino dentro de los límites desplazables de la página', () => {
     reducedMotion = true
     Object.defineProperty(document.documentElement, 'scrollHeight', {
@@ -161,6 +175,7 @@ describe('desplazamiento suave', () => {
 
     expect(fireEvent.click(enlace)).toBe(false)
     expect(window.location.hash).toBe('#x')
+    expect(destino).toHaveAttribute('data-anchor-target')
   })
 
   it('permite abrir la ancla en otra pestaña sin cambiar la página actual', () => {

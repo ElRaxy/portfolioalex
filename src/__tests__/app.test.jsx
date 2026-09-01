@@ -941,11 +941,20 @@ describe('el orden de foco sigue al orden visual', () => {
 // ese HTML no existen: la nav leia la ruta de `window`, que en el prerender no
 // hay, asi que todo se prerenderizaba como si fuera la portada. La ruta ahora
 // baja por contexto desde App, que es quien la sabe.
-describe('las anclas de una pagina de caso apuntan a la portada', () => {
-  it('ninguna ancla queda suelta cuando la ruta es un caso', () => {
+describe('las anclas de una pagina de caso apuntan a destinos existentes', () => {
+  it('solo conserva anclas internas para los capitulos del caso', () => {
     render(<App pathname="/proyectos/atalaya/" />)
 
-    expect(enlacesCon(/^#/)).toEqual([])
+    const locales = enlacesCon(/^#/).map((enlace) => enlace.getAttribute('href'))
+    expect(locales).toEqual([
+      '#case-summary',
+      '#case-problem',
+      '#case-decisions',
+      '#case-results',
+    ])
+    locales.forEach((href) => {
+      expect(document.querySelector(href)).not.toBeNull()
+    })
   })
 
   it('la portada conserva sus anclas locales', () => {
@@ -1216,8 +1225,9 @@ describe('paginas de caso de estudio', () => {
     expect(ordinal).not.toBeNull()
     expect(ordinal[0]).toMatch(/content:\s*none/)
     expect(results).not.toBeNull()
-    expect(results[0]).toMatch(/background:\s*var\(--surface-sel\)/)
-    expect(results[0]).not.toMatch(/border-(?:top|bottom)/)
+    expect(results[0]).toMatch(/background:\s*transparent/)
+    expect(results[0]).toMatch(/border-top:\s*1px solid var\(--line-control\)/)
+    expect(results[0]).toMatch(/border-bottom:\s*1px solid var\(--line-control\)/)
     expect(css).not.toMatch(/@keyframes|animation:/)
   })
 

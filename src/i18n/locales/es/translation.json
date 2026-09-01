@@ -299,6 +299,8 @@
   "case_study": {
     "back": "Volver a proyectos",
     "index_title": "Caso de estudio",
+    "index_label": "Dentro del caso",
+    "next_case": "Siguiente proyecto",
     "problem_label": "El problema",
     "decisions_label": "Cómo funciona",
     "results_label": "Dónde está el listón",
