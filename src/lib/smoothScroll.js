@@ -148,18 +148,28 @@ export const useSmoothAnchors = () => {
 
       const link = event.target.closest('a[href^="#"]')
       if (!link) return
+      if (link.target && link.target !== '_self') return
 
       const id = decodeURIComponent(link.getAttribute('href').slice(1))
       if (!id) return
 
       if (scrollToSection(id)) {
         event.preventDefault()
+        const target = document.getElementById(id)
         document.querySelectorAll('[data-anchor-target]').forEach((target) => {
           target.removeAttribute('data-anchor-target')
         })
-        document.getElementById(id)?.setAttribute('data-anchor-target', '')
+        target.setAttribute('data-anchor-target', '')
         // El hash se escribe sin provocar el salto que haria location.hash.
         window.history.pushState(null, '', `#${id}`)
+        // Esperar al siguiente frame deja que React cierre primero el menu
+        // movil. preventScroll conserva el offset que acabamos de calcular.
+        window.requestAnimationFrame(() => {
+          if (target.tabIndex < 0 && !target.hasAttribute('tabindex')) {
+            target.setAttribute('tabindex', '-1')
+          }
+          target.focus({ preventScroll: true })
+        })
       }
     }
 

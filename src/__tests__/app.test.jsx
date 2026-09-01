@@ -952,9 +952,8 @@ describe('las anclas de una pagina de caso apuntan a destinos existentes', () =>
       '#case-decisions',
       '#case-results',
     ])
-    locales.forEach((href) => {
-      expect(document.querySelector(href)).not.toBeNull()
-    })
+    ;['En una frase', 'El problema', 'Cómo funciona', 'Dónde está el listón']
+      .forEach((nombre) => expect(screen.getByRole('heading', { name: nombre })).toBeInTheDocument())
   })
 
   it('la portada conserva sus anclas locales', () => {

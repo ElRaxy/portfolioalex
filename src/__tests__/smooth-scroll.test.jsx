@@ -36,12 +36,25 @@ const restoreProperty = (object, property, descriptor) => {
   }
 }
 
+const clickWithoutFollowingLink = (element, options = {}) => {
+  let preventedByHook
+  const stopNativeNavigation = (event) => {
+    preventedByHook = event.defaultPrevented
+    event.preventDefault()
+  }
+  window.addEventListener('click', stopNativeNavigation, { once: true })
+  fireEvent.click(element, options)
+  return preventedByHook
+}
+
 const PruebaAnclas = () => {
   useSmoothAnchors()
 
   return (
     <>
-      <a href="#x" target="_blank">Ir al destino</a>
+      <a href="#x">Ir al destino</a>
+      <a href="#x" target="_blank">Abrir destino aparte</a>
+      <a href="#no-existe">Ir a destino inexistente</a>
       <section id="x" aria-labelledby="titulo-x">
         <h2 id="titulo-x">Destino de la ancla</h2>
       </section>
@@ -52,6 +65,24 @@ const PruebaAnclas = () => {
 const PruebaIdioma = ({ i18n }) => {
   useLanguageFromHistory(i18n)
   return <p>Historial preparado</p>
+}
+
+const PruebaCierreMenu = () => {
+  const [open, setOpen] = React.useState(true)
+  const trigger = React.useRef(null)
+  useSmoothAnchors()
+
+  React.useEffect(() => {
+    if (!open) trigger.current.focus({ preventScroll: true })
+  }, [open])
+
+  return (
+    <>
+      <button ref={trigger} type="button">Menú</button>
+      {open && <a href="#contact" onClick={() => setOpen(false)}>Contacto</a>}
+      <section id="contact" aria-label="Destino contacto">Formulario</section>
+    </>
+  )
 }
 
 describe('desplazamiento suave', () => {
@@ -125,11 +156,11 @@ describe('desplazamiento suave', () => {
   it('prioriza el margen del capitulo para no ocultarlo bajo un indice sticky', () => {
     reducedMotion = true
     render(
-      <section id="capitulo" style={{ scrollMarginTop: '152px' }}>
+      <section aria-label="Capítulo del caso" id="capitulo" style={{ scrollMarginTop: '152px' }}>
         Capitulo del caso
       </section>,
     )
-    const destino = document.getElementById('capitulo')
+    const destino = screen.getByRole('region', { name: 'Capítulo del caso' })
     destino.getBoundingClientRect = jest.fn(() => ({ top: 500 }))
 
     expect(scrollToSection('capitulo')).toBe(true)
@@ -167,24 +198,74 @@ describe('desplazamiento suave', () => {
     expect(window.scrollTo.mock.calls).toEqual([[0, 0], [0, 600]])
   })
 
-  it('intercepta la ancla local y deja su destino reflejado en la URL', () => {
+  it('intercepta la ancla local, conserva sus metadatos y enfoca sin un segundo salto', () => {
+    const frames = []
+    window.requestAnimationFrame = jest.fn((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
     render(<PruebaAnclas />)
     const enlace = screen.getByRole('link', { name: 'Ir al destino' })
     const destino = screen.getByRole('region', { name: 'Destino de la ancla' })
+    const focus = jest.spyOn(destino, 'focus')
     destino.getBoundingClientRect = jest.fn(() => ({ top: 0 }))
 
     expect(fireEvent.click(enlace)).toBe(false)
     expect(window.location.hash).toBe('#x')
     expect(destino).toHaveAttribute('data-anchor-target')
+    expect(destino).not.toHaveAttribute('tabindex')
+    expect(focus).not.toHaveBeenCalled()
+
+    act(() => frames.shift()(16))
+
+    expect(destino).toHaveAttribute('tabindex', '-1')
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true })
+    expect(destino).toHaveFocus()
   })
 
-  it('permite abrir la ancla en otra pestaña sin cambiar la página actual', () => {
+  it.each([
+    ['Meta', { metaKey: true }],
+    ['Control', { ctrlKey: true }],
+    ['Mayúsculas', { shiftKey: true }],
+    ['Alt', { altKey: true }],
+    ['botón no primario', { button: 1 }],
+  ])('conserva el comportamiento nativo con %s', (_label, modifier) => {
     render(<PruebaAnclas />)
     const enlace = screen.getByRole('link', { name: 'Ir al destino' })
 
-    expect(fireEvent.click(enlace, { metaKey: true })).toBe(true)
+    expect(clickWithoutFollowingLink(enlace, modifier)).toBe(false)
     expect(window.location.hash).toBe('')
     expect(window.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['Abrir destino aparte'],
+    ['Ir a destino inexistente'],
+  ])('no intercepta %s', (name) => {
+    render(<PruebaAnclas />)
+
+    expect(clickWithoutFollowingLink(screen.getByRole('link', { name }))).toBe(false)
+    expect(window.location.hash).toBe('')
+    expect(window.scrollTo).not.toHaveBeenCalled()
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled()
+  })
+
+  it('traslada el foco después de que React cierre el menú móvil', () => {
+    const frames = []
+    window.requestAnimationFrame = jest.fn((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
+    render(<PruebaCierreMenu />)
+    const destino = screen.getByRole('region', { name: 'Destino contacto' })
+    destino.getBoundingClientRect = jest.fn(() => ({ top: 0 }))
+
+    fireEvent.click(screen.getByRole('link', { name: 'Contacto' }))
+
+    expect(screen.getByRole('button', { name: 'Menú' })).toHaveFocus()
+    expect(destino).not.toHaveFocus()
+    act(() => frames.shift()(16))
+    expect(destino).toHaveFocus()
   })
 
   it('sincroniza el idioma al volver por historial solo cuando ha cambiado', async () => {

@@ -184,9 +184,14 @@ for (const pagina of PAGINAS) {
       anota(pagina, 'el caso conserva un diagrama o terminal sintetico')
     }
 
-    // En un caso no existen las secciones de la portada.
-    const sueltas = [...html.matchAll(/href="(#[a-z-]+)"/g)].map((x) => x[1])
-    if (sueltas.length) anota(pagina, `anclas a secciones inexistentes: ${[...new Set(sueltas)].join(', ')}`)
+    // Un caso puede tener indice propio, pero ninguna ancla local puede quedar
+    // suelta. Validar el destino real evita confundir el indice con la nav de
+    // portada y sigue cazando cualquier href interno roto.
+    const destinos = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map((x) => x[1]))
+    const sueltas = [...html.matchAll(/href="#([^"]+)"/g)]
+      .map((x) => x[1])
+      .filter((id) => !destinos.has(id))
+    if (sueltas.length) anota(pagina, `anclas sin destino: ${[...new Set(sueltas)].join(', ')}`)
 
     const ambito = DICCIONARIOS[pagina.idioma].case_study.cases[pagina.slug].scope
     const h2 = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((x) => x[1].toLowerCase())

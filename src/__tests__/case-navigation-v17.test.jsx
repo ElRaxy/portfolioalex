@@ -61,11 +61,11 @@ describe('navegacion interna de los casos v17', () => {
           link.getAttribute('href'),
         ])).toEqual(expectedChapters)
 
-        expectedChapters.forEach(([, href]) => {
-          const id = href.slice(1)
-          expect(article.querySelectorAll(`#${id}`)).toHaveLength(1)
+        expectedChapters.forEach(([name]) => {
+          expect(within(article).getByRole('heading', { name })).toBeInTheDocument()
         })
-        expect(article.querySelectorAll('#case-gap')).toHaveLength(0)
+        expect(within(article).queryByRole('heading', { name: dictionary.case_study.gap_label }))
+          .not.toBeInTheDocument()
         expect(within(index).queryByRole('link', { name: dictionary.case_study.gap_label }))
           .not.toBeInTheDocument()
 
@@ -109,6 +109,7 @@ describe('navegacion interna de los casos v17', () => {
     expect(within(index).getByRole('link', {
       name: dictionary.case_study.gap_label,
     })).toHaveAttribute('href', '#case-gap')
-    expect(article.querySelectorAll('#case-gap')).toHaveLength(1)
+    expect(within(article).getByRole('heading', { name: dictionary.case_study.gap_label }))
+      .toBeInTheDocument()
   })
 })
