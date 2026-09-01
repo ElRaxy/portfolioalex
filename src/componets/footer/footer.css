@@ -46,7 +46,7 @@
   justify-content: flex-end;
   gap: 0 var(--space-4);
   color: var(--text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   line-height: 1.45;
   text-align: right;
 }
@@ -71,9 +71,9 @@
   width: 100vw;
   margin-left: calc(50% - 50vw);
   padding:
-    var(--space-8)
+    var(--space-6)
     max(var(--space-8), calc((100vw - var(--container-width-lg)) / 2))
-    var(--space-12);
+    var(--space-8);
   background: var(--surface-0);
   color: var(--text-1);
   box-shadow: inset 0 1px 0 var(--line-soft);
@@ -87,7 +87,7 @@
   }
 
   .site-shell:not(.site-shell--case) .site-footer {
-    padding: var(--space-8) var(--space-5) var(--space-10);
+    padding: var(--space-6) var(--space-5) var(--space-8);
   }
 
   .site-footer__legal {
@@ -99,8 +99,8 @@
 @media screen and (max-width: 390px) {
   .site-shell:not(.site-shell--case) .site-footer {
     gap: var(--space-4);
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-8);
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-6);
   }
 
   .site-footer__legal {

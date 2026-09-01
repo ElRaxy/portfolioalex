@@ -12,8 +12,8 @@
   display: grid;
   grid-template-columns: minmax(12rem, 0.28fr) minmax(0, 0.72fr);
   gap: var(--space-8) clamp(var(--space-12), 8vw, var(--space-24));
-  padding-top: clamp(var(--space-16), 6vw, var(--space-24));
-  padding-bottom: clamp(var(--space-14), 5vw, var(--space-20));
+  padding-top: clamp(var(--space-12), 5vw, var(--space-20));
+  padding-bottom: clamp(var(--space-12), 4vw, var(--space-16));
 }
 
 .site-shell:not(.site-shell--case) .experience::after {
@@ -69,7 +69,7 @@
 .timeline__item {
   position: relative;
   min-width: 0;
-  padding: var(--space-6) 0 clamp(var(--space-8), 4vw, var(--space-12));
+  padding: var(--space-5) 0 clamp(var(--space-6), 3vw, var(--space-10));
   box-shadow: inset 0 1px 0 var(--line-soft);
 }
 
@@ -85,7 +85,7 @@
 .timeline__item.is-current::before {
   position: absolute;
   top: var(--space-1);
-  bottom: clamp(var(--space-8), 4vw, var(--space-12));
+  bottom: clamp(var(--space-6), 3vw, var(--space-10));
   left: 0;
   width: 2px;
   background: var(--accent);
@@ -163,8 +163,8 @@
   display: grid;
   grid-template-columns: minmax(12rem, 0.28fr) minmax(0, 0.72fr);
   gap: var(--space-6) clamp(var(--space-12), 8vw, var(--space-24));
-  padding-top: clamp(var(--space-12), 5vw, var(--space-20));
-  padding-bottom: clamp(var(--space-16), 6vw, var(--space-24));
+  padding-top: clamp(var(--space-10), 4vw, var(--space-16));
+  padding-bottom: clamp(var(--space-12), 5vw, var(--space-20));
 }
 
 .site-shell:not(.site-shell--case) .stack > h2 {
@@ -246,9 +246,9 @@
 
   .site-shell:not(.site-shell--case) .experience {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-10);
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-14);
+    gap: var(--space-8);
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-10);
   }
 
   .site-shell:not(.site-shell--case) .experience::after {
@@ -263,7 +263,7 @@
 
   .experience__content {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-10);
+    gap: var(--space-8);
   }
 
   .experience__education {
@@ -273,8 +273,8 @@
   .site-shell:not(.site-shell--case) .stack {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-16);
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-12);
   }
 
   .site-shell:not(.site-shell--case) .stack > h2,
@@ -297,18 +297,18 @@
 
 @media screen and (max-width: 600px) {
   .site-shell:not(.site-shell--case) .experience {
-    gap: var(--space-8);
-    padding-top: var(--space-14);
-    padding-bottom: var(--space-12);
+    gap: var(--space-6);
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-8);
   }
 
   .experience__content {
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
   .timeline__item {
-    padding-top: var(--space-5);
-    padding-bottom: var(--space-8);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-6);
   }
 
   .timeline__item:first-child {
@@ -316,7 +316,7 @@
   }
 
   .timeline__item.is-current::before {
-    bottom: var(--space-8);
+    bottom: var(--space-6);
   }
 
   .timeline__head {
@@ -329,9 +329,9 @@
   }
 
   .site-shell:not(.site-shell--case) .stack {
-    gap: var(--space-5);
-    padding-top: var(--space-10);
-    padding-bottom: var(--space-14);
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-10);
   }
 
   .stack__grid {
@@ -341,7 +341,7 @@
   }
 
   .stack__group {
-    padding: var(--space-5) 0 var(--space-6);
+    padding: var(--space-4) 0 var(--space-5);
   }
 
   .stack__group + .stack__group {

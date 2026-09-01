@@ -566,7 +566,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(body).not.toBeNull()
     expect(body[0]).toMatch(/grid-area:\s*body/)
     expect(body[0]).not.toMatch(/position:\s*sticky|top:/)
-    expect(css).toMatch(/data-story-mode='scroll'[\s\S]*?min-height:\s*clamp\(8\.75rem, 18svh, 12rem\)/)
+    expect(css).toMatch(/data-story-mode='scroll'[\s\S]*?min-height:\s*clamp\(7rem, 13svh, 9rem\)/)
     expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
     const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
     expect(serenoFrame).not.toBeNull()
