@@ -97,7 +97,7 @@ const Nav = () => {
     if (!isMenuOpen) return undefined
 
     const previousOverflow = document.body.style.overflow
-    const desktopQuery = window.matchMedia('(min-width: 1025px)')
+    const desktopQuery = window.matchMedia('(min-width: 901px)')
     const menu = menuRef.current
     const menuLinks = [...(menu?.querySelectorAll('a[href]') ?? [])]
     const firstLink = menuLinks[0]

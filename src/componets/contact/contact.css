@@ -254,7 +254,11 @@
   text-wrap: balance;
 }
 
-@media screen and (max-width: 900px) {
+.site-shell--case #contact {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media screen and (max-width: 1200px) {
   #contact,
   .site-shell:not(.site-shell--case) #contact {
     grid-template-columns: minmax(0, 1fr);
@@ -262,16 +266,16 @@
   }
 
   .site-shell:not(.site-shell--case) #contact {
-    padding: var(--space-12) var(--space-5);
+    padding: var(--space-12) var(--space-8);
   }
 
   .site-shell:not(.site-shell--case) #contact > h2 {
     max-width: 10ch;
-    font-size: clamp(2.75rem, 11vw, 3.5rem);
+    font-size: clamp(2.75rem, 5vw, 3.5rem);
   }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 900px) {
   .container.contact__container {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
@@ -286,6 +290,10 @@
 
   .site-shell:not(.site-shell--case) #contact {
     padding: var(--space-10) var(--space-5);
+  }
+
+  .site-shell:not(.site-shell--case) #contact > h2 {
+    font-size: clamp(2.75rem, 11vw, 3.5rem);
   }
 
   .container.contact__container {
