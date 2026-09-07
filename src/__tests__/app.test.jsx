@@ -754,10 +754,10 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(es.portfolio.projects.filter(({ tier }) => tier === 'primary').map(({ proof }) => proof))
       .toEqual([
         'React + Node · análisis en cola y cifrado por campo',
-        'Estados locales de Claude Code, Codex, Gemini y Antigravity',
+        'Estados locales de Claude Code, Codex, Gemini, Kilo y Antigravity',
       ])
     expect(en.portfolio.projects.find(({ slug }) => slug === 'sereno').proof).toBe(
-      'Local-only session states across Claude Code, Codex, Gemini and Antigravity',
+      'Local-only session states across Claude Code, Codex, Gemini, Kilo and Antigravity',
     )
   })
 
@@ -1299,8 +1299,8 @@ describe('paginas de caso de estudio', () => {
     const es = require('../i18n/locales/es/translation.json').case_study.cases.sereno
     const en = require('../i18n/locales/en/translation.json').case_study.cases.sereno
 
-    expect(es.results.map((result) => result.value)).toEqual(['1 archivo', '0 dependencias', '4 CLI'])
-    expect(en.results.map((result) => result.value)).toEqual(['1 file', '0 dependencies', '4 CLIs'])
+    expect(es.results.map((result) => result.value)).toEqual(['1 archivo', '0 dependencias', '5 CLI'])
+    expect(en.results.map((result) => result.value)).toEqual(['1 file', '0 dependencies', '5 CLIs'])
     expect(es.decisions).toHaveLength(en.decisions.length)
     expect(es.decisions).toHaveLength(5)
     expect(JSON.stringify([es, en])).toMatch(/tool_use/)

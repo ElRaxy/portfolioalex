@@ -50,7 +50,7 @@
       },
       {
         "term": "Languages",
-        "value": "Native Spanish and Valencian, intermediate English"
+        "value": "Native Spanish and Valencian; technical English for reading, basic conversation"
       }
     ]
   },
@@ -151,7 +151,7 @@
         "title": "Sereno",
         "label": "Local tool for agent sessions",
         "description": "I can see which session is working, running a command or waiting for a reply.",
-        "proof": "Local-only session states across Claude Code, Codex, Gemini and Antigravity",
+        "proof": "Local-only session states across Claude Code, Codex, Gemini, Kilo and Antigravity",
         "tier": "primary",
         "tags": [
           "Python",
@@ -452,15 +452,15 @@
       "sereno": {
         "title": "Sereno",
         "tagline": "See which session is working, waiting or stuck",
-        "summary": "Sereno is a single-file Python terminal UI that reads the local histories of Claude Code, Codex, Gemini and Antigravity. It separates sessions that are writing, running a command, waiting for a reply or already stopped, without sending data off the machine.",
+        "summary": "Sereno is a single-file Python terminal UI that reads the local histories of Claude Code, Codex, Gemini, Kilo and Antigravity. It separates sessions that are writing, running a command, waiting for a reply or already stopped, without sending data off the machine.",
         "problem": [
           "Sereno started with the problem of following several agent sessions at once. A live process does not tell you whether it is writing, inside a command, waiting for a reply or stopped.",
-          "The four CLIs record their activity in different formats. Sereno reads those local histories and returns comparable states without copying real prompts or depending on a remote service."
+          "The five CLIs record their activity in different formats. Sereno reads those local histories and returns comparable states without copying real prompts or depending on a remote service."
         ],
         "decisions": [
           {
             "title": "Histories stay where the tools wrote them",
-            "body": "Sereno reads the local transcript queues of Claude Code, Codex, Gemini and Antigravity. Each reader maps its format to the same states without uploading the content elsewhere."
+            "body": "Sereno reads the local transcript queues of Claude Code, Codex, Gemini, Kilo and Antigravity. Each reader maps its format to the same states without uploading the content elsewhere."
           },
           {
             "title": "The last useful event determines the state",
@@ -489,11 +489,11 @@
             "label": "outside the standard library"
           },
           {
-            "value": "4 CLIs",
+            "value": "5 CLIs",
             "label": "with comparable states"
           }
         ],
-        "note": "macOS and Linux. Python 3.8+, curses and tmux. MIT licence. The demo uses synthetic data.",
+        "note": "macOS and Linux. Python 3.8+, curses and tmux. MIT licence; installable via Homebrew. 100 merged PRs with CI on six combinations, 78 tests and 176 monitored mutants. The demo uses synthetic data.",
         "short": "Sereno",
         "scope": "Sereno"
       }
