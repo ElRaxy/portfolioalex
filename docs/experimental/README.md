@@ -27,3 +27,11 @@ Para verlo sin compilar: `python3 -m http.server 4203 --directory public`, despu
 - Los archivos publicados son idénticos al prototipo verificado; `runtime-sha256.json` conserva las huellas. Los informes históricos y capturas permanecen en el workspace de trabajo y no se publican.
 
 La verificación anterior corresponde al checkpoint del 13 de octubre. La integración y el despliegue de la portada del 14 de octubre necesitan su propia comprobación en la URL pública; un build correcto no demuestra por sí solo que esté publicada.
+
+## Publicación en Vercel
+
+La rama de producción es `main`. El build genera la nueva portada en `/`, conservando `/experimental/` para comparar la fuente y las páginas prerenderizadas existentes.
+
+Para comprobar una publicación, verificar el dominio público y el SHA del despliegue de producción; el estado correcto de una preview no acredita que el dominio ya haya cambiado.
+
+Reversión de esta integración: revertir el commit `0e9dfc5` en `main` y desplegar el resultado. La portada React vuelve a generarse con el pipeline anterior; el prototipo permanece conservado.
