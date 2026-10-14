@@ -15,9 +15,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/prerender.mjs && node scripts/inline-css.mjs",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && node scripts/prerender.mjs && node scripts/inline-css.mjs && node scripts/publish-home.mjs",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:home": "node --test scripts/publish-home.test.mjs"
   },
   "eslintConfig": {
     "extends": [

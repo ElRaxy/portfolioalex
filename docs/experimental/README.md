@@ -2,7 +2,11 @@
 
 Checkpoint: `travesuras-1013-02`. Ruta: `/experimental/`.
 
-Prototipo personal de Alex Micó con ilustración animada, mirada y parpadeo contenidos, gestos dibujados y seis proyectos. Se conserva separado de la portada React actual. Esta rama no sustituye la web de producción.
+Portada personal de Alex Micó con ilustración animada, mirada y parpadeo contenidos, gestos dibujados y seis proyectos. La fuente se mantiene en `public/experimental/`. Al terminar el build, `scripts/publish-home.mjs` la publica como `build/index.html`: la URL principal muestra esta versión, conservando las páginas React de inglés, casos y errores.
+
+Las referencias de recursos se convierten en URLs absolutas sin introducir `<base>`, de modo que la navegación por anclas permanece en `/`. Los recursos compartidos siguen en `/editorial/assets/`. Se conservan canonical, favicons, verificación de Search Console y metadatos sociales, adaptando título y descripción a la nueva portada. No se anuncia la portada anterior en inglés como traducción equivalente mediante hreflang.
+
+Validación de integración: `npm run test:home` y `npm run build`. Servir `build/` para revisar la portada real; servir `public/` solo permite revisar la fuente experimental.
 
 ## Retomar
 
@@ -22,4 +26,4 @@ Para verlo sin compilar: `python3 -m http.server 4203 --directory public`, despu
 - La regresión ampliada anterior de mirada quedó parcial por pérdida real de foco del navegador. No se presenta como aprobada completa.
 - Los archivos publicados son idénticos al prototipo verificado; `runtime-sha256.json` conserva las huellas. Los informes históricos y capturas permanecen en el workspace de trabajo y no se publican.
 
-Pendiente: aceptación estética final e integración de esta dirección en la portada principal. No se ha verificado un despliegue de producción de esta rama.
+La verificación anterior corresponde al checkpoint del 13 de octubre. La integración y el despliegue de la portada del 14 de octubre necesitan su propia comprobación en la URL pública; un build correcto no demuestra por sí solo que esté publicada.
