@@ -4,8 +4,39 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Alex Micó, desarrollador full stack. Aplicaciones web, automatización e IA en proyectos de entrenamiento, trading y herramientas para desarrolladores.">
 <title>Alex Micó — Desarrollo Full Stack</title>
+<script>
+// Arm before render-blocking styles: late fonts never make visible content disappear.
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
+  let active = !reduce.matches && !restored && !document.hidden && scrollY < 5 && (!location.hash || location.hash === '#inicio');
+  let deadline = 0;
+  const finish = () => {
+    if (!active) return;
+    active = false;
+    clearTimeout(deadline);
+    root.removeAttribute('data-entry');
+    window.dispatchEvent(new Event('portfolio:entryend'));
+  };
+  window.portfolioEntry = { started: active, get active() { return active; }, finish };
+  if (!active) return;
+  root.setAttribute('data-entry', 'running');
+  // CSS ends in 1120ms; this bound also releases the page if a stylesheet fails.
+  deadline = setTimeout(finish, 4000);
+  document.addEventListener('animationend', event => { if (event.animationName === 'personalCaptionEntry') finish(); });
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(type => window.addEventListener(type, event => { if (event.isTrusted) finish(); }, { passive: true, capture: true }));
+  window.addEventListener('scroll', () => { if (scrollY > 4) finish(); }, { passive: true });
+  ['blur', 'resize', 'pagehide', 'hashchange'].forEach(type => window.addEventListener(type, finish));
+  window.addEventListener('pageshow', event => { if (event.persisted) finish(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) finish(); });
+  reduce.addEventListener('change', () => { if (reduce.matches) finish(); });
+})();
+</script>
+<link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
+<link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=travesuras-1013-02"><link rel="stylesheet" href="sereno-demo.css?v=travesuras-1013-02"><link rel="stylesheet" href="portada-personal.css?v=travesuras-1013-02"><link rel="stylesheet" href="recorrido-personal.css?v=travesuras-1013-02"><script src="app.js?v=travesuras-1013-02" defer></script><script src="portrait-motion.js?v=travesuras-1013-02" defer></script><script src="recorrido-personal.js?v=travesuras-1013-02" defer></script>
+<link rel="stylesheet" href="styles.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="sereno-demo.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="portada-personal.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="recorrido-personal.css?v=entrada-viva-1014-01"><script src="app.js?v=entrada-viva-1014-01" defer></script><script src="portrait-motion.js?v=entrada-viva-1014-01" defer></script><script src="recorrido-personal.js?v=entrada-viva-1014-01" defer></script>
 </head>
 <body class="personal-world">
 <a class="skip" href="#contenido">Saltar al contenido</a>

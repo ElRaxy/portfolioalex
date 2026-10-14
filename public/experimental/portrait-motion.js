@@ -1,4 +1,4 @@
-// One arrival, then small direct responses. The image is always visible without JS.
+// The shared CSS entrance owns arrival; this controller only handles eyes and blinking.
 (() => {
   const portrait = document.querySelector('.personal-portrait');
   const arrival = portrait?.querySelector('.portrait-arrival');
@@ -10,9 +10,8 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const ease = getComputedStyle(image).getPropertyValue('--ease-out').trim() || 'cubic-bezier(.23,1,.32,1)';
-  // A late module must not hide an already-seen portrait; late image decoding is still allowed.
-  let ready = false, visible = false, entered = document.readyState === 'complete' || performance.now() > 1500, keyboard = false;
-  let entryMotion = null, touch = null;
+  let ready = false, visible = false, keyboard = false;
+  let touch = null;
   let blinkTimer = 0, blinkMotions = [];
   const blocked = () => reduced.matches || keyboard || document.hidden || !document.hasFocus() || document.documentElement.classList.contains('keyboard');
   const away = () => location.hash && location.hash !== '#inicio';
@@ -37,22 +36,12 @@
     },4000+Math.random()*3000);
   }
   function reset() {
-    entryMotion?.cancel(); entryMotion = null;
     gaze.style.transform = '';
     stopBlink();
     touch = null;
   }
-  function dismiss() { entered = true; reset(); }
-  function enter() {
-    if (entered || !ready || !visible) return;
-    if (blocked() || away()) return dismiss();
-    entered = true;
-    entryMotion = arrival.animate([
-      {transform:'translateY(8px)',opacity:0},
-      {transform:'translateY(0)',opacity:1}
-    ],{duration:500,easing:ease});
-  }
-  function decoded() { ready = image.naturalWidth > 0; gaze.style.visibility = ready ? '' : 'hidden'; enter(); syncBlink(); }
+  function dismiss() { reset(); }
+  function decoded() { ready = image.naturalWidth > 0; gaze.style.visibility = ready ? '' : 'hidden'; syncBlink(); }
   function prepare() {
     if (typeof image.decode === 'function') image.decode().then(decoded, () => { if (image.complete) decoded(); });
     else if (image.complete) decoded();
@@ -64,7 +53,7 @@
     new IntersectionObserver(entries => {
       const entry = entries[0];
       visible = entry.isIntersecting && entry.intersectionRatio >= .18;
-      if (visible) { enter(); syncBlink(); } else reset();
+      if (visible) syncBlink(); else reset();
     },{threshold:[0,.18]}).observe(portrait);
   }
   // No observer means a static portrait rather than a scroll-listener fallback.
@@ -109,7 +98,7 @@
   document.addEventListener('pointerdown', () => { keyboard = false; syncBlink(); });
   window.addEventListener('scroll', () => { touch = null; },{passive:true});
   window.addEventListener('pagehide',dismiss);
-  window.addEventListener('pageshow', event => { if (event.persisted) { entered = true; syncBlink(); } });
+  window.addEventListener('pageshow', event => { if (event.persisted) syncBlink(); });
   window.addEventListener('blur', dismiss);
   window.addEventListener('focus', syncBlink);
   window.addEventListener('wheel', () => { keyboard = false; syncBlink(); },{passive:true});

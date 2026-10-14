@@ -7,7 +7,7 @@ const detailsMotion = CSS.supports('selector(::details-content)') && CSS.support
 const activeAnimations = new Set();
 const seenImages = new WeakSet();
 const imageAnimations = new Map();
-let keyboard = false, introActive = false, introStarted = false, introTimer = 0, entryDismissed = false;
+let keyboard = false, introActive = Boolean(window.portfolioEntry?.active);
 let headerHeight = 59;
 let fontsReady = !document.fonts;
 let morphGeometry = null;
@@ -44,7 +44,6 @@ let hoverTargetX = 0, hoverTargetY = 0, hoverTargetRadius = 0;
 const signature = document.querySelector('.signature');
 const morph = document.querySelector('.name-morph');
 const sourceWords = [...name.querySelectorAll('.name-word')];
-const heroLettering = [...name.querySelectorAll('.name-lettering')];
 const targetWords = [...signature.querySelectorAll('.signature-word')];
 const morphWords = [...morph.querySelectorAll('.morph-word')];
 const animate = (element, frames, options) => {
@@ -55,14 +54,12 @@ const animate = (element, frames, options) => {
   return animation;
 };
 const stopMotion = () => {
-  entryDismissed = true;
   cancelLayoutMotion();
   resetHoverInk();
   activeAnimations.forEach(animation => animation.cancel());
   activeAnimations.clear();
   imageAnimations.clear();
-  clearTimeout(introTimer);
-  introTimer = 0;
+  window.portfolioEntry?.finish();
   introActive = false;
   cancelSummaryAnchor();
 };
@@ -77,7 +74,6 @@ document.addEventListener('pointerdown', event => {
   // A held summary keeps its current pose; the click captures it before reflow.
   if (!event?.target?.closest?.('.project-heading')) cancelLayoutMotion();
   cancelSummaryAnchor();
-  entryDismissed = true;
   if (introActive) stopMotion();
   keyboard = false;
   document.documentElement.classList.remove('keyboard');
@@ -87,27 +83,8 @@ reduced.addEventListener('change', () => {
   if (reduced.matches) { stopMotion(); cancelNativeScroll(); cancelPanelProgress(); }
   updateProgress();
 });
-// Start before first paint only: a title already seen must never disappear for an entrance.
-function startIntro() {
-  if (introStarted) return;
-  if (!fontsReady) { document.fonts.ready.then(startIntro); return; }
-  introStarted = true;
-  const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
-  const focused = typeof document.hasFocus !== 'function' || document.hasFocus();
-  const painted = performance.getEntriesByType('paint').length > 0;
-  if (painted || restored || entryDismissed || performance.now() > 700 || window.scrollY > 4 || (location.hash && location.hash !== '#inicio') || reduced.matches || keyboard || document.hidden || !focused) return;
-  if (window.innerHeight < 480 && window.innerWidth > window.innerHeight) return;
-  if (heroLettering.length !== 2) return;
-  introActive = true;
-  resetHoverInk();
-  heroLettering.forEach((word,index) => {
-    animate(word,[
-      {transform:`translate3d(0,${window.innerWidth <= 650 ? 24 : 32}px,0)`,opacity:0},
-      {transform:'translate3d(0,0,0)',opacity:1}
-    ],{duration:800,delay:index*70,easing:easeOut,fill:'backwards'});
-  });
-  introTimer = setTimeout(() => { introActive = false; introTimer = 0; },870);
-}
+// The pre-paint bootstrap owns the single coordinated CSS entrance.
+window.addEventListener('portfolio:entryend', () => { introActive = false; });
 const navLinks = [...document.querySelectorAll('.index-bar a')];
 const sections = navLinks.map(link => document.querySelector(link.hash));
 const projectPanels = [...document.querySelectorAll('details.project')];
@@ -197,7 +174,7 @@ function queueProgress() {
   if (keyboard || reduced.matches) return updateProgress();
   if (!progressFrame) progressFrame = requestAnimationFrame(updateProgress);
 }
-window.addEventListener('scroll', () => { if (window.scrollY > 4) entryDismissed = true; resetHoverInk(); if (introActive) stopMotion(); queueProgress(); }, {passive:true});
+window.addEventListener('scroll', () => { resetHoverInk(); if (introActive && window.scrollY > 4) stopMotion(); queueProgress(); }, {passive:true});
 window.addEventListener('resize', () => { stopMotion(); cancelNativeScroll(); syncHeader(); measureMorph(); observeSections(); queuePanelProgress(); });
 window.addEventListener('load', () => { syncHeader(); measureMorph(); queueProgress(); });
 const suspendMotion = () => {
@@ -298,7 +275,6 @@ function interruptNavigation() {
   keyboard = false;
   document.documentElement.classList.remove('keyboard');
   cancelLayoutMotion();
-  entryDismissed = true;
   if (introActive) stopMotion();
   cancelSummaryAnchor();
   cancelNativeScroll();
@@ -797,5 +773,3 @@ function updateScenes() {
 document.addEventListener('focusin',updateProgress);
 document.addEventListener('focusout',queueProgress);
 // End shared circular scenes.
-
-startIntro();

@@ -6,10 +6,11 @@
   const drawings = [...document.querySelectorAll('[data-world-scene]')];
   const controls = [...document.querySelectorAll('.capability-link, .project-heading, .contact-options a, .name-composition, .portrait-scene')];
   const targets = [...drawings, ...controls];
-  const active = new Map(), inside = new Set(), encounters = new Map();
+  const active = new Map(), inside = new Set(), encounters = new Map(), pending = new Set();
+  const entryCovered = new Set(window.portfolioEntry?.started ? drawings.filter(drawing => drawing.closest('.hero-personal')) : []);
   const ease = 'cubic-bezier(.23,1,.32,1)';
   let touch = null, suspended = false;
-  const blocked = () => suspended || reduced.matches || document.hidden || !document.hasFocus() || document.documentElement.classList.contains('keyboard');
+  const blocked = () => suspended || reduced.matches || document.hidden || !document.hasFocus() || document.documentElement.classList.contains('keyboard') || window.portfolioEntry?.active;
   const stop = owner => {
     active.get(owner)?.forEach(animation => animation.cancel());
     active.delete(owner);
@@ -31,7 +32,10 @@
       [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 360, delay + index * 60));
   };
   const play = owner => {
-    if (!owner || !inside.has(owner) || blocked() || (encounters.get(owner) || 0) >= 2 || active.has(owner)) return;
+    if (!owner || !inside.has(owner) || (encounters.get(owner) || 0) >= 2 || active.has(owner)) return;
+    if (window.portfolioEntry?.active && owner.closest('.hero-personal')) return;
+    if (blocked()) { pending.add(owner); return; }
+    pending.delete(owner);
     encounters.set(owner, (encounters.get(owner) || 0) + 1);
     const scene = owner.dataset.worldScene;
     if (scene === 'name') {
@@ -106,13 +110,15 @@
   const observer = new IntersectionObserver(entries => {
     entries.forEach(({ target, isIntersecting }) => {
       if (!isIntersecting) {
-        inside.delete(target); encounters.delete(target); stop(target);
+        inside.delete(target); encounters.delete(target); pending.delete(target); stop(target);
         if (touch?.target === target) touch = null;
         return;
       }
       if (inside.has(target)) return;
       inside.add(target);
-      if (target.dataset.worldScene || target.matches('.project-heading')) play(target);
+      // The CSS entrance already presented these drawings, including with a late IO callback.
+      if (entryCovered.delete(target)) encounters.set(target, 1);
+      else if (target.dataset.worldScene || target.matches('.project-heading')) play(target);
     });
   }, { threshold: 0, rootMargin: '0px 0px -28px 0px' });
   targets.forEach(target => observer.observe(target));
@@ -143,15 +149,19 @@
     });
   });
   window.addEventListener('scroll', () => { touch = null; }, { passive: true });
-  reduced.addEventListener('change', stopAll);
+  const resumePending = () => { if (!blocked()) [...pending].forEach(play); };
+  window.addEventListener('focus', resumePending);
+  window.addEventListener('portfolio:entryend', resumePending);
+  document.addEventListener('pointerdown', () => queueMicrotask(resumePending));
+  reduced.addEventListener('change', () => { stopAll(); resumePending(); });
   fine.addEventListener('change', stopAll);
-  document.addEventListener('visibilitychange', stopAll);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(); else resumePending(); });
   window.addEventListener('blur', stopAll);
   document.addEventListener('keydown', event => {
     if (['Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Home', 'End', 'PageDown', 'PageUp', ' '].includes(event.key)) stopAll();
   });
   window.addEventListener('pagehide', () => {
-    suspended = true; stopAll(); observer.disconnect(); inside.clear(); encounters.clear();
+    suspended = true; stopAll(); observer.disconnect(); inside.clear(); encounters.clear(); pending.clear();
   });
   window.addEventListener('pageshow', () => {
     suspended = false; targets.forEach(target => observer.observe(target));

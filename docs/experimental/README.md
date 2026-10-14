@@ -35,3 +35,7 @@ La rama de producción es `main`. El build genera la nueva portada en `/`, conse
 Para comprobar una publicación, verificar el dominio público y el SHA del despliegue de producción; el estado correcto de una preview no acredita que el dominio ya haya cambiado.
 
 Reversión de esta integración: revertir el commit `0e9dfc5` en `main` y desplegar el resultado. La portada React vuelve a generarse con el pipeline anterior; el prototipo permanece conservado.
+
+## Entrada viva — 14 de octubre
+
+La entrada se arma antes del primer render con una secuencia CSS coordinada de 1120 ms: nombre, trazo, copy y escena ilustrada. La interacción, el scroll o el cambio de accesibilidad la completan inmediatamente. Los gestos de dibujos recuperan los encuentros bloqueados al volver el foco real. Versión de recursos: `entrada-viva-1014-01`. Verificar con `npm run test:motion-entry` y `npm run test:home` antes del build.

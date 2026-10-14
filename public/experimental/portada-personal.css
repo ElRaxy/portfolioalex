@@ -98,3 +98,27 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  .hero-personal .name-underline{height:13px;bottom:-8px}
 }
 @media(max-width:380px){.hero-personal .portrait-doodle{display:none}}
+
+/* EntradaViva1014: one pre-paint paper composition, then ordinary native reading. */
+@media(prefers-reduced-motion:no-preference){
+ html[data-entry="running"] .hero-personal .personal-role{animation:personalCopyEntry 700ms var(--ease-out) backwards}
+ html[data-entry="running"] .hero-personal .name-word{overflow:hidden}
+ html[data-entry="running"] .hero-personal .name-lettering{animation:personalNameEntry 900ms var(--ease-out) 60ms backwards}
+ html[data-entry="running"] .hero-personal .name-word.last .name-lettering{animation-delay:120ms}
+ html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 650ms var(--ease-out) 300ms backwards}
+ html[data-entry="running"] .hero-personal .personal-statement>span{animation:personalCopyEntry 800ms var(--ease-out) 180ms backwards}
+ html[data-entry="running"] .hero-personal .personal-statement>span+span{animation-delay:240ms}
+ html[data-entry="running"] .hero-personal .personal-description{animation:personalCopyEntry 750ms var(--ease-out) 300ms backwards}
+ html[data-entry="running"] .hero-personal .personal-actions{animation:personalCopyEntry 750ms var(--ease-out) 340ms backwards}
+ html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 950ms var(--ease-out) 80ms backwards}
+ html[data-entry="running"] .hero-personal .portrait-arrival{animation:personalPortraitEntry 950ms var(--ease-out) 160ms backwards}
+ html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 650ms var(--ease-out) 420ms backwards}
+ html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 700ms var(--ease-out) 420ms backwards}
+ html[data-entry="running"] .hero-personal .personal-next{animation:personalCopyEntry 650ms var(--ease-out) 400ms backwards}
+ @keyframes personalNameEntry{from{transform:translateY(105%);opacity:.25}to{transform:translateY(0);opacity:1}}
+ @keyframes personalCopyEntry{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+ @keyframes personalStrokeEntry{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+ @keyframes personalPaperEntry{from{transform:translateY(12px) rotate(-1deg) scale(.97);opacity:0}to{transform:translateY(0) rotate(-4deg) scale(1);opacity:1}}
+ @keyframes personalPortraitEntry{from{transform:translateY(26px) rotate(1.2deg);opacity:0}to{transform:translateY(0) rotate(0);opacity:1}}
+ @keyframes personalCaptionEntry{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+}
