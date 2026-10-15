@@ -131,8 +131,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .intro-story{display:block;animation:storyExit 2700ms linear both}
  html[data-entry="running"] .personal-world :is(a,button,input,summary){pointer-events:none}
  html[data-entry="running"] .story-paper{animation:storyPaperExit 2700ms var(--ease-in-out) both}
- html[data-entry="running"] .story-word{animation:storyLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 200ms linear 2350ms both}
- html[data-entry="running"] .story-character{animation:storyCharacterLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 200ms linear 2350ms both}
+ html[data-entry="running"] .story-word{animation:storyLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 1ms steps(1,end) 2349ms both}
+ html[data-entry="running"] .story-character{animation:storyCharacterLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 1ms steps(1,end) 2349ms both}
  html[data-entry="running"] .story-letter{animation:storyLetterBuild 500ms var(--ease-out) 360ms both}
  html[data-entry="running"] .story-letter:nth-child(2){animation-delay:430ms}
  html[data-entry="running"] .story-letter:nth-child(3){animation-delay:500ms}
@@ -150,8 +150,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .story-bug{animation:storyRoute 560ms linear 940ms both,storyBugPresence 1570ms linear both}
  html[data-entry="running"] .story-bug-body{animation:storyBugKick 350ms var(--ease-out) 1100ms both}
  html[data-entry="running"] .story-gaze{animation:storyCharacterLook 2700ms var(--ease-out) both}
- html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn 200ms linear 2350ms both}
- html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn 200ms linear 2350ms both}
+ html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn 1ms steps(1,end) 2349ms both}
+ html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn 1ms steps(1,end) 2349ms both}
  html[data-entry="running"] .hero-personal :is(.personal-role,.personal-statement,.personal-description,.personal-actions,.personal-next){animation:personalCopyEntry 260ms var(--ease-out) 2350ms backwards}
  html[data-entry="running"] .hero-personal .personal-statement{animation-delay:2380ms}
  html[data-entry="running"] .hero-personal .personal-description{animation-delay:2410ms}
@@ -194,7 +194,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 .character-gaze{fill:#17191c}
 .character-eye{transform-box:fill-box;transform-origin:center}
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
- .hero-personal .character-art :is(.character-head,.character-gaze){transition:transform 240ms cubic-bezier(.32,.72,0,1)}
+ .hero-personal .character-art .character-head{transition:transform 300ms cubic-bezier(.32,.72,0,1)}
+ .hero-personal .character-art .character-gaze{transition:transform 150ms var(--ease-out)}
 }
 .character-paused .character-art :is(.character-head,.character-gaze),html.keyboard .character-art :is(.character-head,.character-gaze){transition:none}
 @media(prefers-reduced-motion:no-preference){
@@ -202,8 +203,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .story-character.character-acting .character-hand{animation:characterStoryType 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
  html[data-entry="running"] .story-character.character-acting .character-gaze{animation:characterStoryGaze 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
  html[data-entry="running"] .story-character.character-acting .character-eye{animation:characterStoryBlink 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
- @keyframes characterStoryHead{0%,24%{transform:rotate(4deg)}36%{transform:rotate(-2.5deg)}45%{transform:rotate(-4deg)}56%,100%{transform:rotate(0deg)}}
- @keyframes characterStoryType{0%{transform:rotate(0deg)}5%{transform:rotate(-4deg)}10%{transform:rotate(0deg)}15%{transform:rotate(-4deg)}20%{transform:rotate(0deg)}25%{transform:rotate(-3.5deg)}30%,100%{transform:rotate(0deg)}}
- @keyframes characterStoryGaze{0%,24%{transform:translate(-6px,16px)}36%{transform:translate(-20px,-8px)}45%{transform:translate(-16px,8px)}56%,100%{transform:translate(0,0)}}
+ @keyframes characterStoryHead{0%,6%{transform:rotate(0deg)}16%,26%{transform:rotate(3.5deg)}36%{transform:rotate(-2.5deg)}45%{transform:rotate(-4deg)}54%,100%{transform:rotate(0deg)}}
+ @keyframes characterStoryType{0%,6%{transform:rotate(0deg)}8%{transform:rotate(-3.5deg)}11%{transform:rotate(0deg)}14%{transform:rotate(-2.4deg)}17%,23%{transform:rotate(0deg)}26%{transform:rotate(-4deg)}29%,100%{transform:rotate(0deg)}}
+ @keyframes characterStoryGaze{0%{transform:translate(0,0)}8%,25%{transform:translate(-6px,16px)}30%{transform:translate(-20px,-8px)}42%{transform:translate(-16px,8px)}50%,100%{transform:translate(0,0)}}
  @keyframes characterStoryBlink{0%,40%{transform:scaleY(1)}43%{transform:scaleY(.1)}46%,100%{transform:scaleY(1)}}
 }

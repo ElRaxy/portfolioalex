@@ -334,3 +334,19 @@ test('The cursor starts at the laptop before constructing the name and returns t
   assert.ok(Math.abs(points[0].x-(portrait.left-bounds.left+portrait.width*.44))<.001);
   assert.ok(Math.abs(points[0].y-(portrait.top-bounds.top+portrait.height*.64))<.001);
 });
+
+
+test('The landed sketch switches to the real hero at one exact frame without a fractional-alpha crossfade',async()=>{
+  const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
+  const flight=css.match(/\.story-word\{animation:storyLand (\d+)ms[^}]*? (\d+)ms both,storyMatchOut (\d+)ms steps\(1,end\) (\d+)ms both/);
+  assert.ok(flight,'The word flight has one discrete opacity release');
+  const [,duration,delay,handoffDuration,handoffDelay]=flight.map(Number);
+  assert.equal(duration+delay,2350);
+  assert.equal(handoffDuration+handoffDelay,2350,'The source disappears only once its flight has landed');
+  for(const selector of ['name-lettering','portrait-arrival']) {
+    assert.ok(css.includes(`.${selector}{animation:storyHeroIn 1ms steps(1,end) 2349ms both}`),'The real hero switches on at the same boundary');
+  }
+  assert.match(css,/@keyframes storyMatchOut\{from\{opacity:1\}to\{opacity:0\}\}/);
+  assert.match(css,/@keyframes storyHeroIn\{from\{opacity:0\}to\{opacity:1\}\}/);
+  assert.match(css,/@keyframes storyExit\{from\{opacity:1\}to\{opacity:1\}\}/,'The wrapper must not multiply the opacity of the switch');
+});

@@ -85,12 +85,12 @@ function actingHarness({intro=false,rigError=false,story=false,imageFailure=fals
   const document=events({hidden:false,documentElement:root,hasFocus:()=>focused,querySelector:selector=>selector==='.personal-portrait'?portrait:selector==='.story-character'&&story?storyHost:selector==='.intro-story'?{getAnimations:()=>[{animationName:'storyExit',currentTime:850}]}:null});
   class Observer{constructor(callback){this.callback=callback;observers.push(this);}observe(){}}
   const window=events({portfolioEntry:{active:intro},IntersectionObserver:Observer,PortfolioCharacterRig:{mount:()=>Promise.resolve(rigError?null:rig)}});
-  const context={window,document,getComputedStyle:element=>({transform:element.computedTransform||element.style.transform||'none'}),location:{hash:''},performance:{now:()=>now},IntersectionObserver:Observer,matchMedia:query=>query.includes('reduced')?media.reduce:media.fine,setTimeout:(callback,delay)=>{const id=nextTimer++;timers.set(id,{callback,delay});return id;},clearTimeout:id=>timers.delete(id),Math,Promise};
+  const context={window,document,getComputedStyle:element=>({transform:element.computedTransform||element.style.transform||'none'}),location:{hash:''},performance:{now:()=>now},IntersectionObserver:Observer,matchMedia:query=>query.includes('reduced')?media.reduce:media.fine,setTimeout:(callback,delay)=>{const id=nextTimer++;timers.set(id,{callback,delay});return id;},clearTimeout:id=>timers.delete(id),Math:Object.assign(Object.create(Math),{random:()=>.5}),Promise};
   vm.runInNewContext(controllerSource,context);
   return {context,window,document,host,portrait,hero,image,rig,storyHost,media,timers,animations,root,
     visible:value=>observers[0].callback([{isIntersecting:value,intersectionRatio:value?1:0}]),
     focus:value=>{focused=value;},time:value=>{now=value;},
-    fireTimer:()=>{const [id,timer]=timers.entries().next().value;timers.delete(id);timer.callback();}};
+    fireTimer:predicate=>{const [id,timer]=[...timers.entries()].find(([,value])=>!predicate||predicate(value));timers.delete(id);timer.callback();}};
 }
 
 test('One controller waits through the shared intro, then schedules finite acting after a rest',async()=>{
@@ -103,13 +103,13 @@ test('One controller waits through the shared intro, then schedules finite actin
   assert.equal([...host.document.listeners.values()].reduce((sum,list)=>sum+list.length,0),before,'Executing twice must not install a second gaze/blink controller');
   host.window.portfolioEntry.active=false;host.window.emit('portfolio:entryend');
   assert.equal(host.animations.length,0,'Ending or interrupting the intro must not immediately replay an acting gesture');
-  assert.equal(host.timers.size,1);
-  host.fireTimer();
+  assert.equal(host.timers.size,2,'Idle action and independent blink each own one coarse timer');
+  host.fireTimer(timer=>timer.delay===6000);
   assert.equal(host.window.portfolioCharacterController.activity,'type');
-  assert.deepEqual(host.animations.map(animation=>animation.label),['head','gaze','hand']);
+  assert.deepEqual(host.animations.map(animation=>animation.label),['gaze','head','hand']);
   host.animations.forEach(animation=>animation.finish());await flush();
   assert.equal(host.window.portfolioCharacterController.activity,'rest');
-  assert.equal(host.timers.size,1,'Completed acting returns to a coarse rest timer, not a frame loop');
+  assert.equal(host.timers.size,2,'Completed acting returns to independent rest/blink timers, not a frame loop');
 });
 
 test('Head and gaze react together while body/chair remain untouched; blur and offscreen cancel all acting',async()=>{
@@ -118,7 +118,7 @@ test('Head and gaze react together while body/chair remain untouched; blur and o
   assert.match(host.rig.head.style.transform,/rotate\(/);
   assert.match(host.rig.gaze.style.transform,/translate\(/);
   assert.equal(host.host.style.transform,undefined,'The body wrapper must never move with the pointer');
-  assert.equal(host.timers.size,0);
+  assert.equal(host.timers.size,1,'Pointer tracking keeps independent blinking while suppressing idle body gestures');
   host.window.portfolioCharacterController.act('type');
   host.focus(false);host.window.emit('blur');await flush();
   assert.ok(host.animations.every(animation=>animation.cancelled));
@@ -139,7 +139,7 @@ test('Touch gestures never steal scroll and only a short stationary tap triggers
   host.portrait.emit('pointerdown',touch);host.window.emit('scroll');host.portrait.emit('pointerup',touch);
   assert.equal(host.animations.length,0);
   host.portrait.emit('pointerdown',touch);host.time(200);host.portrait.emit('pointerup',touch);
-  assert.equal(host.window.portfolioCharacterController.activity,'glance');
+  assert.equal(host.window.portfolioCharacterController.activity,'ack');
   host.portrait.emit('pointercancel');await flush();
   assert.equal(host.window.portfolioCharacterController.activeMotions,0);
 });
@@ -179,14 +179,14 @@ test('The no-JS fallback keeps complete SVG eyes; JS loading or failure hides on
   assert.equal(host.window.portfolioCharacterController.ready,false);
 });
 
-test('Only a normally completed intro schedules the short blink follow-through',async()=>{
+test('Only a normally completed intro schedules the short acknowledgement follow-through',async()=>{
   const host=actingHarness({intro:true});await flush();host.visible(true);
   host.window.portfolioEntry.active=false;host.window.portfolioEntry.completed=true;
   host.window.emit('portfolio:entryend');
   assert.equal([...host.timers.values()][0].delay,700);
   host.fireTimer();
-  assert.equal(host.window.portfolioCharacterController.activity,'blink');
-  assert.deepEqual(host.animations.map(animation=>animation.label),['eye-1','eye-2']);
+  assert.equal(host.window.portfolioCharacterController.activity,'ack');
+  assert.deepEqual(host.animations.map(animation=>animation.label),['gaze','head','eye-1','eye-2']);
   const cancelled=actingHarness({intro:true});await flush();cancelled.visible(true);
   cancelled.window.portfolioEntry.active=false;cancelled.window.emit('portfolio:entryend');
   assert.ok([...cancelled.timers.values()][0].delay>=4500,'Interrupted entries keep the ordinary rest instead of replaying a gesture');
@@ -204,4 +204,118 @@ test('A pointer retarget captures the current animated head pose before cancelli
   assert.match(writes.at(-1),/rotate\(/);
   assert.equal(host.window.portfolioCharacterController.activity,'pointer');
   assert.equal(host.host.classList.contains('character-paused'),false);
+});
+
+
+test('The character blinks while the mouse rests in the hero without neutralising its head or gaze',async()=>{
+  const host=actingHarness();await flush();host.visible(true);
+  host.document.emit('pointermove',{pointerType:'mouse',pointerId:1,clientX:270,clientY:100,buttons:0,target:host.hero});
+  const head=host.rig.head.style.transform,gaze=host.rig.gaze.style.transform;
+  assert.equal(host.window.portfolioCharacterController.pendingTimers.idle,false);
+  assert.equal(host.window.portfolioCharacterController.pendingTimers.blink,true);
+  host.fireTimer(timer=>timer.delay===5500);
+  assert.equal(host.window.portfolioCharacterController.activity,'pointer');
+  assert.equal(host.rig.head.style.transform,head);
+  assert.equal(host.rig.gaze.style.transform,gaze);
+  assert.deepEqual(host.animations.map(animation=>animation.label),['eye-1','eye-2']);
+  const count=host.animations.length;
+  host.window.portfolioCharacterController.act('blink');
+  assert.equal(host.animations.length,count,'A second blink request must reuse the current eye action');
+  host.animations.forEach(animation=>animation.finish());await flush();
+  assert.equal(host.timers.size,1);
+  assert.equal(host.window.portfolioCharacterController.pendingTimers.blink,true);
+  assert.equal(host.window.portfolioCharacterController.activity,'pointer');
+});
+
+test('Hard pauses cancel both cadence timers and eye motions; late finishes cannot resurrect scheduling',async()=>{
+  const host=actingHarness();await flush();host.visible(true);
+  assert.equal(host.timers.size,2);
+  host.window.portfolioCharacterController.act('ack');
+  assert.ok(host.animations.some(animation=>animation.label==='eye-1'));
+  host.focus(false);host.window.emit('blur');
+  assert.equal(host.timers.size,0);
+  assert.equal(host.window.portfolioCharacterController.activeMotions,0);
+  await flush();
+  assert.equal(host.timers.size,0,'Cancelled animation promises must not restart either cadence timer');
+  assert.ok(host.animations.every(animation=>animation.cancelled));
+  assert.equal(host.rig.head.style.transform,'');
+  assert.equal(host.rig.gaze.style.transform,'');
+  host.focus(true);host.window.emit('focus');
+  assert.equal(host.timers.size,2,'Focus resumes one controlled timer for each cadence');
+  host.document.hidden=true;host.document.emit('visibilitychange');await flush();
+  assert.equal(host.timers.size,0);
+});
+
+test('Pointer departure settles softly and reentry seeks its current pose instead of snapping to neutral',async()=>{
+  const host=actingHarness();await flush();host.visible(true);
+  host.document.emit('pointermove',{pointerType:'mouse',pointerId:1,clientX:270,clientY:100,buttons:0,target:host.hero});
+  host.rig.head.computedTransform='matrix(0.9986,0.0523,-0.0523,0.9986,0,0)';
+  host.rig.gaze.computedTransform='matrix(1,0,0,1,18,4)';
+  host.hero.emit('pointerleave',{pointerType:'mouse',pointerId:1});
+  assert.equal(host.window.portfolioCharacterController.activity,'settle');
+  const headReturn=host.animations.find(animation=>animation.label==='head');
+  const eyeReturn=host.animations.find(animation=>animation.label==='gaze');
+  assert.equal(headReturn.options.duration,300);
+  assert.equal(eyeReturn.options.duration,150);
+  assert.equal(headReturn.frames[0].transform,host.rig.head.computedTransform);
+  assert.equal(eyeReturn.frames[0].transform,host.rig.gaze.computedTransform);
+  host.rig.head.computedTransform='matrix(0.9998,0.0175,-0.0175,0.9998,0,0)';
+  const writes=[];const style={};Object.defineProperty(style,'transform',{get:()=>writes.at(-1),set:value=>writes.push(value)});host.rig.head.style=style;
+  host.document.emit('pointermove',{pointerType:'mouse',pointerId:1,clientX:10,clientY:60,buttons:0,target:host.hero});
+  assert.equal(writes[0],host.rig.head.computedTransform);
+  assert.equal(headReturn.cancelled,true);
+  assert.equal(eyeReturn.cancelled,true);
+  await flush();
+  assert.equal(host.window.portfolioCharacterController.activity,'pointer');
+  assert.equal(host.window.portfolioCharacterController.pendingTimers.idle,false,'A late return completion cannot schedule a gesture over active pointer tracking');
+  host.focus(false);host.window.emit('blur');
+  assert.equal(writes.at(-1),'','Hard blur still restores a stable neutral pose immediately');
+});
+
+test('Typing uses uneven finger beats and the eyes lead the head rather than moving as a robot',async()=>{
+  const host=actingHarness();await flush();host.visible(true);host.window.portfolioCharacterController.act('type');
+  const hand=host.animations.find(animation=>animation.label==='hand');
+  const differences=hand.frames.slice(1).map((frame,index)=>Number((frame.offset-hand.frames[index].offset).toFixed(2)));
+  assert.ok(new Set(differences).size>3,'Finger beats include short clusters and a longer pause');
+  const eyes=host.animations.find(animation=>animation.label==='gaze'),head=host.animations.find(animation=>animation.label==='head');
+  assert.ok(eyes.frames[1].offset<head.frames[2].offset);
+  assert.equal(head.frames[1].transform,'rotate(0deg)','Head anticipation starts after eye motion');
+  assert.equal(hand.frames.at(-1).transform,'rotate(0deg)');
+});
+
+test('Touch leave after a completed tap preserves acknowledgement, but leave before release cancels the tap',async()=>{
+  const host=actingHarness();await flush();host.visible(true);
+  const touch={pointerType:'touch',pointerId:7,isPrimary:true,clientX:100,clientY:100};
+  host.portrait.emit('pointerdown',touch);host.time(100);host.portrait.emit('pointerup',touch);
+  assert.equal(host.window.portfolioCharacterController.activity,'ack');
+  const count=host.window.portfolioCharacterController.activeMotions;
+  host.hero.emit('pointerleave',touch);host.portrait.emit('pointerleave',touch);
+  assert.equal(host.window.portfolioCharacterController.activity,'ack');
+  assert.equal(host.window.portfolioCharacterController.activeMotions,count);
+  host.portrait.emit('pointercancel');
+  host.portrait.emit('pointerdown',touch);host.portrait.emit('pointerleave',touch);host.time(200);host.portrait.emit('pointerup',touch);
+  assert.equal(host.window.portfolioCharacterController.activity,'rest');
+  assert.equal(host.window.portfolioCharacterController.activeMotions,0);
+});
+
+
+test('Explicit acting beats use a linear effect clock and curve each interval so their offsets stay real',async()=>{
+  const curves={head:'cubic-bezier(.32,.72,0,1)',gaze:'cubic-bezier(.23,1,.32,1)',hand:'cubic-bezier(.23,1,.32,1)'};
+  for(const kind of ['type','glance','ack']) {
+    const host=actingHarness();await flush();host.visible(true);host.window.portfolioCharacterController.act(kind);
+    const acting=host.animations.filter(motion=>['head','gaze','hand'].includes(motion.label));
+    assert.ok(acting.length>=2);
+    for(const motion of acting) {
+      assert.equal(motion.options.easing,'linear','The effect clock must not compress late finger or gaze beats');
+      assert.ok(motion.frames.every(frame=>frame.easing===curves[motion.label]),'Every beat interval retains its explicit approved curve');
+      assert.ok(motion.frames.every(frame=>Number.isFinite(frame.offset)));
+    }
+    if(kind==='type') {
+      const hand=acting.find(motion=>motion.label==='hand');
+      assert.ok(Math.abs(hand.frames.at(-2).offset*hand.options.duration-782.1)<1e-9,'The last finger release now occurs at its real 79% time');
+      const gaze=acting.find(motion=>motion.label==='gaze'),head=acting.find(motion=>motion.label==='head');
+      assert.ok(Math.abs(gaze.frames[1].offset*gaze.options.duration-86.4)<1e-9);
+      assert.equal(head.frames[2].offset*head.options.duration,324);
+    }
+  }
 });

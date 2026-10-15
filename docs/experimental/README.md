@@ -63,3 +63,12 @@ Se conserva el contrato interruptible, guard de decodificación del retrato, scr
 `character-acting-1015-01`: cabeza y ojos se articulan juntos; palma y dedos teclean, conservando silla, manga y puño originales. El cursor sale del portátil y el nombre se revela como tinta. Entrada de 2700 ms con reloj compartido y gestos de teclado/mirada/reacción; en el hero hay acciones breves con descansos y mirada que responde al puntero. Los toques conservan el scroll nativo.
 
 El PNG sigue como fallback hasta completar su decode y los load de las cinco capas SVG; sin JavaScript conserva los ojos. Reduced-motion, teclado, ocultación y salida de pantalla cancelan la actuación. `npm run test:character-rig`, `npm run test:motion-entry`, `npm run test:home` y build verifican lógica e integración. Las poses se han rasterizado para inspeccionar uniones; falta revisar movimiento real, carga fría y responsive en Chrome del iMac, pendiente por indicación de Alex. Esta versión queda como candidato local: no sustituye producción sin esa comprobación. Referencias: [clipPath](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/clipPath), [cancelación WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel).
+
+
+## Cadencia y continuidad — candidato local del 15 de octubre
+
+`character-rhythm-1015-01`: parpadeo independiente incluso con el puntero quieto, ojos que se adelantan a la cabeza, tecleo irregular con pausas y un saludo breve tras la entrada o un toque. El regreso al centro y una reentrada del puntero parten de la pose actual. Silla, cuerpo, composición y breakpoints no cambian.
+
+La introducción conserva 2700 ms: anticipación desde reposo y relevo simultáneo entre boceto y portada a2350ms, sin la pérdida de opacidad del cruce anterior. Los offsets de los gestos usan reloj lineal y curvas por intervalo, según [Keyframe Formats](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats), para respetar el ritmo previsto.
+
+17 tests del rig +20 de entrada +1 de home y build PASS; revisión independiente sin abiertos. La comprobación real de animación y responsive en Chrome del iMac sigue pendiente por indicación de Alex. Candidato local, sin despliegue.
