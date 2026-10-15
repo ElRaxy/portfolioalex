@@ -22,10 +22,39 @@
   window.portfolioEntry = { started: active, get active() { return active; }, finish };
   if (!active) return;
   root.setAttribute('data-entry', 'running');
-  // The last blue panel owns completion; the deadline only covers missing CSS.
+  // Read the landing geometry before motion; font readiness may refine it once.
   deadline = setTimeout(finish, 5000);
   document.addEventListener('animationend', event => {
-    if (event.animationName === 'filmPanelBottom' && event.target?.classList.contains('film-panel--bottom')) finish();
+    if (event.animationName === 'storyExit' && event.target?.classList.contains('intro-story')) finish();
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!active) return;
+    const pairs = [
+      ['.story-word--alex', '.hero-personal .name-word.first'],
+      ['.story-word--mico', '.hero-personal .name-word.last'],
+      ['.story-character', '.hero-personal .portrait-scene']
+    ];
+    let fitted = false;
+    const fitSketch = () => {
+      if (!active) return;
+      // CSS starts after blocking styles: script age is not the film's playhead.
+      const playback = document.querySelector('.intro-story')?.getAnimations().find(animation => animation.animationName === 'storyExit');
+      if ((playback?.currentTime ?? 0) >= 1500) {
+        if (!fitted) finish();
+        return;
+      }
+      pairs.forEach(([from, to]) => {
+        const sketch = document.querySelector(from), destination = document.querySelector(to);
+        if (!sketch || !destination) return;
+        const start = sketch.getBoundingClientRect(), end = destination.getBoundingClientRect();
+        if (!start.width || !end.width) return;
+        sketch.style.setProperty('--story-land', `translate(${end.left - start.left}px,${end.top - start.top}px) scale(${end.width / start.width})`);
+      });
+      fitted = true;
+    };
+    fitSketch();
+    // Readiness refines destinations, never gates the first paint or extends the film.
+    document.fonts?.ready.then(fitSketch);
   });
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(type => window.addEventListener(type, event => { if (event.isTrusted) finish(); }, { passive: true, capture: true }));
   window.addEventListener('scroll', () => { if (scrollY > 4) finish(); }, { passive: true });
@@ -35,17 +64,23 @@
   reduce.addEventListener('change', () => { if (reduce.matches) finish(); });
 })();
 </script>
-<style>.motion-film{display:none}</style>
+<style>.intro-story{display:none}</style>
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=motion-film-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=motion-film-1015-01"><link rel="stylesheet" href="portada-personal.css?v=motion-film-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=motion-film-1015-01"><script src="app.js?v=motion-film-1015-01" defer></script><script src="portrait-motion.js?v=motion-film-1015-01" defer></script><script src="recorrido-personal.js?v=motion-film-1015-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=intro-story-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=intro-story-1015-01"><link rel="stylesheet" href="portada-personal.css?v=intro-story-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=intro-story-1015-01"><script src="app.js?v=intro-story-1015-01" defer></script><script src="portrait-motion.js?v=intro-story-1015-01" defer></script><script src="recorrido-personal.js?v=intro-story-1015-01" defer></script>
 </head>
 <body class="personal-world">
-<div class="motion-film" aria-hidden="true">
-  <div class="film-panel film-panel--top"><div class="film-row"><span class="film-outline">ALEX</span><span class="film-word">ALEX</span></div></div>
-  <div class="film-panel film-panel--bottom"><div class="film-row"><span class="film-outline">MICÓ</span><span class="film-word">MICÓ<span class="film-period">.</span></span></div></div>
-  <svg class="film-signature" viewBox="0 0 600 76" fill="none" focusable="false"><path class="film-stroke" pathLength="1" d="M9 55C145 17 360 10 570 27M435 56l153-15" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+<div class="intro-story" aria-hidden="true">
+ <div class="story-paper"></div>
+ <div class="story-board">
+  <svg class="story-blueprint" viewBox="0 0 600 360" fill="none" focusable="false"><path class="story-frame" pathLength="1" d="M18 40V15H45M550 15H580V40M580 280V310H550M45 310H18V280" stroke="currentColor" stroke-width="2"/><path class="story-rule" pathLength="1" d="M20 337C160 316 326 318 510 328M420 347L522 338" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+  <div class="story-word story-word--alex"><span class="story-outline">Alex</span><span class="story-letters"><span class="story-letter">A</span><span class="story-letter">l</span><span class="story-letter">e</span><span class="story-letter">x</span></span></div>
+  <div class="story-word story-word--mico"><span class="story-outline">Micó<span>.</span></span><span class="story-letters"><span class="story-letter">M</span><span class="story-letter">i</span><span class="story-letter">c</span><span class="story-letter">ó</span><span class="story-dot">.</span></span></div>
+  <div class="story-character"><img src="assets/alex-illustration-eye-base-v4.png" width="1254" height="1254" alt="" decoding="async"><svg class="story-face" viewBox="0 0 1254 1254" focusable="false"><g class="story-gaze"><g transform="translate(582 336) rotate(-12)"><ellipse rx="15" ry="24"/></g><g transform="translate(698 306.5) rotate(-12)"><ellipse rx="16" ry="25"/></g></g></svg></div>
+  <svg class="story-bug" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" focusable="false"><g class="story-bug-body"><path fill="#f4efdf" d="M22 26q0-12 10-12t10 12v12q-1 12-10 12T22 38Z"/><path d="M26 15q-2-8 6-8t6 8M32 22v22M22 27l-8-5m8 13-10 1m12 8-8 8m26-25 8-5m-8 13 10 1m-12 8 8 8M28 8l-3-5m11 5 3-5"/></g></svg>
+  <svg class="story-cursor" viewBox="0 0 54 64" fill="none" focusable="false"><path fill="#2449f5" stroke="#fafaf7" stroke-width="2" stroke-linejoin="round" d="m6 4 4 44 11-13 16 23 9-6-16-22 17-3Z"/></svg>
+ </div>
 </div>
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="index-bar personal-nav"><nav aria-label="Índice principal"><a href="#inicio"><span>00</span> Inicio</a><a href="#sobre-mi"><span>01</span> Sobre mí</a><a href="#trabajo"><span>02</span> Trabajo</a><a href="#contacto"><span>03</span> Contacto <i aria-hidden="true">↗</i></a></nav><span class="reading-progress" aria-hidden="true"></span></header>
