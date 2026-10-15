@@ -34,6 +34,48 @@
     image?.decode().then(() => {
       if (active) character.classList.add('is-decoded');
     }).catch(() => {});
+    const board = document.querySelector('.story-board');
+    const guide = document.querySelector('.story-blueprint');
+    const cursor = document.querySelector('.story-cursor');
+    const bug = document.querySelector('.story-bug');
+    // Local CSS boxes and the stable SVG viewBox define routes, never font metrics.
+    if (board && guide && cursor && bug && character) {
+      const bounds = board.getBoundingClientRect();
+      const frame = guide.getBoundingClientRect();
+      const portrait = character.getBoundingClientRect();
+      const cursorBox = cursor.getBoundingClientRect(), bugBox = bug.getBoundingClientRect();
+      const maxX = Math.max(6, bounds.width - Math.max(cursorBox.width, bugBox.width) - 6);
+      const maxY = Math.max(6, bounds.height - Math.max(cursorBox.height, bugBox.height) - 6);
+      const point = (x, y) => ({ x: Math.max(12, Math.min(maxX - 6, x)), y: Math.max(12, Math.min(maxY - 6, y)) });
+      const scale = Math.min(frame.width / 600, frame.height / 360);
+      const originX = frame.left - bounds.left + (frame.width - 600 * scale) / 2;
+      const originY = frame.top - bounds.top + (frame.height - 360 * scale) / 2;
+      const onGuide = (x, y) => point(originX + x * scale, originY + y * scale);
+      const escape = onGuide(522, 338);
+      const laptop = point(portrait.left - bounds.left + portrait.width * .44, portrait.top - bounds.top + portrait.height * .64);
+      const bend = point((escape.x + laptop.x) / 2, (escape.y + laptop.y) / 2 - Math.min(24, bounds.height * .04));
+      const pathThrough = points => {
+        // Symmetric handles preserve tangent continuity; bounding them keeps every curve inside the scene.
+        const tangents = points.map((p, index) => {
+          const before = points[index - 1] || p, after = points[index + 1] || p;
+          const x = (after.x - before.x) / 6, y = (after.y - before.y) / 6;
+          const fitX = x ? Math.min(p.x - 6, maxX - p.x) / Math.abs(x) : 1;
+          const fitY = y ? Math.min(p.y - 6, maxY - p.y) / Math.abs(y) : 1;
+          const fit = Math.min(1, fitX, fitY);
+          return { x: x * fit, y: y * fit };
+        });
+        const xy = p => `${p.x.toFixed(3)} ${p.y.toFixed(3)}`;
+        let path = `M ${xy(points[0])}`;
+        for (let index = 1; index < points.length; index++) {
+          const previous = points[index - 1], next = points[index];
+          path += ` C ${xy({ x: previous.x + tangents[index - 1].x, y: previous.y + tangents[index - 1].y })} ${xy({ x: next.x - tangents[index].x, y: next.y - tangents[index].y })} ${xy(next)}`;
+        }
+        return `path('${path}')`;
+      };
+      cursor.style.setProperty('offset-path', pathThrough([onGuide(18, 40), onGuide(580, 40), onGuide(580, 280), escape, bend, laptop]));
+      bug.style.setProperty('offset-path', pathThrough([escape, bend, laptop]));
+      board.classList.add('is-routed');
+    }
     const pairs = [
       ['.story-word--alex', '.hero-personal .name-word.first'],
       ['.story-word--mico', '.hero-personal .name-word.last'],
@@ -73,7 +115,7 @@
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=intro-story-1015-02"><link rel="stylesheet" href="sereno-demo.css?v=intro-story-1015-02"><link rel="stylesheet" href="portada-personal.css?v=intro-story-1015-02"><link rel="stylesheet" href="recorrido-personal.css?v=intro-story-1015-02"><script src="app.js?v=intro-story-1015-02" defer></script><script src="portrait-motion.js?v=intro-story-1015-02" defer></script><script src="recorrido-personal.js?v=intro-story-1015-02" defer></script>
+<link rel="stylesheet" href="styles.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="portada-personal.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=intro-fluid-1015-01"><script src="app.js?v=intro-fluid-1015-01" defer></script><script src="portrait-motion.js?v=intro-fluid-1015-01" defer></script><script src="recorrido-personal.js?v=intro-fluid-1015-01" defer></script>
 </head>
 <body class="personal-world">
 <div class="intro-story" aria-hidden="true">

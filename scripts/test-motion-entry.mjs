@@ -13,7 +13,7 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
   const emit = (table, name, event = {}) => (table.get(name) || []).forEach(callback => callback(event));
   const root = { setAttribute: (key, value) => attributes.set(key, value), removeAttribute: key => attributes.delete(key) };
   const media = { matches: reduced, addEventListener: on(mediaEvents) };
-  const writes = new Map();
+  const writes = new Map(), classes = new Map();
   let wallTime = 0, animationTime = 0;
   const document = { hidden, documentElement: root, addEventListener: on(documentEvents),
     querySelector: selector => nodes[selector] || (selector === '.intro-story' ? {
@@ -21,6 +21,7 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
     } : rectangles?.[selector] ? {
       getBoundingClientRect: () => rectangles[selector],
       querySelector: () => null,
+      classList: { add: value => classes.set(selector, value) },
       style: { setProperty: (name, value) => writes.set(selector + name, value) }
     } : null) };
   // Neither late font readiness nor a previous paint should suppress an already-armed entrance.
@@ -37,7 +38,7 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
     setTimeout: (callback, delay) => { const id = timers.size + 1; timers.set(id, { callback, delay }); return id; },
     clearTimeout: id => timers.delete(id) };
   vm.runInNewContext(bootstrap, context);
-  return { window, document, context, media, attributes, timers, writes,
+  return { window, document, context, media, attributes, timers, writes, classes,
     setWallTime: value => { wallTime = value; },
     setAnimationTime: value => { animationTime = value; },
     event: (name, event) => emit(windowEvents, name, event),
@@ -230,4 +231,83 @@ test('A portrait decode failure keeps intro eyes hidden and lets the existing ti
   assert.equal(host.window.portfolioEntry.active, true);
   host.window.portfolioEntry.finish();
   assert.equal(host.window.portfolioEntry.active, false);
+});
+
+
+function routedScene(width = 300, height = 600, fontReady = null) {
+  const rectangles = {
+    '.story-board': { left: 40, top: 100, width, height },
+    '.story-blueprint': { left: 34, top: 88, width: width * .9, height: height * .52 },
+    '.story-character': { left: 40 + width * .32, top: 100 + height * .58, width: width * .68, height: width * .68 },
+    '.story-cursor': { left: 40, top: 100, width: 36, height: 43 },
+    '.story-bug': { left: 40, top: 100, width: 34, height: 34 },
+    '.story-word--alex': { left: 40, top: 100, width: width * .7 },
+    '.hero-personal .name-word.first': { left: 24, top: 90, width: 100 }
+  };
+  const host = harness({ rectangles, fontReady });
+  return { ...host, rectangles };
+}
+
+function pathPoints(path) {
+  assert.match(path, /^path\('M /);
+  const numbers = path.match(/-?\d+(?:\.\d+)?/g).map(Number);
+  return Array.from({ length: numbers.length / 2 }, (_, index) => ({ x: numbers[index * 2], y: numbers[index * 2 + 1] }));
+}
+
+test('Cursor and bug routes remain bounded and share continuous Bézier tangents across responsive scenes', () => {
+  for (const [width, height] of [[269, 426], [328, 633], [688, 885], [1210, 675], [710, 300]]) {
+    const host = routedScene(width, height);
+    host.documentEvent('DOMContentLoaded');
+    assert.equal(host.classes.get('.story-board'), 'is-routed');
+    for (const selector of ['.story-cursor', '.story-bug']) {
+      const points = pathPoints(host.writes.get(selector + 'offset-path'));
+      assert.ok(points.length >= 7, 'The route must contain curved segments');
+      points.forEach(point => {
+        assert.ok(point.x >= 6 && point.x <= width - 42 + .001, 'Every anchor and control stays inside the board with glyph padding');
+        assert.ok(point.y >= 6 && point.y <= height - 49 + .001);
+      });
+      for (let index = 3; index + 1 < points.length; index += 3) {
+        const before = points[index - 1], join = points[index], after = points[index + 1];
+        assert.ok(Math.abs((join.x - before.x) - (after.x - join.x)) < .003, 'Horizontal tangents agree at every join');
+        assert.ok(Math.abs((join.y - before.y) - (after.y - join.y)) < .003, 'Vertical tangents agree at every join');
+      }
+    }
+  }
+});
+
+test('Font readiness may refine landing boxes but never retarget a cursor or bug already following its route', async () => {
+  let resolveFonts;
+  const fontReady = new Promise(resolve => { resolveFonts = resolve; });
+  const host = routedScene(328, 633, fontReady);
+  host.documentEvent('DOMContentLoaded');
+  const cursorPath = host.writes.get('.story-cursoroffset-path');
+  const bugPath = host.writes.get('.story-bugoffset-path');
+  const landing = host.writes.get('.story-word--alex--story-land');
+  host.rectangles['.story-blueprint'].width += 50;
+  host.rectangles['.hero-personal .name-word.first'].width += 10;
+  host.setAnimationTime(1200);
+  resolveFonts();
+  await Promise.resolve();
+  assert.equal(host.writes.get('.story-cursoroffset-path'), cursorPath);
+  assert.equal(host.writes.get('.story-bugoffset-path'), bugPath);
+  assert.notEqual(host.writes.get('.story-word--alex--story-land'), landing);
+});
+
+test('An incomplete path scene is never marked visible or assigned an unmeasured origin', () => {
+  const host = routedScene();
+  delete host.rectangles['.story-blueprint'];
+  host.documentEvent('DOMContentLoaded');
+  assert.equal(host.classes.has('.story-board'), false);
+  assert.equal(host.writes.has('.story-cursoroffset-path'), false);
+  assert.equal(host.writes.has('.story-bugoffset-path'), false);
+});
+
+test('Late DOMContentLoaded still measures bounded local routes while the real CSS film is young', () => {
+  const host = routedScene();
+  host.setWallTime(1800);
+  host.setAnimationTime(180);
+  host.documentEvent('DOMContentLoaded');
+  assert.equal(host.classes.get('.story-board'), 'is-routed');
+  assert.match(host.writes.get('.story-cursoroffset-path'), /^path\('M /);
+  assert.equal(host.window.portfolioEntry.active, true);
 });
