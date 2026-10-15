@@ -37,7 +37,7 @@ test('Root and #inicio arm once without font or first-paint assumptions', () => 
     assert.equal(host.window.portfolioEntry.active, true);
     assert.equal(host.window.portfolioEntry.started, true);
     assert.equal(host.attributes.get('data-entry'), 'running');
-    host.documentEvent('animationend', { animationName: 'personalCaptionEntry' });
+    host.documentEvent('animationend', { animationName: 'filmPanelBottom', target: { classList: { contains: name => name === 'film-panel--bottom' } } });
     assert.equal(host.window.portfolioEntry.active, false);
     assert.equal(host.attributes.has('data-entry'), false);
     assert.equal(host.timers.size, 0);
@@ -68,7 +68,7 @@ test('Trusted interaction finishes immediately and synthetic input cannot consum
 });
 
 test('Interruption, accessibility changes and bfcache always reveal the final composition', () => {
-  for (const name of ['blur', 'resize', 'pagehide', 'hashchange']) {
+  for (const name of ['blur', 'resize', 'pagehide', 'hashchange', 'focusin']) {
     const host = harness(); host.event(name);
     assert.equal(host.attributes.size, 0);
   }
@@ -85,10 +85,24 @@ test('Interruption, accessibility changes and bfcache always reveal the final co
 test('Failed or absent stylesheet has a bounded release and completed entry is idempotent', () => {
   const host = harness();
   const deadline = [...host.timers.values()][0];
-  assert.equal(deadline.delay, 4000);
+  assert.equal(deadline.delay, 5000);
   deadline.callback();
   assert.equal(host.attributes.size, 0);
   assert.equal(host.window.portfolioEntry.active, false);
   host.window.portfolioEntry.finish();
   assert.equal(host.attributes.size, 0);
+});
+
+
+test('Only the final panel ends the film; content and signature animation events cannot cut it short', () => {
+  const host = harness();
+  const target = { classList: { contains: name => name === 'film-panel--bottom' } };
+  for (const animationName of ['personalCaptionEntry', 'filmPanelTop', 'filmSignatureDraw', 'filmWordLower']) {
+    host.documentEvent('animationend', { animationName, target });
+    assert.equal(host.window.portfolioEntry.active, true);
+  }
+  host.documentEvent('animationend', { animationName: 'filmPanelBottom', target: { classList: { contains: () => false } } });
+  assert.equal(host.window.portfolioEntry.active, true);
+  host.documentEvent('animationend', { animationName: 'filmPanelBottom', target });
+  assert.equal(host.window.portfolioEntry.active, false);
 });

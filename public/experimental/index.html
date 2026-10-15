@@ -22,23 +22,31 @@
   window.portfolioEntry = { started: active, get active() { return active; }, finish };
   if (!active) return;
   root.setAttribute('data-entry', 'running');
-  // CSS ends in 1120ms; this bound also releases the page if a stylesheet fails.
-  deadline = setTimeout(finish, 4000);
-  document.addEventListener('animationend', event => { if (event.animationName === 'personalCaptionEntry') finish(); });
+  // The last blue panel owns completion; the deadline only covers missing CSS.
+  deadline = setTimeout(finish, 5000);
+  document.addEventListener('animationend', event => {
+    if (event.animationName === 'filmPanelBottom' && event.target?.classList.contains('film-panel--bottom')) finish();
+  });
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(type => window.addEventListener(type, event => { if (event.isTrusted) finish(); }, { passive: true, capture: true }));
   window.addEventListener('scroll', () => { if (scrollY > 4) finish(); }, { passive: true });
-  ['blur', 'resize', 'pagehide', 'hashchange'].forEach(type => window.addEventListener(type, finish));
+  ['blur', 'resize', 'pagehide', 'hashchange', 'focusin'].forEach(type => window.addEventListener(type, finish));
   window.addEventListener('pageshow', event => { if (event.persisted) finish(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) finish(); });
   reduce.addEventListener('change', () => { if (reduce.matches) finish(); });
 })();
 </script>
+<style>.motion-film{display:none}</style>
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="sereno-demo.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="portada-personal.css?v=entrada-viva-1014-01"><link rel="stylesheet" href="recorrido-personal.css?v=entrada-viva-1014-01"><script src="app.js?v=entrada-viva-1014-01" defer></script><script src="portrait-motion.js?v=entrada-viva-1014-01" defer></script><script src="recorrido-personal.js?v=entrada-viva-1014-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=motion-film-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=motion-film-1015-01"><link rel="stylesheet" href="portada-personal.css?v=motion-film-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=motion-film-1015-01"><script src="app.js?v=motion-film-1015-01" defer></script><script src="portrait-motion.js?v=motion-film-1015-01" defer></script><script src="recorrido-personal.js?v=motion-film-1015-01" defer></script>
 </head>
 <body class="personal-world">
+<div class="motion-film" aria-hidden="true">
+  <div class="film-panel film-panel--top"><div class="film-row"><span class="film-outline">ALEX</span><span class="film-word">ALEX</span></div></div>
+  <div class="film-panel film-panel--bottom"><div class="film-row"><span class="film-outline">MICÓ</span><span class="film-word">MICÓ<span class="film-period">.</span></span></div></div>
+  <svg class="film-signature" viewBox="0 0 600 76" fill="none" focusable="false"><path class="film-stroke" pathLength="1" d="M9 55C145 17 360 10 570 27M435 56l153-15" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+</div>
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="index-bar personal-nav"><nav aria-label="Índice principal"><a href="#inicio"><span>00</span> Inicio</a><a href="#sobre-mi"><span>01</span> Sobre mí</a><a href="#trabajo"><span>02</span> Trabajo</a><a href="#contacto"><span>03</span> Contacto <i aria-hidden="true">↗</i></a></nav><span class="reading-progress" aria-hidden="true"></span></header>
 <main id="contenido" tabindex="-1">

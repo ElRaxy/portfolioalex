@@ -39,3 +39,9 @@ Reversión de esta integración: revertir el commit `0e9dfc5` en `main` y desple
 ## Entrada viva — 14 de octubre
 
 La entrada se arma antes del primer render con una secuencia CSS coordinada de 1120 ms: nombre, trazo, copy y escena ilustrada. La interacción, el scroll o el cambio de accesibilidad la completan inmediatamente. Los gestos de dibujos recuperan los encuentros bloqueados al volver el foco real. Versión de recursos: `entrada-viva-1014-01`. Verificar con `npm run test:motion-entry` y `npm run test:home` antes del build.
+
+## Film tipográfico — 15 de octubre
+
+Versión `motion-film-1015-01`: apertura de 2100 ms con ALEX/MICÓ, contornos y trazo SVG. Dos paneles azules se separan para revelar el hero ilustrado existente. No se bloquea el scroll; cualquier interacción real libera la entrada. Deep links, restauración de historial, reduced-motion y ausencia de JavaScript muestran directamente el contenido. El panel inferior finaliza la secuencia; el deadline de 5000 ms solo cubre hojas CSS ausentes. Se mantiene el contrato único `portfolioEntry` y los gestos posteriores.
+
+Pruebas: `npm run test:motion-entry` (6 casos), `npm run test:home` y `npm run build`. La validación visual requiere grabar desde about:blank antes de navegar: una captura estática después de `open` no prueba la entrada. La publicación requiere comprobar Production y el dominio real de esta versión; los informes históricos anteriores no la acreditan.

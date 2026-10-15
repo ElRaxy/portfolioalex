@@ -99,22 +99,65 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 }
 @media(max-width:380px){.hero-personal .portrait-doodle{display:none}}
 
-/* EntradaViva1014: one pre-paint paper composition, then ordinary native reading. */
+/* A two-beat title film: name first, then the blue sheets open onto Alex. */
+.motion-film{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;color:#fafaf7;font-family:Outfit,sans-serif;isolation:isolate}
+.film-panel{position:absolute;left:0;width:100%;height:calc(50% + 2px);background:#2449f5;overflow:hidden;display:flex;justify-content:center}
+.film-panel--top{top:0;align-items:flex-end;padding-bottom:1.5vh}
+.film-panel--bottom{bottom:0;align-items:flex-start;padding-top:1.5vh}
+.film-row{position:relative;flex:none;font-size:clamp(100px,min(33vw,39svh),510px);font-weight:850;line-height:.86;letter-spacing:-.075em;white-space:nowrap;min-width:0;padding:.13em .15em .16em;overflow:hidden}
+.film-panel--top .film-row{margin-right:13vw}
+.film-panel--bottom .film-row{margin-left:13vw}
+.film-word{position:relative;display:block}
+.film-outline{position:absolute;left:.15em;top:.13em;display:block;color:transparent;-webkit-text-stroke:1px rgb(250 250 247 / .45);transform:translate(5.5vw,-.015em)}
+.film-panel--bottom .film-outline{transform:translate(-5.5vw,.035em)}
+.film-period{display:inline-block;font-size:.56em;color:#17191c;margin-left:.025em}
+.film-signature{position:absolute;left:19%;top:calc(50% - 31px);width:62%;height:62px;color:#fafaf7;overflow:visible}
+.film-stroke{stroke-dasharray:1;stroke-dashoffset:0}
+@media(max-width:650px){
+ .film-row{font-size:clamp(100px,min(37vw,38svh),240px);letter-spacing:-.08em}
+ .film-panel--top .film-row{margin-right:8vw}
+ .film-panel--bottom .film-row{margin-left:3vw}
+ .film-signature{left:8%;width:84%;top:calc(50% - 22px);height:44px}
+ .film-outline{-webkit-text-stroke:1px rgb(250 250 247 / .35)}
+}
+@media(max-height:600px) and (orientation:landscape){
+ .film-row{font-size:min(28vw,38svh)}
+ .film-panel--top .film-row{margin-right:26vw}
+ .film-panel--bottom .film-row{margin-left:26vw}
+ .film-signature{left:23%;width:54%;height:38px;top:calc(50% - 19px)}
+}
 @media(prefers-reduced-motion:no-preference){
- html[data-entry="running"] .hero-personal .personal-role{animation:personalCopyEntry 700ms var(--ease-out) backwards}
+ html[data-entry="running"] .motion-film{display:block}
+ /* The first pointer/touch ends the film in capture; it cannot click a covered CTA. */
+ html[data-entry="running"] .personal-world :is(a,button,input,summary){pointer-events:none}
+ html[data-entry="running"] .film-panel--top{animation:filmPanelTop 2050ms var(--ease-in-out) both}
+ html[data-entry="running"] .film-panel--bottom{animation:filmPanelBottom 2100ms var(--ease-in-out) both}
+ html[data-entry="running"] .film-panel--top .film-word{animation:filmWordUpper 650ms var(--ease-out) 40ms both}
+ html[data-entry="running"] .film-panel--bottom .film-word{animation:filmWordLower 650ms var(--ease-out) 120ms both}
+ html[data-entry="running"] .film-outline{animation:filmOutlineEntry 750ms var(--ease-out) 160ms backwards}
+ html[data-entry="running"] .film-stroke{animation:filmSignatureDraw 650ms var(--ease-out) 450ms backwards}
+ html[data-entry="running"] .film-signature{animation:filmSignatureExit 2100ms var(--ease-in-out) both}
+ html[data-entry="running"] .hero-personal .personal-role{animation:personalCopyEntry 650ms var(--ease-out) 1160ms backwards}
  html[data-entry="running"] .hero-personal .name-word{overflow:hidden}
- html[data-entry="running"] .hero-personal .name-lettering{animation:personalNameEntry 900ms var(--ease-out) 60ms backwards}
- html[data-entry="running"] .hero-personal .name-word.last .name-lettering{animation-delay:120ms}
- html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 650ms var(--ease-out) 300ms backwards}
- html[data-entry="running"] .hero-personal .personal-statement>span{animation:personalCopyEntry 800ms var(--ease-out) 180ms backwards}
- html[data-entry="running"] .hero-personal .personal-statement>span+span{animation-delay:240ms}
- html[data-entry="running"] .hero-personal .personal-description{animation:personalCopyEntry 750ms var(--ease-out) 300ms backwards}
- html[data-entry="running"] .hero-personal .personal-actions{animation:personalCopyEntry 750ms var(--ease-out) 340ms backwards}
- html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 950ms var(--ease-out) 80ms backwards}
- html[data-entry="running"] .hero-personal .portrait-arrival{animation:personalPortraitEntry 950ms var(--ease-out) 160ms backwards}
- html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 650ms var(--ease-out) 420ms backwards}
- html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 700ms var(--ease-out) 420ms backwards}
- html[data-entry="running"] .hero-personal .personal-next{animation:personalCopyEntry 650ms var(--ease-out) 400ms backwards}
+ html[data-entry="running"] .hero-personal .name-lettering{animation:personalNameEntry 700ms var(--ease-out) 1120ms backwards}
+ html[data-entry="running"] .hero-personal .name-word.last .name-lettering{animation-delay:1200ms}
+ html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 650ms var(--ease-out) 1330ms backwards}
+ html[data-entry="running"] .hero-personal .personal-statement>span{animation:personalCopyEntry 650ms var(--ease-out) 1230ms backwards}
+ html[data-entry="running"] .hero-personal .personal-statement>span+span{animation-delay:1300ms}
+ html[data-entry="running"] .hero-personal .personal-description{animation:personalCopyEntry 600ms var(--ease-out) 1380ms backwards}
+ html[data-entry="running"] .hero-personal .personal-actions{animation:personalCopyEntry 600ms var(--ease-out) 1450ms backwards}
+ html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 900ms var(--ease-out) 1080ms backwards}
+ html[data-entry="running"] .hero-personal .portrait-arrival{animation:personalPortraitEntry 900ms var(--ease-out) 1160ms backwards}
+ html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 500ms var(--ease-out) 1510ms backwards}
+ html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 450ms var(--ease-out) 1580ms backwards}
+ html[data-entry="running"] .hero-personal .personal-next{animation:personalCopyEntry 500ms var(--ease-out) 1450ms backwards}
+ @keyframes filmPanelTop{0%,48%{transform:translateY(0)}100%{transform:translateY(-105%)}}
+ @keyframes filmPanelBottom{0%,50%{transform:translateY(0)}100%{transform:translateY(105%)}}
+ @keyframes filmWordUpper{from{transform:translate(-16vw,115%) rotate(-4deg)}to{transform:translate(0,0) rotate(0)}}
+ @keyframes filmWordLower{from{transform:translate(16vw,-115%) rotate(4deg)}to{transform:translate(0,0) rotate(0)}}
+ @keyframes filmOutlineEntry{from{opacity:0}to{opacity:1}}
+ @keyframes filmSignatureDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+ @keyframes filmSignatureExit{0%,49%{transform:translateY(0);opacity:1}68%,100%{transform:translateY(-15px);opacity:0}}
  @keyframes personalNameEntry{from{transform:translateY(105%);opacity:.25}to{transform:translateY(0);opacity:1}}
  @keyframes personalCopyEntry{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
  @keyframes personalStrokeEntry{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
