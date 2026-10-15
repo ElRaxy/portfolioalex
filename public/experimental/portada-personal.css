@@ -113,7 +113,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 .story-frame,.story-rule{stroke-dasharray:1;stroke-dashoffset:0}
 .story-character{position:absolute;right:0;bottom:0;width:min(40vw,520px);aspect-ratio:1;transform-origin:0 0}
 .story-character>img{display:block;width:100%;height:auto}
-.story-face{position:absolute;inset:0;width:100%;height:100%;fill:#17191c;overflow:visible}
+.story-face{position:absolute;inset:0;width:100%;height:100%;fill:#17191c;overflow:visible;visibility:hidden}
+.story-character.is-decoded .story-face{visibility:visible}
 .story-gaze{transform-box:fill-box;transform-origin:50% 50%}
 .story-bug{position:absolute;left:48%;top:48%;width:60px;height:60px;color:#17191c;overflow:visible}
 .story-bug-body{transform-box:fill-box;transform-origin:center}

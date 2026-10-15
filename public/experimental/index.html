@@ -29,6 +29,11 @@
   });
   document.addEventListener('DOMContentLoaded', () => {
     if (!active) return;
+    const character = document.querySelector('.story-character');
+    const image = character?.querySelector('img');
+    image?.decode().then(() => {
+      if (active) character.classList.add('is-decoded');
+    }).catch(() => {});
     const pairs = [
       ['.story-word--alex', '.hero-personal .name-word.first'],
       ['.story-word--mico', '.hero-personal .name-word.last'],
@@ -68,7 +73,7 @@
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=intro-story-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=intro-story-1015-01"><link rel="stylesheet" href="portada-personal.css?v=intro-story-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=intro-story-1015-01"><script src="app.js?v=intro-story-1015-01" defer></script><script src="portrait-motion.js?v=intro-story-1015-01" defer></script><script src="recorrido-personal.js?v=intro-story-1015-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=intro-story-1015-02"><link rel="stylesheet" href="sereno-demo.css?v=intro-story-1015-02"><link rel="stylesheet" href="portada-personal.css?v=intro-story-1015-02"><link rel="stylesheet" href="recorrido-personal.css?v=intro-story-1015-02"><script src="app.js?v=intro-story-1015-02" defer></script><script src="portrait-motion.js?v=intro-story-1015-02" defer></script><script src="recorrido-personal.js?v=intro-story-1015-02" defer></script>
 </head>
 <body class="personal-world">
 <div class="intro-story" aria-hidden="true">

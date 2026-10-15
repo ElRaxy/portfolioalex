@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 const source = await readFile(new URL('../public/experimental/index.html', import.meta.url), 'utf8');
 const bootstrap = source.match(/<script>([\s\S]*?)<\/script>/)[1];
 // A unit event host exercises policy and deadlines. It does not claim rendered-browser QA.
-function harness({ hash = '', restored = false, hidden = false, reduced = false, scroll = 0, rectangles = null, fontReady = null } = {}) {
+function harness({ hash = '', restored = false, hidden = false, reduced = false, scroll = 0, rectangles = null, fontReady = null, nodes = {} } = {}) {
   const windowEvents = new Map(), documentEvents = new Map(), mediaEvents = new Map();
   const attributes = new Map(), timers = new Map();
   const on = table => (name, callback) => table.set(name, [...(table.get(name) || []), callback]);
@@ -16,12 +16,13 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
   const writes = new Map();
   let wallTime = 0, animationTime = 0;
   const document = { hidden, documentElement: root, addEventListener: on(documentEvents),
-    querySelector: selector => selector === '.intro-story' ? {
+    querySelector: selector => nodes[selector] || (selector === '.intro-story' ? {
       getAnimations: () => [{ animationName: 'storyExit', currentTime: animationTime }]
     } : rectangles?.[selector] ? {
       getBoundingClientRect: () => rectangles[selector],
+      querySelector: () => null,
       style: { setProperty: (name, value) => writes.set(selector + name, value) }
-    } : null };
+    } : null) };
   // Neither late font readiness nor a previous paint should suppress an already-armed entrance.
   Object.defineProperty(document, 'fonts', { get() {
     if (rectangles) return { ready: fontReady || Promise.resolve() };
@@ -182,4 +183,51 @@ test('An initial measurement arriving after transfer releases the hero instead o
   host.documentEvent('DOMContentLoaded');
   assert.equal(host.window.portfolioEntry.active, false);
   assert.equal(host.writes.size, 0);
+});
+
+
+test('Intro eyes are armed only after their own portrait finishes decoding without gating the scene', async () => {
+  let decodeImage;
+  const decoded = new Promise(resolve => { decodeImage = resolve; });
+  const classes = new Set();
+  const character = { querySelector: selector => {
+    assert.equal(selector, 'img');
+    return { decode: () => decoded };
+  }, classList: { add: value => classes.add(value) } };
+  const host = harness({ rectangles: {}, nodes: { '.story-character': character } });
+  host.documentEvent('DOMContentLoaded');
+  assert.equal(classes.has('is-decoded'), false, 'Floating eyes must stay hidden while the portrait is undecoded');
+  assert.equal(host.window.portfolioEntry.active, true, 'The scene must start without waiting for image decode');
+  decodeImage();
+  await Promise.resolve();
+  assert.equal(classes.has('is-decoded'), true);
+  assert.equal(host.window.portfolioEntry.active, true, 'Asset readiness cannot finish or restart the timeline');
+});
+
+test('A decoded portrait arriving after cancellation cannot rearm eyes or the entrance', async () => {
+  let decodeImage;
+  const decoded = new Promise(resolve => { decodeImage = resolve; });
+  const classes = new Set();
+  const character = { querySelector: () => ({ decode: () => decoded }), classList: { add: value => classes.add(value) } };
+  const host = harness({ rectangles: {}, nodes: { '.story-character': character } });
+  host.documentEvent('DOMContentLoaded');
+  host.window.portfolioEntry.finish();
+  decodeImage();
+  await Promise.resolve();
+  assert.equal(classes.size, 0);
+  assert.equal(host.window.portfolioEntry.active, false);
+  assert.equal(host.attributes.size, 0);
+});
+
+test('A portrait decode failure keeps intro eyes hidden and lets the existing timeline finish', async () => {
+  const classes = new Set();
+  const character = { querySelector: () => ({ decode: () => Promise.reject(new Error('Invalid image')) }), classList: { add: value => classes.add(value) } };
+  const host = harness({ rectangles: {}, nodes: { '.story-character': character } });
+  host.documentEvent('DOMContentLoaded');
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(classes.size, 0);
+  assert.equal(host.window.portfolioEntry.active, true);
+  host.window.portfolioEntry.finish();
+  assert.equal(host.window.portfolioEntry.active, false);
 });

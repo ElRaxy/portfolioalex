@@ -49,3 +49,5 @@ Pruebas: `npm run test:motion-entry` (6 casos), `npm run test:home` y `npm run b
 ## Boceto a web — 15 de octubre
 
 Versión `intro-story-1015-01`, 2700 ms. Reemplaza el film de paneles por una escena de papel: letras individuales, cursor/trazos, personaje y bug; las palabras y el retrato viajan hacia sus cajas reales en el hero. Medida DOM inicial más refinado único al cargar fuentes antes de1500ms de la fase CSS real; CSS ejecuta el viaje sin JS por frame. Se conserva lifecycle interruptible, deadline5s, reduced/deep/history/noJS directos y composición final. No se añaden recursos/dependencias. Tests:10 lifecycle,1 home y build. Validar filmstrip y convergencia responsive de esta versión antes de darla por publicada.
+
+`intro-story-1015-02`: los ojos del boceto solo aparecen tras decodificar su propia PNG. Sin wait del opener; fallo de imagen mantiene ojos ocultos y una resolución tardía tras cancelación no rearma la escena. Regresión de assets:13tests de lifecycle, incluidos3casos de decodificación.
