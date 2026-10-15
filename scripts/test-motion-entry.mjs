@@ -311,3 +311,26 @@ test('Late DOMContentLoaded still measures bounded local routes while the real C
   assert.match(host.writes.get('.story-cursoroffset-path'), /^path\('M /);
   assert.equal(host.window.portfolioEntry.active, true);
 });
+
+
+test('Completion status distinguishes the true last frame from an interrupted or recovered intro',()=>{
+  const complete=harness();
+  assert.equal(complete.window.portfolioEntry.completed,false);
+  complete.documentEvent('animationend',{animationName:'storyExit',target:{classList:{contains:name=>name==='intro-story'}}});
+  assert.equal(complete.window.portfolioEntry.completed,true);
+  const cancelled=harness();cancelled.window.portfolioEntry.finish();
+  assert.equal(cancelled.window.portfolioEntry.completed,false);
+  cancelled.documentEvent('animationend',{animationName:'storyExit',target:{classList:{contains:name=>name==='intro-story'}}});
+  assert.equal(cancelled.window.portfolioEntry.completed,false,'A queued late end event must not turn cancellation into completion');
+  const recovered=harness();[...recovered.timers.values()][0].callback();
+  assert.equal(recovered.window.portfolioEntry.completed,false);
+});
+
+test('The cursor starts at the laptop before constructing the name and returns to the same local anchor',()=>{
+  const host=routedScene();host.documentEvent('DOMContentLoaded');
+  const points=pathPoints(host.writes.get('.story-cursoroffset-path'));
+  assert.deepEqual(points[0],points.at(-1));
+  const bounds=host.rectangles['.story-board'],portrait=host.rectangles['.story-character'];
+  assert.ok(Math.abs(points[0].x-(portrait.left-bounds.left+portrait.width*.44))<.001);
+  assert.ok(Math.abs(points[0].y-(portrait.top-bounds.top+portrait.height*.64))<.001);
+});

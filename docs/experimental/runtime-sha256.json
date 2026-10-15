@@ -1,4 +1,6 @@
 {
+  "editorial/assets/cv-es.pdf": "41aebc43df5e0cf436b4a0349035fc1053d7423cf5e1d044da2d7f68b51841b9",
+  "editorial/assets/outfit-variable.ttf": "fc7287273e66929776e2ba54f144fe699080bec29f61bf649d70d871468aeade",
   "experimental/app.js": "246b376cb4aeff656f3bf7e4574757202b4c89b714cce85d758c58bdf626f5ec",
   "experimental/assets/alex-illustration-eye-base-v4.png": "e8f785d5d57c4a7e24765f01b55a851a0c7a553aba0d6a97ea9bccfc64ff590f",
   "experimental/assets/barlow-condensed-black.ttf": "e74b750df582c608f35db467b711b2b60d2217618e85e60b72b42dfd00446cab",
@@ -7,13 +9,12 @@
   "experimental/assets/sereno-native-retina.png": "7f58641d1c4f8797ee0f5ace3f1162ef505c89443c03b3fc945277383c1da925",
   "experimental/assets/smarty-session.png": "c5c7214b5aee70741a311e0782a5679d6071e867a73831864b3bb4c7927005ad",
   "experimental/assets/strev-plan-retina.png": "27925ad9ebfbc2037935258929e03e518b7a38adbcc4be1ec3b6331a5281e638",
-  "experimental/index.html": "db359395626a378deca26a5d3d0d21655e6e6b1a119fd5f06b697f58086f51f9",
-  "experimental/portada-personal.css": "2cb47c698cdbdfaa8bccd933d222f0a02e9a8a30dc84c37f4b207570a85f3297",
-  "experimental/portrait-motion.js": "db8560ea7ef8e7b09d09bc6233bf63bf7a4142497a15c30dd7fac5a5f9c5df21",
+  "experimental/character-rig.js": "bcd31559b8c4d0055b41d6320a9435be8053d7aabbbca74acb7e4b478a4f5034",
+  "experimental/index.html": "ba3831f63a4fb4715f28c19ff4abf9bcb0d6360508ecec345d66d5614afa05f8",
+  "experimental/portada-personal.css": "80df76f0713f833a935e6eb70c62b2aaf8d9d276bab5e3e737ac6f6cd38a13d5",
+  "experimental/portrait-motion.js": "75723e7125cba858298b0c02a7f1bec827f5ded864a08aaf92837f8a313d9ac4",
   "experimental/recorrido-personal.css": "44f6617368e55e1e2eaff6a627cb738c4f33560bc86c8af0e4472ee84e1f5051",
   "experimental/recorrido-personal.js": "b1e019f29fe6988af902ba2177a5e170cef67c1df97196a07de3d3c7879af1dc",
   "experimental/sereno-demo.css": "115756ac075f430d9ffe74873dcf98e6defb67689c1d6eb616f676e2a26d0996",
-  "experimental/styles.css": "0880aa6a3546edb8167d6326f65f16ef57d21a567e833cf2c04798ba2c7e3cf6",
-  "editorial/assets/cv-es.pdf": "41aebc43df5e0cf436b4a0349035fc1053d7423cf5e1d044da2d7f68b51841b9",
-  "editorial/assets/outfit-variable.ttf": "fc7287273e66929776e2ba54f144fe699080bec29f61bf649d70d871468aeade"
+  "experimental/styles.css": "0880aa6a3546edb8167d6326f65f16ef57d21a567e833cf2c04798ba2c7e3cf6"
 }

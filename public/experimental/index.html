@@ -11,7 +11,7 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
   let active = !reduce.matches && !restored && !document.hidden && scrollY < 5 && (!location.hash || location.hash === '#inicio');
-  let deadline = 0;
+  let deadline = 0, completed = false;
   const finish = () => {
     if (!active) return;
     active = false;
@@ -19,13 +19,13 @@
     root.removeAttribute('data-entry');
     window.dispatchEvent(new Event('portfolio:entryend'));
   };
-  window.portfolioEntry = { started: active, get active() { return active; }, finish };
+  window.portfolioEntry = { started: active, get active() { return active; }, get completed() { return completed; }, finish };
   if (!active) return;
   root.setAttribute('data-entry', 'running');
   // Read the landing geometry before motion; font readiness may refine it once.
   deadline = setTimeout(finish, 5000);
   document.addEventListener('animationend', event => {
-    if (event.animationName === 'storyExit' && event.target?.classList.contains('intro-story')) finish();
+    if (active && event.animationName === 'storyExit' && event.target?.classList.contains('intro-story')) { completed = true; finish(); }
   });
   document.addEventListener('DOMContentLoaded', () => {
     if (!active) return;
@@ -72,7 +72,7 @@
         }
         return `path('${path}')`;
       };
-      cursor.style.setProperty('offset-path', pathThrough([onGuide(18, 40), onGuide(580, 40), onGuide(580, 280), escape, bend, laptop]));
+      cursor.style.setProperty('offset-path', pathThrough([laptop, onGuide(18, 40), onGuide(580, 40), onGuide(580, 280), escape, bend, laptop]));
       bug.style.setProperty('offset-path', pathThrough([escape, bend, laptop]));
       board.classList.add('is-routed');
     }
@@ -115,7 +115,7 @@
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="portada-personal.css?v=intro-fluid-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=intro-fluid-1015-01"><script src="app.js?v=intro-fluid-1015-01" defer></script><script src="portrait-motion.js?v=intro-fluid-1015-01" defer></script><script src="recorrido-personal.js?v=intro-fluid-1015-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=character-acting-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=character-acting-1015-01"><link rel="stylesheet" href="portada-personal.css?v=character-acting-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=character-acting-1015-01"><script src="app.js?v=character-acting-1015-01" defer></script><script src="character-rig.js?v=character-acting-1015-01" defer></script><script src="portrait-motion.js?v=character-acting-1015-01" defer></script><script src="recorrido-personal.js?v=character-acting-1015-01" defer></script>
 </head>
 <body class="personal-world">
 <div class="intro-story" aria-hidden="true">
