@@ -46,7 +46,125 @@
     if (kind === 'media' && remaining > 0) return `perspective(${Math.max(1000,4 * size)}px) ${base} rotateX(${amplitude(width,4,7,10) * weight * remaining}deg) scale(${1 - amplitude(width,.045,.075,.10) * weight * remaining})`;
     return base;
   };
+  const storyLayout = (width, height, header) => {
+    const mobile = width < 760, usable = height - header;
+    const stage = mobile ? Math.min(210,Math.max(140,usable * .30)) : Math.min(520,usable - 40);
+    return {viable:height >= 600 && usable >= 480, mobile, stage,
+      step:mobile ? Math.max(240,(usable - stage - 24) * .65) : Math.max(360,usable * .70),
+      inset:header + (mobile ? 12 : 20)};
+  };
+  // Derive two transitions from the real reading steps; reserve holds inside the actual sticky interval.
+  const storyPosition = (centers, scroll, readingLine, height, pinStart, pinEnd) => {
+    if (centers.length !== 3 || pinEnd <= pinStart) return 0;
+    const range = pinEnd - pinStart, span = Math.min(height * .24,range * .12), hold = Math.min(height * .28,range * .20);
+    const bound = (n,lo,hi) => Math.max(lo,Math.min(hi,n));
+    const first = bound((centers[0] + centers[1]) / 2 - readingLine,pinStart + hold + span / 2,pinEnd - 2 * hold - 1.5 * span);
+    const second = bound((centers[1] + centers[2]) / 2 - readingLine,first + span + hold,pinEnd - hold - span / 2);
+    return [first,second].reduce((sum,point) => {
+      const p = clamp((scroll - point + span / 2) / span);
+      return sum + p * p * (3 - 2 * p);
+    },0);
+  };
+  const storyFramePose = (index, position, mobile) => {
+    const distance = Math.max(-1,Math.min(1,index - position)), amount = Math.abs(distance);
+    const x = (distance < 0 ? (mobile ? 8 : 12) : (mobile ? 8 : 14)) * distance;
+    return {transform:`translate3d(${x}%,${(distance < 0 ? 3 : 4) * distance}%,0) rotate(${(mobile ? 2 : 4) * distance}deg) scale(${1 - .04 * amount})`, opacity:1 - amount};
+  };
+  const workStoryRow = (rectangles, line) => {
+    if (!rectangles.length) return {indices:[],progress:0};
+    let first = 0;
+    rectangles.forEach((rect,index) => { if (rect.top <= line && rect.top > rectangles[first].top + 2) first = index; });
+    const top = rectangles[first].top, indices = [];
+    rectangles.forEach((rect,index) => { if (Math.abs(rect.top - top) <= 2) indices.push(index); });
+    const bottom = Math.max(...indices.map(index => rectangles[index].bottom));
+    return {indices,progress:clamp((line - top) / Math.max(1,bottom - top))};
+  };
   // End pure geometry.
+  const rail = document.querySelector('.story-rail'), stage = rail?.querySelector('.story-stage');
+  const steps = rail ? [...rail.querySelectorAll('[data-story-step]')] : [];
+  const workMarker = document.querySelector('.work-story-marker');
+  const projects = workMarker ? [...document.querySelectorAll('.project-archive > .project')] : [];
+  const storyFrames = [], storyLabels = [];
+  let storyMounted = false, storyEnhanced = false, storySizing = null, storySizeKey = '', storyLabel = null, lastAct = -1;
+  const measureStoryLayout = () => storyLayout(window.innerWidth,window.innerHeight,
+    document.querySelector('.index-bar')?.getBoundingClientRect().height || 65);
+  const sizeStory = () => {
+    if (!storyMounted) return;
+    const next = measureStoryLayout();
+    if (!next.viable) {
+      storyEnhanced = false; storySizeKey = '';
+      rail.classList.remove('story-enhanced','story-neutral');
+      root.classList.remove('story-work-enhanced','story-work-quiet');
+      return;
+    }
+    if (!storyEnhanced && (reduced.matches || root.classList.contains('keyboard'))) return;
+    storyEnhanced = true; rail.classList.add('story-enhanced');
+    if (workMarker && projects.length) root.classList.add('story-work-enhanced');
+    const key = `${window.innerWidth}:${window.innerHeight}:${next.inset}`;
+    if (storySizeKey === key) return;
+    storySizeKey = key; storySizing = next;
+    rail.style.setProperty('--story-stage-height',`${next.stage}px`);
+    rail.style.setProperty('--story-step-height',`${next.step}px`);
+  };
+  const mountStory = () => {
+    if (storyMounted || !stage || steps.length !== 3 || reduced.matches || root.classList.contains('keyboard') || !measureStoryLayout().viable) return;
+    const sources = ['#strev .journey-media','#sereno .journey-media','#social-scout .social-editorial-paper'].map(selector => document.querySelector(selector));
+    if (sources.some(source => !source || source.querySelector('a,button,input,select,textarea,summary,[tabindex]'))) return;
+    sources.forEach((source,index) => {
+      const copy = source.cloneNode(true), frameNode = document.createElement('div');
+      [copy,...copy.querySelectorAll('*')].forEach(node => {
+        [...node.attributes].forEach(attribute => {
+          if (attribute.name === 'id' || attribute.name === 'style' || attribute.name.startsWith('data-parallax-')) node.removeAttribute(attribute.name);
+        });
+      });
+      if (copy.tagName === 'IMG') { copy.className = 'story-capture'; copy.alt = ''; copy.loading = 'lazy'; }
+      frameNode.dataset.storyFrame = steps[index].dataset.storyStep;
+      frameNode.append(copy); stage.append(frameNode); storyFrames.push(frameNode);
+      storyLabels.push(steps[index].querySelector('dt > span').textContent.trim());
+    });
+    storyLabel = document.createElement('span'); storyLabel.className = 'story-stage-label'; stage.append(storyLabel);
+    storyMounted = true; sizeStory();
+  };
+  mountStory(); // Before app.js performs its one native initial-hash alignment.
+  const quietStory = quiet => {
+    if (!storyEnhanced) return;
+    rail.classList.toggle('story-neutral',quiet);
+    root.classList.toggle('story-work-quiet',quiet);
+    if (quiet) storyFrames.forEach(node => { node.style.transform = 'none'; node.style.opacity = '1'; });
+  };
+  const readStory = view => {
+    if (!storyEnhanced) return null;
+    const railRect = rail.getBoundingClientRect(), stepRects = steps.map(step => step.getBoundingClientRect());
+    const layout = storyLayout(view.width,view.height,view.header);
+    const stageHeight = storySizing.stage, inset = view.header + (layout.mobile ? 12 : 20);
+    const readingLine = layout.mobile ? inset + stageHeight + (view.height - inset - stageHeight) * .25 : view.height * .52;
+    const centers = stepRects.map(rect => rect.top + view.scroll + rect.height / 2);
+    const position = storyPosition(centers,view.scroll,readingLine,view.height,
+      railRect.top + view.scroll - inset,railRect.bottom + view.scroll - inset - stageHeight);
+    const row = workStoryRow(projects.map(project => project.getBoundingClientRect()),view.header + 44 + 24);
+    return {position, mobile:layout.mobile, quiet:neutral() || !layout.viable, row};
+  };
+  const drawStory = state => {
+    if (!state) return;
+    quietStory(state.quiet);
+    if (!state.quiet) storyFrames.forEach((node,index) => {
+      const pose = storyFramePose(index,state.position,state.mobile);
+      node.style.transform = pose.transform; node.style.opacity = String(pose.opacity);
+      node.style.zIndex = String(index + 1);
+    });
+    const act = Math.round(state.position);
+    if (act !== lastAct) { lastAct = act; stage.dataset.storyAct = String(act); storyLabel.textContent = `${String(act + 1).padStart(2,'0')} / ${storyLabels[act]}`; }
+    if (workMarker && state.row.indices.length) {
+      const row = state.row.indices.map(index => projects[index]), ids = row.map(project => project.id).join(' ');
+      if (workMarker.dataset.projects !== ids) {
+        workMarker.dataset.project = row[0].id; workMarker.dataset.projects = ids;
+        const numbers = row.map(project => project.querySelector('.project-number').textContent.trim());
+        const names = row.map(project => project.querySelector('h3').textContent.trim().replace(/\s+/g,' '));
+        workMarker.querySelector('.work-story-label').textContent = `${numbers.join('–')} / ${names.join(' · ')}`;
+      }
+      workMarker.querySelector('.work-story-track i').style.transform = `scaleX(${state.row.progress})`;
+    }
+  };
   const add = (wrapper, kind, targets) => {
     if (wrapper && targets.length) entries.push({wrapper, kind, targets, order:Number(targets[0].dataset?.journeyOrder) || 0, project:wrapper.closest('.project'), last:null});
   };
@@ -79,7 +197,7 @@
   };
   const pause = () => { cancelAnimationFrame(frame); frame = 0; };
   const settle = () => {
-    pause(); entries.forEach(entry => apply(entry, 1, window.innerWidth, true));
+    pause(); entries.forEach(entry => apply(entry, 1, window.innerWidth, true)); quietStory(true);
   };
   const frameGeometry = () => ({height:window.innerHeight, width:window.innerWidth, scroll:window.scrollY,
     travel:Math.max(0, root.scrollHeight - window.innerHeight),
@@ -104,9 +222,11 @@
     const rectangles = new Map();
     near.forEach(entry => { if (!rectangles.has(entry.wrapper)) rectangles.set(entry.wrapper, entry.wrapper.getBoundingClientRect()); });
     const poses = [...near].map(entry => poseFor(entry, rectangles.get(entry.wrapper), view));
+    const storyState = readStory(view);
     if (progress) progress.style.transform = `scaleX(${travel > 0 ? clamp(window.scrollY / travel) : 0})`;
     if (disabled) entries.forEach(entry => apply(entry, 1, width, true));
     else poses.forEach(pose => apply(...pose));
+    drawStory(storyState);
   };
   const refresh = () => {
     if (paused()) return;
@@ -133,8 +253,8 @@
   byWrapper.forEach((_, wrapper) => observer.observe(wrapper));
   window.portfolioJourney = Object.freeze({refresh, settle});
   window.addEventListener('scroll', refresh, {passive:true});
-  window.addEventListener('resize', refresh, {passive:true});
-  window.addEventListener('load', refresh);
+  window.addEventListener('resize', () => { mountStory(); sizeStory(); refresh(); }, {passive:true});
+  window.addEventListener('load', () => { mountStory(); sizeStory(); refresh(); });
   window.addEventListener('portfolio:entryend', refresh);
   window.addEventListener('hashchange', refresh);
   window.addEventListener('focus', refresh);
@@ -147,9 +267,9 @@
   });
   document.addEventListener('pointerdown', () => queueMicrotask(refresh));
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : refresh());
-  reduced.addEventListener('change', () => { if (reduced.matches) settle(); else refresh(); });
+  reduced.addEventListener('change', () => { if (reduced.matches) settle(); else { mountStory(); sizeStory(); refresh(); } });
   window.addEventListener('pagehide', () => { suspended = true; pause(); observer.disconnect(); near.clear(); });
-  window.addEventListener('pageshow', () => { suspended = false; byWrapper.forEach((_, wrapper) => observer.observe(wrapper)); refresh(); });
-  document.fonts?.ready.then(refresh);
+  window.addEventListener('pageshow', () => { suspended = false; mountStory(); sizeStory(); byWrapper.forEach((_, wrapper) => observer.observe(wrapper)); refresh(); });
+  document.fonts?.ready.then(() => { sizeStory(); refresh(); });
   refresh();
 })();

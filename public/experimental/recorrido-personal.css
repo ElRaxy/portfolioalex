@@ -257,3 +257,41 @@ html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform
  .personal-world .journey-window{padding-inline:10px}
  .personal-world .contact #contact-title{font-size:clamp(40px,10.6vw,52px)}
 }
+
+
+/* A persistent sheet changes subject while the original capabilities remain in normal flow. */
+.personal-world .story-stage,.personal-world .work-story-marker{display:none}
+.personal-world .story-rail.story-enhanced{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);column-gap:clamp(28px,5vw,72px);align-items:start}
+.personal-world .story-enhanced .story-stage{display:block;position:sticky;top:calc(var(--header-height) + 20px);height:var(--story-stage-height);min-width:0;overflow:hidden;border-radius:8px;background:#edf1fc;border:1px solid #d5def6;isolation:isolate;pointer-events:none}
+.personal-world [data-story-frame]{position:absolute;inset:20px 20px 44px;display:grid;place-items:center;opacity:0;transform-origin:center;transition:none!important}
+.personal-world [data-story-frame]:first-child{opacity:1}
+.personal-world .story-capture{display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:center;border-radius:4px}
+.personal-world .story-stage-label{position:absolute;bottom:12px;left:20px;right:20px;font-size:12px;line-height:1.4;color:#465b94}
+.personal-world .story-stage .social-editorial-paper{display:grid;grid-template-columns:minmax(0,1fr) minmax(70px,.65fr);align-items:center;gap:12px;width:100%;max-width:430px;padding:clamp(12px,2vw,24px);transform:none!important;transition:none!important}
+.personal-world .story-stage .social-editorial-headline{grid-column:1;grid-row:1/3;font:600 clamp(20px,3vw,40px)/1.03 Outfit,sans-serif;letter-spacing:-.04em}
+.personal-world .story-stage .social-editorial-eyebrow{grid-column:2;grid-row:1;font-size:11px;margin:0}
+.personal-world .story-stage .social-editorial-note{grid-column:2;grid-row:2;font-size:11px;line-height:1.4;margin:0;padding-top:10px}
+.personal-world .about-sheet .story-enhanced .hero-note,.personal-world .about-sheet .story-enhanced .hero-note:last-child{min-height:var(--story-step-height);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:18px;padding:40px 0 40px 40px}
+.personal-world .story-enhanced .hero-note::before{top:44px}
+.personal-world .about-sheet .story-enhanced .hero-note dt{font-size:clamp(24px,2.5vw,34px);gap:16px}
+.personal-world .about-sheet .story-enhanced .hero-note dd{display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:0}
+.personal-world .story-enhanced .hero-note .capability-link{margin:0}
+.personal-world .story-enhanced.story-neutral .story-stage{position:relative;top:auto;visibility:hidden}
+.story-work-enhanced .personal-world .work-story-marker{display:flex;position:sticky;top:var(--header-height);height:44px;align-items:center;justify-content:space-between;gap:24px;background:#f0f3fa;border-bottom:1px solid #c9d3eb;z-index:8;pointer-events:none}
+.personal-world .work-story-label{font-size:12px;line-height:1.2;letter-spacing:.015em;color:#2449f5}
+.personal-world .work-story-track{display:block;width:clamp(72px,14vw,180px);height:2px;flex:none;background:#d0d9ef;overflow:hidden}
+.personal-world .work-story-track i{display:block;width:100%;height:100%;background:#2449f5;transform:scaleX(0);transform-origin:left center}
+html.story-work-enhanced:not(.story-work-quiet) .personal-world #trabajo .project{scroll-margin-top:50px}
+.story-work-quiet .personal-world .work-story-marker{position:relative;top:auto;visibility:hidden}
+@media(max-width:759px){
+ .personal-world .story-rail.story-enhanced{display:block}
+ .personal-world .story-enhanced .story-stage{top:calc(var(--header-height) + 12px);z-index:4;margin-bottom:0;border-radius:0 0 8px 8px}
+ .personal-world [data-story-frame]{inset:10px 14px 32px}
+ .personal-world .story-stage-label{bottom:8px;left:14px;font-size:11px}
+ .personal-world .about-sheet .story-enhanced .hero-note,.personal-world .about-sheet .story-enhanced .hero-note:last-child{padding:32px 0 32px 36px;gap:12px}
+ .personal-world .story-enhanced .hero-note::before{top:36px}
+ .personal-world .about-sheet .story-enhanced .hero-note dt{font-size:clamp(22px,5vw,30px);gap:12px}
+ .personal-world .story-enhanced .note-drawing{width:56px;height:44px}
+}
+@media(prefers-reduced-motion:reduce){.personal-world .story-enhanced .story-stage{position:relative;top:auto;visibility:hidden}.personal-world [data-story-frame]{transform:none!important;opacity:1!important}.story-work-enhanced .personal-world .work-story-marker{position:relative;top:auto;visibility:hidden}}
+@media print{.personal-world .story-rail.story-enhanced{display:block}.personal-world .story-stage,.story-work-enhanced .personal-world .work-story-marker{display:none}.personal-world .about-sheet .story-enhanced .hero-note{min-height:0}}
