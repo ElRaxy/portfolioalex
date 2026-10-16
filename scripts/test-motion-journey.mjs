@@ -7,7 +7,7 @@ const journey = await readFile(new URL('../public/experimental/recorrido-persona
 const html = await readFile(new URL('../public/experimental/index.html',import.meta.url),'utf8');
 const css = await readFile(new URL('../public/experimental/recorrido-personal.css',import.meta.url),'utf8');
 const geometry = journey.slice(journey.indexOf('  const clamp ='),journey.indexOf('  // End pure geometry.'));
-const {arrival,depthProgress,depthPose,amplitude} = vm.runInNewContext(`${geometry};({arrival,depthProgress,depthPose,amplitude})`);
+const {arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight} = vm.runInNewContext(`${geometry};({arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight})`);
 test('The reading band is settled, and reversing position exactly retraces the reveal at every viewport',()=>{
   for(const height of [390,568,844,900,1180]) {
     assert.equal(arrival(height*.92,height),0);
@@ -92,7 +92,7 @@ test('Frame cadence cannot alter a pose and reduced/keyboard neutralizes every d
   assert.equal(depthPose('hero-portrait',1,1440),'translate3d(0,-112px,0)');
   assert.equal(depthPose('hero-paper',1,1440),'translate3d(0,48px,0) rotate(-2deg)');
 });
-function journeyHarness() {
+function journeyHarness(kind = 'media') {
   const events=new Map(),frames=new Map(),style={};
   let nextFrame=0,focused=true,insideFocus=false,top=1700;
   const keyboard=new Set();
@@ -100,7 +100,7 @@ function journeyHarness() {
   const on=(name,fn)=>events.set(name,[...(Array.isArray(events.get(name))?events.get(name):[]),fn]);
   const wrapper={getBoundingClientRect:()=>({top:top-window.scrollY,width:500,height:100}),closest:()=>({contains:()=>insideFocus}),
     querySelectorAll:()=>[target]};
-  const target={dataset:{parallaxLayer:'media'},style,closest:()=>wrapper};
+  const target={dataset:{parallaxLayer:kind},style,closest:()=>wrapper};
   const root={scrollHeight:2000,classList:{contains:token=>keyboard.has(token)}};
   const document={body:{classList:{contains:()=>true}},documentElement:root,hidden:false,activeElement:null,
     hasFocus:()=>focused,querySelector:()=>null,querySelectorAll:selector=>selector==='[data-parallax-scene]'?[wrapper]:[],addEventListener:on};
@@ -134,9 +134,9 @@ test('Reduced motion settles immediately; resuming and resizing recompute the sa
   host.media.matches=true;host.emit('media:change');
   assert.equal(host.style.transform,depthPose('media',0,1440,true));
   host.media.matches=false;host.emit('media:change');host.flush();
-  assert.equal(host.style.transform,depthPose('media',depthProgress(800,100,900),1440));
+  assert.equal(host.style.transform,journeyPose('media',depthProgress(800,100,900),1440,false,sceneArrival(800,900,900,1100,.98,.60),900,100));
   host.window.innerWidth=390;host.emit('resize');host.flush();
-  assert.equal(host.style.transform,depthPose('media',depthProgress(800,100,900),390));
+  assert.equal(host.style.transform,journeyPose('media',depthProgress(800,100,900),390,false,sceneArrival(800,900,900,1100,.98,.60),900,100));
 });
 
 
@@ -149,4 +149,63 @@ test('Pointer focus inside a project preserves depth while keyboard focus remain
   assert.equal(host.style.transform,depthPose('media',0,1440,true));
   host.keyboard.delete('keyboard');host.emit('pointerdown');host.flush();
   assert.equal(host.style.transform,pose,'Returning to pointer modality restores the geometric pose');
+});
+
+
+test('Headings finish before reading; media presentation settles while geometric depth continues',()=>{
+  for(const [width,height] of [[320,568],[390,844],[651,900],[759,900],[760,900],[820,1180],[844,390],[1440,1000]]) {
+    const docTop=2000, travel=6000;
+    for(const order of [0,1]) {
+      const start=.96-.035*order;
+      assert.equal(sceneArrival(start*height,height,docTop-start*height,travel,start,.64),0);
+      assert.equal(sceneArrival(.64*height,height,docTop-.64*height,travel,start,.64),1);
+    }
+    const topValues=[.98,.9,.8,.7,.6,.4,.1].map(v=>v*height);
+    const samples=topValues.map(top=>journeyPose('media',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel,.98,.6),height,500));
+    assert.match(samples[0],/rotateX\([1-9.]/);
+    assert.match(samples[0],/scale\(0\./);
+    assert.doesNotMatch(samples[4],/rotateX|scale/,'Reading-band capture is flat and full size');
+    assert.notEqual(samples[4],samples[5],'Depth continues after presentation is complete');
+    const reverse=topValues.toReversed().map(top=>journeyPose('media',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel,.98,.6),height,500)).reverse();
+    assert.deepEqual(samples,reverse);
+    assert.equal(journeyPose('heading',.5,width,false,1,height),'translate3d(0,0px,0)');
+  }
+});
+test('Unreachable reading bands settle continuously at page bottom without resetting depth',()=>{
+  const height=900, docTop=1700, travel=1100;
+  const positions=[850,950,1050,1099,1100];
+  const arrivals=positions.map(scroll=>sceneArrival(docTop-scroll,height,scroll,travel));
+  assert.ok(arrivals[1]>arrivals[0] && arrivals[2]>arrivals[1]);
+  assert.ok(arrivals[3]>.999 && arrivals[3]<1);
+  assert.equal(arrivals[4],1);
+  assert.equal(sceneArrival(400,height,0,0),1,'Non-scrollable page cannot leave titles displaced');
+  assert.notEqual(depthPose('media',depthProgress(600,100,height),1440),depthPose('media',0,1440,true));
+});
+test('New gestures are viewport-safe and neutral for keyboard/reduced motion, including landscape',()=>{
+  assert.equal(heightWeight(390),.3);
+  assert.equal(heightWeight(1000),1);
+  for(const width of [320,390,650,651,759,760,820,1024,1440]) {
+    for(const kind of ['heading','media','hero-portrait']) {
+      assert.equal(journeyPose(kind,0,width,true,0,390,800),journeyPose(kind,1,width,true,1,1180,100));
+    }
+    const size=800, perspective=3200;
+    const pose=journeyPose('media',.5,width,false,0,1000,size);
+    const scale=Number(pose.match(/scale\(([^)]+)\)/)[1]);
+    const radians=Number(pose.match(/rotateX\(([^)]+)deg\)/)[1])*Math.PI/180;
+    assert.ok(scale/(1-size/2*Math.sin(radians)/perspective)<1,'Perspective must fit inside the full-size image footprint');
+  }
+  assert.ok(Math.abs(heightWeight(699.99)-heightWeight(700.01))<.001);
+  assert.equal((html.match(/class="journey-heading-line"/g)||[]).length,5);
+  assert.match(html,/id="contact-title"[^>]*><span><span class="journey-heading-line"/,'Animated child must be inside the stable CSS-reset span');
+  assert.doesNotMatch(css,/journey-heading-line[^}]*opacity:0/,'No-JS text cannot be hidden');
+});
+
+test('Actual heading controller delivers settled reading poses and retraces a partial entrance',()=>{
+  const host=journeyHarness('heading');host.setTop(1700);
+  host.window.scrollY=900;host.flush();const partial=host.style.transform;
+  assert.notEqual(partial,'translate3d(0,0px,0)');
+  host.window.scrollY=1100;host.emit('scroll');host.flush();
+  assert.equal(host.style.transform,'translate3d(0,0px,0)','Reachable page bottom settles heading even above planned reading band');
+  host.window.scrollY=900;host.emit('scroll');host.flush();assert.equal(host.style.transform,partial);
+  host.media.matches=true;host.emit('media:change');assert.equal(host.style.transform,'translate3d(0,0px,0)');
 });

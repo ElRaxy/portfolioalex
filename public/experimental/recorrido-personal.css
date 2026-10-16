@@ -202,6 +202,11 @@ html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform
 
 /* Stable frames retain their full size; only the actual media is revealed. */
 .personal-world .journey-window{display:block;overflow:hidden;border-radius:8px;background:#e4e9f3;padding-inline:16px}
+/* Reserve the entrance travel so lettering never crosses the following reading surface. */
+.personal-world .work-heading{row-gap:clamp(26px,calc(12px + 2.6vw),52px)}
+@media(max-width:759px){.personal-world .about-sheet .about-story.about-personal,.personal-world .contact-intro{row-gap:34px}}
+.personal-world .journey-heading-line{display:block;transform:none;opacity:1;transform-origin:left center}
+.personal-world #contact-title .journey-heading-line{display:inline-block;max-width:100%}
 .personal-world .journey-media{display:block;transform-origin:50% 50%;transition:none!important}
 .personal-world :is(.about-marker,.section-kicker,.contact-marker){position:relative}
 .personal-world .journey-accent{display:block;width:96px;height:2px;margin-top:12px;background:var(--blue);transform-origin:left center;pointer-events:none}

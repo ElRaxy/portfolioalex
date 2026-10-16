@@ -27,9 +27,28 @@
     const y = kind === 'talk' ? amplitude(width,20,30,44) : amplitude(width,16,26,36);
     return `translate3d(${amplitude(width,4,8,12) * d}px,${y * d}px,0) rotate(${-3 * d}deg)`;
   };
+  const heightWeight = height => Math.max(.3, clamp((height - 260) / 440));
+  // Clamp the end to reachable scroll, rather than resetting the whole scene at page bottom.
+  const sceneArrival = (top, height, scroll, travel, start = .96, end = .64) => {
+    const docTop = top + scroll, from = docTop - start * height;
+    const to = Math.min(docTop - end * height, Math.max(0, travel));
+    if (to <= from) return 1;
+    if (start === .92 && end === .62 && to === docTop - end * height) return arrival(top,height);
+    const p = clamp((scroll - from) / (to - from));
+    return p >= 1 - 1e-9 ? 1 : p * p * (3 - 2 * p);
+  };
+  const journeyPose = (kind, depth, width, quiet = false, presented = 1, height = 700, size = 0) => {
+    const weight = heightWeight(height), remaining = quiet ? 0 : 1 - presented;
+    if (kind === 'heading') return `translate3d(0,${amplitude(width,22,32,48) * weight * remaining}px,0)`;
+    const base = depthPose(kind, depth, width, quiet);
+    if (quiet) return base;
+    if (kind === 'hero-portrait') return `${base} scale(${1 - amplitude(width,.015,.025,.035) * weight * depth})`;
+    if (kind === 'media' && remaining > 0) return `perspective(${Math.max(1000,4 * size)}px) ${base} rotateX(${amplitude(width,4,7,10) * weight * remaining}deg) scale(${1 - amplitude(width,.045,.075,.10) * weight * remaining})`;
+    return base;
+  };
   // End pure geometry.
   const add = (wrapper, kind, targets) => {
-    if (wrapper && targets.length) entries.push({wrapper, kind, targets, last:null});
+    if (wrapper && targets.length) entries.push({wrapper, kind, targets, order:Number(targets[0].dataset?.journeyOrder) || 0, project:wrapper.closest('.project'), last:null});
   };
   document.querySelectorAll('[data-parallax-scene]').forEach(wrapper => {
     wrapper.querySelectorAll('[data-parallax-layer]').forEach(target => {
@@ -40,44 +59,54 @@
   });
   document.querySelectorAll('.journey-accent').forEach(target => add(target.parentElement, 'accent', [target]));
   document.querySelectorAll('section:not(.hero-personal) [data-world-scene]').forEach(wrapper => {
-    add(wrapper, 'drawing', [...wrapper.querySelectorAll('[pathLength="1"]')]);
+    const strokes = [...wrapper.querySelectorAll('[pathLength="1"]')];
+    strokes.forEach((target, index) => {
+      add(wrapper, 'drawing', [target]);
+      entries[entries.length - 1].order = index / Math.max(1, strokes.length - 1);
+    });
   });
   const paused = () => suspended || document.hidden || !document.hasFocus();
   const neutral = () => reduced.matches || root.classList.contains('keyboard');
-  const apply = (entry, value, width, quiet = false) => {
-    const key = `${value}:${width}:${quiet}`;
+  const apply = (entry, value, width, quiet = false, presented = 1, height = 700, size = 0) => {
+    const key = `${value}:${width}:${quiet}:${presented}:${height}:${size}`;
     if (entry.last === key) return;
     entry.last = key;
     entry.targets.forEach(target => {
       if (entry.kind === 'accent') target.style.transform = `scaleX(${quiet ? 1 : .2 + .8 * value})`;
       else if (entry.kind === 'drawing') target.style.strokeDashoffset = String(quiet ? 0 : 1 - value);
-      else target.style.transform = depthPose(entry.kind, value, width, quiet);
+      else target.style.transform = journeyPose(entry.kind, value, width, quiet, presented, height, size);
     });
   };
   const pause = () => { cancelAnimationFrame(frame); frame = 0; };
   const settle = () => {
     pause(); entries.forEach(entry => apply(entry, 1, window.innerWidth, true));
   };
+  const frameGeometry = () => ({height:window.innerHeight, width:window.innerWidth, scroll:window.scrollY,
+    travel:Math.max(0, root.scrollHeight - window.innerHeight),
+    header:parseFloat(getComputedStyle(root).getPropertyValue('--header-height')) || 0});
+  const poseFor = (entry, rect, view) => {
+    const {height, width, scroll, travel, header} = view;
+    const quiet = neutral() || !rect.width || !rect.height || (entry.kind.startsWith('hero-') && window.portfolioEntry?.active);
+    const secondColumn = width >= 1000 && entry.project?.id !== 'strev' && !entry.project?.open && rect.left > width / 2;
+    const presented = entry.kind === 'media' ? sceneArrival(rect.top,height,scroll,travel,secondColumn ? .945 : .98,.60)
+      : sceneArrival(rect.top,height,scroll,travel,.96 - .035 * entry.order,.64);
+    const p = entry.kind.startsWith('hero-') ? clamp((header - rect.top) / (Math.max(height,rect.height) * .85))
+      : entry.kind === 'drawing' ? sceneArrival(rect.top,height,scroll,travel,.96 - .04 * entry.order,.64)
+      : entry.kind === 'accent' ? sceneArrival(rect.top,height,scroll,travel,.92,.62) : depthProgress(rect.top,rect.height,height);
+    return [entry,p,width,quiet,presented,height,rect.height];
+  };
   const render = () => {
     frame = 0;
     if (paused()) return;
-    const height = window.innerHeight, width = window.innerWidth;
-    const travel = root.scrollHeight - height;
+    const view = frameGeometry(), {travel, width} = view;
     const disabled = neutral();
-    const headerHeight = parseFloat(getComputedStyle(root).getPropertyValue('--header-height')) || 0;
     // Read each fixed wrapper once, even when it carries several independent visual planes.
     const rectangles = new Map();
     near.forEach(entry => { if (!rectangles.has(entry.wrapper)) rectangles.set(entry.wrapper, entry.wrapper.getBoundingClientRect()); });
-    const poses = [...near].map(entry => {
-      const rect = rectangles.get(entry.wrapper);
-      const quiet = disabled || !rect.width || !rect.height || (entry.kind.startsWith('hero-') && window.portfolioEntry?.active);
-      const p = entry.kind.startsWith('hero-') ? clamp((headerHeight - rect.top) / (Math.max(height, rect.height) * .85))
-        : ['drawing','accent'].includes(entry.kind) ? arrival(rect.top, height) : depthProgress(rect.top, rect.height, height);
-      return [entry, p, quiet];
-    });
+    const poses = [...near].map(entry => poseFor(entry, rectangles.get(entry.wrapper), view));
     if (progress) progress.style.transform = `scaleX(${travel > 0 ? clamp(window.scrollY / travel) : 0})`;
     if (disabled) entries.forEach(entry => apply(entry, 1, width, true));
-    else poses.forEach(([entry, value, quiet]) => apply(entry, value, width, quiet));
+    else poses.forEach(pose => apply(...pose));
   };
   const refresh = () => {
     if (paused()) return;
@@ -89,12 +118,13 @@
     byWrapper.get(entry.wrapper).push(entry);
   });
   const observer = new IntersectionObserver(changes => {
+    const view = frameGeometry();
     changes.forEach(({target, isIntersecting, boundingClientRect}) => {
       byWrapper.get(target).forEach(entry => {
         if (isIntersecting) near.add(entry);
         else {
           near.delete(entry);
-          if (!paused()) apply(entry, boundingClientRect.top < 0 ? 1 : 0, window.innerWidth, neutral());
+          if (!paused()) apply(...poseFor(entry, boundingClientRect, view));
         }
       });
     });
