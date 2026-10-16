@@ -85,8 +85,9 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 
 /* Cuaderno1013: a paper scene behind Alex; the image/eye reference box stays untouched. */
 .hero-personal .portrait-scene{position:relative;isolation:isolate;width:100%;aspect-ratio:1}
-.hero-personal .portrait-scene::before{content:'';position:absolute;z-index:-1;inset:13% 8% 10%;border:1px solid #e6e1d5;border-radius:18px;background:#f1eee4;transform:rotate(-4deg);pointer-events:none}
-.hero-personal .portrait-scene>.portrait-arrival{position:relative;z-index:1}
+.hero-personal .portrait-scene>.portrait-paper{position:absolute;z-index:-1;inset:13% 8% 10%;border:1px solid #e6e1d5;border-radius:18px;background:#f1eee4;transform:rotate(-4deg);pointer-events:none}
+.hero-personal .portrait-depth{position:relative;z-index:1;width:100%}
+.hero-personal .portrait-depth>.portrait-arrival{position:relative}
 .hero-personal .portrait-code{position:absolute;z-index:2;right:1%;bottom:10%;width:min(20%,100px);height:auto;color:#17191c;overflow:visible;pointer-events:none}
 .hero-personal .portrait-doodle{position:absolute;z-index:2;left:6%;top:12%;width:min(10%,48px);height:auto;color:#2449f5;pointer-events:none}
 .hero-personal .name-composition{position:relative;width:max-content;max-width:100%}
@@ -94,7 +95,7 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 @media(max-width:650px){
  .hero-personal .portrait-code{width:22%;max-width:64px;right:0;bottom:9%}
  .hero-personal .portrait-doodle{width:12%;max-width:36px;left:5%;top:10%}
- .hero-personal .portrait-scene::before{border-radius:12px}
+ .hero-personal .portrait-scene>.portrait-paper{border-radius:12px}
  .hero-personal .name-underline{height:13px;bottom:-8px}
 }
 @media(max-width:380px){.hero-personal .portrait-doodle{display:none}}
@@ -147,7 +148,7 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .hero-personal .personal-description{animation-delay:calc(var(--entry-handoff,1800ms) + 40ms)}
  html[data-entry="running"] .hero-personal .personal-actions{animation-delay:calc(var(--entry-handoff,1800ms) + 60ms);animation-duration:240ms}
  html[data-entry="running"] .hero-personal .personal-next{animation-delay:calc(var(--entry-handoff,1800ms) + 70ms);animation-duration:230ms}
- html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 250ms var(--ease-out) var(--entry-handoff,1800ms) backwards}
+ html[data-entry="running"] .hero-personal .portrait-scene>.portrait-paper{animation:personalPaperEntry 250ms var(--ease-out) var(--entry-handoff,1800ms) backwards}
  html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 230ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 60ms) backwards}
  html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 230ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 70ms) backwards}
  html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 260ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 40ms) backwards}
