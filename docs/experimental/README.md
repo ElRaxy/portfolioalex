@@ -81,3 +81,9 @@ La introducción conserva 2700 ms: anticipación desde reposo y relevo simultán
 El relevo discreto usa2350ms sin delay, conservando el corte2350 y evitando el intervalo de1ms+2349ms que en la captura real quedaba en el estado inicial aun estando terminado. El parpadeo200ms conserva sus offsets reales con curva por intervalo; el cierre resulta perceptible sin cambiar los descansos, la silla ni la composición.
 
 Verificación técnica:18tests rig +23entrada +1home,147tests Jest, lint y build PASS. Entrada real con caché fría390 y matriz12tamaños320–1440, incluido paisaje, comprobadas en CFT headed iMac con viewports emulados. Navegación y fallbacks se registran por tandas en projects/portfolioalex/progress/character-flow-2026-10-16/VERIFICACION.md del workspace. Los resultados de source/fixtures y la emulación no acreditan hardware móvil ni aceptación estética.
+
+## Composición personal — 16 de octubre
+
+`personalidad-1016-01`: firma grande en dos líneas en escritorio/tablet y una en móvil, capacidades en filas numeradas, Strev destacado y cierre sobre papel azul. Conserva el personaje, el reloj de entrada y el parallax existentes. La firma mantiene fuente, peso y altura de línea del boceto para el relevo. Se retiran tarjetas y marcos redundantes; los proyectos conservan details nativos y capturas completas. Las etiquetas decorativas del botón de expansión se ocultan para evitar invadir el texto en tablet.
+
+Validación técnica: 51 pruebas Node de entrada, rig, recorrido y publisher; build y prerender. La evidencia visual y de navegación de esta iteración se conserva en el workspace `projects/portfolioalex/progress/personalidad-2026-10-16/`; sus estados distinguen foco real, geometría y emulación de dispositivos físicos. No equivale a aceptación estética.

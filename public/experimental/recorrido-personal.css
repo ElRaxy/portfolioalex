@@ -9,20 +9,20 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
 .personal-world :is(.presence-title,.presence-first,.presence-system,#work-title,#contact-title,#contact-title>span,.project-title,.summary-preview){transform:none!important;clip-path:none!important;opacity:1!important}
 .personal-world :is(.about-marker,.section-kicker,.contact-marker){font-size:12px;font-weight:450;letter-spacing:.025em;color:#686f76;text-transform:none}
 .personal-world :is(.about-heading-row,.work-heading,.contact-intro){position:relative}
-.personal-world .about-sheet{display:block;padding-top:76px;padding-bottom:76px;background:var(--paper);border-top:1px solid var(--line)}
+.personal-world .about-sheet{display:block;padding-top:88px;padding-bottom:96px;background:var(--paper);border-top:1px solid var(--line)}
 .personal-world .about-sheet .about-heading-row{align-items:center;min-height:68px;gap:24px;margin:0 0 24px}
 .personal-world .about-heading-row>.world-drawing,.personal-world .work-heading>.world-drawing,.personal-world .contact-intro>.world-drawing{display:block;flex:none;width:112px;height:80px;color:var(--ink);overflow:visible;pointer-events:none}
-.personal-world .about-sheet .about-story.about-personal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px 64px;margin:0}
+.personal-world .about-sheet .about-story.about-personal{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:54px 72px;margin:0}
 .personal-world .about-sheet .presence-frame{grid-column:1;grid-row:1;margin:0;align-self:start}
-.personal-world .about-sheet .about-personal .presence-title{font:500 clamp(32px,3.2vw,46px)/1.14 Outfit,sans-serif;letter-spacing:-.035em;max-width:18ch;padding:0;margin:0;text-wrap:pretty}
+.personal-world .about-sheet .about-personal .presence-title{font:500 clamp(38px,4.2vw,60px)/1.08 Outfit,sans-serif;letter-spacing:-.035em;max-width:18ch;padding:0;margin:0;text-wrap:pretty}
 .personal-world .about-sheet .presence-system{font:inherit;color:var(--blue);padding:0;margin:0;white-space:normal;width:auto}
-.personal-world .about-sheet .about-relato{grid-column:2;grid-row:1;font-size:18px;line-height:1.65;letter-spacing:0;max-width:46ch;margin:0;align-self:center;color:#60676e}
+.personal-world .about-sheet .about-relato{grid-column:2;grid-row:1;font-size:18px;line-height:1.7;letter-spacing:0;max-width:46ch;margin:0;align-self:center;color:#60676e}
 .personal-world .about-sheet .about-margin{grid-column:1/-1;grid-row:2;margin:0;padding:0}
-.personal-world .about-sheet .hero-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;border:0;margin:0;padding:0}
-.personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{display:block;padding:24px;border:1px solid #e2e7f3;border-radius:18px;background:#f0f3fc;margin:0;min-width:0}
-.personal-world .about-sheet .hero-note dt{font-size:19px;font-weight:500;margin:0 0 10px;line-height:1.3}
-.personal-world .about-sheet .hero-note dd{display:flex;flex-direction:column;align-items:start;gap:10px;font-size:16px;line-height:1.5;margin:0;max-width:none;color:#60676e}
-.personal-world .about-sheet .capability-link{font-size:14px;margin-top:2px;gap:16px;min-height:44px}
+.personal-world .about-sheet .hero-notes{display:block;counter-reset:capability;border-top:1px solid #b9bfbe;margin:0;padding:0}
+.personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:32px;counter-increment:capability;padding:30px 0 30px 58px;border:0;border-bottom:1px solid #d8dcd7;border-radius:0;background:transparent;margin:0;min-width:0}
+.personal-world .about-sheet .hero-note dt{display:flex;align-items:center;gap:22px;font-size:clamp(25px,2.5vw,34px);font-weight:500;margin:0;line-height:1.2;letter-spacing:-.035em}
+.personal-world .about-sheet .hero-note dd{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;font-size:17px;line-height:1.5;margin:0;max-width:none;color:#60676e}
+.personal-world .about-sheet .capability-link{font-size:14px;margin-top:0;gap:16px;min-height:44px}
 .personal-world .about-sheet .about-milestones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;border:0;margin:30px 0 0;padding:0}
 .personal-world .about-sheet .about-milestones li{display:block;padding-left:14px;border-left:2px solid #d5ddf7;margin:0}
 .personal-world .about-milestones li::before{content:none}
@@ -31,28 +31,29 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
 .personal-world .about-example{margin-top:32px;border-color:var(--line)}
 .personal-world .about-example>summary{min-height:56px;font-size:15px}
 .personal-world .about-proof{width:100%;max-width:none;transform:none!important}
-.personal-world .work{padding-top:76px;padding-bottom:84px;background:#f0f3fa;border-top:1px solid #e2e7f0}
+.personal-world .work{padding-top:88px;padding-bottom:96px;background:#f0f3fa;border-top:1px solid #e2e7f0}
 .personal-world .work-heading{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:16px 32px;align-items:center;margin-bottom:34px}
 .personal-world .work-heading>div{grid-column:1;grid-row:1}
 .personal-world .work-heading>p{grid-column:1;grid-row:2;margin:0;max-width:46ch;font-size:18px;line-height:1.55;color:#60676e}
 .personal-world .section-kicker{margin-bottom:14px}
-.personal-world .work-heading #work-title{font:500 clamp(34px,3.6vw,50px)/1.12 Outfit,sans-serif;letter-spacing:-.035em;text-transform:capitalize}
+.personal-world .work-heading #work-title{font:500 clamp(42px,5.4vw,78px)/1.04 Outfit,sans-serif;letter-spacing:-.035em;text-transform:capitalize}
 .personal-world .work-heading>.world-drawing{grid-column:2;grid-row:1/3;}
 .personal-world .work-archive-layout,.personal-world .work-archive-layout.archive-ready{display:block}
-.personal-world .project-archive{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
-.personal-world #trabajo .project-archive>.project{grid-column:auto;margin:0;padding:0;border:1px solid #dce2ed;border-radius:18px;background:#fafaf7;min-width:0;overflow:clip;color:var(--ink)}
+.personal-world .project-archive{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px 40px;align-items:start}
+.personal-world #trabajo .project-archive>.project{grid-column:auto;margin:0;padding:0;border:0;border-top:1px solid #b6bfcd;border-radius:0;background:transparent;min-width:0;overflow:clip;color:var(--ink)}
 .personal-world #trabajo .project-archive>.project[open]{grid-column:1/-1;border-color:#9dafed}
-.personal-world #trabajo .project-archive>.project>.project-heading{display:grid;grid-template-columns:24px minmax(0,1fr) 36px;grid-template-rows:auto auto;gap:20px 12px;align-items:start;min-height:0;padding:24px;cursor:pointer;color:var(--ink)}
+.personal-world #trabajo .project-archive>.project>.project-heading{display:grid;grid-template-columns:24px minmax(0,1fr) 36px;grid-template-rows:auto auto;gap:24px 12px;align-items:start;min-height:0;padding:24px 0;cursor:pointer;color:var(--ink)}
 .personal-world #trabajo .project-archive .project .project-heading::before{display:none}
 .personal-world #trabajo .project-archive .project .project-heading .project-number{grid-column:1;grid-row:1;align-self:start;padding-top:5px;margin:0;font-size:12px;color:#747b83}
 .personal-world #trabajo .project-archive .project .project-heading .project-title{grid-column:2;grid-row:1;container-type:normal}
-.personal-world #trabajo .project-archive .project .project-heading h3{font:550 clamp(24px,2.4vw,32px)/1.15 Outfit,sans-serif;letter-spacing:-.025em;color:var(--ink);overflow-wrap:anywhere}
+.personal-world #trabajo .project-archive .project .project-heading h3{font:500 clamp(28px,2.6vw,38px)/1.1 Outfit,sans-serif;letter-spacing:-.025em;color:var(--ink);overflow-wrap:anywhere}
 .personal-world #trabajo .project-archive .project .project-heading h3 br{display:none}
 .personal-world #trabajo .project-archive .project .project-heading .project-type{display:block;font-size:15px;line-height:1.45;color:#626a74;margin-top:8px;max-width:34ch}
 .personal-world #trabajo .project-archive .project .project-heading .project-toggle{grid-column:3;grid-row:1;align-self:start;justify-self:end;margin-top:0;color:var(--blue)}
+.personal-world #trabajo .project-toggle>span{display:none}
 .personal-world #trabajo .toggle-icon{width:34px;height:34px;border-color:#d4ddfa;background:#edf1ff}
 .personal-world #trabajo .toggle-icon::before,.personal-world #trabajo .toggle-icon::after{left:10px}
-.personal-world #trabajo .project-archive .project .project-heading .summary-preview{display:block;position:relative;grid-column:1/-1;grid-row:2;width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:12px;overflow:visible;white-space:normal;border:1px solid #e2e7ef;border-radius:10px;background:#edf0f7;color:#596370;box-shadow:none;justify-self:stretch}
+.personal-world #trabajo .project-archive .project .project-heading .summary-preview{display:block;position:relative;grid-column:1/-1;grid-row:2;width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:0;overflow:visible;white-space:normal;border:0;border-radius:0;background:transparent;color:#596370;box-shadow:none;justify-self:stretch}
 .personal-world #trabajo .summary-preview .journey-media{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center;transform:none;box-shadow:none;border-radius:4px}
 .personal-world #trabajo .preview-label{display:block;font-size:12px;line-height:1.45;padding:12px 0 0;color:inherit;min-height:0}
 .personal-world #trabajo .project-body{display:block;max-width:760px;width:100%;padding:4px 30px 30px;margin:0 auto;background:transparent;color:var(--ink)}
@@ -82,15 +83,15 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
 .personal-world .social-editorial-eyebrow,.personal-world .social-editorial-note{font-size:12px;line-height:1.4}
 .personal-world .project-archive>.work-end{grid-column:1/-1;display:flex;justify-content:space-between;gap:24px;align-items:center;margin:8px 0 0;padding-top:24px;border-color:#d5ddeb;color:#56616f}
 .personal-world .work-end>.line-link{display:inline-flex;margin:0;min-height:44px;color:var(--blue)}
-.personal-world .contact{min-height:0;padding-top:80px;padding-bottom:32px;background:#fafaf7;border-top:1px solid #dde4f0}
+.personal-world .contact{min-height:0;padding-top:88px;padding-bottom:32px;background:#e7edff;border-top:1px solid #ccd7f7}
 .personal-world .contact-marker{margin-bottom:26px}
 .personal-world .contact-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 64px;align-items:start;margin:0}
 .personal-world .contact-intro>.world-drawing{grid-column:1;grid-row:1;width:110px;height:80px;}
-.personal-world .contact #contact-title{grid-column:1;grid-row:2;align-self:start;font:500 clamp(34px,3.8vw,54px)/1.12 Outfit,sans-serif;letter-spacing:-.04em;width:100%;max-width:16ch}
+.personal-world .contact #contact-title{grid-column:1;grid-row:2;align-self:start;font:500 clamp(42px,5.6vw,80px)/1.04 Outfit,sans-serif;letter-spacing:-.04em;width:100%;max-width:16ch}
 .personal-world .contact #contact-title>span{display:block;margin:0;white-space:normal}
 .personal-world .contact-actions{grid-column:2;grid-row:1/4;margin:0;min-width:0}
 .personal-world .contact-options{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;width:100%;margin:0}
-.personal-world .contact-options a{border:1px solid #dfe5f0;border-radius:16px;background:#f0f3fc;padding:22px;min-height:112px;gap:20px;font-size:21px}
+.personal-world .contact-options a{border:0;border-top:1px solid #afbee7;border-radius:0;background:transparent;padding:24px 0;min-height:112px;gap:20px;font-size:23px}
 .personal-world .contact-options a::before,.personal-world .contact-options a::after{display:none}
 .personal-world .contact-option-copy strong{font-weight:500;color:var(--ink)}
 .personal-world .contact-option-copy>span{font-size:15px;line-height:1.5;color:#646e7c;margin-top:8px}
@@ -114,18 +115,13 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
 @media(max-width:999px){
  .personal-world .project-archive{grid-template-columns:minmax(0,1fr)}
  .personal-world .about-sheet .about-story.about-personal,.personal-world .contact-intro{column-gap:32px}
- .personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{padding:20px}
- .personal-world .contact-options a{font-size:19px;padding:20px}
+ .personal-world .contact-options a{font-size:21px;padding:24px 0}
 }
 @media(max-width:759px){
  .personal-world .about-sheet .about-story.about-personal{grid-template-columns:minmax(0,1fr);gap:24px}
  .personal-world .about-sheet .presence-frame,.personal-world .about-sheet .about-relato,.personal-world .about-sheet .about-margin{grid-column:1;grid-row:auto}
  .personal-world .about-sheet .presence-title{max-width:24ch!important}
  .personal-world .about-sheet .about-relato{max-width:52ch;font-size:17px}
- .personal-world .about-sheet .hero-notes{gap:12px}
- .personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{padding:18px 16px}
- .personal-world .about-sheet .hero-note dt{font-size:17px}
- .personal-world .about-sheet .hero-note dd{font-size:15px}
  .personal-world .contact-intro{grid-template-columns:minmax(0,1fr);gap:22px}
  .personal-world .contact-intro>.world-drawing,.personal-world .contact #contact-title,.personal-world .contact-actions{grid-column:1;grid-row:auto}
  .personal-world .contact-actions{margin-top:6px}
@@ -139,10 +135,6 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
  .personal-world .about-sheet .about-heading-row{min-height:56px;margin-bottom:20px}
  .personal-world .about-heading-row>.world-drawing,.personal-world .work-heading>.world-drawing{width:86px;height:62px}
  .personal-world .about-sheet .about-personal .presence-title{font-size:clamp(30px,7.4vw,38px);line-height:1.16}
- .personal-world .about-sheet .hero-notes{grid-template-columns:minmax(0,1fr);gap:12px}
- .personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{padding:18px 20px}
- .personal-world .about-sheet .hero-note dd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
- .personal-world .about-sheet .hero-note dt{margin-bottom:4px}
  .personal-world .about-sheet .capability-link{font-size:13px;gap:10px}
  .personal-world .about-sheet .about-milestones{gap:16px;margin-top:26px}
  .personal-world .about-sheet .about-milestones p{font-size:13px}
@@ -150,10 +142,10 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
  .personal-world .work-heading>p{grid-column:1/-1;font-size:16px}
  .personal-world .work-heading>.world-drawing{grid-row:1}
  .personal-world .work-heading #work-title{font-size:34px}
- .personal-world #trabajo .project-archive>.project>.project-heading{grid-template-columns:18px minmax(0,1fr) 34px;padding:18px;gap:18px 10px}
+ .personal-world #trabajo .project-archive>.project>.project-heading{grid-template-columns:18px minmax(0,1fr) 34px;padding:20px 0;gap:18px 10px}
  .personal-world #trabajo .project-archive .project .project-heading h3{font-size:26px}
  .personal-world #trabajo .project-archive .project .project-heading .project-type{font-size:14px}
- .personal-world #trabajo .project-archive .project .project-heading .summary-preview{padding:8px}
+ .personal-world #trabajo .project-archive .project .project-heading .summary-preview{padding:0}
  .personal-world #trabajo .preview-label{font-size:11px;padding-top:10px}
  .personal-world #trabajo .project-body{padding:4px 20px 24px}
  .personal-world .project-copy h4{font-size:23px}
@@ -162,7 +154,7 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
  .personal-world .project-archive>.work-end{display:block}
  .personal-world .work-end>.line-link{margin-top:12px}
  .personal-world .contact #contact-title{font-size:38px;max-width:15ch}
- .personal-world .contact-options a{font-size:19px;min-height:112px;padding:20px}
+ .personal-world .contact-options a{font-size:20px;min-height:112px;padding:22px 0}
  .personal-world .contact-option-copy>span{font-size:14px}
  .personal-world .social-links{gap:12px 24px;margin-top:36px}
  .personal-world .contact footer{flex-wrap:wrap;font-size:11px}
@@ -176,14 +168,14 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
  .personal-world .work-heading{column-gap:12px;grid-template-columns:minmax(0,1fr) 70px}
  .personal-world .work-heading>.world-drawing{width:70px}
  .personal-world .work-heading #work-title{font-size:30px}
- .personal-world #trabajo .project-archive>.project>.project-heading{padding:16px;column-gap:8px}
+ .personal-world #trabajo .project-archive>.project>.project-heading{padding:18px 0;column-gap:8px}
  .personal-world #trabajo .project-archive .project .project-heading h3{font-size:23px}
  .personal-world .contact #contact-title{font-size:34px}
- .personal-world .contact-options a{padding:18px;font-size:18px}
+ .personal-world .contact-options a{padding:20px 0;font-size:19px}
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
  html:not(.keyboard) .personal-world #trabajo .project,html:not(.keyboard) .personal-world .contact-options a{transition:border-color 180ms var(--ease-out),box-shadow 180ms var(--ease-out)}
- html:not(.keyboard) .personal-world #trabajo .project:hover,html:not(.keyboard) .personal-world .contact-options a:hover{border-color:#b1bfee;box-shadow:0 5px 16px rgb(45 67 119 / .045)}
+ html:not(.keyboard) .personal-world #trabajo .project:hover,html:not(.keyboard) .personal-world .contact-options a:hover{border-color:#b1bfee;box-shadow:none}
  html:not(.keyboard) .personal-world #trabajo .project-archive .project .project-heading:hover h3{color:var(--blue)}
 }
 html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform:none;transition:none}
@@ -197,14 +189,9 @@ html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform
 @media(hover:hover) and (pointer:fine){html:not(.keyboard) .personal-world #trabajo .project-heading:hover .project-accent{color:var(--blue)}}
 
 /* Three specific notebook sketches, beside factual capabilities. */
-.personal-world .about-sheet .hero-note{background:#f5f2e9;border-color:#e7e3d8}
-.personal-world .about-sheet .hero-note:nth-child(2){background:#f0f3fc;border-color:#e2e7f3}
-.personal-world .about-sheet .hero-note:last-child{background:#f5f2e9;border-color:#e7e3d8}
-.personal-world .about-sheet .hero-note dt{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:12px}
 .personal-world .note-drawing{display:block;flex:none;width:72px;height:54px;color:#17191c;overflow:visible;pointer-events:none}
 .personal-world .drawing-talk{background:#f4f0e6;border-radius:18px}
 @media(max-width:650px){
- .personal-world .about-sheet .hero-note dt{flex-direction:row;align-items:center;gap:14px;margin-bottom:8px;min-height:50px}
  .personal-world .note-drawing{width:64px;height:50px}
 }
 
@@ -214,7 +201,7 @@ html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform
 .personal-world .world-drawing .note-corner{transform-origin:100% 0}
 
 /* Stable frames retain their full size; only the actual media is revealed. */
-.personal-world .journey-window{display:block;overflow:hidden;border-radius:4px}
+.personal-world .journey-window{display:block;overflow:hidden;border-radius:8px;background:#e4e9f3;padding-inline:16px}
 .personal-world .journey-media{display:block;transform-origin:50% 50%;transition:none!important}
 .personal-world :is(.about-marker,.section-kicker,.contact-marker){position:relative}
 .personal-world .journey-accent{display:block;width:96px;height:2px;margin-top:12px;background:var(--blue);transform-origin:left center;pointer-events:none}
@@ -235,3 +222,33 @@ html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform
 @media(max-width:650px){.personal-world .section-depth-paper{width:88px;height:62px}.personal-world .contact-depth-paper{width:90px;height:64px}}
 @media(prefers-reduced-motion:reduce){.personal-world [data-parallax-layer]{transform:none!important}.personal-world .portrait-paper{transform:rotate(-4deg)!important}.personal-world .section-depth-paper{transform:rotate(-6deg)!important}}
 @media print{.personal-world [data-parallax-layer]{transform:none!important}}
+
+/* An indexed notebook: one capability per line, with its original drawing and working link. */
+.personal-world .hero-note::before{content:counter(capability,decimal-leading-zero);position:absolute;left:0;top:34px;font-size:12px;font-variant-numeric:tabular-nums;color:#767e80}
+.personal-world #trabajo .project-archive>#strev{grid-column:1/-1;border-top:2px solid var(--blue)}
+.personal-world #trabajo #strev>.project-heading h3{font-size:clamp(36px,4.3vw,62px);letter-spacing:-.045em}
+.personal-world #trabajo #strev .journey-window{background:#e0e7fa}
+.personal-world #trabajo #sereno .journey-window{background:#e7e7df}
+.personal-world .contact #contact-title{color:#2449f5}
+.personal-world .contact .contact-marker{color:#4f6084}
+.personal-world .contact .contact-options{gap:0;border-bottom:1px solid #afbee7}
+.personal-world .contact .contact-option-copy strong{font-weight:500}
+@media(min-width:760px){
+ .personal-world #trabajo #strev>.project-heading{grid-template-columns:24px minmax(0,.65fr) 36px minmax(0,1.35fr);gap:22px;align-items:center;padding:32px 0}
+ .personal-world #trabajo #strev>.project-heading .summary-preview{grid-column:4;grid-row:1/3}
+ .personal-world #trabajo #strev>.project-heading .project-toggle{align-self:center}
+}
+@media(max-width:759px){
+ .personal-world .about-sheet .hero-note,.personal-world .about-sheet .hero-note:last-child{grid-template-columns:minmax(0,1fr);gap:10px;padding:26px 0 24px 40px}
+ .personal-world .about-sheet .hero-note dt{font-size:28px;gap:18px}
+ .personal-world .about-sheet .hero-note dd{font-size:16px;padding-left:90px}
+ .personal-world .hero-note::before{top:36px}
+ .personal-world .about-sheet .about-personal .presence-title{font-size:clamp(34px,6vw,46px)}
+ .personal-world #trabajo .project-archive{row-gap:32px}
+}
+@media(max-width:480px){
+ .personal-world .about-sheet .hero-note dd{padding-left:0;font-size:15px}
+ .personal-world .about-sheet .hero-note dt{font-size:clamp(22px,6.7vw,26px);gap:16px}
+ .personal-world .journey-window{padding-inline:10px}
+ .personal-world .contact #contact-title{font-size:clamp(40px,10.6vw,52px)}
+}
