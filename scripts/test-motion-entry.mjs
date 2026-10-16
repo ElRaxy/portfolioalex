@@ -8,10 +8,10 @@ const bootstrap = source.match(/<script>([\s\S]*?)<\/script>/)[1];
 // A unit event host exercises policy and deadlines. It does not claim rendered-browser QA.
 function harness({ hash = '', restored = false, hidden = false, reduced = false, scroll = 0, rectangles = null, fontReady = null, nodes = {}, clock = null } = {}) {
   const windowEvents = new Map(), documentEvents = new Map(), mediaEvents = new Map();
-  const attributes = new Map(), timers = new Map();
+  const attributes = new Map(), timers = new Map(), tokens = new Map();
   const on = table => (name, callback) => table.set(name, [...(table.get(name) || []), callback]);
   const emit = (table, name, event = {}) => (table.get(name) || []).forEach(callback => callback(event));
-  const root = { setAttribute: (key, value) => attributes.set(key, value), removeAttribute: key => attributes.delete(key) };
+  const root = { style:{setProperty:(name,value)=>tokens.set(name,value)}, setAttribute: (key, value) => attributes.set(key, value), removeAttribute: key => attributes.delete(key) };
   const media = { matches: reduced, addEventListener: on(mediaEvents) };
   const writes = new Map(), classes = new Map();
   let wallTime = 0, animationTime = 0;
@@ -38,7 +38,7 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
     setTimeout: (callback, delay) => { const id = timers.size + 1; timers.set(id, { callback, delay }); return id; },
     clearTimeout: id => timers.delete(id) };
   vm.runInNewContext(bootstrap, context);
-  return { window, document, context, media, attributes, timers, writes, classes,
+  return { window, document, context, media, attributes, timers, tokens, writes, classes,
     setWallTime: value => { wallTime = value; },
     setAnimationTime: value => { animationTime = value; },
     event: (name, event) => emit(windowEvents, name, event),
@@ -146,7 +146,7 @@ test('The assembled words and character land on their real responsive destinatio
 });
 
 
-test('Cold stylesheet load uses the CSS playhead even when DOMContentLoaded arrives after 1500 ms', async () => {
+test('Cold stylesheet load uses the CSS playhead even when DOMContentLoaded arrives after the original 1500 ms', async () => {
   const rectangles = {
     '.story-word--alex': { left: 30, top: 100, width: 300 },
     '.hero-personal .name-word.first': { left: 24, top: 90, width: 100 }
@@ -171,7 +171,7 @@ test('Fonts resolving after the transfer starts cannot retarget the moving sketc
   host.documentEvent('DOMContentLoaded');
   const original = host.writes.get('.story-word--alex--story-land');
   rectangles['.hero-personal .name-word.first'].width = 140;
-  host.setAnimationTime(1700);
+  host.setAnimationTime(1100);
   resolveFonts();
   await Promise.resolve();
   assert.equal(host.writes.get('.story-word--alex--story-land'), original);
@@ -180,7 +180,7 @@ test('Fonts resolving after the transfer starts cannot retarget the moving sketc
 
 test('An initial measurement arriving after transfer releases the hero instead of using an unmeasured flight', () => {
   const host = harness({ rectangles: {} });
-  host.setAnimationTime(1700);
+  host.setAnimationTime(1100);
   host.documentEvent('DOMContentLoaded');
   assert.equal(host.window.portfolioEntry.active, false);
   assert.equal(host.writes.size, 0);
@@ -285,7 +285,7 @@ test('Font readiness may refine landing boxes but never retarget a cursor or bug
   const landing = host.writes.get('.story-word--alex--story-land');
   host.rectangles['.story-blueprint'].width += 50;
   host.rectangles['.hero-personal .name-word.first'].width += 10;
-  host.setAnimationTime(1200);
+  host.setAnimationTime(900);
   resolveFonts();
   await Promise.resolve();
   assert.equal(host.writes.get('.story-cursoroffset-path'), cursorPath);
@@ -326,35 +326,44 @@ test('Completion status distinguishes the true last frame from an interrupted or
   assert.equal(recovered.window.portfolioEntry.completed,false);
 });
 
-test('The cursor starts at the laptop before constructing the name and returns to the same local anchor',()=>{
+test('The blue impulse starts at the laptop and resolves on the signature instead of touring back to the character',()=>{
   const host=routedScene();host.documentEvent('DOMContentLoaded');
   const points=pathPoints(host.writes.get('.story-cursoroffset-path'));
-  assert.deepEqual(points[0],points.at(-1));
   const bounds=host.rectangles['.story-board'],portrait=host.rectangles['.story-character'];
   assert.ok(Math.abs(points[0].x-(portrait.left-bounds.left+portrait.width*.44))<.001);
   assert.ok(Math.abs(points[0].y-(portrait.top-bounds.top+portrait.height*.64))<.001);
+  assert.notDeepEqual(points[0],points.at(-1),'The gesture finishes at the signature, rather than adding an unrelated return lap');
+  assert.ok(points.length>=16,'The press, two name rows and underline remain one curved path');
 });
 
 
-test('The landed sketch switches to the real hero at one exact frame without a fractional-alpha crossfade',async()=>{
+test('The shared readonly timeline controls the flight, exact discrete handoff and wrapper completion',async()=>{
+  const host=harness(),timeline=host.window.portfolioEntry.timeline;
+  assert.equal(JSON.stringify(timeline),JSON.stringify({duration:2100,transferStart:1100,handoff:1800}));
+  assert.equal(Object.isFrozen(timeline),true);
+  assert.equal(Object.getOwnPropertyDescriptor(host.window.portfolioEntry,'timeline').set,undefined);
+  assert.deepEqual(Object.fromEntries(host.tokens),{'--entry-duration':'2100ms','--entry-transfer-start':'1100ms','--entry-transfer-duration':'700ms','--entry-handoff':'1800ms'});
   const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
-  const flight=css.match(/\.story-word\{animation:storyLand (\d+)ms[^}]*? (\d+)ms both,storyMatchOut (\d+)ms steps\(1,end\) both/);
-  assert.ok(flight,'The word flight has one discrete opacity release');
-  const [,duration,delay,handoffDuration]=flight.map(Number);
-  assert.equal(duration+delay,2350);
-  assert.equal(handoffDuration,2350,'The source disappears only once its flight has landed, without a tiny delayed effect');
-  for(const selector of ['name-lettering','portrait-arrival']) {
-    assert.ok(css.includes(`.${selector}{animation:storyHeroIn 2350ms steps(1,end) both}`),'The real hero switches on at the same boundary');
-  }
-  const releases=[...css.matchAll(/story(?:MatchOut|HeroIn) (\d+)ms steps\(1,end\)(?: (\d+)ms)? both/g)];
-  assert.equal(releases.length,4,'Both source rules and both hero rules share the same discrete effect');
-  for(const release of releases) {
-    assert.equal(Number(release[1]),2350);
-    assert.equal(Number(release[2]||0),0,'Do not reintroduce the 1 ms effect plus 2349 ms delay precision trap');
-  }
+  for(const motion of ['storyLand','storyCharacterLand']) assert.ok(css.includes(`${motion} var(--entry-transfer-duration,700ms) var(--story-ease-drawer) var(--entry-transfer-start,1100ms) both`));
+  const releases=[...css.matchAll(/story(?:MatchOut|HeroIn) var\(--entry-handoff,1800ms\) steps\(1,end\) both/g)];
+  assert.equal(releases.length,4,'Both source rules and hero rules release at the same full-duration discrete boundary');
+  assert.doesNotMatch(css,/story(?:MatchOut|HeroIn) 1ms/,'Do not reintroduce the tiny delayed-effect precision trap');
+  assert.ok(css.includes('storyExit var(--entry-duration,2100ms) linear both'));
   assert.match(css,/@keyframes storyMatchOut\{from\{opacity:1\}to\{opacity:0\}\}/);
   assert.match(css,/@keyframes storyHeroIn\{from\{opacity:0\}to\{opacity:1\}\}/);
-  assert.match(css,/@keyframes storyExit\{from\{opacity:1\}to\{opacity:1\}\}/,'The wrapper must not multiply the opacity of the switch');
+  assert.match(css,/@keyframes storyExit\{from\{opacity:1\}to\{opacity:1\}\}/,'The wrapper must not multiply switch opacity');
+});
+
+test('The signature is genuinely masked kinetic lettering and reaches rest before the shared transfer',async()=>{
+  const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
+  assert.equal((source.match(/class="story-cell"/g)||[]).length,8,'Every name letter has a stationary clipping cell');
+  assert.match(css,/\.story-cell\{[^}]*overflow:hidden/);
+  assert.match(css,/@keyframes storyLetterBuild\{from\{transform:translate\(-\.18em,105%\) rotate\(-5deg\)/);
+  assert.match(css,/@keyframes storyLetterLower\{from\{transform:translate\(\.22em,-105%\) rotate\(5deg\)/);
+  assert.ok(515+440 < hostTimeline().transferStart,'The last letter finishes before FLIP measures its settled appearance');
+  assert.ok(180+850 < hostTimeline().transferStart,'The counter-rotated rows settle before transfer');
+  assert.ok(source.includes('<circle cx="16" cy="16" r="12" fill="#2449f5"/>'),'The impulse is a clear blue drawing point');
+  function hostTimeline(){return harness().window.portfolioEntry.timeline;}
 });
 
 

@@ -337,3 +337,22 @@ test('Blink keeps its real 200 ms beat clock and the acknowledgement delay inste
     }
   }
 });
+
+
+test('The intro subject shares the central clock and recovers neutral before its exact hero handoff',async()=>{
+  const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
+  const bootstrap=await readFile(new URL('../public/experimental/index.html',import.meta.url),'utf8');
+  const clock=bootstrap.match(/Object\.freeze\(\{duration:(\d+),transferStart:(\d+),handoff:(\d+)\}\)/);
+  assert.ok(clock,'The acting phase must reference the same declared entry clock');
+  const duration=Number(clock[1]),handoff=Number(clock[3]);
+  for(const name of ['Head','Type','Gaze','Blink']) {
+    assert.ok(css.includes(`characterStory${name} var(--entry-duration,2100ms) linear var(--character-story-delay,0ms) both`),'Late rig mounting preserves phase with a negative delay and a linear beat clock');
+    const frames=css.match(new RegExp(`@keyframes characterStory${name}\\{([^\\n]+)`))?.[1];
+    assert.ok(frames);
+    assert.ok(frames.includes('0%'),'Every action starts from an explicit neutral pose');
+    assert.ok(frames.includes('animation-timing-function:var('),'Approved easing belongs to beat intervals');
+    const rest=frames.match(/(\d+)%,100%\{transform:(rotate\(0deg\)|translate\(0,0\)|scaleY\(1\))/);
+    assert.ok(rest,'The last beat holds the identity pose through landing and handoff');
+    assert.ok(Number(rest[1])/100*duration < handoff,'The real hero must never replace a still-acting sketch');
+  }
+});

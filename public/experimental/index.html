@@ -8,6 +8,8 @@
 // Arm before render-blocking styles: late fonts never make visible content disappear.
 (() => {
   const root = document.documentElement;
+  const timeline = Object.freeze({duration:2100,transferStart:1100,handoff:1800});
+  Object.entries({'--entry-duration':timeline.duration,'--entry-transfer-start':timeline.transferStart,'--entry-transfer-duration':timeline.handoff-timeline.transferStart,'--entry-handoff':timeline.handoff}).forEach(([name,value]) => root.style.setProperty(name,`${value}ms`));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
   let active = !reduce.matches && !restored && !document.hidden && scrollY < 5 && (!location.hash || location.hash === '#inicio');
@@ -19,7 +21,7 @@
     root.removeAttribute('data-entry');
     window.dispatchEvent(new Event('portfolio:entryend'));
   };
-  window.portfolioEntry = { started: active, get active() { return active; }, get completed() { return completed; }, finish };
+  window.portfolioEntry = { get timeline() { return timeline; }, started: active, get active() { return active; }, get completed() { return completed; }, finish };
   if (!active) return;
   root.setAttribute('data-entry', 'running');
   // Read the landing geometry before motion; font readiness may refine it once.
@@ -83,7 +85,7 @@
         }
         return `path('${path}')`;
       };
-      cursor.style.setProperty('offset-path', pathThrough([laptop, onGuide(18, 40), onGuide(580, 40), onGuide(580, 280), escape, bend, laptop]));
+      cursor.style.setProperty('offset-path', pathThrough([laptop, onGuide(24, 65), onGuide(540, 65), onGuide(540, 250), onGuide(28, 337), escape]));
       bug.style.setProperty('offset-path', pathThrough([escape, bend, laptop]));
       board.classList.add('is-routed');
     }
@@ -97,7 +99,7 @@
       if (!active) return;
       // CSS starts after blocking styles: script age is not the film's playhead.
       const playback = document.querySelector('.intro-story')?.getAnimations().find(animation => animation.animationName === 'storyExit');
-      if ((playback?.currentTime ?? 0) >= 1500) {
+      if ((playback?.currentTime ?? 0) >= timeline.transferStart) {
         if (!fitted) finish();
         return;
       }
@@ -126,18 +128,18 @@
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=character-flow-1016-02"><link rel="stylesheet" href="sereno-demo.css?v=character-flow-1016-02"><link rel="stylesheet" href="portada-personal.css?v=character-flow-1016-02"><link rel="stylesheet" href="recorrido-personal.css?v=character-flow-1016-02"><script src="app.js?v=character-flow-1016-02" defer></script><script src="character-rig.js?v=character-flow-1016-02" defer></script><script src="portrait-motion.js?v=character-flow-1016-02" defer></script><script src="recorrido-personal.js?v=character-flow-1016-02" defer></script>
+<link rel="stylesheet" href="styles.css?v=signature-impulse-1016-01"><link rel="stylesheet" href="sereno-demo.css?v=signature-impulse-1016-01"><link rel="stylesheet" href="portada-personal.css?v=signature-impulse-1016-01"><link rel="stylesheet" href="recorrido-personal.css?v=signature-impulse-1016-01"><script src="app.js?v=signature-impulse-1016-01" defer></script><script src="character-rig.js?v=signature-impulse-1016-01" defer></script><script src="portrait-motion.js?v=signature-impulse-1016-01" defer></script><script src="recorrido-personal.js?v=signature-impulse-1016-01" defer></script>
 </head>
 <body class="personal-world">
 <div class="intro-story" aria-hidden="true">
  <div class="story-paper"></div>
  <div class="story-board">
-  <svg class="story-blueprint" viewBox="0 0 600 360" fill="none" focusable="false"><path class="story-frame" pathLength="1" d="M18 40V15H45M550 15H580V40M580 280V310H550M45 310H18V280" stroke="currentColor" stroke-width="2"/><path class="story-rule" pathLength="1" d="M20 337C160 316 326 318 510 328M420 347L522 338" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
-  <div class="story-word story-word--alex"><span class="story-outline">Alex</span><span class="story-letters"><span class="story-letter">A</span><span class="story-letter">l</span><span class="story-letter">e</span><span class="story-letter">x</span></span></div>
-  <div class="story-word story-word--mico"><span class="story-outline">Micó<span>.</span></span><span class="story-letters"><span class="story-letter">M</span><span class="story-letter">i</span><span class="story-letter">c</span><span class="story-letter">ó</span><span class="story-dot">.</span></span></div>
+  <svg class="story-blueprint" viewBox="0 0 600 360" fill="none" focusable="false"><path class="story-rule" pathLength="1" d="M20 337C160 316 326 318 510 328M420 347L522 338" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+  <div class="story-word story-word--alex"><span class="story-outline">Alex</span><span class="story-letters"><span class="story-cell"><span class="story-letter">A</span></span><span class="story-cell"><span class="story-letter">l</span></span><span class="story-cell"><span class="story-letter">e</span></span><span class="story-cell"><span class="story-letter">x</span></span></span></div>
+  <div class="story-word story-word--mico"><span class="story-outline">Micó<span>.</span></span><span class="story-letters"><span class="story-cell"><span class="story-letter">M</span></span><span class="story-cell"><span class="story-letter">i</span></span><span class="story-cell"><span class="story-letter">c</span></span><span class="story-cell"><span class="story-letter">ó</span></span><span class="story-dot">.</span></span></div>
   <div class="story-character"><img src="assets/alex-illustration-eye-base-v4.png" width="1254" height="1254" alt="" decoding="async"><svg class="story-face" viewBox="0 0 1254 1254" focusable="false"><g class="story-gaze"><g transform="translate(582 336) rotate(-12)"><ellipse rx="15" ry="24"/></g><g transform="translate(698 306.5) rotate(-12)"><ellipse rx="16" ry="25"/></g></g></svg></div>
   <svg class="story-bug" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" focusable="false"><g class="story-bug-body"><path fill="#f4efdf" d="M22 26q0-12 10-12t10 12v12q-1 12-10 12T22 38Z"/><path d="M26 15q-2-8 6-8t6 8M32 22v22M22 27l-8-5m8 13-10 1m12 8-8 8m26-25 8-5m-8 13 10 1m-12 8 8 8M28 8l-3-5m11 5 3-5"/></g></svg>
-  <svg class="story-cursor" viewBox="0 0 54 64" fill="none" focusable="false"><path fill="#2449f5" stroke="#fafaf7" stroke-width="2" stroke-linejoin="round" d="m6 4 4 44 11-13 16 23 9-6-16-22 17-3Z"/></svg>
+  <svg class="story-cursor" viewBox="0 0 54 64" fill="none" focusable="false"><circle cx="16" cy="16" r="12" fill="#2449f5"/><circle cx="16" cy="16" r="15" stroke="#2449f5" stroke-width="1.5" opacity=".25"/></svg>
  </div>
 </div>
 <a class="skip" href="#contenido">Saltar al contenido</a>

@@ -99,13 +99,14 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 }
 @media(max-width:380px){.hero-personal .portrait-doodle{display:none}}
 
-/* From a sketch to the live page: build, a bug interrupts, then everything finds its place. */
+/* Signature impulse: press, a bold masked stroke, then the drawing finds its place. */
 .intro-story{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;isolation:isolate;color:#17191c;font-family:Outfit,sans-serif;--story-ease-drawer:cubic-bezier(.32,.72,0,1)}
 .story-paper{position:absolute;inset:0;background:#fafaf7}
-.story-board{position:absolute;left:8vw;top:13svh;width:84vw;height:80svh;font-size:clamp(80px,min(calc(29vw - 12px),calc(8svh + 12vw)),260px);--story-letter-drift:clamp(28px,4vw,40px)}
+.story-board{position:absolute;left:8vw;top:13svh;width:84vw;height:80svh;font-size:clamp(80px,min(calc(29vw - 12px),calc(8svh + 12vw)),260px);--story-letter-drift:.4em}
 .story-word{position:absolute;left:0;top:0;width:max-content;font-size:1em;font-weight:600;line-height:1.04;letter-spacing:-.045em;white-space:nowrap;transform-origin:0 0}
 .story-word--mico{left:.45em;top:1.05em}
 .story-letters{position:relative;display:block}
+.story-cell{display:inline-block;overflow:hidden;vertical-align:top;padding-block:.08em;margin-block:-.08em}
 .story-letter,.story-dot{display:inline-block;transform-origin:50% 85%}
 .story-outline{position:absolute;left:.055em;top:-.025em;color:transparent;-webkit-text-stroke:1px #2449f5;opacity:.4}
 .story-outline>span,.story-dot{color:#2449f5}
@@ -128,57 +129,59 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  .story-cursor{width:36px;height:43px}
 }
 @media(prefers-reduced-motion:no-preference){
- html[data-entry="running"] .intro-story{display:block;animation:storyExit 2700ms linear both}
+ html[data-entry="running"] .intro-story{display:block;animation:storyExit var(--entry-duration,2100ms) linear both}
  html[data-entry="running"] .personal-world :is(a,button,input,summary){pointer-events:none}
- html[data-entry="running"] .story-paper{animation:storyPaperExit 2700ms var(--ease-in-out) both}
- html[data-entry="running"] .story-word{animation:storyLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 2350ms steps(1,end) both}
- html[data-entry="running"] .story-character{animation:storyCharacterLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 2350ms steps(1,end) both}
- html[data-entry="running"] .story-letter{animation:storyLetterBuild 500ms var(--ease-out) 360ms both}
- html[data-entry="running"] .story-letter:nth-child(2){animation-delay:430ms}
- html[data-entry="running"] .story-letter:nth-child(3){animation-delay:500ms}
- html[data-entry="running"] .story-letter:nth-child(4){animation-delay:570ms}
- html[data-entry="running"] .story-word--mico .story-letter{animation-name:storyLetterLower;animation-delay:520ms}
- html[data-entry="running"] .story-word--mico .story-letter:nth-child(2){animation-delay:590ms}
- html[data-entry="running"] .story-word--mico .story-letter:nth-child(3){animation-delay:660ms}
- html[data-entry="running"] .story-word--mico .story-letter:nth-child(4){animation-delay:730ms}
- html[data-entry="running"] .story-dot{animation:storyDotKick 2700ms var(--ease-out) both}
- html[data-entry="running"] .story-outline{animation:storyOutline 2700ms var(--ease-out) both}
- html[data-entry="running"] .story-frame{animation:storyFrameDraw 800ms var(--ease-out) 80ms backwards}
- html[data-entry="running"] .story-rule{animation:storyRuleDraw 600ms var(--ease-out) 700ms backwards}
- html[data-entry="running"] .story-blueprint{animation:storyBlueprintExit 2700ms var(--ease-out) both}
- html[data-entry="running"] .story-cursor{animation:storyRoute 1440ms linear 60ms both,storyCursorPresence 1550ms linear both}
- html[data-entry="running"] .story-bug{animation:storyRoute 560ms linear 940ms both,storyBugPresence 1570ms linear both}
- html[data-entry="running"] .story-bug-body{animation:storyBugKick 350ms var(--ease-out) 1100ms both}
- html[data-entry="running"] .story-gaze{animation:storyCharacterLook 2700ms var(--ease-out) both}
- html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn 2350ms steps(1,end) both}
- html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn 2350ms steps(1,end) both}
- html[data-entry="running"] .hero-personal :is(.personal-role,.personal-statement,.personal-description,.personal-actions,.personal-next){animation:personalCopyEntry 260ms var(--ease-out) 2350ms backwards}
- html[data-entry="running"] .hero-personal .personal-statement{animation-delay:2380ms}
- html[data-entry="running"] .hero-personal .personal-description{animation-delay:2410ms}
- html[data-entry="running"] .hero-personal .personal-actions{animation-delay:2440ms}
- html[data-entry="running"] .hero-personal .personal-next{animation-delay:2470ms;animation-duration:230ms}
- html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 250ms var(--ease-out) 2350ms backwards}
- html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 230ms var(--ease-out) 2440ms backwards}
- html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 230ms var(--ease-out) 2470ms backwards}
- html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 270ms var(--ease-out) 2410ms backwards}
+ html[data-entry="running"] .story-paper{animation:storyPaperExit var(--entry-duration,2100ms) linear both}
+ html[data-entry="running"] .story-word{animation:storyLand var(--entry-transfer-duration,700ms) var(--story-ease-drawer) var(--entry-transfer-start,1100ms) both,storyMatchOut var(--entry-handoff,1800ms) steps(1,end) both}
+ html[data-entry="running"] .story-character{animation:storyCharacterLand var(--entry-transfer-duration,700ms) var(--story-ease-drawer) var(--entry-transfer-start,1100ms) both,storyMatchOut var(--entry-handoff,1800ms) steps(1,end) both}
+ html[data-entry="running"] .story-letter{animation:storyLetterBuild 440ms var(--ease-out) 220ms both}
+ html[data-entry="running"] .story-cell:nth-child(2) .story-letter{animation-delay:265ms}
+ html[data-entry="running"] .story-cell:nth-child(3) .story-letter{animation-delay:310ms}
+ html[data-entry="running"] .story-cell:nth-child(4) .story-letter{animation-delay:355ms}
+ html[data-entry="running"] .story-word--mico .story-letter{animation-name:storyLetterLower;animation-delay:380ms}
+ html[data-entry="running"] .story-word--mico .story-cell:nth-child(2) .story-letter{animation-delay:425ms}
+ html[data-entry="running"] .story-word--mico .story-cell:nth-child(3) .story-letter{animation-delay:470ms}
+ html[data-entry="running"] .story-word--mico .story-cell:nth-child(4) .story-letter{animation-delay:515ms}
+ html[data-entry="running"] .story-letters{animation:storySignatureSettle 850ms linear 180ms both}
+ html[data-entry="running"] .story-word--mico .story-letters{animation-name:storySignatureLower}
+ html[data-entry="running"] .story-dot{animation:storyDotKick 850ms linear 220ms both}
+ html[data-entry="running"] .story-outline{animation:storyOutline 1100ms linear both}
+ html[data-entry="running"] .story-rule{animation:storyRuleDraw 420ms var(--ease-out) 640ms backwards}
+ html[data-entry="running"] .story-blueprint{animation:storyBlueprintExit 1100ms linear both}
+ html[data-entry="running"] .story-cursor{animation:storyRoute 950ms linear 130ms both,storyCursorPresence 1100ms linear both}
+ html[data-entry="running"] .story-bug{animation:storyRoute 300ms linear 740ms both,storyBugPresence 1100ms linear both}
+ html[data-entry="running"] .story-bug-body{animation:storyBugKick 250ms var(--ease-out) 780ms both}
+ html[data-entry="running"] .story-gaze{animation:storyCharacterLook var(--entry-duration,2100ms) linear both}
+ html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn var(--entry-handoff,1800ms) steps(1,end) both}
+ html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn var(--entry-handoff,1800ms) steps(1,end) both}
+ html[data-entry="running"] .hero-personal :is(.personal-role,.personal-statement,.personal-description,.personal-actions,.personal-next){animation:personalCopyEntry 260ms var(--ease-out) var(--entry-handoff,1800ms) backwards}
+ html[data-entry="running"] .hero-personal .personal-statement{animation-delay:calc(var(--entry-handoff,1800ms) + 20ms)}
+ html[data-entry="running"] .hero-personal .personal-description{animation-delay:calc(var(--entry-handoff,1800ms) + 40ms)}
+ html[data-entry="running"] .hero-personal .personal-actions{animation-delay:calc(var(--entry-handoff,1800ms) + 60ms);animation-duration:240ms}
+ html[data-entry="running"] .hero-personal .personal-next{animation-delay:calc(var(--entry-handoff,1800ms) + 70ms);animation-duration:230ms}
+ html[data-entry="running"] .hero-personal .portrait-scene::before{animation:personalPaperEntry 250ms var(--ease-out) var(--entry-handoff,1800ms) backwards}
+ html[data-entry="running"] .hero-personal :is(.portrait-code,.portrait-doodle){animation:personalCopyEntry 230ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 60ms) backwards}
+ html[data-entry="running"] .hero-personal .personal-portrait figcaption{animation:personalCaptionEntry 230ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 70ms) backwards}
+ html[data-entry="running"] .hero-personal .name-underline{animation:personalStrokeEntry 260ms var(--ease-out) calc(var(--entry-handoff,1800ms) + 40ms) backwards}
  @keyframes storyExit{from{opacity:1}to{opacity:1}}
- @keyframes storyPaperExit{0%,78%{opacity:1}86%,100%{opacity:0}}
+ @keyframes storyPaperExit{0%,74%{opacity:1;animation-timing-function:var(--ease-out)}84%,100%{opacity:0}}
  @keyframes storyLand{from{transform:translate(0,0) scale(1)}to{transform:var(--story-land,translate(0,-15px) scale(.5))}}
  @keyframes storyCharacterLand{from{transform:translate(0,0) scale(1)}to{transform:var(--story-land,translate(0,-15px) scale(.8))}}
  @keyframes storyMatchOut{from{opacity:1}to{opacity:0}}
  @keyframes storyHeroIn{from{opacity:0}to{opacity:1}}
- @keyframes storyLetterBuild{from{clip-path:inset(0 100% 0 0);transform:translateY(8px);opacity:0}to{clip-path:inset(0 0 0 0);transform:translateY(0);opacity:1}}
- @keyframes storyLetterLower{from{clip-path:inset(0 100% 0 0);transform:translateY(8px);opacity:0}to{clip-path:inset(0 0 0 0);transform:translateY(0);opacity:1}}
- @keyframes storyOutline{0%,8%{opacity:0}25%,55%{opacity:.4}70%,100%{opacity:0}}
- @keyframes storyFrameDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+ @keyframes storyLetterBuild{from{transform:translate(-.18em,105%) rotate(-5deg)}to{transform:translate(0,0) rotate(0deg)}}
+ @keyframes storyLetterLower{from{transform:translate(.22em,-105%) rotate(5deg)}to{transform:translate(0,0) rotate(0deg)}}
+ @keyframes storySignatureSettle{0%{transform:translateX(-.16em) rotate(-3deg);animation-timing-function:var(--ease-out)}72%,100%{transform:translateX(0) rotate(0)}}
+ @keyframes storySignatureLower{0%{transform:translateX(.16em) rotate(3deg);animation-timing-function:var(--ease-out)}72%,100%{transform:translateX(0) rotate(0)}}
+ @keyframes storyOutline{0%,12%{opacity:0;transform:translate(.08em,-.04em)}24%,60%{opacity:.55;transform:translate(0,0);animation-timing-function:var(--ease-out)}100%{opacity:0;transform:translate(-.025em,.025em)}}
  @keyframes storyRuleDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
- @keyframes storyBlueprintExit{0%,54%{opacity:1;transform:translate(0,0)}70%,100%{opacity:0;transform:translate(0,-12px)}}
- @keyframes storyDotKick{0%,33%{opacity:0;transform:translateY(0)}38%{opacity:1;transform:translateY(-.12em)}47%,100%{opacity:1;transform:translateY(0)}}
+ @keyframes storyBlueprintExit{0%,86%{opacity:1}100%{opacity:0}}
+ @keyframes storyDotKick{0%,45%{opacity:0;transform:translate(-.5em,-.12em)}46%{opacity:1;transform:translate(-.5em,-.12em);animation-timing-function:var(--ease-out)}90%,100%{opacity:1;transform:translate(0,0)}}
  @keyframes storyRoute{from{offset-distance:0%}to{offset-distance:100%}}
- @keyframes storyCursorPresence{0%{opacity:0}8%,90%{opacity:1}100%{opacity:0}}
- @keyframes storyBugPresence{0%,56%{opacity:0}62%,92%{opacity:1}100%{opacity:0}}
- @keyframes storyBugKick{from{transform:rotate(-3deg)}50%{transform:rotate(3deg)}to{transform:rotate(0)}}
- @keyframes storyCharacterLook{0%,35%{transform:translate(0,0) scaleY(1)}44%{transform:translate(-7px,6px) scaleY(1)}47%{transform:translate(-7px,6px) scaleY(.08)}50%,63%{transform:translate(-7px,6px) scaleY(1)}75%,100%{transform:translate(0,0) scaleY(1)}}
+ @keyframes storyCursorPresence{0%,11%{opacity:0}16%,90%{opacity:1}100%{opacity:0}}
+ @keyframes storyBugPresence{0%,66%{opacity:0}72%,90%{opacity:1}100%{opacity:0}}
+ @keyframes storyBugKick{from{transform:rotate(-3deg)}to{transform:rotate(0)}}
+ @keyframes storyCharacterLook{0%,8%{transform:translate(0,0)}14%,25%{transform:translate(-6px,16px)}32%,43%{transform:translate(-20px,-8px)}56%,100%{transform:translate(0,0)}}
  @keyframes personalCopyEntry{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
  @keyframes personalStrokeEntry{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
  @keyframes personalPaperEntry{from{transform:translateY(12px) rotate(-1deg) scale(.97);opacity:0}to{transform:translateY(0) rotate(-4deg) scale(1);opacity:1}}
@@ -199,12 +202,12 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
 }
 .character-paused .character-art :is(.character-head,.character-gaze),html.keyboard .character-art :is(.character-head,.character-gaze){transition:none}
 @media(prefers-reduced-motion:no-preference){
- html[data-entry="running"] .story-character.character-acting .character-head{animation:characterStoryHead 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
- html[data-entry="running"] .story-character.character-acting .character-hand{animation:characterStoryType 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
- html[data-entry="running"] .story-character.character-acting .character-gaze{animation:characterStoryGaze 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
- html[data-entry="running"] .story-character.character-acting .character-eye{animation:characterStoryBlink 2700ms var(--ease-out) var(--character-story-delay,0ms) both}
- @keyframes characterStoryHead{0%,6%{transform:rotate(0deg)}16%,26%{transform:rotate(3.5deg)}36%{transform:rotate(-2.5deg)}45%{transform:rotate(-4deg)}54%,100%{transform:rotate(0deg)}}
- @keyframes characterStoryType{0%,6%{transform:rotate(0deg)}8%{transform:rotate(-3.5deg)}11%{transform:rotate(0deg)}14%{transform:rotate(-2.4deg)}17%,23%{transform:rotate(0deg)}26%{transform:rotate(-4deg)}29%,100%{transform:rotate(0deg)}}
- @keyframes characterStoryGaze{0%{transform:translate(0,0)}8%,25%{transform:translate(-6px,16px)}30%{transform:translate(-20px,-8px)}42%{transform:translate(-16px,8px)}50%,100%{transform:translate(0,0)}}
- @keyframes characterStoryBlink{0%,40%{transform:scaleY(1)}43%{transform:scaleY(.1)}46%,100%{transform:scaleY(1)}}
+ html[data-entry="running"] .story-character.character-acting .character-head{animation:characterStoryHead var(--entry-duration,2100ms) linear var(--character-story-delay,0ms) both}
+ html[data-entry="running"] .story-character.character-acting .character-hand{animation:characterStoryType var(--entry-duration,2100ms) linear var(--character-story-delay,0ms) both}
+ html[data-entry="running"] .story-character.character-acting .character-gaze{animation:characterStoryGaze var(--entry-duration,2100ms) linear var(--character-story-delay,0ms) both}
+ html[data-entry="running"] .story-character.character-acting .character-eye{animation:characterStoryBlink var(--entry-duration,2100ms) linear var(--character-story-delay,0ms) both}
+ @keyframes characterStoryHead{0%{transform:rotate(0deg);animation-timing-function:var(--story-ease-drawer)}10%,18%{transform:rotate(3.5deg);animation-timing-function:var(--story-ease-drawer)}32%,42%{transform:rotate(-4deg);animation-timing-function:var(--story-ease-drawer)}58%,100%{transform:rotate(0deg)}}
+ @keyframes characterStoryType{0%,6%{transform:rotate(0deg);animation-timing-function:var(--ease-out)}10%{transform:rotate(-3.5deg);animation-timing-function:var(--ease-out)}14%,18%{transform:rotate(0deg);animation-timing-function:var(--ease-out)}22%{transform:rotate(-4deg);animation-timing-function:var(--ease-out)}27%,100%{transform:rotate(0deg)}}
+ @keyframes characterStoryGaze{0%{transform:translate(0,0);animation-timing-function:var(--ease-out)}5%,18%{transform:translate(-6px,16px);animation-timing-function:var(--ease-out)}25%,38%{transform:translate(-20px,-8px);animation-timing-function:var(--ease-out)}46%{transform:translate(-16px,8px);animation-timing-function:var(--ease-out)}54%,100%{transform:translate(0,0)}}
+ @keyframes characterStoryBlink{0%,42%{transform:scaleY(1);animation-timing-function:var(--ease-out)}45%,47%{transform:scaleY(.1);animation-timing-function:var(--ease-out)}51%,100%{transform:scaleY(1)}}
 }
