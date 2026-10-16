@@ -1,5 +1,8 @@
 # Product Context: Alex Micó Portfolio
 
+> Prototipo navegable de 2026-10-03, pendiente de revisión visual de Alex. Parte de la versión
+> publicada 1e35bcf. Las cinco mejoras están autorizadas para implementación; no para despliegue.
+
 ## Primary User
 
 Recruiters and technical leads hiring Full Stack developers for product teams across the EU. They
@@ -8,8 +11,8 @@ decisions he made and where they can inspect the work before opening the CV.
 
 ## Product Purpose
 
-Present Alex Micó Robles as the Full Stack developer behind Strev and Sereno, with SaveMyMoneyNow
-and Atalaya as supporting evidence. Success means a visitor can identify his role, inspect four
+Present Alex Micó Robles, his Full Stack work, approach and experience first. Strev, Sereno,
+SaveMyMoneyNow and Atalaya provide inspectable evidence later in the page. Success means a visitor can identify his role, inspect four
 real products, understand his contribution and reach the correct localized CV or contact route.
 
 Anuubis Solutions remains visible as Alex's current employer in the experience timeline and on his
@@ -19,12 +22,18 @@ part of the public proposition.
 ## Memory to Create
 
 Alex builds products where meaningful work happens in the background and the person using them
-still understands what is happening. The visual shorthand for that promise is **Cobalt Product
-Stage**: one committed cobalt field, Alex's identity and Strev plus Sereno at equal weight.
+still understands what is happening. **Cobalt Product Stage** remains the existing visual foundation.
+This prototype puts Alex's identity and career
+before the product evidence, while preserving the published blue palette and component styling.
 
 The home and the case pages use related but different compositions:
 
-- **Home stage:** full-width cobalt identity and equal product evidence. It creates recognition.
+- **Home stage:** Alex / Micó, a short Full Stack role, one factual sentence and a direct path to About
+  or the CV. A first-session identity entrance gives it character; return visits stay static. There are
+  no product screenshots, product selector or project names.
+- **About:** a cobalt pause between neutral sections, with the existing approach and four facts.
+- **Project selection:** four concise entries, two desktop columns, complete screenshots and links
+  into the full case studies. The home no longer repeats their long technical narratives.
 - **Case cover:** compact cobalt title surface inside the reading column. It creates continuity and
   then gets out of the way of the evidence.
 
@@ -38,10 +47,10 @@ accent scattered across cards.
 
 ## Product Hierarchy
 
-1. Strev and Sereno are primary products with equal visual and narrative weight.
-2. SaveMyMoneyNow and Atalaya are supporting proof, not smaller claims disguised as flagships.
-3. Experience explains employment context after the product evidence.
-4. Stack supports the story and never replaces it.
+1. Alex, his role and personal introduction lead the page.
+2. About and Experience introduce his approach and career before any project.
+3. Strev and Sereno remain equally weighted within Projects, followed by SaveMyMoneyNow and Atalaya.
+4. Stack and Contact complete the page using their published layouts.
 5. CV and contact remain reachable from every route in the correct language.
 
 ## Anti-references
@@ -54,7 +63,7 @@ accent scattered across cards.
 
 ## Design Principles
 
-1. Show product evidence before biography or stack inventories.
+1. Introduce Alex and his experience before showing product evidence.
 2. Give Strev and Sereno equal scale without inventing screenshots or metrics.
 3. Use a full cobalt field only where identity needs commitment; use neutral reading surfaces for
    long-form case content.
@@ -73,7 +82,7 @@ changes must remain understandable without animation. Do not encode meaning thro
 
 ## Success Signals
 
-- Alex, Strev and Sereno are identifiable in the first useful viewport.
+- Alex and his role are identifiable immediately; projects start after About and Experience.
 - Every case opens with one compact cover, one H1 and one real evidence frame.
 - The eight case routes preserve language pairing, localized CV, Contact, Footer and prerender.
 - Favicon and OG card use the same cobalt identity and name Strev plus Sereno.

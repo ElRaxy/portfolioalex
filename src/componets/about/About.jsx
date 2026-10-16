@@ -1,20 +1,17 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './about.css'
+import Reveal from '../common/Reveal'
 
-// Sin Reveal a proposito: este bloque es el primero del contenido y en movil
-// entra en el primer viewport, asi que es el elemento LCP. Con Motion nacia
-// con opacity:0 inline en el prerender y no se pintaba hasta hidratar; su
-// entrada vive ahora en el CSS, que llega antes que el bundle.
 const About = () => {
   const { t } = useTranslation()
   const facts = t('about.facts', { returnObjects: true }) || []
 
   return (
     <section id="about" className="about" aria-labelledby="about-title">
-      <h2 id="about-title" className="about__title">{t('about.title')}</h2>
+      <Reveal as="h2" id="about-title" className="about__title">{t('about.title')}</Reveal>
 
-      <div className="about__content">
+      <Reveal className="about__content" delay={0.06}>
         <p className="about__lead">{t('about.lead')}</p>
 
         <div className="about__narrative">
@@ -32,7 +29,7 @@ const About = () => {
             </div>
           ))}
         </dl>
-      </div>
+      </Reveal>
     </section>
   )
 }

@@ -1,123 +1,52 @@
-import React from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import React, { useEffect, useRef } from 'react'
 
-const revealTransition = {
-  duration: 0.34,
-  ease: [0.22, 1, 0.36, 1],
+// Visible HTML is the default. The observer adds a one-shot entrance after
+// hydration, so reduced motion or unavailable APIs never leave content hidden.
+const Reveal = ({ as = 'div', delay = 0, group = false, children, ...props }) => {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const node = ref.current
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (!node || !node.animate || !('IntersectionObserver' in window) || preference.matches) return undefined
+
+    const animations = []
+    let entered = false
+    const observer = new IntersectionObserver((entries) => {
+      if (entered || !entries.some((entry) => entry.isIntersecting)) return
+      entered = true
+      observer.disconnect()
+      const targets = group ? [...node.querySelectorAll('[data-reveal-item]')] : [node]
+      targets.forEach((target, index) => {
+        animations.push(target.animate([
+          { opacity: 0.65, transform: 'translateY(12px)' },
+          { opacity: 1, transform: 'translateY(0)' },
+        ], {
+          duration: 400,
+          delay: Math.min(Math.max(delay, 0) * 1000 + index * 45, 180),
+          easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+          fill: 'backwards',
+        }))
+      })
+    }, { threshold: 0.08 })
+    const stop = () => {
+      observer.disconnect()
+      animations.forEach((animation) => animation.cancel())
+    }
+    const onPreferenceChange = () => { if (preference.matches) stop() }
+    observer.observe(node)
+    preference.addEventListener('change', onPreferenceChange)
+    return () => {
+      stop()
+      preference.removeEventListener('change', onPreferenceChange)
+    }
+  }, [delay, group])
+
+  return React.createElement(as, { ...props, ref }, children)
 }
 
-const viewportOptions = {
-  once: true,
-  amount: 0.15,
-}
-
-const itemVariants = {
-  hidden: { y: 12 },
-  visible: {
-    y: 0,
-    transition: revealTransition,
-  },
-}
-
-const groupVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.045,
-    },
-  },
-}
-
-const motionPropNames = new Set([
-  'animate',
-  'exit',
-  'initial',
-  'layout',
-  'transition',
-  'variants',
-  'viewport',
-  'whileDrag',
-  'whileFocus',
-  'whileHover',
-  'whileInView',
-  'whileTap',
-])
-
-const getStaticProps = (props) => Object.fromEntries(
-  Object.entries(props).filter(([key]) => !motionPropNames.has(key)),
+export const RevealGroup = (props) => <Reveal {...props} group />
+export const RevealItem = ({ as = 'div', children, ...props }) => React.createElement(
+  as, { ...props, 'data-reveal-item': '' }, children,
 )
-
-const getMotionComponent = (as) => motion[as] || motion.create(as)
-
-const Reveal = ({ as = 'div', delay = 0, className, children, ...props }) => {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return React.createElement(as, {
-      ...getStaticProps(props),
-      className,
-    }, children)
-  }
-
-  const MotionComponent = getMotionComponent(as)
-
-  return (
-    <MotionComponent
-      className={className}
-      initial={{ y: 12 }}
-      whileInView={{ y: 0 }}
-      viewport={viewportOptions}
-      transition={{ ...revealTransition, delay: Math.min(Math.max(delay, 0), 0.06) }}
-      {...props}
-    >
-      {children}
-    </MotionComponent>
-  )
-}
-
-export const RevealGroup = ({ as = 'div', className, children, ...props }) => {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return React.createElement(as, {
-      ...getStaticProps(props),
-      className,
-    }, children)
-  }
-
-  const MotionComponent = getMotionComponent(as)
-
-  return (
-    <MotionComponent
-      className={className}
-      variants={groupVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewportOptions}
-      {...props}
-    >
-      {children}
-    </MotionComponent>
-  )
-}
-
-export const RevealItem = ({ as = 'div', className, children, ...props }) => {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return React.createElement(as, {
-      ...getStaticProps(props),
-      className,
-    }, children)
-  }
-
-  const MotionComponent = getMotionComponent(as)
-
-  return (
-    <MotionComponent className={className} variants={itemVariants} {...props}>
-      {children}
-    </MotionComponent>
-  )
-}
-
 export default Reveal

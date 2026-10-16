@@ -8,7 +8,7 @@ describe('la continuidad de foco del menu movil', () => {
     render(<App pathname="/" />)
 
     const navegacion = screen.getByRole('navigation', { name: 'Navegación por secciones' })
-    const primerEnlace = within(navegacion).getByRole('link', { name: 'Proyectos' })
+    const primerEnlace = within(navegacion).getByRole('link', { name: 'Sobre Mí' })
     const botonMenu = within(navegacion).getByRole('button', { name: 'Abrir menú' })
     const focoPrimerEnlace = jest.spyOn(primerEnlace, 'focus')
     const focoBotonMenu = jest.spyOn(botonMenu, 'focus')

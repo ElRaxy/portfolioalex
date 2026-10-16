@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-30T10:00:00Z",
+  "generatedAt": "2026-10-03T00:00:00Z",
   "title": "Design System: Alex Micó Portfolio",
   "extensions": {
     "colorMeta": {
@@ -45,9 +45,9 @@
         "purpose": "Controls, theme and language state feedback."
       },
       {
-        "name": "case-content",
-        "value": "none",
-        "purpose": "Case reading content remains static."
+        "name": "document-navigation",
+        "value": "220ms ease-out",
+        "purpose": "Native same-origin View Transitions; normal navigation fallback and reduced-motion opt-out."
       }
     ],
     "breakpoints": [
@@ -105,9 +105,9 @@
   ],
   "narrative": {
     "northStar": "Cobalt Product Stage",
-    "overview": "A committed cobalt identity where Alex, Strev and Sereno are remembered together. The home uses a full stage; each case uses a compact cover followed by neutral evidence-led reading.",
+    "overview": "Prototype pending review. Published Cobalt Product Stage colors and components are preserved. Alex, his role, About and Experience come first; projects provide later evidence. The first-session Alex / Micó entrance lasts990ms; a native scroll timeline gently gathers it. About is a cobalt600 pause. Four projects form a compact two-column selection with complete images and links into the unchanged technical cases. The introduction has no product screenshots or selector.",
     "keyCharacteristics": [
-      "Alex, Strev and Sereno appear at the same moment of recognition.",
+      "Personal introduction, About and Experience precede project evidence.",
       "Anek Latin supplies one clear interface voice.",
       "Cobalt is a large field of identity, not a scattered decorative accent.",
       "Case content remains semantic, static and inspectable.",
@@ -115,13 +115,13 @@
     ],
     "rules": [
       { "name": "The One Field Rule", "body": "Use cobalt as a committed identity surface, never as repeated card decoration.", "section": "colors" },
-      { "name": "The Stage and Cover Rule", "body": "The home may fill the viewport; a case cover stays compact and contains only title plus tagline.", "section": "components" },
+      { "name": "The Stage and Cover Rule", "body": "A centered personal introduction precedes About and Experience; case layouts retain their published geometry.", "section": "components" },
       { "name": "The Evidence Is Real Rule", "body": "Real screenshots remain complete and carry a visible caption.", "section": "components" },
       { "name": "The Structure Survives Rule", "body": "Semantic order, visible scope and selectable results survive visual simplification.", "section": "components" },
       { "name": "The Reachable Closing Rule", "body": "Back, case links, CTA and Contact keep a 44px minimum target.", "section": "accessibility" }
     ],
     "dos": [
-      "Show Strev and Sereno at equal weight.",
+      "Introduce Alex first, retaining equal weight for Strev and Sereno within Projects.",
       "Use a compact cobalt cover to connect cases to the home.",
       "Use Anek Latin and real product evidence.",
       "Keep case content static and readable in both themes."

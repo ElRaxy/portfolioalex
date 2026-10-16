@@ -18,11 +18,12 @@
   },
   "header": {
     "name": "Alex Micó Robles",
-    "title": "Desarrollador Full Stack · React, Node y Python",
-    "tagline": "Diseño para que un proceso lento no pare la pantalla.",
-    "support": "Strev deja al entrenador seguir mientras analiza vídeo. Sereno me dice qué sesión está trabajando, ejecutando un comando o esperando una respuesta.",
+    "title": "Desarrollador Full Stack",
+    "tagline": "Desarrollo aplicaciones web y herramientas de automatización.",
+    "support": "Trabajo en la interfaz, la API y el despliegue. Compruebo lo que entrego en el entorno real.",
     "evidence": "SaveMyMoneyNow: 21 endpoints y 113 tests · Atalaya: 174 tests",
     "view_projects": "Abrir Strev y Sereno",
+    "about_me": "Conóceme",
     "download_cv": "Descargar CV",
     "availability": "Disponible para puestos Full Stack en España y la UE",
     "product_canvas_label": "Casos principales: Strev y Sereno",
@@ -110,7 +111,7 @@
   },
   "portfolio": {
     "title": "Lo que resuelve",
-    "subtitle": "Dos decisiones concretas: mantener el flujo y hacer visible el trabajo.",
+    "subtitle": "Cuatro proyectos: aplicaciones web y herramientas de automatización.",
     "supporting_title": "Más trabajo",
     "story_label": "Decisiones de {{project}}",
     "closed_label": "Código cerrado, demo bajo petición",
@@ -176,7 +177,7 @@
       },
       {
         "title": "SaveMyMoneyNow",
-        "description": "Lo hice para importar extractos bancarios que no respetan siempre el mismo formato. Encuentra la cabecera, propone el mapeo y pide confirmación antes de guardar. El repositorio público incluye 21 endpoints y 113 tests.",
+        "description": "Importa extractos bancarios de distintos formatos y pide confirmar el mapeo antes de guardar.",
         "tier": "supporting",
         "tags": [
           "React",
@@ -197,7 +198,7 @@
       },
       {
         "title": "Atalaya",
-        "description": "Atalaya reúne ofertas de varias fuentes, elimina duplicados y las ordena según un perfil. Después prepara una carta para revisar. La decisión de qué candidatura merece la pena sigue siendo de la persona.",
+        "description": "Reúne ofertas, elimina duplicados y las ordena según un perfil para revisar cada candidatura.",
         "tier": "supporting",
         "tags": [
           "Python",

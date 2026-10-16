@@ -12,37 +12,22 @@ describe('la composicion superior propia de tablet v19', () => {
   const portfolioCss = read('componets', 'portfolio', 'portfolio.css')
   const navCss = read('componets', 'nav', 'nav.css')
   const navSource = read('componets', 'nav', 'Nav.jsx')
-  const headerTablet = headerCss.slice(
-    headerCss.indexOf('/* v19: tablet tiene una composicion propia'),
-    headerCss.indexOf('/* v16: composicion compacta', headerCss.indexOf('/* v19: tablet')),
-  )
   const portfolioTablet = portfolioCss.slice(
-    portfolioCss.indexOf('/* v19: los flagships conservan dos columnas'),
-    portfolioCss.indexOf('@media screen and (max-width: 700px)', portfolioCss.indexOf('/* v19: los flagships')),
+    portfolioCss.indexOf('@media screen and (min-width: 701px)'),
+    portfolioCss.indexOf('@media screen and (max-width: 700px)'),
   )
 
-  it('reserva 761-1050 para un hero de dos columnas con capturas completas', () => {
-    expect(headerTablet).toMatch(
-      /@media screen and \(min-width: 761px\) and \(max-width: 1050px\)/,
-    )
-    expect(headerTablet).toMatch(
-      /\.hero\s*\{[\s\S]*?grid-template-columns:\s*minmax\(18rem, 0\.88fr\) minmax\(0, 1\.12fr\)/,
-    )
-    expect(headerTablet).toMatch(/\.hero__stage\s*\{[\s\S]*?height:\s*clamp\(29rem, 53vw, 33rem\)/)
-    expect(headerCss).toMatch(/\.hero__preview img\s*\{[\s\S]*?object-fit:\s*contain/)
-    expect(headerTablet).not.toMatch(/position:\s*sticky|transform:\s*scale|object-fit:\s*cover/)
+  it('usa una entrada personal sin escenario de capturas en tablet', () => {
+    expect(headerCss).not.toMatch(/hero__stage|hero__preview/)
+    render(<App pathname="/" />)
+    expect(within(document.getElementById('home')).getByRole('link', { name: 'Conóceme' }))
+      .toHaveAttribute('href', '#about')
   })
 
   it('mantiene Strev y Sereno en dos columnas sin sticky ni recorte', () => {
-    expect(portfolioTablet).toMatch(
-      /@media screen and \(min-width: 761px\) and \(max-width: 1050px\)/,
-    )
-    expect(portfolioTablet).toMatch(
-      /\.portfolio__item--primary\s*\{[\s\S]*?grid-template-columns:\s*minmax\(18rem, 0\.9fr\) minmax\(0, 1\.1fr\)/,
-    )
-    expect(portfolioTablet).toMatch(/grid-template-areas:\s*'body media'/)
-    expect(portfolioTablet).toMatch(/\.portfolio__media img\s*\{[\s\S]*?object-fit:\s*contain;[\s\S]*?transform:\s*none/)
-    expect(portfolioTablet).not.toMatch(/position:\s*sticky|transform:\s*scale|object-fit:\s*cover/)
+    expect(portfolioTablet).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/)
+    expect(portfolioCss).toMatch(/object-fit:\s*contain/)
+    expect(portfolioTablet).not.toMatch(/position:\s*sticky|object-fit:\s*cover/)
   })
 
   it('muestra la navegacion completa desde 901 y conserva el menu hasta 900', () => {

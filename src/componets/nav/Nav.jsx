@@ -7,7 +7,7 @@ import { useRoutePathname } from '../../lib/routeContext'
 import ThemeToggle from '../theme/ThemeToggle'
 import './nav.css'
 
-const SECTION_TARGETS = ['portfolio', 'about', 'experience', 'stack', 'contact']
+const SECTION_TARGETS = ['about', 'experience', 'portfolio', 'stack', 'contact']
 
 // Dentro de una pagina de caso las secciones no existen: el ancla suelta no
 // llevaria a ninguna parte, asi que se prefija con la home de ese idioma.
@@ -126,10 +126,12 @@ const Nav = () => {
 
     document.body.style.overflow = 'hidden'
     firstLink?.focus({ preventScroll: true })
+    const focusFrame = requestAnimationFrame(() => firstLink?.focus({ preventScroll: true }))
     document.addEventListener('keydown', containFocus)
     desktopQuery.addEventListener('change', closeOnDesktop)
 
     return () => {
+      cancelAnimationFrame(focusFrame)
       document.body.style.overflow = previousOverflow
       document.removeEventListener('keydown', containFocus)
       desktopQuery.removeEventListener('change', closeOnDesktop)

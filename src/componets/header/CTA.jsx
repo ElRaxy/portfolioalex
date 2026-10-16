@@ -28,8 +28,8 @@ const CTA = () => {
 
   return (
     <div className="hero__actions">
-      <a href={`${base}#portfolio`} className="hero__button hero__button--projects">
-        {t('header.view_projects')}
+      <a href={`${base}${route.kind === 'case' ? '#portfolio' : '#about'}`} className="hero__button hero__button--projects">
+        {t(route.kind === 'case' ? 'header.view_projects' : 'header.about_me')}
       </a>
       <a href={CV_DESCARGA[route.language]} download={NOMBRE_DESCARGA[route.language]} className="hero__button">
         {t('header.download_cv')}

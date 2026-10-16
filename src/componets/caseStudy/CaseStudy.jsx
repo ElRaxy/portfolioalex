@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { caseHref, homeHref } from '../../lib/routing'
+import Reveal from '../common/Reveal'
 import saveMyMoneyNowImage from '../../assets/projects/savemymoneynow-detection.png'
 import strevImage from '../../assets/projects/strev-product.png'
 import atalayaImage from '../../assets/projects/atalaya-health.svg'
@@ -127,26 +128,26 @@ const CaseStudy = ({ language, slug }) => {
         </ol>
       </nav>
 
-      <section className="case__block case__block--summary" id="case-summary">
+      <Reveal as="section" className="case__block case__block--summary" id="case-summary">
         <h2>{t('case_study.summary_label')}</h2>
         <p className="case__summary">{summary}</p>
 
         {!isPrimary && mediaFigure}
-      </section>
+      </Reveal>
 
-      <section className="case__block" id="case-problem">
+      <Reveal as="section" className="case__block" id="case-problem">
         <h2>{t('case_study.problem_label')}</h2>
         {problema.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-      </section>
+      </Reveal>
 
       {gapParrafos.length > 0 && (
-        <section className="case__block" id="case-gap">
+        <Reveal as="section" className="case__block" id="case-gap">
           <h2>{t('case_study.gap_label')}</h2>
           {gapParrafos.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-        </section>
+        </Reveal>
       )}
 
-      <section className="case__block" id="case-decisions">
+      <Reveal as="section" className="case__block" id="case-decisions">
         <h2 aria-label={t('case_study.decisions_label')}>
           <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
@@ -160,9 +161,9 @@ const CaseStudy = ({ language, slug }) => {
             </li>
           ))}
         </ol>
-      </section>
+      </Reveal>
 
-      <section className="case__block" id="case-results">
+      <Reveal as="section" className="case__block" id="case-results">
         <h2 aria-label={t('case_study.results_label')}>
           <span aria-hidden="true" className="case__scope">{scope}</span>
           {' '}
@@ -181,7 +182,7 @@ const CaseStudy = ({ language, slug }) => {
             </li>
           ))}
         </ul>
-      </section>
+      </Reveal>
 
       <p className="case__note">{note}</p>
 

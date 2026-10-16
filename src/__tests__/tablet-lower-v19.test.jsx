@@ -18,7 +18,7 @@ describe('v19 compone la mitad inferior especificamente para tablet', () => {
       /@media screen and \(min-width: 701px\) and \(max-width: 1050px\)[\s\S]*?\.about__facts\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
     )
     expect(aboutCss).toMatch(
-      /@media screen and \(min-width: 701px\) and \(max-width: 1050px\)[\s\S]*?\.about__fact:nth-child\(n \+ 3\)[\s\S]*?box-shadow:\s*inset 0 1px 0 var\(--line-soft\)/,
+      /@media screen and \(min-width: 701px\) and \(max-width: 1050px\)[\s\S]*?\.about__fact:nth-child\(n \+ 3\)[\s\S]*?box-shadow:\s*inset 0 1px 0 var\(--about-line\)/,
     )
   })
 

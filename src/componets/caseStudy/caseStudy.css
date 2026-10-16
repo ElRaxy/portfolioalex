@@ -428,6 +428,7 @@
     font-size: clamp(var(--fs-xl), 3vw, var(--fs-2xl));
     line-height: 1;
     content: '\2192';
+    transition: transform 180ms var(--ease-out);
 }
 
 .case__next-label {
@@ -455,10 +456,14 @@
     text-wrap: pretty;
 }
 
-.case__next-link:hover {
-    background: var(--surface-1);
-    color: var(--accent-hover);
+@media (hover: hover) and (pointer: fine) {
+    .case__next-link:hover {
+        background: var(--surface-1);
+        color: var(--accent-hover);
+    }
+    .case__next-link:hover::after { transform: translateX(4px); }
 }
+.case__next-link:focus-visible::after { transform: translateX(4px); transition: none; }
 
 .case__next-link:active {
     background: var(--surface-2);

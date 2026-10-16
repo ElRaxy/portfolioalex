@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import './footer.css'
+import Reveal from '../common/Reveal'
 
 const REPO_URL = 'https://github.com/ElRaxy/portfolioalex'
 const EMAIL = 'alexmico2006@gmail.com'
@@ -10,10 +11,10 @@ const Footer = () => {
 
   return (
     <footer className="site-footer">
-      <div className="site-footer__cta">
+      <Reveal className="site-footer__cta">
         <p className="site-footer__availability">{t('footer.availability')}</p>
         <a className="site-footer__mail" href={`mailto:${EMAIL}`}>{t('footer.cta')}</a>
-      </div>
+      </Reveal>
 
       <div className="site-footer__legal">
         <small>{t('footer.built')}</small>

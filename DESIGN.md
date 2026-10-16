@@ -70,13 +70,17 @@ components:
 
 # Design System: Alex Micó Portfolio
 
+> Prototipo personal 2026-10-03, pendiente de revisión. Base publicada 1e35bcf.
+> Conserva la paleta y los componentes publicados. Cambia identidad de entrada, pausa About y selección de proyectos.
+> No incorpora la dirección visual del rediseño rechazado del 1 de octubre.
+
 ## Overview
 
 **Creative North Star: Cobalt Product Stage**
 
-The portfolio uses one committed cobalt surface to connect Alex with Strev and Sereno. The home is
-the stage: full-width identity, real evidence and equal flagship scale. A case page is the cover:
-compact title surface inside the reading column, followed by neutral long-form content.
+The portfolio preserves the published Cobalt Product Stage palette and component system. The
+prototype changes the home hierarchy: Alex's personal introduction, About and Experience precede
+Projects. Case layouts and product evidence remain as published.
 
 The system is direct, product-led and personal. Real screens carry specificity. Cobalt carries
 recognition. Anek Latin carries voice. Space and scale carry hierarchy.
@@ -85,7 +89,7 @@ recognition. Anek Latin carries voice. Space and scale carry hierarchy.
 
 ### Stage and cover are related, not duplicated
 
-- The home stage may fill the viewport and contain Alex, portrait, actions and two product previews.
+- The home introduction is centered in a42rem reading width and about78svh, with Alex, role, copy, availability and actions. No product previews or product names appear in it.
 - The case cover stays inside 68rem, between 16rem and 22rem tall, and contains only H1 plus tagline.
 - A case never repeats the portrait, hero previews, hero CTA or entrance choreography.
 - Long-form content returns to the theme surface immediately after the cover.
@@ -98,8 +102,7 @@ badges or decorative stripes. Product screenshots retain their own colors.
 ### The evidence is real rule
 
 Every project uses its real image and a caption in the document. The caption remains visible on
-desktop and in every case; the compact mobile supporting index clips it visually because the case
-keeps the full evidence. A 16:10 exterior frame gives the cases one system. Strev fills the frame.
+desktop, mobile and every case. A 16:10 exterior frame gives the cases one system. Strev fills the frame.
 Sereno, SaveMyMoneyNow and Atalaya use `contain` on a matte so no data is cropped. Synthetic windows
 and fake product chrome are forbidden.
 
@@ -113,7 +116,7 @@ already established it. CSS removes ornamental numbers without changing document
 
 ### Identity
 
-- **Stage cobalt `#2f6ba8`:** hero, flagship field, case cover, Contact and social card.
+- **Stage cobalt `#2f6ba8`:** the full-width About pause, case cover and social card. Hero and home project selection use the existing neutral surfaces.
 - **On cobalt `#ffffff`:** headings and high-emphasis controls. Contrast 5.54:1.
 - **Muted on cobalt `#e4eff9`:** supporting text. Contrast 4.75:1.
 - **Deep stage `#11171c`:** Strev stage and evidence matte.
@@ -149,13 +152,20 @@ rounding.
 
 ## Home Stage
 
-- Hero and two flagship chapters may use full-bleed cobalt/deep surfaces.
-- Strev and Sereno receive the same exterior 16:10 evidence area and two actions each.
-- Supporting work uses open rows at a smaller scale. At 600px and below it becomes a compact index:
-  6.25rem evidence thumbnail, H4 title, complete description, stack and actions. The case keeps the
-  full evidence and caption.
-- About uses one lead beside one narrative column on desktop, then facts below. It must advance the
-  Strev/Sereno story rather than introducing Alex for a second time.
+- Home order: introduction → About → Experience → Projects → Stack → Contact → Footer.
+- The hero retains the neutral background and blue controls. Visible identity is Alex / Micó in two
+  typographic fragments, up to120px on desktop and responsive below600px. Its accessible name remains
+  Alex Micó Robles. A short Full Stack role and one factual sentence precede Conóceme / About me and CV.
+- The first session visit recomposes the two words through masks, followed by copy and actions within
+  990ms. Returning from a case stays static. SSR, missing APIs, denied storage and reduced motion retain
+  visible HTML. A native scroll timeline gently gathers the hero; unsupported browsers stay static.
+- About uses existing cobalt600, white headings and cobalt100 supporting text, while retaining the
+  asymmetric lead/narrative/facts composition. It introduces Alex before the timeline and project evidence.
+- Projects are a compact selection in two desktop columns and one mobile column. Strev and Sereno
+  lead; SaveMyMoneyNow and Atalaya follow at smaller scale. Every item has one factual sentence,
+  a complete contained image, visible caption and existing case/source links. All images are lazy.
+- The old sticky project stories and their progress state are removed from home. Full decisions,
+  results and technical evidence remain in the four case pages.
 - Experience exposes roles as H3 and studies as H4 below the Formation H3.
 - Contact closes the stage but its title never exceeds the identity or flagship names.
 - About, Experience, Stack, Contact and Footer continue the same type and geometry without copying
@@ -173,8 +183,9 @@ rounding.
 7. Rectangular external links and the shared localized CTA.
 8. Shared Contact and Footer remain neutral on cases.
 
-Case content is static. Theme and language transitions remain global state feedback; cases do not
-add scroll-linked movement, reveal opacity or decorative animation.
+Case geometry and evidence remain unchanged. Native same-origin View Transitions connect normal
+page navigation in220ms; unsupported browsers navigate normally without intercepted clicks. Chapter entrances enhance visible HTML after hydration; no product
+image is zoomed or cropped. Theme and language retain their published state feedback.
 
 ## Project Evidence
 
@@ -218,6 +229,19 @@ The committed PNGs must be RGB, sRGB, 8-bit and exactly 180x180 or 1200x630. Pub
 
 The prerender gate also pins the approved SHA-256 values so a stale raster with valid dimensions
 cannot silently replace the v9 artwork: `86d3162b...39d02` for OG and `420e9780...109d3` for Apple.
+
+## Prototype motion
+
+Shared Reveal uses WAAPI once on intersection, opacity.65→1 and12px→0 over400ms. Groups stagger45ms.
+The document is visible before hydration. Missing browser APIs skip animation, reduced motion skips
+it initially and cancels active motion if enabled later, and unmount cancels animations/observer.
+About, Experience, Projects heading, Stack, Contact, Footer and case chapters share this restrained
+entrance. Experience, Stack, Contact and Footer retain their geometry. Text links gain a thin underline
+and arrows move on fine-pointer hover, with immediate keyboard-focus feedback. Press feedback takes
+120ms. Mobile navigation links stagger20ms across150ms animations (230ms total), retaining the focus
+trap, Escape and body lock. Hero WAAPI cancels on unmount and dynamic reduced motion. Cross-document
+navigation uses220ms native View Transitions, disabled under reduced motion. No perpetual motion,
+wheel interception, custom cursor or router replacement.
 
 ## Interaction and Accessibility
 

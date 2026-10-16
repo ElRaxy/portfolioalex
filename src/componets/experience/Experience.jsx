@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { RevealGroup, RevealItem } from '../common/Reveal'
+import Reveal, { RevealGroup, RevealItem } from '../common/Reveal'
 import './experience.css'
 
 const stackGroups = ['product', 'automation', 'quality']
@@ -38,7 +38,7 @@ export const ExperienceTimeline = () => {
 
   return (
     <section id="experience" className="experience" aria-labelledby="experience-title">
-      <h2 id="experience-title">{t('experience.title')}</h2>
+      <Reveal as="h2" id="experience-title">{t('experience.title')}</Reveal>
 
       <div className="container experience__content">
         <TimelineList
@@ -65,7 +65,7 @@ const Stack = () => {
 
   return (
     <section id="stack" className="stack" aria-labelledby="stack-title">
-      <h2 id="stack-title">{t('nav.stack')}</h2>
+      <Reveal as="h2" id="stack-title">{t('nav.stack')}</Reveal>
       {/* El primero de cada fila iba en color de acento y nada decia por que. */}
       <p className="stack__note">{t('stack.key_note')}</p>
 

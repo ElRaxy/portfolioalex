@@ -103,7 +103,7 @@ describe('la web entera', () => {
 
     const porNombre = Object.fromEntries(imagenes.map((imagen) => [imagen.getAttribute('alt'), imagen]))
     expect(porNombre['SaveMyMoneyNow localizando la fila de cabecera del extracto y mapeando Fecha, Concepto e Importe'])
-      .toHaveAttribute('loading', 'eager')
+      .toHaveAttribute('loading', 'lazy')
     expect(porNombre['Atalaya mostrando un resultado fechado de salud de sus fuentes de ofertas'])
       .toHaveAttribute('loading', 'lazy')
   })
@@ -295,32 +295,33 @@ describe('reparacion de reduced-motion', () => {
   })
 })
 
-// El 2026-08-22 se midio que el elemento LCP de la home, en movil y en
-// escritorio, es un parrafo del bloque "Sobre mi". Envuelto en Reveal nacia con
-// `opacity:0` inline en el prerender y no se pintaba hasta que hidrataba el
-// bundle: el LCP llegaba ~480 ms despues del FCP. Su entrada vive ahora en el
-// CSS y no toca la opacidad, porque un bloque a opacity 0 tampoco cuenta como
-// pintado. Se vigila desde el fuente: en jsdom no hay cascada que medir.
+// Regresión de lectura antes de hidratación: la entrada es una mejora opcional,
+// nunca un estado inline oculto que pueda persistir cuando faltan APIs o JS.
 describe('el bloque LCP no espera al JavaScript', () => {
   const fs = require('fs')
   const path = require('path')
   const leer = (...partes) => fs.readFileSync(path.join(__dirname, '..', ...partes), 'utf8')
 
-  it('Sobre mi no se envuelve en Reveal', () => {
-    expect(leer('componets', 'about', 'About.jsx')).not.toMatch(/^import .*Reveal/m)
+  it('Sobre mi conserva sus nodos semanticos sin estilos de opacidad inicial', () => {
+    render(<App pathname="/" />)
+    const about = screen.getByRole('region', { name: 'Sobre mí' })
+    expect(about.querySelector('[style*="opacity: 0"]')).toBeNull()
+    expect(within(about).getByRole('heading', { name: 'Sobre mí' })).toBeVisible()
   })
 
-  it('su entrada por CSS anima el desplazamiento, nunca la opacidad', () => {
-    const css = leer('componets', 'about', 'about.css')
-
-    const keyframes = css.match(/@keyframes about-block-in\s*\{[\s\S]*?\n\}/)
-    expect(keyframes).not.toBeNull()
-    expect(keyframes[0]).toMatch(/transform/)
-    expect(keyframes[0]).not.toMatch(/opacity/)
-
-    const reglas = css.match(/\.js \.about__title,[\s\S]*?\n\}/)
-    expect(reglas).not.toBeNull()
-    expect(reglas[0]).not.toMatch(/opacity/)
+  it('la identidad tiene fallback estatico y recogida de scroll progresiva', () => {
+    const css = leer('componets', 'header', 'header.css')
+    expect(css).toMatch(/@supports \(animation-timeline: view\(\)\)/)
+    expect(css).toMatch(/prefers-reduced-motion: no-preference/)
+    expect(css).toMatch(/prefers-reduced-motion: reduce/)
+    expect(css).not.toMatch(/\.js \.hero__name/)
+    // A trailing animation shorthand resets timeline/range after production minification.
+    const scrollRule = css.match(/\.hero__copy\s*\{[^}]*animation-name:\s*hero-gather[^}]*\}/)?.[0]
+    expect(scrollRule).toBeDefined()
+    expect(scrollRule).not.toMatch(/(?:^|[;{])\s*animation\s*:/)
+    expect(scrollRule).toMatch(/animation-duration:\s*auto/)
+    expect(scrollRule).toMatch(/animation-timeline:\s*--hero-exit/)
+    expect(scrollRule).toMatch(/animation-range:\s*exit 0% exit 80%/)
   })
 })
 
@@ -328,6 +329,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
   const fs = require('fs')
   const path = require('path')
   const leer = (...partes) => fs.readFileSync(path.join(__dirname, '..', ...partes), 'utf8')
+
 
   it('retira los railes de progreso de la masthead', () => {
     const nav = leer('componets', 'nav', 'Nav.jsx')
@@ -342,102 +344,34 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(css).toMatch(/html\[data-language-transition\]\s*\{[\s\S]*?overflow-anchor:\s*none/)
   })
 
-  it('conecta tres decisiones reales al progreso de scroll de cada flagship', () => {
+  it('ofrece cuatro casos completos desde una seleccion compacta sin historias duplicadas', () => {
     render(<App pathname="/" />)
-
     const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
-    const articulos = within(portfolio).getAllByRole('article')
-    const principales = articulos.filter((article) => article.dataset.tier === 'primary')
-    const secundarios = articulos.filter((article) => article.dataset.tier === 'supporting')
-
-    expect(principales).toHaveLength(2)
-    expect(secundarios).toHaveLength(2)
-
-    const diccionario = require('../i18n/locales/es/translation.json')
-    principales.forEach((article, projectIndex) => {
-      const project = diccionario.portfolio.projects[projectIndex]
-      const decisions = diccionario.case_study.cases[project.slug].decisions.slice(0, 3)
-      const story = within(article).getByRole('list', {
-        name: diccionario.portfolio.story_label.replace('{{project}}', project.title),
-      })
-
-      expect(within(story).getAllByRole('listitem')).toHaveLength(3)
-      expect(within(story).getAllByRole('heading', { level: 4 }).map(({ textContent }) => textContent))
-        .toEqual(decisions.map(({ title }) => title))
-      decisions.forEach(({ body }) => expect(within(story).getByText(body)).toBeInTheDocument())
+    const articles = within(portfolio).getAllByRole('article')
+    const dictionary = require('../i18n/locales/es/translation.json')
+    expect(articles).toHaveLength(4)
+    dictionary.portfolio.projects.forEach((project) => {
+      const article = within(portfolio).getByRole('article', { name: project.title })
+      expect(within(article).getByText(project.description)).toBeVisible()
+      expect(within(article).getByRole('link', { name: dictionary.portfolio.case_link })).toHaveAttribute('href', `/proyectos/${project.slug}/`)
+      expect(within(article).getByRole('img')).toHaveAttribute('loading', 'lazy')
+      expect(within(article).getByRole('img')).toHaveStyle({ objectFit: 'contain' })
+      expect(article.querySelector('[data-story-mode], .portfolio__story')).toBeNull()
     })
-
-    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
-    expect(source).toMatch(/isPrimary \? \([\s\S]*?portfolio__media-motion/)
-    expect(source).toMatch(/\) : \([\s\S]*?<ProjectImage/)
-    expect(source).toMatch(/const PrimaryProjectCard[\s\S]*?useScroll\([\s\S]*?useMotionValueEvent\(/)
-    expect(source).toMatch(/offset:\s*\['start start', 'end 70%'\]/)
-    expect(source).toMatch(/latest >= 0\.67 \? 2 : latest >= 0\.34 \? 1 : 0/)
-    expect(source).toMatch(/useMediaQuery\('\(min-width: 1051px\)'\)/)
-    expect(source).toMatch(/useMediaQuery\('\(prefers-reduced-motion: reduce\)'\)/)
-    expect(source).toMatch(/typeof window === 'undefined'/)
-    expect(source).toMatch(/matchMedia\(query\)/)
-    expect(source).toMatch(/addEventListener\('change'/)
-    expect(source).toMatch(/const storyEnabled = isDesktopStory && !shouldReduceMotion/)
-    expect(source).toMatch(/if \(!storyEnabled\)\s+setActiveStep\(0\)/)
-    expect(source).toMatch(/if \(!storyEnabled\) return/)
-    expect(source).toMatch(/scaleY: storyEnabled \? scrollYProgress : 0/)
-    expect(source).toMatch(/aria-current=\{storyEnabled && index === activeStep \? 'step' : undefined\}/)
-    expect(source).toMatch(/data-active=\{storyEnabled && index === activeStep \? true : undefined\}/)
-    expect(source).not.toMatch(/useTransform|mediaScale|dynamicCrop|data-step/)
-    expect(source).toMatch(/strev:[\s\S]*?position: 'center',[\s\S]*?fit: 'contain'/)
-    expect(source).toMatch(/sereno:[\s\S]*?position: 'center',[\s\S]*?fit: 'contain'/)
-    expect(source).toMatch(/caseStudies\?\.\[project\.slug\]\?\.decisions \|\| \[\]\)\.slice\(0, 3\)/)
-    const supportingCard = source.match(/const ProjectCard = \([\s\S]*?\n\}\n\nconst PrimaryProjectCard/)
-    expect(supportingCard).not.toBeNull()
-    expect(supportingCard[0]).not.toMatch(/useScroll|useTransform|useMotionValueEvent/)
-    expect(source).not.toMatch(/useSpring|chapter-progress|whileInView/)
-    expect(source).not.toMatch(/opacity/)
-
-    const css = leer('componets', 'portfolio', 'portfolio.css')
-    expect(css).toMatch(/\.portfolio__media-motion,[\s\S]*?\.portfolio__media img\s*\{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/)
-    expect(css).not.toMatch(/--media-position|\.portfolio__media-motion\[data-step|transform:\s*scale\(/)
-    expect(css).not.toMatch(/object-position\s+\d+ms|\.portfolio__item--supporting[^}]+transform:\s*scale\(/)
-    expect(css).not.toMatch(/portfolio__chapter-progress|will-change/)
-    expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
   })
 
-  it('da ritmo editorial al paso activo sin duplicarlo ni mover la evidencia', () => {
+
+  it('conserva pies visibles y no mueve las capturas al interactuar', () => {
     render(<App pathname="/" />)
-
-    const portfolio = screen.getByRole('region', { name: 'Lo que resuelve' })
-    const principales = within(portfolio).getAllByRole('article')
-      .filter((article) => article.dataset.tier === 'primary')
-    const diccionario = require('../i18n/locales/es/translation.json')
-
-    principales.forEach((article, projectIndex) => {
-      const project = diccionario.portfolio.projects[projectIndex]
-      const firstDecision = diccionario.case_study.cases[project.slug].decisions[0]
-
-      expect(within(article).getAllByText(firstDecision.title)).toHaveLength(1)
-      expect(within(article).getByText(project.image_caption, { selector: 'figcaption' }))
-        .toBeInTheDocument()
+    const dictionary = require('../i18n/locales/es/translation.json')
+    dictionary.portfolio.projects.forEach((project) => {
+      const article = screen.getByRole('article', { name: project.title })
+      expect(within(article).getByText(project.image_caption, { selector: 'figcaption' })).toBeVisible()
     })
-
-    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
-    expect(source).not.toMatch(/portfolio__chapter-label/)
-
     const css = leer('componets', 'portfolio', 'portfolio.css')
-    const motionStart = css.indexOf('.portfolio__story-step h4')
-    const motionEnd = css.indexOf('.portfolio__tags')
-    const motionRules = css.slice(motionStart, motionEnd)
-
-    expect(motionStart).toBeGreaterThan(-1)
-    expect(motionEnd).toBeGreaterThan(motionStart)
-    expect(motionRules).toMatch(/transition:\s*color 220ms ease/)
-    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\] h4[\s\S]*?color:\s*var\(--project-signal\)/)
-    expect(motionRules).toMatch(/portfolio__story-step\[data-active='true'\] p[\s\S]*?color:\s*var\(--text-2\)/)
-    expect(motionRules).not.toMatch(/opacity|portfolio__media|picture|img|scale\(|translateX\(/)
-    expect(css).toMatch(/\.portfolio__story-track\s*\{[\s\S]*?width:\s*1px;[\s\S]*?background:\s*var\(--line-soft\)/)
-    expect(css).toMatch(/\.portfolio__story-progress\s*\{[\s\S]*?background:\s*var\(--project-signal\);[\s\S]*?transform-origin:\s*top/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.portfolio__story-step h4,[\s\S]*?transform:\s*none/)
+    expect(css).not.toMatch(/\.portfolio__item:hover \.portfolio__media img|position:\s*sticky|will-change/)
   })
+
 
   it('mantiene un unico observer de seccion sin duplicar el enlace activo', () => {
     render(<App pathname="/" />)
@@ -445,68 +379,24 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const css = leer('componets', 'nav', 'nav.css')
 
     expect(nav.match(/new IntersectionObserver/g)).toHaveLength(1)
-    expect(nav).not.toMatch(/addEventListener\(['"]scroll|requestAnimationFrame/)
+    expect(nav).not.toMatch(/addEventListener\(['"]scroll/)
     expect(nav).toMatch(/if \(!activeSectionListeners\.size\)[\s\S]*?activeSection = 'home'/)
     expect(nav).not.toMatch(/activeSectionLabel|portfolio-nav__section-context/)
     expect(css).not.toMatch(/portfolio-nav__section-context|portfolio-nav-context-in/)
   })
 
-  it('activa el relato solo en desktop sin reduced motion y reacciona a ambos cambios', async () => {
-    const originalMatchMedia = window.matchMedia
-    const queries = new Map()
-    let view
-
-    window.matchMedia = jest.fn((query) => {
-      if (queries.has(query)) return queries.get(query)
-
-      const listeners = new Set()
-      const mediaQuery = {
-        matches: query === '(min-width: 1051px)',
-        media: query,
-        onchange: null,
-        addEventListener: (type, listener) => {
-          if (type === 'change') listeners.add(listener)
-        },
-        removeEventListener: (type, listener) => {
-          if (type === 'change') listeners.delete(listener)
-        },
-        addListener: (listener) => listeners.add(listener),
-        removeListener: (listener) => listeners.delete(listener),
-        dispatchEvent: () => false,
-        setMatches: (matches) => {
-          mediaQuery.matches = matches
-          listeners.forEach((listener) => listener({ matches, media: query }))
-        },
-      }
-      queries.set(query, mediaQuery)
-      return mediaQuery
-    })
-
-    try {
-      view = render(<App pathname="/" />)
-      const strev = screen.getByRole('article', { name: 'Strev' })
-
-      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'scroll'))
-
-      act(() => queries.get('(min-width: 1051px)').setMatches(false))
-      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
-      expect(strev).not.toHaveAttribute('data-story-step')
-      within(strev).getAllByRole('listitem').forEach((step) => {
-        expect(step).not.toHaveAttribute('aria-current')
-        expect(step).not.toHaveAttribute('data-active')
+  it('conserva las decisiones tecnicas completas dentro de cada caso', () => {
+    const dictionary = require('../i18n/locales/es/translation.json')
+    Object.entries(dictionary.case_study.cases).forEach(([slug, project]) => {
+      const view = render(<App pathname={`/proyectos/${slug}/`} />)
+      project.decisions.forEach((decision) => {
+        expect(screen.getByText(decision.title)).toBeVisible()
+        expect(screen.getByText(decision.body)).toBeVisible()
       })
-
-      act(() => queries.get('(min-width: 1051px)').setMatches(true))
-      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'scroll'))
-
-      act(() => queries.get('(prefers-reduced-motion: reduce)').setMatches(true))
-      await waitFor(() => expect(strev).toHaveAttribute('data-story-mode', 'static'))
-      expect(strev).not.toHaveAttribute('data-story-step')
-    } finally {
-      view?.unmount()
-      window.matchMedia = originalMatchMedia
-    }
+      view.unmount()
+    })
   })
+
 
   it('presenta cuatro casos con un top 2 real y sin rotulos ordinales', () => {
     render(<App pathname="/" />)
@@ -542,40 +432,21 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
 
     const header = leer('componets', 'header', 'Header.jsx')
     expect(header).not.toMatch(/<article/)
-    expect(header).toMatch(/<div[\s\S]*?className=\{`hero__preview/)
+    expect(header).not.toMatch(/hero__preview|hero__stage/)
 
     const css = leer('componets', 'portfolio', 'portfolio.css')
-    const supporting = css.match(/\.portfolio__grid > \.portfolio__supporting\s*\{[\s\S]*?\n\}/)
-    expect(supporting).not.toBeNull()
-    expect(supporting[0]).toMatch(/margin-top:\s*clamp\(/)
+    expect(css).toMatch(/\.portfolio__supporting\s*\{[^}]*grid-column:\s*1 \/ -1/)
   })
 
-  it('mantiene solo el medio sticky y deja que las decisiones den altura al relato', () => {
+  it('compacta proyectos en dos columnas sin sticky ni altura ligada al scroll', () => {
     const css = leer('componets', 'portfolio', 'portfolio.css')
-
-    const stage = css.match(/\.portfolio__item--primary\s*\{[\s\S]*?\n\}/)
-    expect(stage).not.toBeNull()
-    expect(stage[0]).not.toMatch(/min-height:/)
-    expect(stage[0]).toMatch(/grid-template-columns:\s*minmax\(19rem, 0\.36fr\) minmax\(0, 0\.64fr\)/)
-    expect(stage[0]).toMatch(/grid-template-areas:\s*'body media'/)
-    expect(stage[0]).toMatch(/background:[\s\S]*?linear-gradient\([\s\S]*?var\(--surface-0\)/)
-    expect(stage[0]).toMatch(/border-top:\s*1px solid var\(--line-soft\)/)
-    expect(css).toMatch(/\.portfolio__item--primary:last-of-type\s*\{[\s\S]*?border-bottom:\s*1px solid var\(--line-soft\)/)
-    expect(css).toMatch(/\.portfolio__item--primary \.portfolio__media\s*\{[\s\S]*?position:\s*sticky;[\s\S]*?top:\s*calc\(var\(--nav-height\) \+ var\(--space-8\)\)/)
-    const body = css.match(/\.portfolio__item--primary \.portfolio__body\s*\{[\s\S]*?\n\}/)
-    expect(body).not.toBeNull()
-    expect(body[0]).toMatch(/grid-area:\s*body/)
-    expect(body[0]).not.toMatch(/position:\s*sticky|top:/)
-    expect(css).toMatch(/data-story-mode='scroll'[\s\S]*?min-height:\s*clamp\(7rem, 13svh, 9rem\)/)
-    expect(css).toMatch(/\.portfolio__media-frame\s*\{[\s\S]*?aspect-ratio:\s*16 \/ 10/)
-    const serenoFrame = css.match(/\.portfolio__item--sereno \.portfolio__media-frame\s*\{[\s\S]*?\n\}/)
-    expect(serenoFrame).not.toBeNull()
-    expect(serenoFrame[0]).toMatch(/background:\s*var\(--sereno-matte\)/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?grid-template-areas:[\s\S]*?'media'[\s\S]*?'body'/)
-    expect(css).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static/)
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?min-height:\s*0[\s\S]*?position:\s*static/)
-    expect(css).not.toMatch(/--media-position|transform:\s*scale\(|object-position\s+\d+ms/)
+    const source = leer('componets', 'portfolio', 'Portfolio.jsx')
+    expect(css).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/)
+    expect(css).toMatch(/object-fit:\s*contain/)
+    expect(css).not.toMatch(/position:\s*sticky|data-story|story-step/)
+    expect(source).not.toMatch(/useScroll|useMotionValueEvent|data-story/)
   })
+
 
   it('fija el cobalto como identidad global y mantiene las señales de producto localizadas', () => {
     const header = leer('componets', 'header', 'Header.jsx')
@@ -596,72 +467,13 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     expect(html).not.toMatch(/IBM\+Plex/)
 
     render(<App pathname="/" />)
-    const canvas = screen.getByRole('navigation', { name: 'Casos principales: Strev y Sereno' })
-    expect(within(canvas).getAllByRole('link')).toHaveLength(2)
-    expect(within(canvas).getByRole('link', { name: 'Abrir Strev' })).toHaveAttribute('href', '/proyectos/strev/')
-    expect(within(canvas).getByRole('link', { name: 'Abrir Sereno' })).toHaveAttribute('href', '/proyectos/sereno/')
-    expect(within(canvas).queryByRole('button')).not.toBeInTheDocument()
-
-    const selector = screen.getByRole('group', { name: 'Elegir producto destacado' })
-    const selectStrev = within(selector).getByRole('button', { name: 'Strev' })
-    const selectSereno = within(selector).getByRole('button', { name: 'Sereno' })
-    expect(selectStrev).toHaveAttribute('aria-pressed', 'true')
-    expect(selectSereno).toHaveAttribute('aria-pressed', 'false')
-    expect(canvas).toHaveAttribute('data-active-product', 'strev')
-    expect(selectSereno).toHaveAttribute('aria-controls', 'hero-product-sereno')
-    const pathBeforeSelection = window.location.pathname
-    fireEvent.click(selectSereno)
-    expect(selectStrev).toHaveAttribute('aria-pressed', 'false')
-    expect(selectSereno).toHaveAttribute('aria-pressed', 'true')
-    expect(canvas).toHaveAttribute('data-active-product', 'sereno')
-    expect(window.location.pathname).toBe(pathBeforeSelection)
-    const { caseHref } = require('../lib/routing')
-    expect(caseHref('en', 'strev')).toBe('/en/projects/strev/')
-    expect(caseHref('en', 'sereno')).toBe('/en/projects/sereno/')
-
-    expect(header).toMatch(/products\.map/)
-    expect(header).toMatch(/caseHref\(language, product\.slug\)/)
-    expect(header).not.toMatch(/portrait|headshot|alex-editorial-portrait/)
-    expect(headerCss).toMatch(/\.hero\s*\{[\s\S]*?background:\s*var\(--surface-0\)/)
-    expect(headerCss).not.toMatch(/\.hero::before|border-left/)
-    const heroStage = headerCss.match(/\.hero__stage\s*\{[\s\S]*?\n\}/)
-    const heroPreview = headerCss.match(/\.hero__preview\s*\{[\s\S]*?\n\}/)
-    const heroImage = headerCss.match(/\.hero__preview img\s*\{[\s\S]*?\n\}/)
-    expect(heroStage).not.toBeNull()
-    expect(heroStage[0]).toMatch(/display:\s*flex/)
-    expect(heroStage[0]).toMatch(/flex-direction:\s*column/)
-    expect(heroPreview).not.toBeNull()
-    expect(heroPreview[0]).toMatch(/flex:\s*1 1 0/)
-    expect(heroPreview[0]).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) clamp\(10rem, 21%, 12\.5rem\)/)
-    expect(headerCss).toMatch(/\.hero__preview \+ \.hero__preview\s*\{[\s\S]*?border-top:\s*1px solid var\(--line-soft\)/)
-    expect(headerCss).toMatch(/\.hero__preview-caption\s*\{[\s\S]*?background-color 240ms ease/)
-    expect(heroImage).not.toBeNull()
-    expect(heroImage[0]).toMatch(/object-fit:\s*contain/)
-    expect(heroImage[0]).toMatch(/object-position:\s*center/)
-    expect(heroImage[0]).toMatch(/min-height:\s*0;[\s\S]*?max-height:\s*100%/)
-    expect(heroImage[0]).not.toMatch(/object-fit:\s*cover|transform:\s*scale/)
-    expect(headerCss).not.toMatch(/\.hero__preview(?::focus-within|:hover)? img\s*\{[\s\S]*?transform:\s*scale/)
-    expect(headerCss).not.toMatch(/flex-grow|flex-basis|data-active-product=/)
-    expect(headerCss).toMatch(/\.hero__preview:focus-within\s*\{[\s\S]*?outline:\s*3px solid var\(--focus-ring\)/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 1050px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*?height:\s*clamp\(28rem, 58vw, 34rem\)/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__product-selector\s*\{[\s\S]*?display:\s*grid[\s\S]*?\.hero__preview\[data-active='true'\] \.hero__preview-caption/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__stage\s*\{[\s\S]*?height:\s*clamp\(16rem, 65vw, 18rem\)/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 360px\)[\s\S]*?\.hero__stage\s*\{[\s\S]*?height:\s*12rem/)
-    const narrowHeader = headerCss.slice(
-      headerCss.indexOf('@media screen and (max-width: 360px)'),
-      headerCss.indexOf('@media (prefers-reduced-motion: reduce)'),
-    )
-    expect(narrowHeader).not.toMatch(/\.hero__availability\s*\{[\s\S]*?display:\s*none/)
-    expect(narrowHeader).toMatch(/\.hero__signature\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\) auto/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__preview\s*\{[\s\S]*?position:\s*absolute[\s\S]*?visibility:\s*hidden[\s\S]*?pointer-events:\s*none/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?grid-template-rows:\s*minmax\(0, 1fr\) auto[\s\S]*?\.hero__preview-label\s*\{[\s\S]*?display:\s*block[\s\S]*?\.hero__preview-proof\s*\{[\s\S]*?display:\s*none/)
-    expect(headerCss).toMatch(/\.hero__preview\[data-active='true'\]\s*\{[\s\S]*?visibility:\s*visible[\s\S]*?pointer-events:\s*auto/)
-    expect(headerCss).not.toMatch(/visibility\s+0s\s+linear\s+200ms/)
-    expect(headerCss).toMatch(/@media \(prefers-reduced-motion: reduce\) and \(max-width: 600px\)[\s\S]*?\.hero__preview[\s\S]*?transition:\s*none/)
-    expect(headerCss).toMatch(/\.hero__preview-link\s*\{[\s\S]*?min-height:\s*44px;[\s\S]*?min-inline-size:\s*44px/)
-    expect(headerCss).toMatch(/@media screen and \(max-width: 600px\)[\s\S]*?\.hero__socials a\s*\{[\s\S]*?width:\s*44px;[\s\S]*?height:\s*44px/)
-    expect(headerCss).toMatch(/\.hero__name\s*\{[\s\S]*?font-size:\s*clamp\(4\.5rem, 7\.6vw, 6rem\)/)
-    expect(portfolioCss).toMatch(/\.portfolio__item--primary \.portfolio__title\s*\{[\s\S]*?5rem/)
+    const hero = document.getElementById('home')
+    expect(within(hero).queryByRole('img')).toBeNull()
+    expect(hero).not.toHaveTextContent(/Strev|Sereno/)
+    expect(within(hero).getByRole('link', { name: 'Conóceme' })).toHaveAttribute('href', '#about')
+    expect(header).not.toMatch(/hero__preview|product-selector|strevImage|serenoImage/)
+    expect(headerCss).toMatch(/background:\s*var\(--surface-0\)/)
+    expect(portfolioCss).toMatch(/\.portfolio__title\s*\{[^}]*font-size:\s*clamp\(/)
     expect(portfolioCss).toMatch(/\.portfolio__item--supporting \.portfolio__links a\s*\{[\s\S]*?min-inline-size:\s*44px/)
     expect(`${headerCss}\n${portfolioCss}`).not.toMatch(/var\(--font-mono\)/)
   })
@@ -704,8 +516,7 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const css = leer('componets', 'portfolio', 'portfolio.css')
 
     expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__supporting-list\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
-    expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__media\s*\{[\s\S]*?display:\s*flex/)
-    expect(css).toMatch(/@media screen and \(max-width: 700px\)[\s\S]*?\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*normal/)
+    expect(css).not.toMatch(/text-overflow:\s*ellipsis|white-space:\s*nowrap/)
     const supportingMediaRules = [...css.matchAll(/\.portfolio__item--supporting \.portfolio__media\s*\{([^}]*)\}/g)]
     expect(supportingMediaRules.every(([, rule]) => !/display:\s*none/.test(rule))).toBe(true)
     expect(css).not.toMatch(/\.portfolio__item--savemymoneynow\.portfolio__item--supporting \.portfolio__title\s*\{[\s\S]*?white-space:\s*nowrap/)
@@ -734,16 +545,16 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     const en = require('../i18n/locales/en/translation.json')
 
     expect(es.header.tagline).toBe(
-      'Diseño para que un proceso lento no pare la pantalla.',
+      'Desarrollo aplicaciones web y herramientas de automatización.',
     )
     expect(es.header.support).toBe(
-      'Strev deja al entrenador seguir mientras analiza vídeo. Sereno me dice qué sesión está trabajando, ejecutando un comando o esperando una respuesta.',
+      'Trabajo en la interfaz, la API y el despliegue. Compruebo lo que entrego en el entorno real.',
     )
     expect(en.header.tagline).toBe(
-      'I build products where slow work never freezes the interface.',
+      'I develop web applications and automation tools.',
     )
     expect(en.header.support).toBe(
-      'Strev lets the trainer carry on while it analyses video. Sereno tells me which session is working, running a command or waiting for a reply.',
+      'I work on the interface, the API and deployment. I check what I deliver in the real environment.',
     )
     expect(es.header.product_canvas_label).toBe('Casos principales: Strev y Sereno')
     expect(en.header.product_canvas_label).toBe('Main case studies: Strev and Sereno')
@@ -761,15 +572,12 @@ describe('el escenario de producto usa movimiento como señal y no como bloqueo'
     )
   })
 
-  it('revela contenido visible con un gesto editorial breve', () => {
+  it('revela contenido sin ocultar el HTML servido', () => {
     const source = leer('componets', 'common', 'Reveal.jsx')
-
-    expect(source).not.toMatch(/opacity:\s*0/)
-    expect(source).toMatch(/hidden:\s*\{ y:\s*12 \}/)
-    expect(source).toMatch(/duration:\s*0\.34/)
-    expect(source).toMatch(/staggerChildren:\s*0\.045/)
-    expect(source).toMatch(/amount:\s*0\.15/)
-    expect(source).not.toMatch(/margin:/)
+    expect(source).toMatch(/target.animate/)
+    expect(source).toMatch(/prefers-reduced-motion: reduce/)
+    expect(source).toMatch(/animation.cancel/)
+    expect(source).not.toMatch(/initial=|whileInView=/)
   })
 
   it('abre y cierra el menú sin display brusco y deja reduced motion estático', () => {
@@ -847,9 +655,9 @@ describe('el orden de foco sigue al orden visual', () => {
 
     expect(etiquetas).toEqual([
       'Alex Micó',
-      'Proyectos',
       'Sobre Mí',
       'Experiencia',
+      'Proyectos',
       'Stack',
       'Contacto',
       'EN',
@@ -865,7 +673,7 @@ describe('el orden de foco sigue al orden visual', () => {
     const idioma = enlaces.findIndex((enlace) => (
       /Cambiar idioma/i.test(enlace.getAttribute('aria-label') || '')
     ))
-    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Abrir Strev y Sereno')
+    const verProyectos = enlaces.findIndex((enlace) => enlace.textContent === 'Conóceme')
 
     expect(idioma).toBeGreaterThanOrEqual(0)
     expect(verProyectos).toBeGreaterThan(idioma)

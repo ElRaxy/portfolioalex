@@ -10,26 +10,16 @@ describe('v16 compacta el recorrido sin perder evidencia', () => {
   const footerCss = leer('componets', 'footer', 'footer.css')
   const portfolioSource = leer('componets', 'portfolio', 'Portfolio.jsx')
 
-  it('acorta el relato de escritorio sin animar ni recortar la evidencia visual', () => {
-    expect(portfolioCss).toMatch(
-      /\.portfolio__item\[data-story-mode='scroll'\] \.portfolio__story-step\s*\{[\s\S]*?min-height:\s*clamp\(7rem, 13svh, 9rem\)/,
-    )
-    expect(portfolioCss).not.toMatch(/transform:\s*scale\(/)
-    expect(portfolioCss).not.toMatch(/\.portfolio__item:hover \.portfolio__media img/)
+  it('la seleccion mantiene imagenes integras y no requiere progreso de scroll', () => {
+    expect(portfolioCss).toMatch(/object-fit:\s*contain/)
+    expect(portfolioCss).not.toMatch(/position:\s*sticky|data-story-mode/)
+    expect(portfolioSource).not.toMatch(/useScroll|useMotionValueEvent/)
   })
 
-  it('presenta en movil las decisiones como un indice compacto y conserva sus titulos en el DOM', () => {
-    const mobile = portfolioCss.match(
-      /@media screen and \(max-width: 700px\)\s*\{[\s\S]*?(?=@media screen and \(max-width: 360px\))/,
-    )
-
-    expect(mobile).not.toBeNull()
-    expect(mobile[0]).toMatch(/\.portfolio__story\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/)
-    expect(mobile[0]).toMatch(/counter-reset:\s*project-decision/)
-    expect(mobile[0]).toMatch(/\.portfolio__item\[data-story-mode\] \.portfolio__story-step\s*\{[\s\S]*?min-height:\s*44px/)
-    expect(mobile[0]).toMatch(/\.portfolio__item\[data-story-mode\] \.portfolio__story-step p\s*\{[\s\S]*?display:\s*none/)
-    expect(portfolioSource).toMatch(/<h4>\{decision\.title\}<\/h4>[\s\S]*?<p>\{decision\.body\}<\/p>/)
-    expect(mobile[0]).toMatch(/\.portfolio__item--supporting \.portfolio__media\s*\{[\s\S]*?display:\s*flex/)
+  it('usa una sola columna movil con las cuatro evidencias en el documento', () => {
+    const mobile = portfolioCss.slice(portfolioCss.indexOf('@media screen and (max-width: 700px)'))
+    expect(mobile).toMatch(/\.portfolio__supporting-list\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)/)
+    expect(mobile).not.toMatch(/display:\s*none/)
   })
 
   it('reduce espacios repetidos y mantiene legibilidad y targets tactiles', () => {

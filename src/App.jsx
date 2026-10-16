@@ -69,9 +69,9 @@ function App({ pathname }) {
               </>
             ) : (
               <>
-                <Portfolio />
                 <About />
                 <ExperienceTimeline />
+                <Portfolio />
                 <Stack />
                 <Contact />
                 <Footer />

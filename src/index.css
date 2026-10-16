@@ -258,6 +258,7 @@
   --radius-lg: 12px;
   --radius-full: 999px;
   --transition: 180ms ease;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --nav-height: 4rem;
   --container-width-lg: 76rem;
   --container-width-md: 66rem;
@@ -528,6 +529,30 @@ select {
   }
 }
 
+/* Navigation feedback stays on existing controls, without changing their layout. */
+:where(.portfolio__links a, .case__index a, .site-footer__mail) {
+  position: relative;
+}
+:where(.portfolio__links a, .case__index a, .site-footer__mail)::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms var(--ease-out);
+}
+:where(.portfolio__links a, .case__index a, .site-footer__mail):focus-visible::after {
+  transform: scaleX(1);
+  transition: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(.portfolio__links a, .case__index a, .site-footer__mail):hover::after {
+    transform: scaleX(1);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -546,4 +571,19 @@ select {
   :root[data-theme-transition] {
     transition: none;
   }
+}
+
+/* Normal same-origin links opt into a short native document transition. */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: document-leave 220ms var(--ease-out) both; }
+::view-transition-new(root) { animation: document-enter 220ms var(--ease-out) both; }
+@keyframes document-leave {
+  to { opacity: 0; transform: translateY(-4px); }
+}
+@keyframes document-enter {
+  from { opacity: 0; transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
