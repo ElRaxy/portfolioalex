@@ -61,7 +61,7 @@ const SOCIAL_IMAGE_URL = 'https://portfolioalex-mico.vercel.app/og-image.png?v=3
 const SOCIAL_IMAGE_ALT = 'Alex Micó Robles · Full Stack Developer · Strev + Sereno'
 const SOCIAL_ASSET_SHA256 = {
   'og-image.png': '86d3162b89bc961158e6da1f2d02e5c826b47878e7e4e0c3436d18ebcf239d02',
-  'apple-touch-icon.png': '420e9780eefc2f7020f23d9d0e352b417fda274a3bdc0126d88b8724f15109d3',
+  'apple-touch-icon.png': '080d06268661e61fac9ad9123b8ce01dcaf1626d8680141a58b88db2b92af06f',
 }
 
 const metaContent = (html, attribute, key) => html.match(
@@ -329,12 +329,12 @@ for (const [asset, width, height] of [
     fallos.push(`build/${asset}: no coincide con public/${asset}`)
   }
   if (digest !== SOCIAL_ASSET_SHA256[asset]) {
-    fallos.push(`public/${asset}: el SHA-256 no coincide con el raster v9 aprobado`)
+    fallos.push(`public/${asset}: el SHA-256 no coincide con el raster de referencia`)
   }
 }
 
-if (!leer('404.html').includes('/favicon.svg?v=3')) {
-  fallos.push('404.html: no referencia el favicon v3')
+if (!leer('404.html').includes('/favicon.svg?v=personal-icon-1016-01')) {
+  fallos.push('404.html: no referencia el favicon personal')
 }
 
 for (const [idioma, nombre] of Object.entries(CV_POR_IDIOMA)) {

@@ -1,169 +1,102 @@
-/* Travesuras1013: bounded illustration gestures; links, reading and scrolling stay native. */
+/* One position owns one pose. Reading, controls and native scrolling never move for decoration. */
 (() => {
   if (!document.body.classList.contains('personal-world') || !('IntersectionObserver' in window)) return;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const fine = matchMedia('(hover: hover) and (pointer: fine)');
-  const drawings = [...document.querySelectorAll('[data-world-scene]')];
-  const controls = [...document.querySelectorAll('.capability-link, .project-heading, .contact-options a, .name-composition, .portrait-scene')];
-  const targets = [...drawings, ...controls];
-  const active = new Map(), inside = new Set(), encounters = new Map(), pending = new Set();
-  const entryCovered = new Set(window.portfolioEntry?.started ? drawings.filter(drawing => drawing.closest('.hero-personal')) : []);
-  const ease = 'cubic-bezier(.23,1,.32,1)';
-  let touch = null, suspended = false;
-  const blocked = () => suspended || reduced.matches || document.hidden || !document.hasFocus() || document.documentElement.classList.contains('keyboard') || window.portfolioEntry?.active;
-  const stop = owner => {
-    active.get(owner)?.forEach(animation => animation.cancel());
-    active.delete(owner);
+  const compact = matchMedia('(max-width:759px)');
+  const root = document.documentElement;
+  const progress = document.querySelector('.reading-progress');
+  const entries = [], near = new Set();
+  let frame = 0, suspended = false;
+  const add = (wrapper, kind, targets) => {
+    if (wrapper && targets.length) entries.push({wrapper, kind, targets, last:null});
   };
-  const stopAll = () => { touch = null; targets.forEach(stop); };
-  const animate = (owner, element, frames, duration = 420, delay = 0) => {
-    if (!element) return;
-    const animation = element.animate(frames, { duration, delay, easing: ease, fill: 'backwards' });
-    if (!active.has(owner)) active.set(owner, new Set());
-    const batch = active.get(owner);
-    batch.add(animation);
-    animation.finished.then(() => {
-      batch.delete(animation);
-      if (!batch.size && active.get(owner) === batch) active.delete(owner);
-    }).catch(() => {});
+  document.querySelectorAll('.journey-window').forEach(wrapper => add(wrapper, 'media', [...wrapper.querySelectorAll('.journey-media')]));
+  document.querySelectorAll('.journey-accent').forEach(target => add(target.parentElement, 'accent', [target]));
+  document.querySelectorAll('section:not(.hero-personal) [data-world-scene]').forEach(wrapper => {
+    add(wrapper, 'drawing', [...wrapper.querySelectorAll('[pathLength="1"]')]);
+    const gesture = wrapper.querySelector('.web-piece,.automation-cable,.review-pencil,.code-symbol,.work-sheet,.talk-pencil');
+    if (gesture) add(wrapper, 'gesture', [gesture]);
+  });
+  const blocked = () => suspended || reduced.matches || document.hidden || !document.hasFocus() || root.classList.contains('keyboard');
+  const arrival = (top, height) => {
+    const p = Math.max(0, Math.min(1, (.92 * height - top) / (.30 * height)));
+    return p >= 1 - 1e-9 ? 1 : p * p * (3 - 2 * p);
   };
-  const draw = (owner, selector, delay = 0) => {
-    owner.querySelectorAll(selector).forEach((path, index) => animate(owner, path,
-      [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 360, delay + index * 60));
-  };
-  const play = owner => {
-    if (!owner || !inside.has(owner) || (encounters.get(owner) || 0) >= 2 || active.has(owner)) return;
-    if (window.portfolioEntry?.active && owner.closest('.hero-personal')) return;
-    if (blocked()) { pending.add(owner); return; }
-    pending.delete(owner);
-    encounters.set(owner, (encounters.get(owner) || 0) + 1);
-    const scene = owner.dataset.worldScene;
-    if (scene === 'name') {
-      draw(owner, '.name-stroke');
-    } else if (scene === 'web') {
-      animate(owner, owner.querySelector('.web-piece'), [
-        { transform: 'translate(3px,-2px) rotate(-5deg)' }, { transform: 'translate(0,0) rotate(0deg)' }
-      ], 420);
-      animate(owner, owner.querySelector('.web-cursor'), [
-        { transform: 'translate(4px,2px)' }, { transform: 'translate(0,0)' }
-      ], 480);
-    } else if (scene === 'automation') {
-      animate(owner, owner.querySelector('.automation-knot'), [{ opacity: 1 }, { opacity: 0 }], 420);
-      animate(owner, owner.querySelector('.automation-cable'), [{ opacity: 0 }, { opacity: 1 }], 420, 80);
-    } else if (scene === 'review') {
-      draw(owner, '.review-strike');
-      draw(owner, '.review-rewrite', 180);
-      animate(owner, owner.querySelector('.review-pencil'), [
-        { transform: 'translate(-3px,2px)' }, { transform: 'translate(0,0)' }
-      ], 480, 60);
-    } else if (scene === 'code' && owner.matches('.portrait-code')) {
-      animate(owner, owner.querySelector('.portrait-bug'), [
-        { transform: 'translateX(-4px)' }, { transform: 'translateX(0)' }
-      ], 420);
-      draw(owner, '.bug-bracket', 80);
-    } else if (scene === 'code') {
-      draw(owner, '.code-line');
-      animate(owner, owner.querySelector('.code-caret'), [
-        { transform: 'translateX(-10px)', opacity: .35 },
-        { transform: 'translateX(0)', opacity: 1 }
-      ], 480, 60);
-      animate(owner, owner.querySelector('.code-symbol'), [
-        { transform: 'scaleX(.88)' }, { transform: 'scaleX(1)' }
-      ], 420);
-    } else if (scene === 'work') {
-      animate(owner, owner.querySelector('.work-sheet'), [
-        { transform: 'translate(3px,-2px)' }, { transform: 'translate(0,0)' }
-      ], 420);
-      draw(owner, '.work-clip');
-      draw(owner, '.work-connect', 120);
-    } else if (scene === 'talk') {
-      animate(owner, owner.querySelector('.talk-pencil'), [
-        { transform: 'translate(-4px,2px)' }, { transform: 'translate(0,0)' }
-      ], 480);
-      draw(owner, '.talk-line', 120);
-      animate(owner, owner.querySelector('.note-corner'), [
-        { transform: 'rotate(-4deg)' }, { transform: 'rotate(0deg)' }
-      ], 360);
-    } else if (owner.matches('.project-heading')) {
-      draw(owner, '.project-accent path');
-    } else {
-      animate(owner, owner.querySelector('.contact-option-arrow, span[aria-hidden]'), [
-        { transform: 'translate(0,0)' },
-        { transform: 'translate(3px,-3px)', offset: .45 },
-        { transform: 'translate(0,0)' }
-      ], 320);
-    }
-  };
-  const interact = control => {
-    if (control.matches('.portrait-scene')) {
-      play(control.querySelector('.portrait-code'));
-      return;
-    }
-    if (control.matches('.name-composition')) {
-      play(control.querySelector('[data-world-scene="name"]'));
-      return;
-    }
-    play(control);
-    const localDrawing = control.closest('.hero-note')?.querySelector('[data-world-scene]');
-    play(localDrawing || control.closest('section')?.querySelector('[data-world-scene]'));
-  };
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(({ target, isIntersecting }) => {
-      if (!isIntersecting) {
-        inside.delete(target); encounters.delete(target); pending.delete(target); stop(target);
-        if (touch?.target === target) touch = null;
-        return;
+  const apply = (entry, value) => {
+    if (entry.last === value) return;
+    entry.last = value;
+    const remaining = 1 - value;
+    entry.targets.forEach(target => {
+      if (entry.kind === 'media') {
+        target.style.transform = value === 1 ? 'none' : `translate3d(0,${remaining * (compact.matches ? 12 : 24)}px,0) scale(${1 + remaining * (compact.matches ? .02 : .035)})`;
+        target.style.clipPath = value === 1 ? 'none' : `inset(0 0 ${remaining * 8}% 0 round 4px)`;
+      } else if (entry.kind === 'accent') {
+        target.style.transform = `scaleX(${.2 + .8 * value})`;
+      } else if (entry.kind === 'drawing') {
+        target.style.strokeDashoffset = String(remaining);
+      } else {
+        target.style.transform = value === 1 ? 'none' : `translate(${remaining * 8}px,${remaining * -4}px) rotate(${remaining * -5}deg)`;
       }
-      if (inside.has(target)) return;
-      inside.add(target);
-      // The CSS entrance already presented these drawings, including with a late IO callback.
-      if (entryCovered.delete(target)) encounters.set(target, 1);
-      else if (target.dataset.worldScene || target.matches('.project-heading')) play(target);
     });
-  }, { threshold: 0, rootMargin: '0px 0px -28px 0px' });
-  targets.forEach(target => observer.observe(target));
-  controls.forEach(control => {
-    control.addEventListener('pointerenter', event => {
-      if (fine.matches && ['mouse', 'pen'].includes(event.pointerType)) interact(control);
+  };
+  const settle = () => {
+    cancelAnimationFrame(frame); frame = 0;
+    entries.forEach(entry => apply(entry, 1));
+  };
+  const render = () => {
+    frame = 0;
+    const height = window.innerHeight;
+    const travel = root.scrollHeight - height;
+    const end = window.scrollY >= travel - 1;
+    const disabled = blocked();
+    // Read stable wrappers as a batch. Transformed children cannot feed back into progress.
+    const poses = [...near].map(entry => {
+      const rect = entry.wrapper.getBoundingClientRect();
+      const focused = entry.wrapper.closest('.project,.hero-note,.about-heading-row,.work-heading,.contact-intro')?.contains(document.activeElement);
+      return [entry, disabled || end || focused || !rect.width || !rect.height ? 1 : arrival(rect.top, height)];
     });
-    control.addEventListener('pointerleave', event => {
-      if (event.pointerType !== 'touch') stop(control);
-    });
-    control.addEventListener('pointerdown', event => {
-      // Do not block the first physical touch after Tab: app.js clears modality on bubbling.
-      if (event.pointerType !== 'touch' || event.isPrimary === false || reduced.matches || suspended || document.hidden || !document.hasFocus()) return;
-      touch = { target: control, id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now() };
-    });
-    control.addEventListener('pointermove', event => {
-      if (touch?.id === event.pointerId && Math.hypot(event.clientX - touch.x, event.clientY - touch.y) >= 10) touch = null;
-    });
-    control.addEventListener('pointerup', event => {
-      const gesture = touch;
-      touch = null;
-      if (!gesture || gesture.target !== control || gesture.id !== event.pointerId || performance.now() - gesture.time > 500 || Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y) >= 10) return;
-      interact(control);
-    });
-    control.addEventListener('pointercancel', () => { touch = null; stop(control); });
-    if (control.matches('.project-heading')) control.parentElement.addEventListener('toggle', () => {
-      if (control.parentElement.open) play(control);
-    });
+    if (progress) progress.style.transform = `scaleX(${travel > 0 ? Math.max(0, Math.min(1, window.scrollY / travel)) : 0})`;
+    if (disabled || end) entries.forEach(entry => apply(entry, 1));
+    else poses.forEach(([entry, value]) => apply(entry, value));
+  };
+  const refresh = () => {
+    if (suspended || document.hidden) return;
+    if (!frame) frame = requestAnimationFrame(render);
+  };
+  const byWrapper = new Map();
+  entries.forEach(entry => {
+    if (!byWrapper.has(entry.wrapper)) byWrapper.set(entry.wrapper, []);
+    byWrapper.get(entry.wrapper).push(entry);
   });
-  window.addEventListener('scroll', () => { touch = null; }, { passive: true });
-  const resumePending = () => { if (!blocked()) [...pending].forEach(play); };
-  window.addEventListener('focus', resumePending);
-  window.addEventListener('portfolio:entryend', resumePending);
-  document.addEventListener('pointerdown', () => queueMicrotask(resumePending));
-  reduced.addEventListener('change', () => { stopAll(); resumePending(); });
-  fine.addEventListener('change', stopAll);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(); else resumePending(); });
-  window.addEventListener('blur', stopAll);
+  const observer = new IntersectionObserver(changes => {
+    changes.forEach(({target, isIntersecting, boundingClientRect}) => {
+      byWrapper.get(target).forEach(entry => {
+        if (isIntersecting) near.add(entry);
+        else { near.delete(entry); apply(entry, blocked() || boundingClientRect.top < 0 ? 1 : 0); }
+      });
+    });
+    refresh();
+  }, {rootMargin:'150px', threshold:0});
+  byWrapper.forEach((_, wrapper) => observer.observe(wrapper));
+  window.portfolioJourney = Object.freeze({refresh, settle});
+  window.addEventListener('scroll', refresh, {passive:true});
+  window.addEventListener('resize', () => { entries.forEach(entry => { entry.last = null; }); refresh(); }, {passive:true});
+  window.addEventListener('load', refresh);
+  window.addEventListener('portfolio:entryend', refresh);
+  window.addEventListener('hashchange', refresh);
+  window.addEventListener('focus', refresh);
+  window.addEventListener('blur', settle);
+  document.addEventListener('toggle', refresh, true);
+  document.addEventListener('focusin', refresh);
+  document.addEventListener('focusout', refresh);
   document.addEventListener('keydown', event => {
-    if (['Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Home', 'End', 'PageDown', 'PageUp', ' '].includes(event.key)) stopAll();
+    if (['Tab','Enter','Escape',' ','ArrowDown','ArrowUp','Home','End','PageDown','PageUp'].includes(event.key)) settle();
   });
-  window.addEventListener('pagehide', () => {
-    suspended = true; stopAll(); observer.disconnect(); inside.clear(); encounters.clear(); pending.clear();
-  });
-  window.addEventListener('pageshow', () => {
-    suspended = false; targets.forEach(target => observer.observe(target));
-  });
+  document.addEventListener('pointerdown', () => queueMicrotask(refresh));
+  document.addEventListener('visibilitychange', () => document.hidden ? settle() : refresh());
+  reduced.addEventListener('change', () => { settle(); refresh(); });
+  window.addEventListener('pagehide', () => { suspended = true; settle(); observer.disconnect(); near.clear(); });
+  window.addEventListener('pageshow', () => { suspended = false; byWrapper.forEach((_, wrapper) => observer.observe(wrapper)); refresh(); });
+  document.fonts?.ready.then(refresh);
+  refresh();
 })();

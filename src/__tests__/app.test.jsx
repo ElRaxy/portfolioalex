@@ -1250,9 +1250,9 @@ describe('paginas de caso de estudio', () => {
     expect(favicon).toMatch(/<title(?:\s[^>]*)?>Alex Micó Robles<\/title>/)
     expect(favicon).not.toMatch(/<text\b/)
     expect(head.match(/og-image\.png\?v=3/g)).toHaveLength(3)
-    expect(head).toMatch(/favicon\.svg\?v=3/)
-    expect(head).toMatch(/apple-touch-icon\.png\?v=3/)
-    expect(notFound).toMatch(/favicon\.svg\?v=3/)
+    expect(head).toMatch(/favicon\.svg\?v=personal-icon-1016-01/)
+    expect(head).toMatch(/apple-touch-icon\.png\?v=personal-icon-1016-01/)
+    expect(notFound).toMatch(/favicon\.svg\?v=personal-icon-1016-01/)
 
     expect(`${product}\n${design}\n${designJson}`).toMatch(/Cobalt Product Stage/)
     expect(`${design}\n${designJson}`).toMatch(/Anek Latin/)

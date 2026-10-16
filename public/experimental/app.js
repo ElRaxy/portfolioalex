@@ -1,4 +1,5 @@
 'use strict';
+const personalWorld = document.body.classList.contains('personal-world');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 const easeOut = 'cubic-bezier(.23,1,.32,1)';
@@ -101,6 +102,7 @@ let summaryFrame = 0;
 let previousOverflowAnchor = '';
 let caseNextFocus = null;
 let smoothHash = null;
+let preparedProjectHash = null;
 let smoothActive = false;
 let smoothRestoreTimer = 0;
 let smoothEndTimer = 0;
@@ -121,25 +123,32 @@ const observeSections = () => {
   sections.forEach(section => sectionObserver.observe(section));
 };
 observeSections();
-markSection(location.hash.slice(1) || 'inicio');
+markSection(window.location.hash.slice(1) || 'inicio');
 window.addEventListener('hashchange', () => {
   stopMotion();
-  if (smoothHash !== location.hash) cancelNativeScroll();
+  if (smoothHash !== window.location.hash) cancelNativeScroll();
   smoothHash = null;
-  if (!openHashProject()) {
-    markSection(location.hash.slice(1) || 'inicio');
-    if (caseNextFocus === '#contacto' && location.hash === caseNextFocus) document.querySelector('.email').focus({preventScroll:true});
+  const prepared = preparedProjectHash === window.location.hash;
+  preparedProjectHash = null;
+  if (!openHashProject({align:!prepared})) {
+    markSection(window.location.hash.slice(1) || 'inicio');
+    if (caseNextFocus === '#contacto' && window.location.hash === caseNextFocus) document.querySelector('.email').focus({preventScroll:true});
   }
   caseNextFocus = null;
   queueProgress();
 });
 document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
+  const localActivation = event?.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+  if (!localActivation || event.defaultPrevented || link.hasAttribute('download')) return;
   stopMotion();
   cancelNativeScroll();
-  const localActivation = event?.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
   // Remember focus ownership before native exclusivity hides the current panel.
   caseNextFocus = localActivation && link.classList.contains('case-next') &&
     (document.activeElement === link || keyboard || event.detail === 0) ? link.hash : null;
+  // Resolve exclusive-details geometry before the browser chooses its native anchor destination.
+  const projectTarget = projectPanels.some(panel => `#${panel.id}` === link.hash);
+  preparedProjectHash = projectTarget && link.hash !== window.location.hash ? link.hash : null;
+  if (projectTarget) openHashProject({hash:link.hash,align:false});
   if (!reduced.matches && !keyboard && event?.detail > 0 && localActivation) {
     smoothHash = link.hash;
     smoothActive = true;
@@ -147,8 +156,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener(
     smoothRestoreTimer = setTimeout(() => { document.documentElement.style.scrollBehavior = ''; },0);
     smoothEndTimer = setTimeout(finishNativeScroll,1500);
   }
-  // An anchor to the current fragment emits no hashchange; still reopen its native case.
-  if (localActivation && link.hash === location.hash && projectPanels.some(panel => `#${panel.id}` === link.hash)) openHashProject();
+  // Same-fragment activation also uses the freshly opened native target; no second scroll.
 }));
 
 const progress = document.querySelector('.reading-progress');
@@ -161,6 +169,7 @@ function updateHeaderTheme() {
 function updateProgress() {
   cancelAnimationFrame(progressFrame);
   progressFrame = 0;
+  if (personalWorld) { updateHeaderTheme(); window.portfolioJourney?.refresh(); return; }
   const travel = document.documentElement.scrollHeight - window.innerHeight;
   const ratio = travel > 0 ? Math.min(1,Math.max(0,window.scrollY / travel)) : 0;
   progress.style.transform = `scaleX(${ratio})`;
@@ -202,11 +211,11 @@ measureMorph();
 updateProgress();
 if (document.fonts) document.fonts.ready.then(() => { fontsReady = true; if (!document.hidden) { syncHeader(); measureMorph(); queueProgress(); } });
 
-function openHashProject() {
-  const panel = projectPanels.find(project => `#${project.id}` === location.hash);
+function openHashProject({hash = window.location.hash, align = true} = {}) {
+  const panel = projectPanels.find(project => `#${project.id}` === hash);
   if (!panel) return false;
   cancelSummaryAnchor();
-  cancelNativeScroll();
+  if (align) cancelNativeScroll();
   cancelPanelProgress();
   document.documentElement.classList.add('settle-panels');
   const transferFocus = caseNextFocus === `#${panel.id}`;
@@ -217,7 +226,8 @@ function openHashProject() {
   updateCaseIndex();
   const margin = (parseFloat(getComputedStyle(panel).scrollMarginTop) || 0) +
     (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0);
-  if (Math.abs(panel.getBoundingClientRect().top - margin) > 2) {
+  const targetTop = panel.getBoundingClientRect().top; // Commit the final details layout while transitions are disabled.
+  if (align && Math.abs(targetTop - margin) > 2) {
     panel.scrollIntoView({behavior:'instant',block:'start'});
   }
   document.documentElement.classList.remove('settle-panels');
@@ -326,11 +336,13 @@ function syncHeader() {
   measureHeadingInk();
 }
 function resetMorph() {
+  if (personalWorld) return;
   name.style.opacity = '';
   signature.style.opacity = '';
   morph.style.visibility = 'hidden';
 }
 function measureMorph() {
+  if (personalWorld) return;
   resetHoverInk();
   morphGeometry = null;
   resetMorph();
@@ -448,15 +460,18 @@ if (copyControl && copyButton && copyStatus) {
 }
 
 function settleHeadingInk() {
+  if (personalWorld) return;
   if (presenceInk) presenceInk.style.clipPath = 'inset(0 0% 0 0)';
 }
 function measureHeadingInk() {
+  if (personalWorld) return;
   headingInkTop = null;
   if (!presenceSystem || !fontsReady || document.hidden) return;
   const rect = aboutFrame?.getBoundingClientRect();
   if (rect && Number.isFinite(rect.top) && rect.width > 0 && rect.height > 0) headingInkTop = rect.top + window.scrollY;
 }
 function updateHeadingInk() {
+  if (personalWorld) return;
   if (!presenceInk) return;
   if (headingInkTop === null || reduced.matches || keyboard || document.hidden) return settleHeadingInk();
   const top = headingInkTop-window.scrollY;
@@ -542,6 +557,7 @@ function syncArchiveSelection(preferred) {
   selectArchive(opened || preferred || archiveState.selected || projectPanels[0]);
 }
 function initArchive() {
+  if (personalWorld) return;
   const layout = document.querySelector('.work-archive-layout');
   const stage = document.querySelector('.archive-stage');
   if (!layout || !stage) return;
@@ -580,7 +596,7 @@ function initArchive() {
 
 // Atlas reflow: only visible decorative children, never summaries or their hit areas.
 function layoutAllowed() {
-  return !keyboard && !reduced.matches && !document.hidden &&
+  return !personalWorld && !keyboard && !reduced.matches && !document.hidden &&
     (typeof document.hasFocus !== 'function' || document.hasFocus());
 }
 function readLayoutFrames() {
@@ -645,6 +661,7 @@ function playLayoutShift() {
 
 // Shared circular scenes: event-driven through the existing progress frame.
 function settleScenes() {
+  if (personalWorld) return;
   if (heroCopy) { heroCopy.style.opacity = ''; heroCopy.style.transform = ''; heroCopy.style.pointerEvents = ''; }
   if (proofImage) { proofImage.style.clipPath = 'none'; proofImage.style.transform = 'none'; }
   [...posterLines,...contactLines].forEach(line => { line.style.transform = 'none'; line.style.clipPath = 'none'; });
@@ -658,6 +675,7 @@ function settleScenes() {
   projectPanels.forEach(panel => panel.querySelector('summary').querySelectorAll('.project-title, .summary-preview').forEach(part => { part.style.transform = 'none'; part.style.transformOrigin = ''; }));
 }
 function updateScenes() {
+  if (personalWorld) return;
   syncArchiveMotion();
   syncArchiveSelection();
   if (reduced.matches || keyboard || document.hidden) {

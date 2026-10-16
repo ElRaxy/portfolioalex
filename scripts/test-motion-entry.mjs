@@ -234,85 +234,6 @@ test('A portrait decode failure keeps intro eyes hidden and lets the existing ti
 });
 
 
-function routedScene(width = 300, height = 600, fontReady = null) {
-  const rectangles = {
-    '.story-board': { left: 40, top: 100, width, height },
-    '.story-blueprint': { left: 34, top: 88, width: width * .9, height: height * .52 },
-    '.story-character': { left: 40 + width * .32, top: 100 + height * .58, width: width * .68, height: width * .68 },
-    '.story-cursor': { left: 40, top: 100, width: 36, height: 43 },
-    '.story-bug': { left: 40, top: 100, width: 34, height: 34 },
-    '.story-word--alex': { left: 40, top: 100, width: width * .7 },
-    '.hero-personal .name-word.first': { left: 24, top: 90, width: 100 }
-  };
-  const host = harness({ rectangles, fontReady });
-  return { ...host, rectangles };
-}
-
-function pathPoints(path) {
-  assert.match(path, /^path\('M /);
-  const numbers = path.match(/-?\d+(?:\.\d+)?/g).map(Number);
-  return Array.from({ length: numbers.length / 2 }, (_, index) => ({ x: numbers[index * 2], y: numbers[index * 2 + 1] }));
-}
-
-test('Cursor and bug routes remain bounded and share continuous Bézier tangents across responsive scenes', () => {
-  for (const [width, height] of [[269, 426], [328, 633], [688, 885], [1210, 675], [710, 300]]) {
-    const host = routedScene(width, height);
-    host.documentEvent('DOMContentLoaded');
-    assert.equal(host.classes.get('.story-board'), 'is-routed');
-    for (const selector of ['.story-cursor', '.story-bug']) {
-      const points = pathPoints(host.writes.get(selector + 'offset-path'));
-      assert.ok(points.length >= 7, 'The route must contain curved segments');
-      points.forEach(point => {
-        assert.ok(point.x >= 6 && point.x <= width - 42 + .001, 'Every anchor and control stays inside the board with glyph padding');
-        assert.ok(point.y >= 6 && point.y <= height - 49 + .001);
-      });
-      for (let index = 3; index + 1 < points.length; index += 3) {
-        const before = points[index - 1], join = points[index], after = points[index + 1];
-        assert.ok(Math.abs((join.x - before.x) - (after.x - join.x)) < .003, 'Horizontal tangents agree at every join');
-        assert.ok(Math.abs((join.y - before.y) - (after.y - join.y)) < .003, 'Vertical tangents agree at every join');
-      }
-    }
-  }
-});
-
-test('Font readiness may refine landing boxes but never retarget a cursor or bug already following its route', async () => {
-  let resolveFonts;
-  const fontReady = new Promise(resolve => { resolveFonts = resolve; });
-  const host = routedScene(328, 633, fontReady);
-  host.documentEvent('DOMContentLoaded');
-  const cursorPath = host.writes.get('.story-cursoroffset-path');
-  const bugPath = host.writes.get('.story-bugoffset-path');
-  const landing = host.writes.get('.story-word--alex--story-land');
-  host.rectangles['.story-blueprint'].width += 50;
-  host.rectangles['.hero-personal .name-word.first'].width += 10;
-  host.setAnimationTime(900);
-  resolveFonts();
-  await Promise.resolve();
-  assert.equal(host.writes.get('.story-cursoroffset-path'), cursorPath);
-  assert.equal(host.writes.get('.story-bugoffset-path'), bugPath);
-  assert.notEqual(host.writes.get('.story-word--alex--story-land'), landing);
-});
-
-test('An incomplete path scene is never marked visible or assigned an unmeasured origin', () => {
-  const host = routedScene();
-  delete host.rectangles['.story-blueprint'];
-  host.documentEvent('DOMContentLoaded');
-  assert.equal(host.classes.has('.story-board'), false);
-  assert.equal(host.writes.has('.story-cursoroffset-path'), false);
-  assert.equal(host.writes.has('.story-bugoffset-path'), false);
-});
-
-test('Late DOMContentLoaded still measures bounded local routes while the real CSS film is young', () => {
-  const host = routedScene();
-  host.setWallTime(1800);
-  host.setAnimationTime(180);
-  host.documentEvent('DOMContentLoaded');
-  assert.equal(host.classes.get('.story-board'), 'is-routed');
-  assert.match(host.writes.get('.story-cursoroffset-path'), /^path\('M /);
-  assert.equal(host.window.portfolioEntry.active, true);
-});
-
-
 test('Completion status distinguishes the true last frame from an interrupted or recovered intro',()=>{
   const complete=harness();
   assert.equal(complete.window.portfolioEntry.completed,false);
@@ -325,17 +246,6 @@ test('Completion status distinguishes the true last frame from an interrupted or
   const recovered=harness();[...recovered.timers.values()][0].callback();
   assert.equal(recovered.window.portfolioEntry.completed,false);
 });
-
-test('The blue impulse starts at the laptop and resolves on the signature instead of touring back to the character',()=>{
-  const host=routedScene();host.documentEvent('DOMContentLoaded');
-  const points=pathPoints(host.writes.get('.story-cursoroffset-path'));
-  const bounds=host.rectangles['.story-board'],portrait=host.rectangles['.story-character'];
-  assert.ok(Math.abs(points[0].x-(portrait.left-bounds.left+portrait.width*.44))<.001);
-  assert.ok(Math.abs(points[0].y-(portrait.top-bounds.top+portrait.height*.64))<.001);
-  assert.notDeepEqual(points[0],points.at(-1),'The gesture finishes at the signature, rather than adding an unrelated return lap');
-  assert.ok(points.length>=16,'The press, two name rows and underline remain one curved path');
-});
-
 
 test('The shared readonly timeline controls the flight, exact discrete handoff and wrapper completion',async()=>{
   const host=harness(),timeline=host.window.portfolioEntry.timeline;
@@ -354,18 +264,18 @@ test('The shared readonly timeline controls the flight, exact discrete handoff a
   assert.match(css,/@keyframes storyExit\{from\{opacity:1\}to\{opacity:1\}\}/,'The wrapper must not multiply switch opacity');
 });
 
-test('The signature is genuinely masked kinetic lettering and reaches rest before the shared transfer',async()=>{
+test('The signature uses one ink gesture, with settled lettering before transfer and no duplicate drawing routes',async()=>{
   const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
-  assert.equal((source.match(/class="story-cell"/g)||[]).length,8,'Every name letter has a stationary clipping cell');
+  assert.equal((source.match(/class="story-cell"/g)||[]).length,8);
   assert.match(css,/\.story-cell\{[^}]*overflow:hidden/);
-  assert.match(css,/@keyframes storyLetterBuild\{from\{transform:translate\(-\.18em,105%\) rotate\(-5deg\)/);
-  assert.match(css,/@keyframes storyLetterLower\{from\{transform:translate\(\.22em,-105%\) rotate\(5deg\)/);
-  assert.ok(515+440 < hostTimeline().transferStart,'The last letter finishes before FLIP measures its settled appearance');
-  assert.ok(180+850 < hostTimeline().transferStart,'The counter-rotated rows settle before transfer');
-  assert.ok(source.includes('<circle cx="16" cy="16" r="12" fill="#2449f5"/>'),'The impulse is a clear blue drawing point');
-  function hostTimeline(){return harness().window.portfolioEntry.timeline;}
+  assert.match(css,/@keyframes storyLetterBuild\{from\{transform:translate\(0,105%\)/);
+  assert.ok(350+420 < harness().window.portfolioEntry.timeline.transferStart);
+  assert.doesNotMatch(source,/class="story-(?:bug|cursor|blueprint|outline)"/);
+  assert.doesNotMatch(bootstrap,/offset-path|pathThrough/);
+  assert.match(source,/class="story-ink"/);
+  assert.match(css,/storyInkDraw 620ms/);
+  assert.match(css,/storyPortraitReveal 520ms/);
 });
-
 
 test('Initial CSS flights, release and hero entries inherit the master start time despite streamed DOM offsets',()=>{
   const master={animationName:'storyExit',startTime:235.366,currentTime:200};

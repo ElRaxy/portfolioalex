@@ -53,7 +53,7 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
 .personal-world #trabajo .toggle-icon{width:34px;height:34px;border-color:#d4ddfa;background:#edf1ff}
 .personal-world #trabajo .toggle-icon::before,.personal-world #trabajo .toggle-icon::after{left:10px}
 .personal-world #trabajo .project-archive .project .project-heading .summary-preview{display:block;position:relative;grid-column:1/-1;grid-row:2;width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:12px;overflow:visible;white-space:normal;border:1px solid #e2e7ef;border-radius:10px;background:#edf0f7;color:#596370;box-shadow:none;justify-self:stretch}
-.personal-world #trabajo .summary-preview>img{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center;transform:none;box-shadow:none;border-radius:4px}
+.personal-world #trabajo .summary-preview .journey-media{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center;transform:none;box-shadow:none;border-radius:4px}
 .personal-world #trabajo .preview-label{display:block;font-size:12px;line-height:1.45;padding:12px 0 0;color:inherit;min-height:0}
 .personal-world #trabajo .project-body{display:block;max-width:760px;width:100%;padding:4px 30px 30px;margin:0 auto;background:transparent;color:var(--ink)}
 .personal-world #trabajo .project-body>.project-context,.personal-world #trabajo .project-body>.project-evidence,.personal-world #trabajo .project-body>.project-diagram{margin-bottom:24px}
@@ -185,11 +185,9 @@ body.personal-world{--paper:#fafaf7;--ink:#17191c;--blue:#2449f5;--line:#e1e4df;
  html:not(.keyboard) .personal-world #trabajo .project,html:not(.keyboard) .personal-world .contact-options a{transition:border-color 180ms var(--ease-out),box-shadow 180ms var(--ease-out)}
  html:not(.keyboard) .personal-world #trabajo .project:hover,html:not(.keyboard) .personal-world .contact-options a:hover{border-color:#b1bfee;box-shadow:0 5px 16px rgb(45 67 119 / .045)}
  html:not(.keyboard) .personal-world #trabajo .project-archive .project .project-heading:hover h3{color:var(--blue)}
- html:not(.keyboard) .personal-world #trabajo .summary-preview>img{transition:transform 240ms var(--ease-out)}
- html:not(.keyboard) .personal-world #trabajo .project-archive .project .project-heading:hover .summary-preview>img{transform:translateY(-2px)}
 }
-html.keyboard .personal-world #trabajo .summary-preview>img{transform:none;transition:none}
-@media(prefers-reduced-motion:reduce){.personal-world :is(.project,.contact-options a,.summary-preview>img){transition:none!important;transform:none!important}}
+html.keyboard .personal-world #trabajo .summary-preview .journey-media{transform:none;transition:none}
+@media(prefers-reduced-motion:reduce){.personal-world :is(.project,.contact-options a,.summary-preview .journey-media){transition:none!important;transform:none!important}}
 
 /* Gestos1013: the illustration has moving parts, while reading and controls stay still. */
 .personal-world .world-drawing :is(g,path,circle){transform-box:fill-box;transform-origin:center}
@@ -214,3 +212,11 @@ html.keyboard .personal-world #trabajo .summary-preview>img{transform:none;trans
 .personal-world .automation-knot{opacity:0}
 .personal-world .automation-cable{opacity:1}
 .personal-world .world-drawing .note-corner{transform-origin:100% 0}
+
+/* Stable frames retain their full size; only the actual media is revealed. */
+.personal-world .journey-window{display:block;overflow:hidden;border-radius:4px}
+.personal-world .journey-media{display:block;transform-origin:50% 50%;transition:none!important}
+.personal-world :is(.about-marker,.section-kicker,.contact-marker){position:relative}
+.personal-world .journey-accent{display:block;width:96px;height:2px;margin-top:12px;background:var(--blue);transform-origin:left center;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.personal-world :is(.journey-media,.journey-accent){transform:none!important;clip-path:none!important}}
+@media print{.personal-world :is(.journey-media,.journey-accent,.world-drawing g){transform:none!important;clip-path:none!important}.personal-world .world-drawing [pathLength]{stroke-dashoffset:0!important}}
