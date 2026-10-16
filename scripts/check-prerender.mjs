@@ -7,21 +7,21 @@
 // su idioma y su canonical, y que las paginas de caso no hereden lo de la
 // portada. Hasta el 2026-08-22 solo miraba las dos portadas, y por eso tres
 // defectos vivieron meses en las seis paginas de caso. Desde el 2026-08-23
-// mira las diez que escribe el prerender: dos portadas y cuatro casos por idioma.
+// mira las diez rutas: portada estatica, portada inglesa React y cuatro casos por idioma.
 // La lista va literal a proposito, no derivada de la del prerender:
 // una lista derivada seguiria el mismo fallo que tiene que cazar.
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const raiz = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const leer = (ruta) => readFileSync(path.join(raiz, 'build', ruta), 'utf8')
 const leerPublico = (ruta) => readFileSync(path.join(raiz, 'public', ruta))
 const leerBuild = (ruta) => readFileSync(path.join(raiz, 'build', ruta))
 
 const PAGINAS = [
-  { ruta: 'index.html', idioma: 'es', tipo: 'portada', idioma_alterno: '/en/' },
+  { ruta: 'index.html', idioma: 'es', tipo: 'portada-estatica', idioma_alterno: '/en/' },
   { ruta: 'en/index.html', idioma: 'en', tipo: 'portada', idioma_alterno: '/' },
   { ruta: 'proyectos/atalaya/index.html', idioma: 'es', tipo: 'caso', slug: 'atalaya', idioma_alterno: '/en/projects/atalaya/' },
   { ruta: 'proyectos/savemymoneynow/index.html', idioma: 'es', tipo: 'caso', slug: 'savemymoneynow', idioma_alterno: '/en/projects/savemymoneynow/' },
@@ -88,11 +88,64 @@ const grafoDe = (html) => {
 const fallos = []
 const anota = (pagina, mensaje) => fallos.push(`${pagina.ruta}: ${mensaje}`)
 
+// La raíz se publica desde experimental desde octubre; /en y los casos siguen siendo React.
+const compruebaPortadaEstatica = (pagina, html) => {
+  const site = 'https://portfolioalex-mico.vercel.app/'
+  if (!/<body\b[^>]*class="[^"]*\bpersonal-world\b/.test(html) || !/<section\b[^>]*class="[^"]*\bhero-personal\b[^>]*"[^>]*id="inicio"/.test(html)) {
+    anota(pagina, 'falta la portada estatica personal en la raiz')
+  }
+  if (!html.includes('<html lang="es"')) anota(pagina, 'lang incorrecto')
+  if ((html.match(/<h1\b/g) || []).length !== 1 || !/<h1\b[^>]*id="nombre"[^>]*aria-label="Alex Micó"/.test(html)) anota(pagina, 'falta el h1 unico de Alex Micó')
+  if (!/<title>Alex Micó[^<]+<\/title>/.test(html) || !metaContent(html, 'name', 'description')) anota(pagina, 'faltan titulo o descripcion de la portada')
+  if (!html.includes(`rel="canonical" href="${site}"`)) anota(pagina, 'canonical de portada incorrecto')
+  for (const key of ['og:image', 'twitter:image']) {
+    if (metaContent(html, key.startsWith('og:') ? 'property' : 'name', key) !== SOCIAL_IMAGE_URL) anota(pagina, `${key} no usa el asset social v3`)
+  }
+  if (metaContent(html, 'property', 'og:url') !== site || metaContent(html, 'name', 'twitter:card') !== 'summary_large_image') anota(pagina, 'faltan metadatos sociales de la portada')
+  const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]))
+  const references = [...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map(match => match[1])
+  for (const id of ['inicio','sobre-mi','trabajo','contacto','strev','marky','smarty','sereno','roguepatch-lab','social-scout']) {
+    if (!ids.has(id) || !references.includes(`#${id}`)) anota(pagina, `falta seccion o enlace #${id}`)
+  }
+  for (const href of references.filter(value => value.startsWith('#'))) if (!ids.has(href.slice(1))) anota(pagina, `ancla sin destino: ${href}`)
+  const cv = '/editorial/assets/cv-es.pdf'
+  if (!references.includes(cv)) anota(pagina, 'falta el enlace al CV castellano de la portada')
+  const resource = href => {
+    if (/^(?:#|[a-z][a-z\d+.-]*:)/i.test(href)) return null
+    if (!href.startsWith('/') || href.startsWith('//')) { anota(pagina, `recurso no resuelto desde la raiz: ${href}`); return null }
+    const pathname = new URL(href, site).pathname
+    let filename = path.join(raiz, 'build', pathname)
+    if (existsSync(filename) && statSync(filename).isDirectory()) filename = path.join(filename, 'index.html')
+    if (!existsSync(filename) || !statSync(filename).isFile()) { anota(pagina, `recurso publicado ausente: ${pathname}`); return null }
+    return filename
+  }
+  for (const href of references) {
+    const filename = resource(href)
+    if (!filename || !/\.css(?:[?#]|$)/.test(href)) continue
+    const css = readFileSync(filename, 'utf8')
+    for (const match of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) {
+      if (/^(?:data:|https?:|#)/.test(match[1])) continue
+      resource(new URL(match[1], new URL(href, site)).pathname)
+    }
+  }
+  for (const script of ['app.js','character-rig.js','portrait-motion.js','recorrido-personal.js']) {
+    if (!references.some(href => href.split('?')[0] === `/experimental/${script}`)) anota(pagina, `falta el controlador ${script}`)
+  }
+  if (!references.some(href => href.split('?')[0] === '/experimental/assets/alex-illustration-eye-base-v4.png')) anota(pagina, 'falta el retrato aprobado')
+  const builtCv = resource(cv)
+  if (builtCv && !leerPublico('editorial/assets/cv-es.pdf').equals(readFileSync(builtCv))) anota(pagina, 'el CV de portada no coincide con el fichero publico')
+}
+
 for (const pagina of PAGINAS) {
   const html = leer(pagina.ruta)
+  if (pagina.tipo === 'portada-estatica') {
+    compruebaPortadaEstatica(pagina, html)
+    continue
+  }
   const root = html.match(/<div id="root">([\s\S]*)<\/div>/)
 
-  if (!root || root[1].length < 5000) anota(pagina, '#root casi vacio')
+  const contenidoRoot = root?.[1] || ''
+  if (contenidoRoot.length < 5000) anota(pagina, '#root casi vacio')
   if (!html.includes(`<html lang="${pagina.idioma}"`)) anota(pagina, 'lang incorrecto')
   if (!html.includes('rel="canonical"')) anota(pagina, 'sin canonical')
   if ((html.match(/hreflang=/g) || []).length !== 3) anota(pagina, 'faltan hreflang')
@@ -210,7 +263,7 @@ for (const pagina of PAGINAS) {
   } else {
     const posiciones = ORDEN_PORTADA.map((proyecto, index) => {
       const nivel = index < 2 ? 3 : 4
-      return root[1].search(new RegExp(`<h${nivel}\\b[^>]*>${proyecto}</h${nivel}>`))
+      return contenidoRoot.search(new RegExp(`<h${nivel}\\b[^>]*>${proyecto}</h${nivel}>`))
     })
     if (posiciones.some((posicion) => posicion < 0)) {
       anota(pagina, 'falta un proyecto de la portada editorial')
@@ -218,19 +271,19 @@ for (const pagina of PAGINAS) {
       anota(pagina, `orden de proyectos incorrecto: ${ORDEN_PORTADA.join(', ')}`)
     }
 
-    const principales = (root[1].match(/data-tier="primary"/g) || []).length
+    const principales = (contenidoRoot.match(/data-tier="primary"/g) || []).length
     if (principales !== 2) anota(pagina, `${principales} proyectos principales, deberia haber 2`)
-    if (!root[1].includes('sereno-session-overview')) {
+    if (!contenidoRoot.includes('sereno-session-overview')) {
       anota(pagina, 'Sereno no sirve la evidencia estatica')
     }
-    if (root[1].includes('sereno-demo')) anota(pagina, 'Sereno todavia sirve la demo animada')
+    if (contenidoRoot.includes('sereno-demo')) anota(pagina, 'Sereno todavia sirve la demo animada')
 
-    const temas = (root[1].match(/class="theme-toggle"/g) || []).length
+    const temas = (contenidoRoot.match(/class="theme-toggle"/g) || []).length
     if (temas !== 1) anota(pagina, `${temas} selectores de tema, deberia haber 1`)
   }
 
   const accionTema = DICCIONARIOS[pagina.idioma].controls.theme
-  const botonTema = root[1].match(/<button class="theme-toggle"[\s\S]*?<\/button>/)?.[0]
+  const botonTema = contenidoRoot.match(/<button class="theme-toggle"[\s\S]*?<\/button>/)?.[0]
   if (!botonTema?.includes(`aria-label="${accionTema}"`)) {
     anota(pagina, `el tema prerenderizado no usa el nombre neutro "${accionTema}"`)
   }
