@@ -34,9 +34,9 @@
     motion.finished.catch(() => {}).finally(() => { motions.delete(motion); blinkMotions.delete(motion); });
     return motion;
   }
-  function animateBeats(element, frames, duration, curve = ease) {
+  function animateBeats(element, frames, duration, curve = ease, delay = 0) {
     // Offsets describe real time; easing belongs to each interval, not the whole action clock.
-    return animate(element,frames.map(frame=>({...frame,easing:curve})),duration,'linear');
+    return animate(element,frames.map(frame=>({...frame,easing:curve})),duration,'linear',delay);
   }
   function scheduleBlink() {
     if (blinkTimer || blinkMotions.size || !live()) return;
@@ -52,7 +52,7 @@
     clearTimeout(blinkTimer); blinkTimer = 0;
     const current = generation;
     const sequence = rig.eyes.map(eye => {
-      const motion = animate(eye,[{transform:'scaleY(1)',offset:0},{transform:'scaleY(.1)',offset:.32},{transform:'scaleY(.1)',offset:.46},{transform:'scaleY(1)',offset:1}],200,ease,delay);
+      const motion = animateBeats(eye,[{transform:'scaleY(1)',offset:0},{transform:'scaleY(.1)',offset:.32},{transform:'scaleY(.1)',offset:.46},{transform:'scaleY(1)',offset:1}],200,ease,delay);
       blinkMotions.add(motion);
       return motion;
     });

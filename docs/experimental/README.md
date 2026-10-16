@@ -72,3 +72,12 @@ El PNG sigue como fallback hasta completar su decode y los load de las cinco cap
 La introducción conserva 2700 ms: anticipación desde reposo y relevo simultáneo entre boceto y portada a2350ms, sin la pérdida de opacidad del cruce anterior. Los offsets de los gestos usan reloj lineal y curvas por intervalo, según [Keyframe Formats](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats), para respetar el ritmo previsto.
 
 17 tests del rig +20 de entrada +1 de home y build PASS; revisión independiente sin abiertos. La comprobación real de animación y responsive en Chrome del iMac sigue pendiente por indicación de Alex. Candidato local, sin despliegue.
+
+
+## Reloj compartido y parpadeo — 16 de octubre
+
+`character-flow-1016-02`: la comprobación real en Chrome del iMac detectó dos fallos que las pruebas anteriores no mostraban. Las animaciones CSS iniciales de story/hero compartían delays pero podían nacer en paints distintos; ahora se alinea su startTime una sola vez al reloj principal, con salida segura tras cancelación/reduced. El rig asíncrono conserva su ajuste de fase y queda excluido. Referencia: [Animation.startTime](https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime).
+
+El relevo discreto usa2350ms sin delay, conservando el corte2350 y evitando el intervalo de1ms+2349ms que en la captura real quedaba en el estado inicial aun estando terminado. El parpadeo200ms conserva sus offsets reales con curva por intervalo; el cierre resulta perceptible sin cambiar los descansos, la silla ni la composición.
+
+Verificación técnica:18tests rig +23entrada +1home,147tests Jest, lint y build PASS. Entrada real con caché fría390 y matriz12tamaños320–1440, incluido paisaje, comprobadas en CFT headed iMac con viewports emulados. Navegación y fallbacks se registran por tandas en projects/portfolioalex/progress/character-flow-2026-10-16/VERIFICACION.md del workspace. Los resultados de source/fixtures y la emulación no acreditan hardware móvil ni aceptación estética.

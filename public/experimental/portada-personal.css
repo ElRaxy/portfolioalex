@@ -131,8 +131,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .intro-story{display:block;animation:storyExit 2700ms linear both}
  html[data-entry="running"] .personal-world :is(a,button,input,summary){pointer-events:none}
  html[data-entry="running"] .story-paper{animation:storyPaperExit 2700ms var(--ease-in-out) both}
- html[data-entry="running"] .story-word{animation:storyLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 1ms steps(1,end) 2349ms both}
- html[data-entry="running"] .story-character{animation:storyCharacterLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 1ms steps(1,end) 2349ms both}
+ html[data-entry="running"] .story-word{animation:storyLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 2350ms steps(1,end) both}
+ html[data-entry="running"] .story-character{animation:storyCharacterLand 850ms var(--story-ease-drawer) 1500ms both,storyMatchOut 2350ms steps(1,end) both}
  html[data-entry="running"] .story-letter{animation:storyLetterBuild 500ms var(--ease-out) 360ms both}
  html[data-entry="running"] .story-letter:nth-child(2){animation-delay:430ms}
  html[data-entry="running"] .story-letter:nth-child(3){animation-delay:500ms}
@@ -150,8 +150,8 @@ html.keyboard .hero-personal .portrait-gaze{transition:none}
  html[data-entry="running"] .story-bug{animation:storyRoute 560ms linear 940ms both,storyBugPresence 1570ms linear both}
  html[data-entry="running"] .story-bug-body{animation:storyBugKick 350ms var(--ease-out) 1100ms both}
  html[data-entry="running"] .story-gaze{animation:storyCharacterLook 2700ms var(--ease-out) both}
- html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn 1ms steps(1,end) 2349ms both}
- html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn 1ms steps(1,end) 2349ms both}
+ html[data-entry="running"] .hero-personal .name-lettering{animation:storyHeroIn 2350ms steps(1,end) both}
+ html[data-entry="running"] .hero-personal .portrait-arrival{animation:storyHeroIn 2350ms steps(1,end) both}
  html[data-entry="running"] .hero-personal :is(.personal-role,.personal-statement,.personal-description,.personal-actions,.personal-next){animation:personalCopyEntry 260ms var(--ease-out) 2350ms backwards}
  html[data-entry="running"] .hero-personal .personal-statement{animation-delay:2380ms}
  html[data-entry="running"] .hero-personal .personal-description{animation-delay:2410ms}

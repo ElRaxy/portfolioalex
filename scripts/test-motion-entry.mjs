@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 const source = await readFile(new URL('../public/experimental/index.html', import.meta.url), 'utf8');
 const bootstrap = source.match(/<script>([\s\S]*?)<\/script>/)[1];
 // A unit event host exercises policy and deadlines. It does not claim rendered-browser QA.
-function harness({ hash = '', restored = false, hidden = false, reduced = false, scroll = 0, rectangles = null, fontReady = null, nodes = {} } = {}) {
+function harness({ hash = '', restored = false, hidden = false, reduced = false, scroll = 0, rectangles = null, fontReady = null, nodes = {}, clock = null } = {}) {
   const windowEvents = new Map(), documentEvents = new Map(), mediaEvents = new Map();
   const attributes = new Map(), timers = new Map();
   const on = table => (name, callback) => table.set(name, [...(table.get(name) || []), callback]);
@@ -17,8 +17,8 @@ function harness({ hash = '', restored = false, hidden = false, reduced = false,
   let wallTime = 0, animationTime = 0;
   const document = { hidden, documentElement: root, addEventListener: on(documentEvents),
     querySelector: selector => nodes[selector] || (selector === '.intro-story' ? {
-      getAnimations: () => [{ animationName: 'storyExit', currentTime: animationTime }]
-    } : rectangles?.[selector] ? {
+      getAnimations: options => clock ? (options?.subtree ? clock.story : [clock.master]) : [{ animationName: 'storyExit', currentTime: animationTime }]
+    } : selector === '.hero-personal' && clock ? { getAnimations: () => clock.hero } : rectangles?.[selector] ? {
       getBoundingClientRect: () => rectangles[selector],
       querySelector: () => null,
       classList: { add: value => classes.set(selector, value) },
@@ -338,15 +338,75 @@ test('The cursor starts at the laptop before constructing the name and returns t
 
 test('The landed sketch switches to the real hero at one exact frame without a fractional-alpha crossfade',async()=>{
   const css=await readFile(new URL('../public/experimental/portada-personal.css',import.meta.url),'utf8');
-  const flight=css.match(/\.story-word\{animation:storyLand (\d+)ms[^}]*? (\d+)ms both,storyMatchOut (\d+)ms steps\(1,end\) (\d+)ms both/);
+  const flight=css.match(/\.story-word\{animation:storyLand (\d+)ms[^}]*? (\d+)ms both,storyMatchOut (\d+)ms steps\(1,end\) both/);
   assert.ok(flight,'The word flight has one discrete opacity release');
-  const [,duration,delay,handoffDuration,handoffDelay]=flight.map(Number);
+  const [,duration,delay,handoffDuration]=flight.map(Number);
   assert.equal(duration+delay,2350);
-  assert.equal(handoffDuration+handoffDelay,2350,'The source disappears only once its flight has landed');
+  assert.equal(handoffDuration,2350,'The source disappears only once its flight has landed, without a tiny delayed effect');
   for(const selector of ['name-lettering','portrait-arrival']) {
-    assert.ok(css.includes(`.${selector}{animation:storyHeroIn 1ms steps(1,end) 2349ms both}`),'The real hero switches on at the same boundary');
+    assert.ok(css.includes(`.${selector}{animation:storyHeroIn 2350ms steps(1,end) both}`),'The real hero switches on at the same boundary');
+  }
+  const releases=[...css.matchAll(/story(?:MatchOut|HeroIn) (\d+)ms steps\(1,end\)(?: (\d+)ms)? both/g)];
+  assert.equal(releases.length,4,'Both source rules and both hero rules share the same discrete effect');
+  for(const release of releases) {
+    assert.equal(Number(release[1]),2350);
+    assert.equal(Number(release[2]||0),0,'Do not reintroduce the 1 ms effect plus 2349 ms delay precision trap');
   }
   assert.match(css,/@keyframes storyMatchOut\{from\{opacity:1\}to\{opacity:0\}\}/);
   assert.match(css,/@keyframes storyHeroIn\{from\{opacity:0\}to\{opacity:1\}\}/);
   assert.match(css,/@keyframes storyExit\{from\{opacity:1\}to\{opacity:1\}\}/,'The wrapper must not multiply the opacity of the switch');
+});
+
+
+test('Initial CSS flights, release and hero entries inherit the master start time despite streamed DOM offsets',()=>{
+  const master={animationName:'storyExit',startTime:235.366,currentTime:200};
+  const flight={animationName:'storyLand',startTime:251.97};
+  const release={animationName:'storyMatchOut',startTime:490};
+  const hero={animationName:'storyHeroIn',startTime:600};
+  const copy={animationName:'personalCopyEntry',startTime:600};
+  const rig={animationName:'characterStoryHead',startTime:800};
+  const interaction={startTime:900};
+  const clock={master,story:[master,flight,release,rig,interaction],hero:[hero,copy]};
+  const host=harness({rectangles:{},clock});
+  host.documentEvent('DOMContentLoaded');
+  for(const animation of [flight,release,hero,copy]) assert.equal(animation.startTime,master.startTime);
+  assert.equal(rig.startTime,800,'Async rig uses a negative delay and must not receive a second phase correction');
+  assert.equal(interaction.startTime,900,'World/interaction WAAPI must keep its own clock');
+  assert.equal(host.window.portfolioEntry.active,true);
+});
+
+test('A pending master aligns its initial CSS children once ready without waiting for fonts or collecting later rig animations',async()=>{
+  let resolveMaster,resolveFonts;
+  const ready=new Promise(resolve=>{resolveMaster=resolve;});
+  const fontReady=new Promise(resolve=>{resolveFonts=resolve;});
+  const master={animationName:'storyExit',startTime:null,currentTime:0,ready};
+  const release={animationName:'storyMatchOut',startTime:450};
+  const hero={animationName:'storyHeroIn',startTime:650};
+  const clock={master,story:[master,release],hero:[hero]};
+  const host=harness({rectangles:{},fontReady,clock});host.documentEvent('DOMContentLoaded');
+  assert.equal(release.startTime,450);
+  assert.equal(hero.startTime,650);
+  assert.equal(host.window.portfolioEntry.active,true,'Waiting for the master must not pause or rearm the entry');
+  const late={animationName:'characterStoryGaze',startTime:800};clock.story.push(late);
+  master.startTime=235;resolveMaster();await Promise.resolve();
+  assert.equal(release.startTime,235);
+  assert.equal(hero.startTime,235);
+  assert.equal(late.startTime,800);
+  release.startTime=999;resolveFonts();await Promise.resolve();
+  assert.equal(release.startTime,999,'Font readiness may refine geometry but must not resynchronize clocks');
+});
+
+test('Master readiness resolving after cancellation or reduced motion cannot mutate or restart child clocks',async()=>{
+  for(const reduce of [false,true]) {
+    let resolveMaster;const ready=new Promise(resolve=>{resolveMaster=resolve;});
+    const master={animationName:'storyExit',startTime:null,currentTime:0,ready};
+    const release={animationName:'storyMatchOut',startTime:450};
+    const host=harness({rectangles:{},clock:{master,story:[master,release],hero:[]}});
+    host.documentEvent('DOMContentLoaded');
+    if(reduce) host.reduce(); else host.window.portfolioEntry.finish();
+    master.startTime=200;resolveMaster();await Promise.resolve();
+    assert.equal(release.startTime,450);
+    assert.equal(host.window.portfolioEntry.active,false);
+    assert.equal(host.attributes.size,0);
+  }
 });

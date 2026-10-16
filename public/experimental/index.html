@@ -29,6 +29,17 @@
   });
   document.addEventListener('DOMContentLoaded', () => {
     if (!active) return;
+    const story = document.querySelector('.intro-story');
+    const master = story?.getAnimations().find(animation => animation.animationName === 'storyExit');
+    const initialAnimations = [story,document.querySelector('.hero-personal')].flatMap(element => element?.getAnimations({subtree:true}) || [])
+      .filter(animation => animation !== master && /^(story|personal)/.test(animation.animationName || ''));
+    const alignClocks = () => {
+      if (!active || reduce.matches || typeof master?.startTime !== 'number') return;
+      // DOM may stream across paints. Equal delays alone do not give children the parent's clock.
+      initialAnimations.forEach(animation => { animation.startTime = master.startTime; });
+    };
+    if (typeof master?.startTime === 'number') alignClocks();
+    else master?.ready?.then(alignClocks).catch(() => {});
     const character = document.querySelector('.story-character');
     const image = character?.querySelector('img');
     image?.decode().then(() => {
@@ -115,7 +126,7 @@
 <link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=character-rhythm-1015-01"><link rel="stylesheet" href="sereno-demo.css?v=character-rhythm-1015-01"><link rel="stylesheet" href="portada-personal.css?v=character-rhythm-1015-01"><link rel="stylesheet" href="recorrido-personal.css?v=character-rhythm-1015-01"><script src="app.js?v=character-rhythm-1015-01" defer></script><script src="character-rig.js?v=character-rhythm-1015-01" defer></script><script src="portrait-motion.js?v=character-rhythm-1015-01" defer></script><script src="recorrido-personal.js?v=character-rhythm-1015-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=character-flow-1016-02"><link rel="stylesheet" href="sereno-demo.css?v=character-flow-1016-02"><link rel="stylesheet" href="portada-personal.css?v=character-flow-1016-02"><link rel="stylesheet" href="recorrido-personal.css?v=character-flow-1016-02"><script src="app.js?v=character-flow-1016-02" defer></script><script src="character-rig.js?v=character-flow-1016-02" defer></script><script src="portrait-motion.js?v=character-flow-1016-02" defer></script><script src="recorrido-personal.js?v=character-flow-1016-02" defer></script>
 </head>
 <body class="personal-world">
 <div class="intro-story" aria-hidden="true">

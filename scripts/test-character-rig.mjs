@@ -319,3 +319,21 @@ test('Explicit acting beats use a linear effect clock and curve each interval so
     }
   }
 });
+
+
+test('Blink keeps its real 200 ms beat clock and the acknowledgement delay instead of compressing closed frames',async()=>{
+  for(const kind of ['blink','ack']) {
+    const host=actingHarness();await flush();host.visible(true);host.window.portfolioCharacterController.act(kind);
+    const eyes=host.animations.filter(motion=>motion.label.startsWith('eye-'));
+    assert.equal(eyes.length,2);
+    for(const motion of eyes) {
+      assert.equal(motion.options.duration,200);
+      assert.equal(motion.options.easing,'linear');
+      assert.equal(motion.options.delay,kind==='ack'?120:0);
+      assert.deepEqual(Array.from(motion.frames,frame=>frame.offset),[0,.32,.46,1]);
+      assert.ok(motion.frames.every(frame=>frame.easing==='cubic-bezier(.23,1,.32,1)'));
+      assert.equal(motion.frames[1].transform,'scaleY(.1)');
+      assert.equal(motion.frames[2].transform,'scaleY(.1)');
+    }
+  }
+});
