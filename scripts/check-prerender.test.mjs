@@ -32,6 +32,11 @@ async function fixtureForBuild() {
     const pathname = new URL(url,base).pathname
     if (copied.has(pathname)) return
     copied.add(pathname)
+    if (pathname.startsWith('/proyectos/') && pathname.endsWith('/')) {
+      // Case links now leave the home; their files are the React build copied above.
+      await readFile(path.join(fixture,'build',pathname,'index.html'))
+      return
+    }
     await copy(path.join(root,'public',pathname),path.join(fixture,'build',pathname))
     if (pathname.endsWith('.css')) {
       const css=await readFile(path.join(root,'public',pathname),'utf8')
@@ -61,6 +66,7 @@ test('static root is validated, missing home contracts fail, and English/case Re
     }
     await broken('root without its heading fails','index.html',html=>html.replace('<h1 ','<div ').replace('</h1>','</div>'),/h1 unico de Alex/)
     await broken('root without required navigation fails','index.html',html=>html.replaceAll('href="#sobre-mi"','href="https://example.invalid/sobre"'),/falta seccion o enlace #sobre-mi/)
+    await broken('root without a project block fails','index.html',html=>html.replace('id="atalaya"','id="atalaya-old"'),/falta el bloque del proyecto #atalaya/)
     await t.test('root without its published controller fails',async()=>{
       const file=path.join(fixture,'build/experimental/character-rig.js'),previous=await readFile(file)
       try {

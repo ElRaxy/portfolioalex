@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {JSDOM} from 'jsdom';
 const app = await readFile(new URL('../public/experimental/app.js',import.meta.url),'utf8');
 const journey = await readFile(new URL('../public/experimental/recorrido-personal.js',import.meta.url),'utf8');
 const html = await readFile(new URL('../public/experimental/index.html',import.meta.url),'utf8');
 const css = await readFile(new URL('../public/experimental/recorrido-personal.css',import.meta.url),'utf8');
 const geometry = journey.slice(journey.indexOf('  const clamp ='),journey.indexOf('  // End pure geometry.'));
-const {arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight,storyLayout,storyPosition,storyFramePose,workStoryRow} = vm.runInNewContext(`${geometry};({arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight,storyLayout,storyPosition,storyFramePose,workStoryRow})`);
+const {arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight} = vm.runInNewContext(`${geometry};({arrival,depthProgress,depthPose,amplitude,sceneArrival,journeyPose,heightWeight})`);
 test('The reading band is settled, and reversing position exactly retraces the reveal at every viewport',()=>{
   for(const height of [390,568,844,900,1180]) {
     assert.equal(arrival(height*.92,height),0);
@@ -21,45 +23,12 @@ test('The reading band is settled, and reversing position exactly retraces the r
     assert.ok(Math.abs(down[2]-.5)<1e-12);
   }
 });
-function navigation() {
-  const calls=[];
-  const panels=['strev','marky'].map(id=>({id,open:false,
-    querySelector:()=>({focus:()=>calls.push('focus:'+id)}),
-    getBoundingClientRect:()=>{calls.push('measure:'+id);return {top:300};},
-    scrollIntoView:()=>calls.push('scroll:'+id)}));
-  const context={projectPanels:panels,window:{location:{hash:'#marky'}},caseNextFocus:null,
-    document:{documentElement:{classList:{add:()=>calls.push('settle'),remove:()=>calls.push('unsettle')}}},
-    getComputedStyle:()=>({scrollMarginTop:'6px',scrollPaddingTop:'82px'}),parseFloat,
-    cancelSummaryAnchor:()=>calls.push('cancel-anchor'),cancelNativeScroll:()=>calls.push('cancel-scroll'),
-    cancelPanelProgress:()=>{},markSection:()=>{},updateCaseIndex:()=>{},queueProgress:()=>{}};
-  const code=app.slice(app.indexOf('function openHashProject('),app.indexOf('function cancelPanelProgress('));
-  vm.createContext(context);vm.runInContext(code,context);
-  return {calls,panels,open:context.openHashProject,context};
-}
-test('Preparing a native project target opens exclusivity and commits geometry without cancelling or moving scroll',()=>{
-  const host=navigation();host.panels[0].open=true;
-  assert.equal(host.open({hash:'#marky',align:false}),true);
-  assert.equal(host.panels[0].open,false);assert.equal(host.panels[1].open,true);
-  assert.ok(host.calls.indexOf('measure:marky')<host.calls.indexOf('unsettle'));
-  assert.ok(!host.calls.includes('cancel-scroll'));
-  assert.ok(!host.calls.some(call=>call.startsWith('scroll:')));
-});
-test('Direct project hashes align once and preserve focus transfer from a closing case',()=>{
-  const host=navigation();host.context.caseNextFocus='#marky';host.open();
-  assert.deepEqual(host.calls.filter(call=>call.startsWith('scroll:')),['scroll:marky']);
-  assert.ok(host.calls.includes('cancel-scroll'));assert.ok(host.calls.includes('focus:marky'));
-  assert.equal(host.context.caseNextFocus,null);
-});
-test('Unknown fragments cannot mutate disclosures or cancel the native navigation',()=>{
-  const host=navigation();assert.equal(host.open({hash:'#contacto'}),false);assert.deepEqual(host.calls,[]);
-});
 test('The personal route cannot clone hidden archive media or run legacy competing scenes',()=>{
-  for(const fn of ['initArchive','updateScenes','settleScenes','measureMorph','measureHeadingInk']) {
+  for(const fn of ['updateScenes','settleScenes','measureMorph','measureHeadingInk']) {
     assert.ok(app.includes(`function ${fn}() {\n  if (personalWorld) return;`));
   }
-  assert.equal((html.match(/class="journey-window"/g)||[]).length,5);
+  assert.doesNotMatch(app,/function initArchive\(/);
   assert.equal((html.match(/class="journey-accent"/g)||[]).length,3);
-  assert.doesNotMatch(css,/hover[^}]*journey-media/,'Hover cannot override the scroll-owned image transform');
   assert.doesNotMatch(journey,/setTimeout|setInterval|\.animate\(/,'The journey has no timed replay or perpetual animation');
 });
 
@@ -67,8 +36,8 @@ test('The personal route cannot clone hidden archive media or run legacy competi
 test('Depth keeps moving through the reading band, forward and backward, on all device sizes',()=>{
   for(const [width,height] of [[390,844],[820,1180],[1440,900]]) {
     const points=[.9,.62,.4,.15,-.1].map(fraction=>depthProgress(height*fraction,300,height));
-    const down=points.map(p=>depthPose('media',p,width));
-    const up=points.toReversed().map(p=>depthPose('media',p,width)).reverse();
+    const down=points.map(p=>depthPose('sketch',p,width));
+    const up=points.toReversed().map(p=>depthPose('sketch',p,width)).reverse();
     assert.deepEqual(down,up);
     assert.equal(new Set(down).size,points.length,'Reading-band positions must still have different depth poses');
   }
@@ -84,7 +53,7 @@ test('Depth bounds and responsive amplitudes interpolate continuously at tablet 
   assert.equal(depthProgress(-400,300,900),1);
 });
 test('Frame cadence cannot alter a pose and reduced/keyboard neutralizes every decorative plane',()=>{
-  for(const kind of ['hero-portrait','hero-paper','hero-doodle','media','sketch','talk','paper']) {
+  for(const kind of ['hero-portrait','hero-paper','hero-doodle','sketch','talk','paper']) {
     const expected=depthPose(kind,.37,820);
     for(let frame=0;frame<120;frame++) assert.equal(depthPose(kind,.37,820),expected);
     assert.equal(depthPose(kind,0,820,true),depthPose(kind,1,820,true));
@@ -92,13 +61,13 @@ test('Frame cadence cannot alter a pose and reduced/keyboard neutralizes every d
   assert.equal(depthPose('hero-portrait',1,1440),'translate3d(0,-112px,0)');
   assert.equal(depthPose('hero-paper',1,1440),'translate3d(0,48px,0) rotate(-2deg)');
 });
-function journeyHarness(kind = 'media') {
+function journeyHarness(kind = 'sketch') {
   const events=new Map(),frames=new Map(),style={};
   let nextFrame=0,focused=true,insideFocus=false,top=1700;
   const keyboard=new Set();
   const media={matches:false,addEventListener:(name,fn)=>events.set('media:'+name,fn)};
   const on=(name,fn)=>events.set(name,[...(Array.isArray(events.get(name))?events.get(name):[]),fn]);
-  const wrapper={getBoundingClientRect:()=>({top:top-window.scrollY,width:500,height:100}),closest:()=>({contains:()=>insideFocus}),
+  const wrapper={getBoundingClientRect:()=>({top:top-window.scrollY,width:500,height:100}),closest:selector=>selector==='#contacto'?null:({contains:()=>insideFocus}),
     querySelectorAll:()=>[target]};
   const target={dataset:{parallaxLayer:kind},style,closest:()=>wrapper};
   const root={scrollHeight:2000,classList:{contains:token=>keyboard.has(token)}};
@@ -126,33 +95,33 @@ test('Blur preserves the current pose and cancels scheduled frames rather than s
 });
 test('The page bottom keeps its actual geometric depth instead of resetting every layer to neutral',()=>{
   const host=journeyHarness();host.window.scrollY=1100;host.flush();
-  assert.equal(host.style.transform,depthPose('media',depthProgress(600,100,900),1440));
-  assert.notEqual(host.style.transform,depthPose('media',1,1440,true));
+  assert.equal(host.style.transform,depthPose('sketch',depthProgress(600,100,900),1440));
+  assert.notEqual(host.style.transform,depthPose('sketch',1,1440,true));
 });
 test('Reduced motion settles immediately; resuming and resizing recompute the same geometric position',()=>{
   const host=journeyHarness();host.window.scrollY=900;host.flush();
   host.media.matches=true;host.emit('media:change');
-  assert.equal(host.style.transform,depthPose('media',0,1440,true));
+  assert.equal(host.style.transform,depthPose('sketch',0,1440,true));
   host.media.matches=false;host.emit('media:change');host.flush();
-  assert.equal(host.style.transform,journeyPose('media',depthProgress(800,100,900),1440,false,sceneArrival(800,900,900,1100,.98,.60),900,100));
+  assert.equal(host.style.transform,journeyPose('sketch',depthProgress(800,100,900),1440,false,sceneArrival(800,900,900,1100),900));
   host.window.innerWidth=390;host.emit('resize');host.flush();
-  assert.equal(host.style.transform,journeyPose('media',depthProgress(800,100,900),390,false,sceneArrival(800,900,900,1100,.98,.60),900,100));
+  assert.equal(host.style.transform,journeyPose('sketch',depthProgress(800,100,900),390,false,sceneArrival(800,900,900,1100),900));
 });
 
 
-test('Pointer focus inside a project preserves depth while keyboard focus remains neutral',()=>{
+test('Pointer focus inside a decorative scene preserves depth while keyboard focus remains neutral',()=>{
   const host=journeyHarness();host.window.scrollY=1000;host.flush();
   const pose=host.style.transform;
   host.setInsideFocus(true);host.document.activeElement={};host.emit('focusin');host.flush();
-  assert.equal(host.style.transform,pose,'Focusing a summary with a pointer cannot snap its art to neutral');
+  assert.equal(host.style.transform,pose,'Focusing a scene with a pointer cannot snap its art to neutral');
   host.keyboard.add('keyboard');host.emit('focusin');host.flush();
-  assert.equal(host.style.transform,depthPose('media',0,1440,true));
+  assert.equal(host.style.transform,depthPose('sketch',0,1440,true));
   host.keyboard.delete('keyboard');host.emit('pointerdown');host.flush();
   assert.equal(host.style.transform,pose,'Returning to pointer modality restores the geometric pose');
 });
 
 
-test('Headings finish before reading; media presentation settles while geometric depth continues',()=>{
+test('Headings finish before reading while decorative depth remains reversible',()=>{
   for(const [width,height] of [[320,568],[390,844],[651,900],[759,900],[760,900],[820,1180],[844,390],[1440,1000]]) {
     const docTop=2000, travel=6000;
     for(const order of [0,1]) {
@@ -161,12 +130,9 @@ test('Headings finish before reading; media presentation settles while geometric
       assert.equal(sceneArrival(.64*height,height,docTop-.64*height,travel,start,.64),1);
     }
     const topValues=[.98,.9,.8,.7,.6,.4,.1].map(v=>v*height);
-    const samples=topValues.map(top=>journeyPose('media',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel,.98,.6),height,500));
-    assert.match(samples[0],/rotateX\([1-9.]/);
-    assert.match(samples[0],/scale\(0\./);
-    assert.doesNotMatch(samples[4],/rotateX|scale/,'Reading-band capture is flat and full size');
-    assert.notEqual(samples[4],samples[5],'Depth continues after presentation is complete');
-    const reverse=topValues.toReversed().map(top=>journeyPose('media',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel,.98,.6),height,500)).reverse();
+    const samples=topValues.map(top=>journeyPose('sketch',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel),height));
+    assert.notEqual(samples[4],samples[5],'Decorative depth continues through the reading band');
+    const reverse=topValues.toReversed().map(top=>journeyPose('sketch',depthProgress(top,500,height),width,false,sceneArrival(top,height,docTop-top,travel),height)).reverse();
     assert.deepEqual(samples,reverse);
     assert.equal(journeyPose('heading',.5,width,false,1,height),'translate3d(0,0px,0)');
   }
@@ -179,20 +145,16 @@ test('Unreachable reading bands settle continuously at page bottom without reset
   assert.ok(arrivals[3]>.999 && arrivals[3]<1);
   assert.equal(arrivals[4],1);
   assert.equal(sceneArrival(400,height,0,0),1,'Non-scrollable page cannot leave titles displaced');
-  assert.notEqual(depthPose('media',depthProgress(600,100,height),1440),depthPose('media',0,1440,true));
+  assert.notEqual(depthPose('sketch',depthProgress(600,100,height),1440),depthPose('sketch',0,1440,true));
 });
 test('New gestures are viewport-safe and neutral for keyboard/reduced motion, including landscape',()=>{
   assert.equal(heightWeight(390),.3);
   assert.equal(heightWeight(1000),1);
   for(const width of [320,390,650,651,759,760,820,1024,1440]) {
-    for(const kind of ['heading','media','hero-portrait']) {
-      assert.equal(journeyPose(kind,0,width,true,0,390,800),journeyPose(kind,1,width,true,1,1180,100));
+    for(const kind of ['heading','sketch','hero-portrait']) {
+      assert.equal(journeyPose(kind,0,width,true,0,390),journeyPose(kind,1,width,true,1,1180));
     }
-    const size=800, perspective=3200;
-    const pose=journeyPose('media',.5,width,false,0,1000,size);
-    const scale=Number(pose.match(/scale\(([^)]+)\)/)[1]);
-    const radians=Number(pose.match(/rotateX\(([^)]+)deg\)/)[1])*Math.PI/180;
-    assert.ok(scale/(1-size/2*Math.sin(radians)/perspective)<1,'Perspective must fit inside the full-size image footprint');
+
   }
   assert.ok(Math.abs(heightWeight(699.99)-heightWeight(700.01))<.001);
   assert.equal((html.match(/class="journey-heading-line"/g)||[]).length,5);
@@ -211,79 +173,201 @@ test('Actual heading controller delivers settled reading poses and retraces a pa
 });
 
 
-test('All three story acts have readable holds within the actual sticky interval, reversible on every device',()=>{
-  for(const [width,height] of [[320,640],[390,844],[651,900],[759,900],[760,900],[820,1180],[1440,1000]]) {
-    const layout=storyLayout(width,height,65), top=1800;
-    const flowOffset=layout.mobile?layout.stage:0;
-    const centers=[.5,1.5,2.5].map(i=>top+flowOffset+i*layout.step);
-    const start=top-layout.inset,end=top+flowOffset+3*layout.step-layout.inset-layout.stage;
-    const line=layout.mobile?layout.inset+layout.stage+(height-layout.inset-layout.stage)*.25:height*.52;
-    const positions=Array.from({length:301},(_,i)=>start+(end-start)*i/300);
-    const down=positions.map(scroll=>storyPosition(centers,scroll,line,height,start,end));
-    assert.deepEqual(down,positions.toReversed().map(scroll=>storyPosition(centers,scroll,line,height,start,end)).reverse());
-    for(const act of [0,1,2]) {
-      const hold=down.filter(position=>Math.abs(position-act)<1e-9).length*(end-start)/300;
-      assert.ok(hold>=Math.min(height*.20,(end-start)*.16),`Act ${act} at ${width} needs a readable hold inside pin, got ${hold}`);
-      assert.equal(storyFramePose(act,act,layout.mobile).opacity,1);
-    }
-    assert.ok(down.some(position=>position>0 && position<1));
-    assert.ok(down.some(position=>position>1 && position<2));
-    for(const position of down) {
-      const alpha=[0,1,2].reduce((sum,i)=>sum+storyFramePose(i,position,layout.mobile).opacity,0);
-      assert.ok(Math.abs(alpha-1)<1e-9,'No empty or doubled decorative composition during handover');
-    }
-  }
-  assert.equal(storyLayout(844,390,65).viable,false);
-  assert.equal(storyLayout(390,599,65).viable,false);
-  assert.ok(storyLayout(390,844,65).stage<=(844-65)*.3);
-});
-test('The work marker describes a real row, and an expanded project owns its entire body',()=>{
-  const row=[{top:-800,bottom:-300},{top:-250,bottom:200},{top:-249,bottom:300},{top:400,bottom:1200}];
-  assert.deepEqual(Array.from(workStoryRow(row,100).indices),[1,2]);
-  assert.ok(Math.abs(workStoryRow(row,100).progress-350/550)<1e-9);
-  const open=[{top:-1500,bottom:-1100},{top:-1000,bottom:500},{top:550,bottom:1000}];
-  assert.deepEqual(Array.from(workStoryRow(open,100).indices),[1]);
-  assert.deepEqual(Array.from(workStoryRow(open,600).indices),[2]);
-});
-function storyLifecycle({height=844,reducedInitially=false}={}) {
-  const classes=()=>{const values=new Set();return {contains:n=>values.has(n),add:(...names)=>names.forEach(n=>values.add(n)),remove:(...names)=>names.forEach(n=>values.delete(n)),toggle:(n,yes)=>yes?values.add(n):values.delete(n)}};
-  const node=(tag='DIV',attrs={})=>({tagName:tag,dataset:{},children:[],classList:classes(),style:{setProperty(k,v){this[k]=v;}},
-    get attributes(){return Object.entries(attrs).map(([name,value])=>({name,value}));},removeAttribute:n=>delete attrs[n],
-    querySelector:()=>null,querySelectorAll:()=>[],append(...children){this.children.push(...children);},cloneNode:()=>node(tag,{...attrs})});
-  const stage=node(),rail=node(),marker=node(),root=node();
-  const steps=['Web','Automatización','IA aplicada'].map((label,index)=>({dataset:{storyStep:String(index)},querySelector:()=>({textContent:label})}));
-  rail.querySelector=()=>stage;rail.querySelectorAll=()=>steps;
-  const sources=[node('IMG',{id:'unsafe',style:'transform:rotate(90deg)','data-parallax-layer':'media',width:'2400',height:'1652'}),node('IMG'),node('SPAN')];
-  const sourceSelectors=['#strev .journey-media','#sereno .journey-media','#social-scout .social-editorial-paper'];
-  const document={querySelector:selector=>selector==='.story-rail'?rail:selector==='.work-story-marker'?marker:selector==='.index-bar'?{getBoundingClientRect:()=>({height:65})}:sources[sourceSelectors.indexOf(selector)],querySelectorAll:()=>[node()],createElement:tag=>node(tag.toUpperCase())};
-  const window={innerWidth:390,innerHeight:height},reduced={matches:reducedInitially};
-  const setup=journey.slice(journey.indexOf('  const rail ='),journey.indexOf('  const add ='));
-  const api=vm.runInNewContext(`${geometry};${setup};({mountStory,sizeStory,quietStory})`,{document,window,reduced,root});
-  return {stage,rail,root,reduced,window,...api};
-}
-test('Story enhancement is idempotent and keeps layout on modality changes but compacts on short resize',()=>{
-  const host=storyLifecycle();assert.equal(host.stage.children.length,4);
-  const height=host.rail.style['--story-step-height'];
-  const copy=host.stage.children[0].children[0];
-  assert.ok(!copy.attributes.some(a=>['id','style','data-parallax-layer'].includes(a.name)));
-  assert.ok(copy.attributes.some(a=>a.name==='width'),'Intrinsic dimensions survive cloning');
-  assert.equal(copy.alt,'');assert.equal(copy.className,'story-capture');
-  host.quietStory(true);assert.equal(host.rail.style['--story-step-height'],height);
-  assert.equal(host.rail.classList.contains('story-enhanced'),true);
-  assert.equal(host.rail.classList.contains('story-neutral'),true);
-  host.window.innerHeight=390;host.sizeStory();assert.equal(host.rail.classList.contains('story-enhanced'),false);
-  host.window.innerHeight=844;host.mountStory();host.sizeStory();
-  assert.equal(host.rail.classList.contains('story-enhanced'),true);assert.equal(host.stage.children.length,4);
-  const reducedHost=storyLifecycle({reducedInitially:true});assert.equal(reducedHost.stage.children.length,0);
-  reducedHost.reduced.matches=false;reducedHost.mountStory();reducedHost.sizeStory();assert.equal(reducedHost.stage.children.length,4);
-  const landscape=storyLifecycle({height:390});assert.equal(landscape.stage.children.length,0);
-  landscape.window.innerHeight=844;landscape.mountStory();landscape.sizeStory();assert.equal(landscape.stage.children.length,4);
-});
-test('Mount precedes initial hash alignment while the intro owner and character script order are preserved',()=>{
+test('The intro owner and character script order are preserved',()=>{
   const entry=html.indexOf('window.portfolioEntry ='),scene=html.indexOf('src="recorrido-personal.js'),appIndex=html.indexOf('src="app.js');
   assert.ok(entry>=0 && entry<scene && scene<appIndex);
   assert.ok(appIndex<html.indexOf('src="character-rig.js') && html.indexOf('src="character-rig.js')<html.indexOf('src="portrait-motion.js'));
-  assert.match(html,/<div class="story-stage" aria-hidden="true"><\/div>/,'No-JS keeps the original list without a decorative layout box');
-  assert.equal((html.match(/data-story-step=/g)||[]).length,3);
-  assert.match(css,/#trabajo \.project\{scroll-margin-top:50px\}/,'Compensation selector must outrank the existing ID-based reset');
+});
+
+const document = new JSDOM(html).window.document;
+const about = document.querySelector('section#sobre-mi');
+const work = document.querySelector('section#trabajo');
+const text = node => {
+  const copy=node.cloneNode(true);
+  copy.querySelectorAll('[aria-hidden="true"]').forEach(child=>child.remove());
+  return copy.textContent.replace(/\s+/g,' ').trim();
+};
+const visibleWithoutInteraction = node => {
+  assert.ok(node,'Required content exists in the parsed HTML');
+  assert.equal(node.closest('details,[hidden],[aria-hidden="true"]'),null,'Content is visible without opening a disclosure or running JavaScript');
+};
+
+test('AC1: retired story, project disclosures and their controllers are absent',()=>{
+  assert.equal(document.querySelector('.story-rail,.story-stage,[data-story-step],ol.about-milestones,.work-story-marker,nav.case-index,details.project'),null);
+  new vm.Script(journey,{filename:'recorrido-personal.js'});
+  new vm.Script(app,{filename:'app.js'});
+  assert.doesNotMatch(journey,/\b(?:storyLayout|storyPosition|storyFramePose|workStoryRow|mountStory|sizeStory|readStory|drawStory)\b/);
+  assert.doesNotMatch(app,/\bopenHashProject\b|\.case-next\b|nav\.case-index\b/);
+});
+
+test('AC2: About contains the literal bio, four facts, three methods and four visible history entries',()=>{
+  assert.ok(about.querySelector('h2#about-title'));
+  assert.deepEqual([...about.querySelectorAll('.about-relato > p')].map(text),[
+    'Soy Alex Micó, desarrollador full stack de Villena. Me formé en sistemas y redes y en desarrollo web. Hoy compagino mi trabajo con productos propios y herramientas para desarrollo con IA.',
+    'Trabajo de extremo a extremo: interfaz, API, automatización, despliegue y diagnóstico de incidencias. Antes de cerrar una entrega, pruebo los flujos frágiles y compruebo el resultado en el entorno real.',
+  ]);
+  const facts=about.querySelector('dl.about-facts');
+  assert.ok(facts);
+  assert.deepEqual([...facts.querySelectorAll('dt')].map(text),['Dónde','Disponible','Stack','Idiomas']);
+  assert.deepEqual([...facts.querySelectorAll('dd')].map(text),[
+    'Villena, Alicante. Trabajo en remoto.',
+    'Abierto a puestos Full Stack en España y la UE',
+    'React, Node, Express, MongoDB, Python y testing',
+    'Castellano y valenciano nativos; inglés técnico en lectura, conversación básica',
+  ]);
+  const methods=[...about.querySelectorAll('.about-method-grid > article')];
+  assert.equal(methods.length,3);
+  assert.deepEqual(methods.map(node=>text(node.querySelector('h4'))),['Producto web','Herramientas','Automatización con IA']);
+  assert.deepEqual(methods.map(node=>text(node.querySelector('p'))),[
+    'Interfaz en React y API en Node. En Strev, el análisis de vídeo va en una cola y los datos de salud se cifran campo a campo.',
+    'Sereno es un solo archivo de Python, sin dependencias, que sigue desde un panel las sesiones de cinco CLI de agentes.',
+    'Atalaya reúne ofertas de varios portales de empleo y puntúa cada una según un perfil.',
+  ]);
+  assert.deepEqual(methods.map(node=>node.querySelector('a').getAttribute('href')),['/proyectos/strev/','/proyectos/sereno/','/proyectos/atalaya/']);
+  assert.deepEqual(methods.map(node=>text(node.querySelector('a'))),['Caso Strev','Caso Sereno','Caso Atalaya']);
+  const history=[...about.querySelectorAll('.history-list > article')];
+  assert.equal(history.length,4);
+  assert.ok([...about.querySelectorAll('h3')].some(node=>text(node)==='Mi recorrido'));
+  assert.deepEqual(history.map(node=>[text(node.querySelector('.history-date')),text(node.querySelector('h4')),text(node.querySelector('p'))].join(' ')),[
+    '2026 — Hoy Desarrollador Full Stack Anuubis Solutions · Remoto',
+    '2024 · Prácticas Técnico de Soporte IT Impulso Sistemas · Villena',
+    '2024 — 2026 Desarrollo de Aplicaciones Web Grado Superior · IES Hermanos Amorós',
+    '2022 — 2024 Sistemas Microinformáticos y Redes Ciclo Medio · IES Hermanos Amorós',
+  ]);
+  [...methods,...history,facts,...about.querySelectorAll('.about-relato > p')].forEach(visibleWithoutInteraction);
+  assert.equal(about.querySelector('details'),null);
+});
+
+test('AC3: Work orders one featured project, three case articles and the four compact entries',()=>{
+  assert.ok(work.querySelector('h2#work-title'));
+  assert.deepEqual([...work.querySelectorAll('article[id]')].map(node=>node.id),['strev','sereno','savemymoneynow','atalaya']);
+  assert.ok(work.querySelector('article.work-featured#strev'));
+  assert.deepEqual([...work.querySelectorAll('.work-cases > article')].map(node=>node.id),['sereno','savemymoneynow','atalaya']);
+  const more=work.querySelector('ul.work-more-list');
+  assert.ok(more);
+  assert.deepEqual([...more.children].map(node=>[node.tagName,node.id]),[
+    ['LI','marky'],['LI','smarty'],['LI','roguepatch-lab'],['LI','social-scout'],
+  ]);
+  assert.equal(more.querySelector('img'),null);
+  [...work.querySelectorAll('article[id]'),...more.children].forEach(node=>{
+    assert.ok(node.querySelector('h3'));
+    visibleWithoutInteraction(node);
+  });
+  assert.equal(document.querySelectorAll('h1').length,1);
+  assert.ok(document.querySelector('#inicio h1'));
+});
+
+test('AC4: Each case article exposes its role, exact stack, result and unique accessible case link',()=>{
+  const projects=[
+    ['strev','Strev','React · Node · Express · MongoDB · Redis · Stripe · Gemini'],
+    ['sereno','Sereno','Python · curses · tmux'],
+    ['savemymoneynow','SaveMyMoneyNow','React · Node · Express · MongoDB'],
+    ['atalaya','Atalaya','Python · Typer · SQLite'],
+  ];
+  const names=[];
+  for (const [slug,name,stack] of projects) {
+    const article=work.querySelector(`article#${slug}`),facts=article.querySelector('dl');
+    visibleWithoutInteraction(facts);
+    assert.deepEqual([...facts.querySelectorAll('dt')].map(text),['Rol','Stack','Resultado']);
+    const descriptions=[...facts.querySelectorAll('dd')];
+    assert.equal(descriptions.length,3);
+    assert.equal(text(descriptions[0]),slug==='strev'?'Proyecto propio. Lo diseño, lo desarrollo y opero la beta.':'Proyecto propio, código abierto.');
+    assert.equal(text(descriptions[1]),stack);
+    assert.ok(text(descriptions[2]).length>0);
+    const links=article.querySelectorAll(`a[href="/proyectos/${slug}/"]`);
+    assert.equal(links.length,1);
+    const link=links[0];
+    assert.equal(link.getAttribute('aria-label'),`Leer el caso de ${name}`);
+    assert.equal(text(link),'Leer el caso');
+    visibleWithoutInteraction(link);
+    names.push(link.getAttribute('aria-label'));
+  }
+  assert.equal(new Set(names).size,4);
+  assert.ok(work.querySelector('#strev a[href="https://strev.app"]'));
+  for (const [slug,url] of [
+    ['sereno','https://github.com/ElRaxy/sereno'],
+    ['savemymoneynow','https://github.com/ElRaxy/SaveMyMoneyNow'],
+    ['atalaya','https://github.com/ElRaxy/atalaya-cli'],
+    ['roguepatch-lab','https://github.com/ElRaxy/roguepatch-lab'],
+  ]) assert.ok(work.querySelector(`#${slug} a[href="${url}"]`));
+});
+
+test('AC5: The ten metrics measured on 2026-10-20 use named spans and Spanish number formatting',()=>{
+  const expected={
+    'strev-endpoints':'121','strev-tests-api':'1.398','strev-tests-ui':'2.793',
+    'sereno-prs':'101','sereno-tests':'81','smmn-endpoints':'21','smmn-tests':'113',
+    'atalaya-comandos':'13','atalaya-tests':'174','roguepatch-tests':'366',
+  };
+  const metrics=[...document.querySelectorAll('[data-metric]')];
+  assert.deepEqual([...new Set(metrics.map(node=>node.dataset.metric))].sort(),Object.keys(expected).sort());
+  assert.equal(metrics.length,10,'Each metric appears once');
+  for (const node of metrics) {
+    assert.equal(node.tagName,'SPAN');
+    assert.equal(text(node),expected[node.dataset.metric]);
+    visibleWithoutInteraction(node);
+  }
+  for (const slug of ['strev','sereno','savemymoneynow','atalaya']) {
+    const result=[...work.querySelectorAll(`#${slug} dl dd`)].at(-1).cloneNode(true);
+    result.querySelectorAll('[data-metric]').forEach(node=>node.remove());
+    assert.doesNotMatch(text(result),/[1-9]\d*/,'Every provisional result count is marked, except the literal zero dependencies');
+  }
+  assert.doesNotMatch(about.textContent+work.textContent,/\{N_[A-Z_]+\}/);
+});
+
+test('AC6: Sereno demo keeps its exact markup and connected controls inside a closed Work disclosure',()=>{
+  const demo=work.querySelector('section.sereno-demo');
+  assert.ok(demo);
+  assert.equal(about.querySelector('.sereno-demo'),null);
+  const disclosure=demo.closest('details');
+  assert.ok(disclosure && work.contains(disclosure));
+  assert.equal(disclosure.hasAttribute('open'),false);
+  assert.equal(text(disclosure.querySelector('summary')),'Probar la demo de Sereno');
+  assert.equal(createHash('sha256').update(demo.outerHTML).digest('hex'),'eed5376e44dcf86ff5cd4db3c4c2c68c9349e8562f5c1ab9f0a41295fff8a7c5','The existing demo subtree must survive relocation byte-for-byte after HTML parsing');
+  assert.equal(demo.getAttribute('aria-labelledby'),'sereno-demo-title');
+  assert.ok(demo.querySelector('#sereno-demo-title'));
+  for (const state of ['working','waiting','unknown']) {
+    const control=demo.querySelector(`#sereno-demo-${state}`);
+    assert.ok(control);
+    assert.equal(control.type,'radio');
+    assert.equal(control.name,'sereno-demo-state');
+    assert.equal(control.getAttribute('aria-controls'),`sereno-demo-panel-${state}`);
+    assert.ok(demo.querySelector(`#${control.getAttribute('aria-controls')}`));
+    assert.equal(control.checked,state==='waiting');
+  }
+});
+
+test('AC7: New project images retain their complete intrinsic dimensions and approved alternatives',()=>{
+  for (const [slug,src,width,height,alt] of [
+    ['savemymoneynow','assets/savemymoneynow-detection.png','914','911','SaveMyMoneyNow localizando la fila de cabecera de un extracto bancario'],
+    ['atalaya','assets/atalaya-health.svg','1200','675','Resumen de salud de las fuentes de empleo de Atalaya'],
+  ]) {
+    const image=work.querySelector(`article#${slug} img`);
+    assert.ok(image);
+    assert.equal(image.getAttribute('src'),src);
+    assert.equal(image.getAttribute('width'),width);
+    assert.equal(image.getAttribute('height'),height);
+    assert.equal(image.getAttribute('alt'),alt);
+  }
+});
+
+test('Group labels in About and Work never sit at the same heading level as their children',()=>{
+  for(const [group,label] of [['.about-methods','Cómo trabajo'],['.about-history','Mi recorrido']]){
+    const node=about.querySelector(group);
+    assert.equal(text(node.querySelector(':scope > h3')),label);
+    assert.equal(node.querySelectorAll('article h3').length,0);
+    assert.ok(node.querySelectorAll('article h4').length>=3);
+  }
+  assert.deepEqual([...work.querySelectorAll('.work-level')].map(node=>node.tagName),['P','P','P']);
+  assert.equal(work.querySelector('ul.work-more-list').getAttribute('aria-labelledby'),'work-more-title');
+  assert.equal(text(work.querySelector('#work-more-title')),'Más trabajo');
+  assert.equal(document.querySelectorAll('#sobre-mi h3 > a[href^="#"], #trabajo h3 > a[href^="#"]').length,0);
+});
+
+test('Every labelled link in About and Work starts its accessible name with its visible text',()=>{
+  const links=[...document.querySelectorAll('#sobre-mi a[aria-label], #trabajo a[aria-label]')];
+  assert.ok(links.length>=8);
+  for(const link of links){
+    const visible=text(link);
+    assert.ok(link.getAttribute('aria-label').startsWith(visible),`${link.getAttribute('aria-label')} / ${visible}`);
+  }
 });

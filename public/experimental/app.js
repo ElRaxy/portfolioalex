@@ -2,12 +2,7 @@
 const personalWorld = document.body.classList.contains('personal-world');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-const easeOut = 'cubic-bezier(.23,1,.32,1)';
-const easeInOut = 'cubic-bezier(.77,0,.175,1)';
 const detailsMotion = CSS.supports('selector(::details-content)') && CSS.supports('interpolate-size:allow-keywords') && CSS.supports('transition-behavior:allow-discrete');
-const activeAnimations = new Set();
-const seenImages = new WeakSet();
-const imageAnimations = new Map();
 let keyboard = false, introActive = Boolean(window.portfolioEntry?.active);
 let headerHeight = 59;
 let fontsReady = !document.fonts;
@@ -22,9 +17,6 @@ const aboutPoster = document.querySelector('.presence-title');
 const aboutFrame = document.querySelector('.presence-frame');
 const posterLines = [...(document.querySelectorAll('.presence-first, .presence-system') || [])];
 const sceneHeadlines = [...(document.querySelectorAll('[data-reveal]') || [])];
-const layoutMotions = new Map();
-let layoutCapture = null;
-let archiveState = null;
 const workRegion = document.querySelector('#trabajo');
 const workWash = document.querySelector('.work-wash');
 const contactRegion = document.querySelector('#contacto');
@@ -47,22 +39,10 @@ const morph = document.querySelector('.name-morph');
 const sourceWords = [...name.querySelectorAll('.name-word')];
 const targetWords = [...signature.querySelectorAll('.signature-word')];
 const morphWords = [...morph.querySelectorAll('.morph-word')];
-const animate = (element, frames, options) => {
-  if (reduced.matches || keyboard) return;
-  const animation = element.animate(frames, options);
-  activeAnimations.add(animation);
-  animation.finished.catch(() => {}).finally(() => activeAnimations.delete(animation));
-  return animation;
-};
 const stopMotion = () => {
-  cancelLayoutMotion();
   resetHoverInk();
-  activeAnimations.forEach(animation => animation.cancel());
-  activeAnimations.clear();
-  imageAnimations.clear();
   window.portfolioEntry?.finish();
   introActive = false;
-  cancelSummaryAnchor();
 };
 document.addEventListener('keydown', event => {
   const pageNavigation = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','PageDown','PageUp','Home','End'].includes(event.key);
@@ -71,10 +51,7 @@ document.addEventListener('keydown', event => {
   document.documentElement.classList.add('keyboard');
   stopMotion(); cancelNativeScroll(); cancelPanelProgress(); updateProgress();
 });
-document.addEventListener('pointerdown', event => {
-  // A held summary keeps its current pose; the click captures it before reflow.
-  if (!event?.target?.closest?.('.project-heading')) cancelLayoutMotion();
-  cancelSummaryAnchor();
+document.addEventListener('pointerdown', () => {
   if (introActive) stopMotion();
   keyboard = false;
   document.documentElement.classList.remove('keyboard');
@@ -88,21 +65,7 @@ reduced.addEventListener('change', () => {
 window.addEventListener('portfolio:entryend', () => { introActive = false; });
 const navLinks = [...document.querySelectorAll('.index-bar a')];
 const sections = navLinks.map(link => document.querySelector(link.hash));
-const projectPanels = [...document.querySelectorAll('details.project')];
-const caseLinks = [...document.querySelectorAll('.case-index a')];
-function updateCaseIndex() {
-  const open = projectPanels.find(panel => panel.open);
-  caseLinks.forEach(link => {
-    if (open && link.hash === `#${open.id}`) link.setAttribute('aria-current','true');
-    else link.removeAttribute('aria-current');
-  });
-}
-let summaryAnchor = null;
-let summaryFrame = 0;
-let previousOverflowAnchor = '';
-let caseNextFocus = null;
 let smoothHash = null;
-let preparedProjectHash = null;
 let smoothActive = false;
 let smoothRestoreTimer = 0;
 let smoothEndTimer = 0;
@@ -128,13 +91,7 @@ window.addEventListener('hashchange', () => {
   stopMotion();
   if (smoothHash !== window.location.hash) cancelNativeScroll();
   smoothHash = null;
-  const prepared = preparedProjectHash === window.location.hash;
-  preparedProjectHash = null;
-  if (!openHashProject({align:!prepared})) {
-    markSection(window.location.hash.slice(1) || 'inicio');
-    if (caseNextFocus === '#contacto' && window.location.hash === caseNextFocus) document.querySelector('.email').focus({preventScroll:true});
-  }
-  caseNextFocus = null;
+  markSection(window.location.hash.slice(1) || 'inicio');
   queueProgress();
 });
 document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
@@ -142,13 +99,6 @@ document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener(
   if (!localActivation || event.defaultPrevented || link.hasAttribute('download')) return;
   stopMotion();
   cancelNativeScroll();
-  // Remember focus ownership before native exclusivity hides the current panel.
-  caseNextFocus = localActivation && link.classList.contains('case-next') &&
-    (document.activeElement === link || keyboard || event.detail === 0) ? link.hash : null;
-  // Resolve exclusive-details geometry before the browser chooses its native anchor destination.
-  const projectTarget = projectPanels.some(panel => `#${panel.id}` === link.hash);
-  preparedProjectHash = projectTarget && link.hash !== window.location.hash ? link.hash : null;
-  if (projectTarget) openHashProject({hash:link.hash,align:false});
   if (!reduced.matches && !keyboard && event?.detail > 0 && localActivation) {
     smoothHash = link.hash;
     smoothActive = true;
@@ -156,7 +106,6 @@ document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener(
     smoothRestoreTimer = setTimeout(() => { document.documentElement.style.scrollBehavior = ''; },0);
     smoothEndTimer = setTimeout(finishNativeScroll,1500);
   }
-  // Same-fragment activation also uses the freshly opened native target; no second scroll.
 }));
 
 const progress = document.querySelector('.reading-progress');
@@ -211,29 +160,6 @@ measureMorph();
 updateProgress();
 if (document.fonts) document.fonts.ready.then(() => { fontsReady = true; if (!document.hidden) { syncHeader(); measureMorph(); queueProgress(); } });
 
-function openHashProject({hash = window.location.hash, align = true} = {}) {
-  const panel = projectPanels.find(project => `#${project.id}` === hash);
-  if (!panel) return false;
-  cancelSummaryAnchor();
-  if (align) cancelNativeScroll();
-  cancelPanelProgress();
-  document.documentElement.classList.add('settle-panels');
-  const transferFocus = caseNextFocus === `#${panel.id}`;
-  caseNextFocus = null;
-  projectPanels.forEach(project => { project.open = project === panel; });
-  if (transferFocus) panel.querySelector('summary').focus({preventScroll:true});
-  markSection('trabajo');
-  updateCaseIndex();
-  const margin = (parseFloat(getComputedStyle(panel).scrollMarginTop) || 0) +
-    (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0);
-  const targetTop = panel.getBoundingClientRect().top; // Commit the final details layout while transitions are disabled.
-  if (align && Math.abs(targetTop - margin) > 2) {
-    panel.scrollIntoView({behavior:'instant',block:'start'});
-  }
-  document.documentElement.classList.remove('settle-panels');
-  queueProgress();
-  return true;
-}
 function cancelPanelProgress() {
   clearTimeout(panelProgressTimer);
   panelProgressTimer = 0;
@@ -260,76 +186,16 @@ function cancelNativeScroll() {
   finishNativeScroll();
   if (wasActive) window.scrollTo({top:window.scrollY,behavior:'instant'});
 }
-function cancelSummaryAnchor() {
-  cancelAnimationFrame(summaryFrame);
-  summaryFrame = 0;
-  if (summaryAnchor?.animated) document.documentElement.style.overflowAnchor = previousOverflowAnchor;
-  summaryAnchor = null;
-}
-function adjustSummaryAnchor() {
-  if (!summaryAnchor) return;
-  const shift = summaryAnchor.summary.getBoundingClientRect().top - summaryAnchor.top;
-  if (Math.abs(shift) > .5) window.scrollBy({top:shift,behavior:'instant'});
-}
-function trackSummary(timestamp) {
-  summaryFrame = 0;
-  if (!summaryAnchor || timestamp > summaryAnchor.until) {
-    cancelSummaryAnchor();
-    queueProgress();
-    return;
-  }
-  adjustSummaryAnchor();
-  summaryFrame = requestAnimationFrame(trackSummary);
-}
 function interruptNavigation() {
   keyboard = false;
   document.documentElement.classList.remove('keyboard');
-  cancelLayoutMotion();
   if (introActive) stopMotion();
-  cancelSummaryAnchor();
   cancelNativeScroll();
   queueProgress();
 }
 window.addEventListener('wheel', interruptNavigation, {passive:true});
 window.addEventListener('touchstart', interruptNavigation, {passive:true});
 window.addEventListener('scrollend', finishNativeScroll);
-projectPanels.forEach(panel => {
-  const summary = panel.querySelector('summary');
-  summary.addEventListener('click', () => {
-    captureLayoutShift(panel);
-    cancelSummaryAnchor();
-    cancelNativeScroll();
-    const animated = detailsMotion && !keyboard && !reduced.matches;
-    summaryAnchor = {panel,summary,top:Math.max(80,summary.getBoundingClientRect().top),animated,until:performance.now()+320};
-    if (animated) {
-      previousOverflowAnchor = document.documentElement.style.overflowAnchor;
-      document.documentElement.style.overflowAnchor = 'none';
-      summaryFrame = requestAnimationFrame(trackSummary);
-    }
-  });
-  panel.addEventListener('toggle', () => {
-    syncArchiveSelection(panel);
-    if (layoutCapture?.panel === panel) { adjustSummaryAnchor(); playLayoutShift(); }
-    updateCaseIndex();
-    if (summaryAnchor?.panel === panel && !summaryAnchor.animated) {
-      adjustSummaryAnchor();
-      cancelSummaryAnchor();
-    }
-    queuePanelProgress();
-  });
-  panel.addEventListener('transitionend', event => {
-    if (event.pseudoElement !== '::details-content' || event.propertyName !== 'block-size') return;
-    if (summaryAnchor?.panel === panel) {
-      adjustSummaryAnchor();
-      cancelSummaryAnchor();
-    }
-    queueProgress();
-  });
-});
-openHashProject();
-updateCaseIndex();
-initArchive();
-
 function syncHeader() {
   headerHeight = header.getBoundingClientRect().height;
   document.documentElement.style.setProperty('--header-height',`${headerHeight}px`);
@@ -392,36 +258,6 @@ function updateMorph() {
   signature.style.opacity = '0';
 }
 
-function showProjectImage(visual, motion) {
-  const current = imageAnimations.get(visual);
-  if (current && !motion) { current.cancel(); imageAnimations.delete(visual); }
-  if (seenImages.has(visual)) return;
-  seenImages.add(visual);
-  imageObserver.unobserve(visual);
-  if (!motion) return;
-  const animation = animate(visual,[
-    {clipPath:'inset(0 100% 0 0)'},
-    {clipPath:'inset(0 0 0 0)'}
-  ],{duration:600,easing:easeInOut});
-  if (animation) {
-    imageAnimations.set(visual,animation);
-    animation.finished.catch(() => {}).finally(() => imageAnimations.delete(visual));
-  }
-}
-const imageObserver = new IntersectionObserver(entries => {
-  if (document.hidden) return;
-  entries.forEach(entry => {
-    const visual = entry.target;
-    if (!entry.isIntersecting || entry.intersectionRatio < .001 || !visual.closest('details').open) return;
-    const bounds = visual.getBoundingClientRect();
-    if (bounds.width > 0 && bounds.height > 0) showProjectImage(visual,true);
-  });
-},{threshold:.001,rootMargin:'0px 0px 32px 0px'});
-document.querySelectorAll('.project-visual').forEach(visual => {
-  imageObserver.observe(visual);
-  visual.parentElement.addEventListener('focus', () => showProjectImage(visual,false));
-});
-
 const copyControl = document.querySelector('.copy-control');
 const copyButton = document.querySelector('.copy-email');
 const copyStatus = document.querySelector('.copy-status');
@@ -478,12 +314,7 @@ function updateHeadingInk() {
   const p = Math.max(0,Math.min(1,(window.innerHeight*.9-top)/(window.innerHeight*.6)));
   presenceInk.style.clipPath = `inset(0 ${100*(1-p)}% 0 0)`;
 }
-const historyDisclosure = document.querySelector('.history-disclosure');
-if (historyDisclosure) historyDisclosure.addEventListener('toggle',queueProgress);
-// Personal1007: one native secondary disclosure shares the panel-height refresh.
 document.querySelector('.about-example')?.addEventListener('toggle',queuePanelProgress);
-document.querySelectorAll('.case-method')?.forEach(method => method.addEventListener('toggle',queueProgress));
-// End Personal1007 disclosure.
 
 function hoverInkAllowed() {
   const focused = typeof document.hasFocus !== 'function' || document.hasFocus();
@@ -529,136 +360,6 @@ name.addEventListener('pointerleave',() => {
   if (!hoverFrame && hoverRadius) hoverFrame=requestAnimationFrame(drawHoverInk);
 });
 
-// Releve1007 archive: decoration mirrors native cases, never moves their controls.
-function archiveEnhanced() {
-  return !!archiveState && window.innerWidth >= 1100 && window.innerHeight >= 720;
-}
-function syncArchiveMotion() {
-  if (!archiveState) return;
-  archiveState.stage.classList.toggle('archive-static',!layoutAllowed());
-}
-function selectArchive(panel) {
-  if (!archiveState || !panel) return;
-  syncArchiveMotion();
-  const changed = archiveState.selected !== panel;
-  archiveState.selected = panel;
-  archiveState.stage.setAttribute('data-project',panel.id);
-  archiveState.layers.forEach(({owner,layer}) => {
-    const selected = owner === panel;
-    layer.classList.toggle('is-active',selected);
-    if (selected) owner.setAttribute('data-preview-selected','true');
-    else owner.removeAttribute('data-preview-selected');
-  });
-  if (changed) queueProgress();
-}
-function syncArchiveSelection(preferred) {
-  if (!archiveState) return;
-  const opened = projectPanels.find(panel => panel.open);
-  selectArchive(opened || preferred || archiveState.selected || projectPanels[0]);
-}
-function initArchive() {
-  if (personalWorld) return;
-  const layout = document.querySelector('.work-archive-layout');
-  const stage = document.querySelector('.archive-stage');
-  if (!layout || !stage) return;
-  const layers = [];
-  for (const owner of projectPanels) {
-    const source = owner.querySelector('.summary-preview');
-    if (!source) return;
-    const layer = source.cloneNode(true);
-    layer.removeAttribute('id');
-    layer.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
-    layer.querySelectorAll('a,button,input,select,textarea,[tabindex]').forEach(node => node.remove());
-    layer.classList.add('archive-layer');
-    layer.setAttribute('aria-hidden','true');
-    layer.setAttribute('data-project',owner.id);
-    layer.querySelectorAll('img').forEach(img => {
-      const width = Number(img.getAttribute('width'));
-      if (width > 0) img.style.maxWidth = `${width/2}px`;
-      img.style.alignSelf = 'center';
-    });
-    layers.push({owner,layer});
-  }
-  layers.forEach(({layer}) => stage.appendChild(layer));
-  archiveState = {layout,stage,layers,selected:null};
-  projectPanels.forEach(panel => {
-    const choose = () => {
-      if (archiveEnhanced() && !projectPanels.some(owner => owner.open)) selectArchive(panel);
-    };
-    const summary = panel.querySelector('summary');
-    summary.addEventListener('pointerenter',choose);
-    summary.addEventListener('focus',choose);
-  });
-  syncArchiveSelection();
-  layout.classList.add('archive-ready');
-}
-// End Releve1007 archive.
-
-// Atlas reflow: only visible decorative children, never summaries or their hit areas.
-function layoutAllowed() {
-  return !personalWorld && !keyboard && !reduced.matches && !document.hidden &&
-    (typeof document.hasFocus !== 'function' || document.hasFocus());
-}
-function readLayoutFrames() {
-  const frames = new Map();
-  if (!layoutAllowed() || archiveEnhanced()) return frames;
-  projectPanels.forEach(panel => {
-    const summary = panel.querySelector('summary');
-    const bounds = summary.getBoundingClientRect();
-    if (!(bounds.width > 0 && bounds.height > 0) || bounds.top > window.innerHeight*.72 || bounds.top + bounds.height < headerHeight) return;
-    summary.querySelectorAll('.project-title, .summary-preview').forEach((part,index) => {
-      const rect = part.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) frames.set(part,{rect,index,summary,summaryTop:bounds.top});
-    });
-  });
-  return frames;
-}
-function cancelLayoutMotion() {
-  layoutCapture = null;
-  layoutMotions.forEach((animation,part) => {
-    animation.cancel();
-    part.style.transform = 'none';
-    part.style.transformOrigin = '';
-  });
-  layoutMotions.clear();
-}
-function captureLayoutShift(panel) {
-  const frames = readLayoutFrames();
-  cancelLayoutMotion();
-  if (layoutAllowed() && frames.size) layoutCapture = {panel,frames};
-}
-function playLayoutShift() {
-  const capture = layoutCapture;
-  layoutCapture = null;
-  if (!capture || !layoutAllowed()) return;
-  // Reset scene offsets before measuring the final layout, then batch all reads.
-  capture.frames.forEach((_,part) => { part.style.transform = 'none'; });
-  const end = [...capture.frames].map(([part,first]) => ({part,first,last:part.getBoundingClientRect(),summary:first.summary.getBoundingClientRect()}));
-  end.forEach(({part,first,last,summary}) => {
-    if (!part.animate || last.width <= 0 || last.height <= 0 || summary.top > window.innerHeight*.72 || summary.top + summary.height < headerHeight) return;
-    const dx = first.rect.left-last.left;
-    // Native anchoring owns the summary position; animate only its internal reflow.
-    const dy = (first.rect.top-first.summaryTop)-(last.top-summary.top);
-    const sx = first.index ? first.rect.width/last.width : 1;
-    const sy = first.index ? first.rect.height/last.height : 1;
-    if (![dx,dy,sx,sy].every(Number.isFinite) || (Math.abs(dx)+Math.abs(dy) < .5 && Math.abs(sx-1)+Math.abs(sy-1) < .01)) return;
-    part.style.transformOrigin = '0 0';
-    const animation = part.animate([
-      {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`},
-      {transform:'translate3d(0,0,0) scale(1,1)'}
-    ],{duration:280,easing:easeOut,fill:'both'});
-    layoutMotions.set(part,animation);
-    animation.finished.catch(() => {}).finally(() => {
-      if (layoutMotions.get(part) !== animation) return;
-      layoutMotions.delete(part);
-      animation.cancel();
-      part.style.transformOrigin = '';
-      part.style.transform = 'none';
-      queueProgress();
-    });
-  });
-}
-
 // Shared circular scenes: event-driven through the existing progress frame.
 function settleScenes() {
   if (personalWorld) return;
@@ -666,18 +367,13 @@ function settleScenes() {
   if (proofImage) { proofImage.style.clipPath = 'none'; proofImage.style.transform = 'none'; }
   [...posterLines,...contactLines].forEach(line => { line.style.transform = 'none'; line.style.clipPath = 'none'; });
   if (aboutPoster) { aboutPoster.style.transform = 'none'; aboutPoster.style.transformOrigin = ''; }
-  archiveState?.layers.forEach(({layer}) => { layer.style.transform = 'none'; layer.style.transformOrigin = ''; });
   if (workWash) workWash.style.clipPath = 'none';
   if (contactWash) { contactWash.style.clipPath = 'none'; contactWash.style.opacity = ''; }
   if (contactSheet) contactSheet.style.transform = 'none';
-  syncArchiveMotion();
   sceneHeadlines.forEach(target => { target.style.clipPath = 'none'; target.style.transform = 'none'; target.style.transformOrigin = ''; });
-  projectPanels.forEach(panel => panel.querySelector('summary').querySelectorAll('.project-title, .summary-preview').forEach(part => { part.style.transform = 'none'; part.style.transformOrigin = ''; }));
 }
 function updateScenes() {
   if (personalWorld) return;
-  syncArchiveMotion();
-  syncArchiveSelection();
   if (reduced.matches || keyboard || document.hidden) {
     resetMorph();
     settleScenes();
@@ -722,10 +418,6 @@ function updateScenes() {
     proofImage.style.clipPath = 'none';
     proofImage.style.transform = amount ? `translate3d(${(window.innerWidth <= 899 ? 16 : -32)*amount}px,0,0)` : 'none';
   }
-  const rows = projectPanels.map((panel,index) => {
-    const summary = panel.querySelector('summary');
-    return {panel,index,summary,rect:summary.getBoundingClientRect(),parts:[...summary.querySelectorAll('.project-title, .summary-preview')]};
-  });
   const headlines = sceneHeadlines.map(target => {
     const wrapper = target.closest?.('.work-heading, .contact-intro') || (target.id === 'contact-title' ? contactRegion : workRegion);
     return {target,wrapper,rect:wrapper?.getBoundingClientRect()};
@@ -733,16 +425,6 @@ function updateScenes() {
   const surfaces = [[workRegion,workWash],[contactRegion,contactWash]].flatMap(([region,wash]) => {
     if (!region || !wash) return [];
     return [{region,wash,rect:region.getBoundingClientRect(),style:getComputedStyle(region)}];
-  });
-  rows.forEach(({panel,summary,rect,parts}) => {
-    parts.forEach((part,index) => {
-      if (layoutMotions.has(part)) return;
-      // offsetTop belongs to the stable positioned summary, not the transformed preview.
-      const top = rect.top+(part.offsetTop || 0);
-      const p = atEnd || archiveEnhanced() || panel.open || summary.contains?.(document.activeElement) ? 1 : sceneProgress(clamp((viewport-top)/Math.max(1,viewport*.38)));
-      part.style.transformOrigin = p >= 1 ? '' : '50% 50%';
-      part.style.transform = p >= 1 ? 'none' : `translate3d(0,${(index ? 24 : 10)*(1-p)}px,0)${index ? ` scale(${1-.06*(1-p)})` : ''}`;
-    });
   });
   headlines.forEach(({target,wrapper,rect}) => {
     const focused = wrapper?.contains?.(document.activeElement);
@@ -761,16 +443,6 @@ function updateScenes() {
     target.style.transformOrigin = '';
     target.style.transform = p >= 1 ? 'none' : `translate3d(0,${(window.innerWidth <= 899 ? 28 : 48)*(1-p)}px,0)`;
   });
-  if (archiveState) {
-    const rect = archiveState.stage.getBoundingClientRect();
-    const focused = workRegion?.contains?.(document.activeElement);
-    const p = atEnd || !archiveEnhanced() || focused || projectPanels.some(panel => panel.open) || rect.width <= 0 || rect.height <= 0 ? 1 : sceneProgress(clamp((viewport-rect.top)/Math.max(1,viewport*.38)));
-    archiveState.layers.forEach(({owner,layer}) => {
-      const amount = owner === archiveState.selected ? 1-p : 0;
-      layer.style.transformOrigin = amount ? '50% 50%' : '';
-      layer.style.transform = amount ? `translate3d(0,${32*amount}px,0) scale(${1-.06*amount})` : 'none';
-    });
-  }
   surfaces.forEach(({region,wash,rect,style}) => {
     const padding = [style.paddingLeft,style.paddingRight,style.paddingTop].map(value => Math.max(0,parseFloat(value)));
     const valid = [rect.top,rect.width,rect.height,...padding].every(Number.isFinite) && rect.width > 0 && rect.height > 0;

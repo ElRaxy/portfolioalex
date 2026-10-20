@@ -104,8 +104,11 @@ const compruebaPortadaEstatica = (pagina, html) => {
   if (metaContent(html, 'property', 'og:url') !== site || metaContent(html, 'name', 'twitter:card') !== 'summary_large_image') anota(pagina, 'faltan metadatos sociales de la portada')
   const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]))
   const references = [...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map(match => match[1])
-  for (const id of ['inicio','sobre-mi','trabajo','contacto','strev','marky','smarty','sereno','roguepatch-lab','social-scout']) {
+  for (const id of ['inicio','sobre-mi','trabajo','contacto']) {
     if (!ids.has(id) || !references.includes(`#${id}`)) anota(pagina, `falta seccion o enlace #${id}`)
+  }
+  for (const id of ['strev','sereno','savemymoneynow','atalaya','marky','smarty','roguepatch-lab','social-scout']) {
+    if (!ids.has(id)) anota(pagina, `falta el bloque del proyecto #${id}`)
   }
   for (const href of references.filter(value => value.startsWith('#'))) if (!ids.has(href.slice(1))) anota(pagina, `ancla sin destino: ${href}`)
   const cv = '/editorial/assets/cv-es.pdf'

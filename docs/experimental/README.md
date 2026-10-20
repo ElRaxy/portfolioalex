@@ -1,4 +1,24 @@
-# Portfolio experimental — 13 de octubre de 2026
+# Portfolio experimental
+
+## Tramo 1 — 20 de octubre de 2026
+
+La portada conserva el hero, la entrada y el contacto. «Sobre mí» muestra la bio, la ficha, los tres bloques de «Cómo trabajo» y las cuatro entradas de «Mi recorrido» sin escena sticky. Trabajo se organiza en Strev destacado, Sereno/SaveMyMoneyNow/Atalaya con caso y una lista de Marky/Smarty/RoguePatch Lab/Social Scout. La demo de Sereno mantiene su contenido e interacción dentro de un desplegable cerrado en Trabajo.
+
+El contrato y el copy literal están en `projects/portfolioalex/progress/revision-2026-10-20/` del workspace. Las cifras van en `span[data-metric]` y son las medidas el 2026-10-20 (`cifras-2026-10-20.md`). El layout usa los puntos de corte 600, 760, 820 y 1024 px y las imágenes completas.
+
+Los títulos de proyecto no son enlaces: `check-prerender.mjs` exige que existan los ocho bloques de proyecto por id y conserva la exigencia de enlace para `#inicio`, `#sobre-mi`, `#trabajo` y `#contacto`.
+
+Verificación de esta tanda:
+
+```sh
+npm run build
+node --test scripts/check-prerender.test.mjs scripts/publish-home.test.mjs scripts/test-character-rig.mjs scripts/test-motion-entry.mjs scripts/test-motion-journey.mjs
+node scripts/check-prerender.mjs
+```
+
+Los casos AC1–AC7, la jerarquía de encabezados y los nombres accesibles se comprueban en `test-motion-journey.mjs`. `runtime-sha256.json` registra las huellas de los recursos públicos, incluidas las dos imágenes incorporadas. Los logs están en `checks/` de la carpeta del contrato; la revisión visual a 390, 820 y 1440 px, en `qa-tramo1/`.
+
+## Historial — 13 de octubre de 2026
 
 Checkpoint: `travesuras-1013-02`. Ruta: `/experimental/`.
 

@@ -52,7 +52,12 @@ test('publica el checkpoint en la raíz y conserva las demás páginas', async (
     for (const href of deployedLinks) {
       if (/^(?:#|[a-z][a-z\d+.-]*:)/i.test(href)) continue
       assert.ok(href.startsWith('/'), `root-safe URL: ${href}`)
-      await access(path.join(root, 'public', href.split(/[?#]/)[0]))
+      const pathname=href.split(/[?#]/)[0]
+      if (pathname.startsWith('/proyectos/') && pathname.endsWith('/')) {
+        await access(path.join(root, 'build', pathname, 'index.html'))
+      } else {
+        await access(path.join(root, 'public', pathname))
+      }
     }
     for (const href of deployedLinks.filter(url => /\.css(?:\?|$)/.test(url))) {
       const stylesheet = await readFile(path.join(root, 'public', href.split('?')[0]), 'utf8')
