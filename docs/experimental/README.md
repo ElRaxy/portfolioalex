@@ -14,11 +14,17 @@ La portada estática vive en `public/experimental/`. Usa HTML, CSS y JavaScript 
 
 La cápsula mide 52 px en escritorio y conserva su geometría al recorrer la página. Su nombre lleva a Inicio; los tres enlaces llevan a Trabajo, Sobre mí y Contacto. Un subrayado único cambia con `transform` en 250 ms y el enlace actual usa `aria-current="location"`. Hasta 820 px, «Menú» controla un panel; Escape lo cierra y devuelve el foco, y activar un enlace también lo cierra. Sin JavaScript, los enlaces permanecen disponibles.
 
-Las frases provisionales se editan en los tres `li` de `template#capsula-frases`, dentro de `index.html`. La primera también está servida en `.capsula-linea`; al cambiarla hay que mantener ambas copias sincronizadas:
+Las frases aprobadas por Alex el 2026-10-21 se editan en los nueve `li` de `template#capsula-frases`, dentro de `index.html`. La primera también está servida en `.capsula-linea`; al cambiarla hay que mantener ambas copias sincronizadas:
 
-1. Desarrollador full stack
-2. Interfaces, APIs y automatización
-3. Productos propios con IA
+1. Soy desarrollador de Alicante
+2. Estoy puliendo Strev por dentro
+3. Terminé DAW en junio de 2026
+4. Con Smarty pruebo un año de mercado
+5. Ya trabajo en Anuubis Solutions
+6. Seguimos con Marky en simulación
+7. También me gusta diseñar pantallas
+8. Uso Claude Code y Codex a diario
+9. Me fastidia que vuelva el mismo bug
 
 Cada frase cambia a los 4200 ms; su entrada dura 550 ms, `translateY(3px)` y blur de 2 px, con `cubic-bezier(.33,.6,.67,1)`. El punto tiene un halo de 1800 ms, escala 1 a 1,67 y opacidad 1 a 0. Hover o foco dentro pausan ambos. Tras regresar a la primera frase al completar una vuelta, ambos se detienen. La línea es decorativa (`aria-hidden`), sin región viva.
 

@@ -12,7 +12,7 @@ const styles = await Promise.all(['styles.css','portada-personal.css','recorrido
 const css = styles.join('\n');
 const movementCSS = styles.at(-1);
 const doc = new JSDOM(html).window.document;
-const phrases = ['Desarrollador full stack','Interfaces, APIs y automatización','Productos propios con IA'];
+const phrases = ['Soy desarrollador de Alicante','Estoy puliendo Strev por dentro','Terminé DAW en junio de 2026','Con Smarty pruebo un año de mercado','Ya trabajo en Anuubis Solutions','Seguimos con Marky en simulación','También me gusta diseñar pantallas','Uso Claude Code y Codex a diario','Me fastidia que vuelva el mismo bug'];
 const metricValues = ['121','1.398','2.793','4.736','3.684','37','101','81','366'];
 const text = node => {
   const copy = node.cloneNode(true);
@@ -218,7 +218,7 @@ test('Rotation changes at 4200ms with 550ms changes and stops after one complete
   const capsule = document.querySelector('.capsula'), line = capsule.querySelector('.capsula-linea');
   assert.equal(capsule.hasAttribute('data-rotando'), true);
   tick(4199); assert.equal(line.textContent.trim(), phrases[0]);
-  for (const expected of [phrases[1],phrases[2],phrases[0]]) {
+  for (const expected of [...phrases.slice(1),phrases[0]]) {
     tick(1); assert.equal(line.textContent.trim(), expected);
     assert.equal(line.hasAttribute('data-cambio'), true);
     tick(549); assert.equal(line.hasAttribute('data-cambio'), true);
@@ -442,7 +442,7 @@ test('Section observation has a positive height-based reading band after resize'
 
 test('Pausing the final phrase transition preserves its remainder without restarting rotation', () => using({}, ({window,document,tick}) => {
   const capsule = document.querySelector('.capsula'), line = capsule.querySelector('.capsula-linea');
-  tick(12700);
+  tick(phrases.length * 4200 + 100);
   assert.equal(line.textContent.trim(), phrases[0]);
   assert.equal(line.hasAttribute('data-cambio'), true);
   capsule.dispatchEvent(new window.MouseEvent('mouseenter'));
