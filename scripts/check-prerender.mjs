@@ -131,10 +131,9 @@ const compruebaPortadaEstatica = (pagina, html) => {
       resource(new URL(match[1], new URL(href, site)).pathname)
     }
   }
-  for (const script of ['app.js','character-rig.js','portrait-motion.js','recorrido-personal.js']) {
+  for (const script of ['app.js','movimiento.js']) {
     if (!references.some(href => href.split('?')[0] === `/experimental/${script}`)) anota(pagina, `falta el controlador ${script}`)
   }
-  if (!references.some(href => href.split('?')[0] === '/experimental/assets/alex-illustration-eye-base-v4.png')) anota(pagina, 'falta el retrato aprobado')
   const builtCv = resource(cv)
   if (builtCv && !leerPublico('editorial/assets/cv-es.pdf').equals(readFileSync(builtCv))) anota(pagina, 'el CV de portada no coincide con el fichero publico')
 }

@@ -5,134 +5,57 @@
 <meta name="description" content="Alex Micó, desarrollador full stack. Aplicaciones web, automatización e IA en proyectos de entrenamiento, trading y herramientas para desarrolladores.">
 <title>Alex Micó — Desarrollo Full Stack</title>
 <script>
-// Arm before render-blocking styles: late fonts never make visible content disappear.
 (() => {
   const root = document.documentElement;
-  const timeline = Object.freeze({duration:2100,transferStart:1100,handoff:1800});
-  Object.entries({'--entry-duration':timeline.duration,'--entry-transfer-start':timeline.transferStart,'--entry-transfer-duration':timeline.handoff-timeline.transferStart,'--entry-handoff':timeline.handoff}).forEach(([name,value]) => root.style.setProperty(name,`${value}ms`));
+  root.classList.add('js');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
-  let active = !reduce.matches && !restored && !document.hidden && scrollY < 5 && (!location.hash || location.hash === '#inicio');
-  let deadline = 0, completed = false;
-  const finish = () => {
-    if (!active) return;
-    active = false;
-    clearTimeout(deadline);
-    root.removeAttribute('data-entry');
-    window.dispatchEvent(new Event('portfolio:entryend'));
-  };
-  window.portfolioEntry = { get timeline() { return timeline; }, started: active, get active() { return active; }, get completed() { return completed; }, finish };
-  if (!active) return;
-  root.setAttribute('data-entry', 'running');
-  // Read the landing geometry before motion; font readiness may refine it once.
-  deadline = setTimeout(finish, 5000);
-  document.addEventListener('animationend', event => {
-    if (active && event.animationName === 'storyExit' && event.target?.classList.contains('intro-story')) { completed = true; finish(); }
-  });
-  document.addEventListener('DOMContentLoaded', () => {
-    if (!active) return;
-    const story = document.querySelector('.intro-story');
-    const master = story?.getAnimations().find(animation => animation.animationName === 'storyExit');
-    const initialAnimations = [story,document.querySelector('.hero-personal')].flatMap(element => element?.getAnimations({subtree:true}) || [])
-      .filter(animation => animation !== master && /^(story|personal)/.test(animation.animationName || ''));
-    const alignClocks = () => {
-      if (!active || reduce.matches || typeof master?.startTime !== 'number') return;
-      // DOM may stream across paints. Equal delays alone do not give children the parent's clock.
-      initialAnimations.forEach(animation => { animation.startTime = master.startTime; });
-    };
-    if (typeof master?.startTime === 'number') alignClocks();
-    else master?.ready?.then(alignClocks).catch(() => {});
-    const character = document.querySelector('.story-character');
-    const image = character?.querySelector('img');
-    image?.decode().then(() => {
-      if (active) character.classList.add('is-decoded');
-    }).catch(() => {});
-    const pairs = [
-      ['.story-word--alex', '.hero-personal .name-word.first'],
-      ['.story-word--mico', '.hero-personal .name-word.last'],
-      ['.story-character', '.hero-personal .portrait-scene']
-    ];
-    let fitted = false;
-    const fitSketch = () => {
-      if (!active) return;
-      // CSS starts after blocking styles: script age is not the film's playhead.
-      const playback = document.querySelector('.intro-story')?.getAnimations().find(animation => animation.animationName === 'storyExit');
-      if ((playback?.currentTime ?? 0) >= timeline.transferStart) {
-        if (!fitted) finish();
-        return;
-      }
-      pairs.forEach(([from, to]) => {
-        const sketch = document.querySelector(from), destination = document.querySelector(to);
-        if (!sketch || !destination) return;
-        const start = sketch.getBoundingClientRect(), end = destination.getBoundingClientRect();
-        if (!start.width || !end.width) return;
-        sketch.style.setProperty('--story-land', `translate(${end.left - start.left}px,${end.top - start.top}px) scale(${end.width / start.width})`);
-      });
-      fitted = true;
-    };
-    fitSketch();
-    // Readiness refines destinations, never gates the first paint or extends the film.
-    document.fonts?.ready.then(fitSketch);
-  });
-  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(type => window.addEventListener(type, event => { if (event.isTrusted) finish(); }, { passive: true, capture: true }));
-  window.addEventListener('scroll', () => { if (scrollY > 4) finish(); }, { passive: true });
-  ['blur', 'resize', 'pagehide', 'hashchange', 'focusin'].forEach(type => window.addEventListener(type, finish));
-  window.addEventListener('pageshow', event => { if (event.persisted) finish(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) finish(); });
-  reduce.addEventListener('change', () => { if (reduce.matches) finish(); });
+  if (reduce.matches || restored || scrollY >= 5 || (location.hash && location.hash !== '#inicio')) return;
+  root.setAttribute('data-entrada', '');
+  setTimeout(() => root.removeAttribute('data-entrada'), 2000);
 })();
 </script>
-<style>.intro-story{display:none}</style>
-<link rel="preload" href="assets/alex-illustration-eye-base-v4.png" as="image" fetchpriority="high">
 <link rel="preload" href="../editorial/assets/outfit-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="assets/barlow-condensed-black.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="styles.css?v=scrolly-1016-01"><link rel="stylesheet" href="sereno-demo.css?v=scrolly-1016-01"><link rel="stylesheet" href="portada-personal.css?v=scrolly-1016-01"><link rel="stylesheet" href="recorrido-personal.css?v=scrolly-1016-01"><script src="recorrido-personal.js?v=scrolly-1016-01" defer></script><script src="app.js?v=scrolly-1016-01" defer></script><script src="character-rig.js?v=scrolly-1016-01" defer></script><script src="portrait-motion.js?v=scrolly-1016-01" defer></script>
+<link rel="stylesheet" href="styles.css?v=f1-1021-01">
+<link rel="stylesheet" href="sereno-demo.css?v=f1-1021-01">
+<link rel="stylesheet" href="portada-personal.css?v=f1-1021-01">
+<link rel="stylesheet" href="recorrido-personal.css?v=f1-1021-01">
+<link rel="stylesheet" href="movimiento.css?v=f1-1021-01">
+<script src="app.js?v=f1-1021-01" defer></script>
+<script src="movimiento.js?v=f1-1021-01" defer></script>
 </head>
 <body class="personal-world">
-<div class="intro-story" aria-hidden="true">
- <div class="story-paper"></div>
- <div class="story-board">
-  <div class="story-word story-word--alex"><span class="story-letters"><span class="story-cell"><span class="story-letter">A</span></span><span class="story-cell"><span class="story-letter">l</span></span><span class="story-cell"><span class="story-letter">e</span></span><span class="story-cell"><span class="story-letter">x</span></span></span></div>
-  <div class="story-word story-word--mico"><svg class="story-ink" viewBox="0 0 320 18" fill="none" focusable="false"><path pathLength="1" d="M3 12C78 3 186 3 310 9M220 14l94-1" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span class="story-letters"><span class="story-cell"><span class="story-letter">M</span></span><span class="story-cell"><span class="story-letter">i</span></span><span class="story-cell"><span class="story-letter">c</span></span><span class="story-cell"><span class="story-letter">ó</span></span><span class="story-dot">.</span></span></div>
-  <div class="story-character"><img src="assets/alex-illustration-eye-base-v4.png" width="1254" height="1254" alt="" decoding="async"><svg class="story-face" viewBox="0 0 1254 1254" focusable="false"><g class="story-gaze"><g transform="translate(582 336) rotate(-12)"><ellipse rx="15" ry="24"/></g><g transform="translate(698 306.5) rotate(-12)"><ellipse rx="16" ry="25"/></g></g></svg></div>
- </div>
-</div>
 <a class="skip" href="#contenido">Saltar al contenido</a>
-<header class="index-bar personal-nav"><nav aria-label="Índice principal"><a href="#inicio"><span>00</span> Inicio</a><a href="#sobre-mi"><span>01</span> Sobre mí</a><a href="#trabajo"><span>02</span> Trabajo</a><a href="#contacto"><span>03</span> Contacto <i aria-hidden="true">↗</i></a></nav><span class="reading-progress" aria-hidden="true"></span></header>
+<header class="capsula">
+<a class="capsula-nombre" href="#inicio">Alex Micó</a>
+<span class="capsula-estado" aria-hidden="true"><span class="capsula-punto"></span><span class="capsula-linea" aria-hidden="true">Desarrollador full stack</span></span>
+<button class="capsula-menu" type="button" aria-expanded="false" aria-controls="capsula-panel">Menú</button>
+<div id="capsula-panel"><nav aria-label="Principal"><a href="#trabajo">Trabajo</a><a href="#sobre-mi">Sobre mí</a><a href="#contacto">Contacto</a><span class="capsula-subrayado" aria-hidden="true"></span></nav></div>
+</header>
+<template id="capsula-frases"><ul><li>Desarrollador full stack</li><li>Interfaces, APIs y automatización</li><li>Productos propios con IA</li></ul></template>
 <main id="contenido" tabindex="-1">
-<section class="hero hero-personal" id="inicio" data-parallax-scene="hero" aria-labelledby="nombre">
+<section class="hero hero-personal" id="inicio" aria-labelledby="nombre">
 <div class="personal-layout">
 <div class="personal-copy">
 <p class="personal-role">Desarrollador full stack</p>
-<div class="name-composition"><h1 id="nombre" aria-label="Alex Micó"><span class="name-word first"><span class="name-lettering">Alex</span></span><span class="name-word last"><span class="name-lettering">Micó<span class="name-period">.</span></span></span><span class="name-hover" aria-hidden="true"><span class="hover-word first">Alex</span><span class="hover-word last">Micó<span class="name-period">.</span></span></span></h1><svg class="name-underline" data-world-scene="name" viewBox="0 0 320 18" fill="none" aria-hidden="true" focusable="false"><path class="name-stroke" pathLength="1" stroke-dasharray="1" d="M3 12C78 3 186 3 310 9M220 14l94-1" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+<div class="name-composition"><h1 id="nombre" aria-label="Alex Micó"><span class="name-word first"><span class="name-lettering">Alex</span></span><span class="name-word last"><span class="name-lettering">Micó<span class="name-period">.</span></span></span></h1></div>
+<span class="hero-acento" aria-hidden="true"></span>
 <p class="personal-statement"><span>Desarrollo productos web.</span><span>También herramientas para crearlos.</span></p>
-<p class="personal-description">Interfaces, APIs y automatización.<br>Desde Villena, Alicante.</p>
+<p class="personal-description">Interfaces, APIs y automatización.<br>Desde Alicante.</p>
 <div class="personal-actions"><a class="line-link personal-primary" href="#sobre-mi">Conóceme <span aria-hidden="true">↗</span></a><a class="line-link" href="../editorial/assets/cv-es.pdf" download>Mi CV <span aria-hidden="true">↗</span></a></div>
 </div>
-<figure class="personal-portrait"><div class="portrait-scene"><span class="portrait-paper" data-parallax-layer="hero-paper" aria-hidden="true"></span><div class="portrait-depth" data-parallax-layer="hero-portrait"><div class="portrait-arrival"><div class="portrait-rig"><img src="assets/alex-illustration-eye-base-v4.png" width="1254" height="1254" alt="Ilustración de Alex con su portátil" fetchpriority="high" decoding="async"><svg class="portrait-face" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false"><g class="portrait-gaze"><g transform="translate(582 336) rotate(-12)"><ellipse class="portrait-eye" rx="15" ry="24"/></g><g transform="translate(698 306.5) rotate(-12)"><ellipse class="portrait-eye" rx="16" ry="25"/></g></g></svg></div></div></div><svg data-parallax-layer="hero-doodle" class="world-drawing portrait-code" data-world-scene="code" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M33 15q-8 1-10 4l-2 42q5 3 11 3M82 16l7 3-1 42-8 2"/><path class="bug-bracket" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="m30 24-4 1-1 30 5 2"/><g class="portrait-bug"><path fill="#f4efdf" d="M47 32q1-12 11-11 10 1 10 13l-1 11q-2 10-11 9-10-2-10-12Z"/><path d="M52 23q-2-8 5-9 7 0 6 9M56 30l1 18M46 33l-7-5m7 12-8 1m10 7-6 7M68 33l7-4m-8 12 9 2m-10 6 6 7M54 15l-3-4m10 4 3-4"/></g><path stroke="#2449f5" d="m43 66 12 1m5-1 13 1"/></svg><svg data-parallax-layer="hero-doodle" class="portrait-doodle" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M7 36C4 18 16 6 26 11c12 6-4 19-9 11S31 9 39 21M31 4l2 6m9 3-5 3"/></svg></div><figcaption>Alex Micó / Desarrollo y producto</figcaption></figure>
+
 </div>
-<a class="personal-next" href="#sobre-mi">Un poco sobre mí <span aria-hidden="true">↓</span></a>
+<a class="personal-next" href="#trabajo">Mi trabajo <span aria-hidden="true">↓</span></a>
 </section>
-<section class="about about-sheet" id="sobre-mi" aria-labelledby="about-title">
-<div class="about-heading-row" data-parallax-scene="paper"><span class="section-depth-paper about-depth-paper" data-parallax-layer="paper" aria-hidden="true"></span><div class="signature" aria-hidden="true"><span class="signature-word">ALEX</span><span class="signature-word">MICÓ<span class="name-period">.</span></span></div><span class="about-marker">01 / Sobre mí<span class="journey-accent" aria-hidden="true"></span></span><svg data-parallax-scene="sketch" class="world-drawing drawing-code" data-world-scene="code" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g data-parallax-layer="sketch"><path fill="#fafaf7" d="M14 17q22-10 41 2 20-10 43-3l-2 47q-23-6-41 5-20-12-43-4Z"/><path d="M55 19q-3 25 0 49M18 21l-2 39m77-40-1 38"/><g stroke="#2449f5"><path class="code-line" pathLength="1" stroke-dasharray="1" d="M23 30q11-2 22 3"/><path class="code-line" pathLength="1" stroke-dasharray="1" d="m22 39 20 3"/><path class="code-line" pathLength="1" stroke-dasharray="1" d="m22 48 14 3"/><path class="code-caret" d="m44 47-1 8"/></g><g class="code-symbol"><path d="m72 29-7 2 1 20 6 3m8-25 7 2-1 20-6 3"/><path stroke="#2449f5" d="m78 34-3 14"/></g></g></svg></div>
-<div class="about-story about-personal">
-<div class="about-intro"><div class="presence-frame"><h2 class="presence-title" id="about-title" data-parallax-scene="heading" aria-label="Entre las interfaces y lo que las hace funcionar."><span class="presence-first"><span class="journey-heading-line" data-parallax-layer="heading" data-journey-order="0">Entre las interfaces</span></span><span class="presence-system"><span class="journey-heading-line" data-parallax-layer="heading" data-journey-order="1">y lo que las hace funcionar.</span><span class="presence-ink" aria-hidden="true">y lo que las hace funcionar.</span></span></h2></div>
-<div class="about-relato"><p>Soy Alex Micó, desarrollador full stack de Villena. Me formé en sistemas y redes y en desarrollo web. Hoy compagino mi trabajo con productos propios y herramientas para desarrollo con IA.</p><p>Trabajo de extremo a extremo: interfaz, API, automatización, despliegue y diagnóstico de incidencias. Antes de cerrar una entrega, pruebo los flujos frágiles y compruebo el resultado en el entorno real.</p></div></div>
-<dl class="about-facts">
-<div><dt>Dónde</dt><dd>Villena, Alicante. Trabajo en remoto.</dd></div>
-<div><dt>Disponible</dt><dd>Abierto a puestos Full Stack en España y la UE</dd></div>
-<div><dt>Stack</dt><dd>React, Node, Express, MongoDB, Python y testing</dd></div>
-<div><dt>Idiomas</dt><dd>Castellano y valenciano nativos; inglés técnico en lectura, conversación básica</dd></div>
-</dl></div>
-<div class="about-methods"><h3>Cómo trabajo</h3><div class="about-method-grid">
-<article><h4>Producto web</h4><p>Interfaz en React y API en Node. En Strev, el análisis de vídeo va en una cola y los datos de salud se cifran campo a campo.</p><a class="line-link" href="/proyectos/strev/">Caso Strev</a></article>
-<article><h4>Herramientas</h4><p>Sereno es un solo archivo de Python, sin dependencias, que sigue desde un panel las sesiones de cinco CLI de agentes.</p><a class="line-link" href="/proyectos/sereno/">Caso Sereno</a></article>
-<article><h4>Decisiones que se pueden comprobar</h4><p>Smarty y Marky comparten un motor en Python sin dependencias que devuelve decisiones, nunca órdenes, y guarda cada una para poder reproducirla.</p><a class="line-link" href="#smarty">Ver Smarty</a></article>
-</div></div>
-<div class="about-history"><h3>Mi recorrido</h3><div class="history-list"><article><span class="history-date"><strong>2026</strong><span> — Hoy</span></span><div><h4>Desarrollador Full Stack</h4><p>Anuubis Solutions · Remoto</p></div></article><article><span class="history-date"><strong>2024</strong><span> · Prácticas</span></span><div><h4>Técnico de Soporte IT</h4><p>Impulso Sistemas · Villena</p></div></article><article><span class="history-date"><strong>2024</strong><span> — 2026</span></span><div><h4>Desarrollo de Aplicaciones Web</h4><p>Grado Superior · IES Hermanos Amorós</p></div></article><article><span class="history-date"><strong>2022</strong><span> — 2024</span></span><div><h4>Sistemas Microinformáticos y Redes</h4><p>Ciclo Medio · IES Hermanos Amorós</p></div></article></div></div>
-<div class="about-utility"><a class="line-link" href="#trabajo">Explorar mis proyectos <span aria-hidden="true">↗</span></a><a class="line-link" href="../editorial/assets/cv-es.pdf" download>Descargar CV <span aria-hidden="true">↓</span></a></div>
-</section>
-<section class="work" id="trabajo" aria-labelledby="work-title"><span class="work-wash" aria-hidden="true"></span><div class="work-margin"><div class="work-heading"><div><span class="section-kicker">02 / Trabajo<span class="journey-accent" aria-hidden="true"></span></span><h2 id="work-title" data-parallax-scene="heading" data-reveal><span class="journey-heading-line" data-parallax-layer="heading" data-journey-order="0">PROYECTOS.</span></h2></div><p>Aplicaciones web, herramientas para desarrolladores y motores de simulación.</p><svg data-parallax-scene="sketch" class="world-drawing drawing-work" data-world-scene="work" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g data-parallax-layer="sketch"><path fill="#f4efdf" d="m24 10 64 4-3 52-63-3Z"/><g class="work-sheet"><path fill="#fafaf7" d="m17 22 60-4 7 48-63 5-6-43Z"/><path d="m27 36 29-2m-28 10 42-3m-40 12 19-1"/><path stroke="#2449f5" d="m54 53 13-1"/></g><path class="work-clip" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M64 28 61 12q-1-8-7-7-7 1-5 9l3 21q1 7 7 6 5-1 4-7l-3-20q0-4-3-3-3 0-2 4l2 14"/><path class="work-connect" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M91 30q13 8 6 21-2 4-8 6m2-7-2 7 7-1"/></g></svg></div></div>
+<section class="work" id="trabajo" aria-labelledby="work-title"><div class="work-margin"><div class="work-heading"><div><span class="section-kicker">01 / Trabajo</span><h2 id="work-title" data-reveal><span class="marcador">PROYECTOS.</span></h2></div><p>Aplicaciones web, herramientas para desarrolladores y motores de simulación.</p><svg class="world-drawing drawing-work" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path fill="#f4efdf" d="m24 10 64 4-3 52-63-3Z"/><g class="work-sheet"><path fill="#fafaf7" d="m17 22 60-4 7 48-63 5-6-43Z"/><path d="m27 36 29-2m-28 10 42-3m-40 12 19-1"/><path stroke="#2449f5" d="m54 53 13-1"/></g><path class="work-clip" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M64 28 61 12q-1-8-7-7-7 1-5 9l3 21q1 7 7 6 5-1 4-7l-3-20q0-4-3-3-3 0-2 4l2 14"/><path class="work-connect" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M91 30q13 8 6 21-2 4-8 6m2-7-2 7 7-1"/></g></svg></div></div>
+<ol class="work-index" aria-label="Índice de proyectos">
+<li><a class="work-index-target" href="#strev"><span class="work-index-number">01</span><span class="work-index-name">Strev</span><span class="work-index-line">Preparar rutinas y seguir a cada atleta.</span></a><a class="work-index-case" href="/proyectos/strev/" aria-label="Ver caso de Strev">Ver caso <span class="work-index-arrow" aria-hidden="true">→</span></a></li>
+<li><a class="work-index-target" href="#marky"><span class="work-index-number">02</span><span class="work-index-name">Marky</span><span class="work-index-line">Seguir el mercado en directo a partir de zonas de precio marcadas a mano.</span></a></li>
+<li><a class="work-index-target" href="#smarty"><span class="work-index-number">03</span><span class="work-index-name">Smarty</span><span class="work-index-line">Comprobar si una regla de trading aguanta antes de fiarse de ella.</span></a></li>
+<li><a class="work-index-target" href="#sereno"><span class="work-index-number">04</span><span class="work-index-name">Sereno</span><span class="work-index-line">Saber qué agente trabaja y cuál necesita una respuesta.</span></a><a class="work-index-case" href="/proyectos/sereno/" aria-label="Ver caso de Sereno">Ver caso <span class="work-index-arrow" aria-hidden="true">→</span></a></li>
+</ol>
 <article class="work-project" id="strev" aria-labelledby="strev-title">
 <div class="work-project-heading"><h3 id="strev-title">Strev</h3>
 <p class="work-one-line">Preparar rutinas y seguir a cada atleta.</p></div>
@@ -145,7 +68,7 @@
 <div class="work-project-heading"><h3 id="marky-title">Marky</h3>
 <p class="work-one-line">Seguir el mercado en directo a partir de zonas de precio marcadas a mano.</p></div>
 <img class="work-image" src="assets/marky-interface.png" width="1440" height="900" alt="Marky: gráfico de velas de XAUUSD con la barra de dibujo y el borrador de zonas" loading="lazy">
-<div class="work-project-copy"><p class="case-synthesis">Usa el mismo motor que Smarty. Evalúa en directo las zonas que se marcan en el gráfico, avisa por Telegram o Discord y registra cada decisión. Trabaja en simulación y no envía órdenes.</p>
+<div class="work-project-copy"><p class="case-synthesis">Usa el mismo motor que Smarty. Evalúa en directo las zonas que se marcan en el gráfico, avisa por Telegram o Discord y registra cada decisión. Por ahora trabaja en simulación porque seguimos desarrollándolo.</p>
 <dl class="project-facts"><div><dt>Rol</dt><dd>Diseño y desarrollo del motor, el panel y la verificación. La estrategia se definió en colaboración.</dd></div><div><dt>Stack</dt><dd>Python 3.12 · FastAPI · React · TypeScript · klinecharts</dd></div><div><dt>Resultado</dt><dd><span data-metric="marky-tests">4.736</span> tests, panel de gráfico con dibujo de zonas y gestos táctiles, y datos de cTrader en simulación.</dd></div></dl></div>
 </article>
 <article class="work-project" id="smarty" aria-labelledby="smarty-title">
@@ -195,6 +118,25 @@
 </ul>
 <div class="work-end"><span>Más proyectos y detalles de implementación.</span><a class="line-link" href="https://github.com/ElRaxy" target="_blank" rel="noopener noreferrer">Explorar mi GitHub <span aria-hidden="true">↗</span></a></div>
 </section>
-<section class="contact" id="contacto" aria-labelledby="contact-title"><span class="contact-wash" aria-hidden="true"><span class="contact-sheet"></span></span><p class="contact-marker">03 / Contacto<span class="journey-accent" aria-hidden="true"></span></p><div class="contact-intro" data-parallax-scene="paper"><span class="section-depth-paper contact-depth-paper" data-parallax-layer="paper" aria-hidden="true"></span><svg data-parallax-scene="sketch" class="world-drawing drawing-talk" data-world-scene="talk" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g data-parallax-layer="sketch"><path fill="#fafaf7" d="m17 12 61-3 15 14-3 45-69 4-6-51Z"/><g class="note-corner"><path fill="#e9eeff" d="m77 9 1 17 15-3Z"/></g><path d="m29 31 31-2m-30 11 25-2"/><path class="talk-line" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M29 55q18-5 34-1m-33 8 19-2"/><g class="talk-pencil"><path fill="#f4efdf" d="m79 29 8 4-15 27-10 6 2-11Z"/><path d="m79 31 7 3M65 55l7 4m-10 7 2-6"/></g></g></svg><h2 id="contact-title" data-parallax-scene="heading" data-reveal aria-label="¿Construimos algo juntos?"><span><span class="journey-heading-line" data-parallax-layer="heading" data-journey-order="0">¿Construimos</span></span><span><span class="journey-heading-line" data-parallax-layer="heading" data-journey-order="1">algo juntos?</span></span></h2><div class="contact-actions"><nav class="contact-options" aria-label="Motivo del contacto"><a href="mailto:alexmico2006@gmail.com?subject=Consulta%20sobre%20un%20proyecto"><span class="contact-option-copy"><strong>Tengo un proyecto</strong><span>Aplicaciones web, automatización e integración de IA.</span></span><span class="contact-option-arrow" aria-hidden="true">↗</span></a><a href="mailto:alexmico2006@gmail.com?subject=Oportunidad%20de%20equipo"><span class="contact-option-copy"><strong>Busco un desarrollador</strong><span>Desarrollo web y herramientas de IA para tu equipo.</span></span><span class="contact-option-arrow" aria-hidden="true">↗</span></a></nav><div class="contact-address"><a class="email" href="mailto:alexmico2006@gmail.com" aria-label="alexmico2006@gmail.com"><span class="email-address"><span>alexmico2006</span><span>@gmail.com</span></span></a><div class="copy-control" hidden><button class="copy-email" type="button" aria-describedby="copy-status">Copiar correo</button><span class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></span></div></div></div></div><div class="social-links"><a class="line-link" href="https://wa.me/34693912460" target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span></a><a class="line-link" href="https://github.com/ElRaxy" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a class="line-link" href="../editorial/assets/cv-es.pdf" download>Mi CV <span aria-hidden="true">↓</span></a><a class="line-link back-top" href="#inicio">Volver arriba <span aria-hidden="true">↑</span></a></div><footer><p>Alex Micó Robles</p><p>Villena, Alicante / Remoto</p><span>Desarrollo Full Stack</span></footer></section>
-</main><div class="name-morph" aria-hidden="true"><span class="morph-word">ALEX</span><span class="morph-word">MICÓ<span class="name-period">.</span></span></div>
+<section class="about about-sheet" id="sobre-mi" aria-labelledby="about-title">
+<div class="about-main"><div class="about-heading-row"><span class="about-marker">02 / Sobre mí</span></div>
+<div class="about-story about-personal">
+<div class="about-intro"><div class="presence-frame"><h2 class="presence-title" id="about-title" data-reveal><span class="marcador">Entre las interfaces y lo que las hace funcionar.</span></h2></div>
+<div class="about-relato"><p>Soy Alex Micó, desarrollador full stack de Alicante. Me formé en sistemas y redes y en desarrollo web. Hoy compagino mi trabajo con productos propios y herramientas para desarrollo con IA.</p><p>Trabajo de extremo a extremo: interfaz, API, automatización, despliegue y diagnóstico de incidencias. Antes de cerrar una entrega, pruebo los flujos frágiles y compruebo el resultado en el entorno real.</p></div></div>
+<dl class="about-facts">
+<div><dt>Dónde</dt><dd>Alicante.</dd></div>
+<div><dt>Disponible</dt><dd>Abierto a puestos Full Stack en España y la UE</dd></div>
+<div><dt>Stack</dt><dd>React, Node, Express, MongoDB, Python y testing</dd></div>
+<div><dt>Idiomas</dt><dd>Castellano y valenciano nativos; inglés técnico en lectura, conversación básica</dd></div>
+</dl></div>
+</div><div class="about-secondary"><div class="about-methods"><h3>Cómo trabajo</h3><div class="about-method-grid">
+<article><h4>Producto web</h4><p>Interfaz en React y API en Node. En Strev, el análisis de vídeo va en una cola y los datos de salud se cifran campo a campo.</p><a class="line-link" href="/proyectos/strev/">Caso Strev</a></article>
+<article><h4>Herramientas</h4><p>Sereno es un solo archivo de Python, sin dependencias, que sigue desde un panel las sesiones de cinco CLI de agentes.</p><a class="line-link" href="/proyectos/sereno/">Caso Sereno</a></article>
+<article><h4>Decisiones que se pueden comprobar</h4><p>Smarty y Marky comparten un motor en Python sin dependencias que guarda cada decisión para poder reproducirla. Por ahora los probamos en simulación porque siguen en desarrollo.</p><a class="line-link" href="#smarty">Ver Smarty</a></article>
+</div></div>
+<div class="about-history"><h3>Mi recorrido</h3><div class="history-list"><article><span class="history-date"><strong>2026</strong><span> — Hoy</span></span><div><h4>Desarrollador Full Stack</h4><p>Anuubis Solutions · Presencial</p></div></article><article><span class="history-date"><strong>2024</strong><span> · Prácticas</span></span><div><h4>Técnico de Soporte IT</h4><p>Impulso Sistemas · Alicante</p></div></article><article><span class="history-date"><strong>2024</strong><span> — 2026</span></span><div><h4>Desarrollo de Aplicaciones Web</h4><p>Grado Superior · IES Hermanos Amorós</p></div></article><article><span class="history-date"><strong>2022</strong><span> — 2024</span></span><div><h4>Sistemas Microinformáticos y Redes</h4><p>Ciclo Medio · IES Hermanos Amorós</p></div></article></div></div>
+</div><div class="about-utility"><a class="line-link" href="../editorial/assets/cv-es.pdf" download>Descargar CV <span aria-hidden="true">↓</span></a></div>
+</section>
+<section class="contact" id="contacto" aria-labelledby="contact-title"><p class="contact-marker">03 / Contacto</p><div class="contact-intro"><svg class="world-drawing drawing-talk" viewBox="0 0 112 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path fill="#fafaf7" d="m17 12 61-3 15 14-3 45-69 4-6-51Z"/><g class="note-corner"><path fill="#e9eeff" d="m77 9 1 17 15-3Z"/></g><path d="m29 31 31-2m-30 11 25-2"/><path class="talk-line" stroke="#2449f5" pathLength="1" stroke-dasharray="1" d="M29 55q18-5 34-1m-33 8 19-2"/><g class="talk-pencil"><path fill="#f4efdf" d="m79 29 8 4-15 27-10 6 2-11Z"/><path d="m79 31 7 3M65 55l7 4m-10 7 2-6"/></g></g></svg><h2 id="contact-title" data-reveal><span class="marcador">¿Construimos algo juntos?</span></h2><div class="contact-actions"><nav class="contact-options" aria-label="Motivo del contacto"><a href="mailto:alexmico2006@gmail.com?subject=Consulta%20sobre%20un%20proyecto"><span class="contact-option-copy"><strong>Tengo un proyecto</strong><span>Aplicaciones web, automatización e integración de IA.</span></span><span class="contact-option-arrow" aria-hidden="true">↗</span></a><a href="mailto:alexmico2006@gmail.com?subject=Oportunidad%20de%20equipo"><span class="contact-option-copy"><strong>Busco un desarrollador</strong><span>Desarrollo web y herramientas de IA para tu equipo.</span></span><span class="contact-option-arrow" aria-hidden="true">↗</span></a></nav><div class="contact-address"><a class="email" href="mailto:alexmico2006@gmail.com" aria-label="alexmico2006@gmail.com"><span class="email-address"><span>alexmico2006</span><span>@gmail.com</span></span></a><div class="copy-control" hidden><button class="copy-email" type="button" aria-describedby="copy-status">Copiar correo</button><span class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></span></div></div></div></div><div class="social-links"><a class="line-link" href="https://wa.me/34693912460" target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span></a><a class="line-link" href="https://github.com/ElRaxy" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a class="line-link" href="../editorial/assets/cv-es.pdf" download>Mi CV <span aria-hidden="true">↓</span></a><a class="line-link back-top" href="#inicio">Volver arriba <span aria-hidden="true">↑</span></a></div><footer><p>Alex Micó Robles</p><p>Alicante</p><span>Desarrollo Full Stack</span></footer></section>
+</main>
 </body></html>

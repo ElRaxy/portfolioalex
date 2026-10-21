@@ -68,12 +68,12 @@ test('static root is validated, missing home contracts fail, and English/case Re
     await broken('root without required navigation fails','index.html',html=>html.replaceAll('href="#sobre-mi"','href="https://example.invalid/sobre"'),/falta seccion o enlace #sobre-mi/)
     await broken('root without a project block fails','index.html',html=>html.replace('id="marky"','id="marky-old"'),/falta el bloque del proyecto #marky/)
     await t.test('root without its published controller fails',async()=>{
-      const file=path.join(fixture,'build/experimental/character-rig.js'),previous=await readFile(file)
+      const file=path.join(fixture,'build/experimental/movimiento.js'),previous=await readFile(file)
       try {
         await rm(file)
         const result=run(fixture)
         assert.equal(result.status,1)
-        assert.match(result.stderr,/recurso publicado ausente: \/experimental\/character-rig\.js/)
+        assert.match(result.stderr,/recurso publicado ausente: \/experimental\/movimiento\.js/)
       } finally { await writeFile(file,previous) }
     })
     await broken('English still requires a populated React root','en/index.html',html=>html.replace('<div id="root">','<div id="broken-root">'),/#root casi vacio/)

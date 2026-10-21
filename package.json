@@ -19,8 +19,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "test:home": "node --test scripts/publish-home.test.mjs",
-    "test:motion-entry": "node --test scripts/test-motion-entry.mjs",
-    "test:character-rig": "node --test scripts/test-character-rig.mjs"
+    "test:movimiento": "node --test scripts/test-movimiento.mjs"
   },
   "eslintConfig": {
     "extends": [
