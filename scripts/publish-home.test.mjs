@@ -15,12 +15,12 @@ const references = html => [...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map(m
 function assertSequencePaths(html) {
   const document = new JSDOM(html).window.document
   const frames = [...document.querySelectorAll('#contacto [data-secuencia] img')]
-  assert.equal(frames.length, 34)
-  assert.equal(frames.filter(frame => frame.hasAttribute('data-src')).length, 32)
+  assert.equal(frames.length, 56)
+  assert.equal(frames.filter(frame => frame.hasAttribute('data-src')).length, 54)
   for (const [index, frame] of frames.entries()) {
-    const number = index === 9 || index === 11 ? 8 : index + 1
-    const attribute = index === 0 || index === 33 ? 'src' : 'data-src'
-    assert.equal(frame.getAttribute(attribute), `/experimental/assets/contacto/s${String(number).padStart(2, '0')}.svg`)
+    const number = [11, 13, 15].includes(index) ? 10 : index === 14 ? 11 : index + 1
+    const attribute = index === 0 || index === 55 ? 'src' : 'data-src'
+    assert.equal(frame.getAttribute(attribute), `/experimental/assets/secuencia/s${String(number).padStart(2, '0')}.svg`)
     assert.equal(frame.hasAttribute(attribute === 'src' ? 'data-src' : 'src'), false)
   }
 }
@@ -88,7 +88,7 @@ test('publica el checkpoint en la raíz y conserva las demás páginas', async (
   }
 })
 
-test('Secuencia AC9: el build real publica también los 32 data-src desde la raíz', async () => {
+test('Secuencia AC9: el build real publica también los 54 data-src desde la raíz', async () => {
   const html = await readFile(path.join(root, 'build/index.html'), 'utf8')
   assertSequencePaths(html)
   const frames = new JSDOM(html).window.document.querySelectorAll('#contacto [data-secuencia] img')

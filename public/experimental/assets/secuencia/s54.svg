@@ -1,7 +1,6 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="640" height="640" viewBox="0 0 640 640"
  preserveAspectRatio="xMidYMid meet">
-<defs><linearGradient id="d" gradientUnits="userSpaceOnUse" x1="0" y1="592" x2="0" y2="640"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="640" height="640"><rect width="640" height="640" fill="url(#d)"/></mask></defs><g mask="url(#m)">
 <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)"
 fill="#2449f5" stroke="none">
 <path d="M3114 6152 c-114 -40 -206 -122 -257 -227 -16 -31 -35 -59 -42 -62
@@ -121,6 +120,5 @@ M2817 4499 c-25 -15 -57 -86 -57 -129 0 -126 93 -217 169 -164 72 51 65 235
 -16 8 -19 58 -19 75 0 128 -15 176 -51 46 -33 76 -38 76 -11 0 22 -42 63 -90
 88 -35 17 -180 30 -207 18z M3315 199 c-4 -5 3 -32 14 -59 12 -27 24 -70 28
 -95 5 -43 7 -45 40 -45 38 0 38 -2 2 113 -24 80 -64 120 -84 86z"/>
-</g>
 </g>
 </svg>

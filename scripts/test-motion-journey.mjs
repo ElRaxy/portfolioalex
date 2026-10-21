@@ -227,17 +227,24 @@ test('Every labelled link in the hero index, About and Work starts its accessibl
   }
 });
 
-test('Secuencia AC1–AC2: Contacto serves the 34 accessible steps with only its endpoints loaded',async()=>{
+test('Secuencia AC1–AC2: Contacto serves the 56 accessible steps with only its endpoints loaded',async()=>{
   const intro=document.querySelector('#contacto .contact-intro');
   const boxes=intro.querySelectorAll('div.secuencia[data-secuencia]');
   assert.equal(boxes.length,1);
   assert.equal(intro.querySelector('svg.drawing-talk'),null);
-  const sequence=boxes[0],frames=[...sequence.children];
+  const sequence=boxes[0],frames=[...sequence.querySelectorAll('img')];
   assert.equal(sequence.getAttribute('role'),'img');
   assert.equal(sequence.getAttribute('aria-label'),'Ilustración de Alex a línea continua en cobalto. Conforme bajas deja de teclear en el portátil, te ve, te saluda, se levanta, camina hacia ti y te tiende la mano.');
-  const numbers=Array.from({length:34},(_,index)=>index===9||index===11?8:index+1);
-  const expected=numbers.map(number=>`assets/contacto/s${String(number).padStart(2,'0')}.svg`);
-  assert.equal(frames.length,34);
+  const numbers=Array.from({length:56},(_,index)=>[11,13,15].includes(index)?10:index===14?11:index+1);
+  const expected=numbers.map(number=>`assets/secuencia/s${String(number).padStart(2,'0')}.svg`);
+  assert.equal(frames.length,56);
+  assert.equal(sequence.getAttribute('style'),'--sec-oy:3.36%');
+  assert.equal(sequence.querySelectorAll(':scope > .sec-cerca').length,1);
+  assert.equal(sequence.querySelectorAll(':scope > img').length,33);
+  const growth=['1.033','1.067','1.102','1.138','1.176','1.215','1.255','1.296','1.339','1.383','1.429','1.476','1.524','1.575','1.626',...Array(8).fill('1.68')];
+  assert.deepEqual([...sequence.querySelectorAll('.sec-cerca > img')],frames.slice(33));
+  assert.deepEqual(frames.slice(33).map(frame=>frame.dataset.g),growth);
+  assert.ok(frames.slice(0,33).every(frame=>!frame.hasAttribute('data-g')));
   assert.deepEqual(frames.map(frame=>frame.getAttribute('src')||frame.getAttribute('data-src')),expected);
   for (const [index,frame] of frames.entries()) {
     assert.equal(frame.tagName,'IMG');
@@ -247,15 +254,17 @@ test('Secuencia AC1–AC2: Contacto serves the 34 accessible steps with only its
     assert.equal(frame.getAttribute('height'),'640');
     assert.equal(frame.getAttribute('decoding'),'async');
     assert.equal(frame.hasAttribute('data-trans'),false);
-    const endpoint=index===0||index===33;
+    const endpoint=index===0||index===55;
     assert.equal(frame.hasAttribute('src'),endpoint);
     assert.equal(frame.hasAttribute('data-src'),!endpoint);
     assert.equal(frame.classList.contains('sec-f'),true);
     assert.equal(frame.classList.contains('es-primero'),index===0);
-    assert.equal(frame.classList.contains('es-final'),index===33);
+    assert.equal(frame.classList.contains('es-final'),index===55);
     assert.ok((await readFile(new URL(`../public/experimental/${expected[index]}`,import.meta.url))).length>0);
   }
-  const files=await readdir(new URL('../public/experimental/assets/contacto/',import.meta.url));
+  await assert.rejects(readdir(new URL('../public/experimental/assets/contacto/',import.meta.url)),{code:'ENOENT'});
+  const files=await readdir(new URL('../public/experimental/assets/secuencia/',import.meta.url));
+  assert.equal(files.length,52);
   assert.deepEqual(files.filter(file=>file.endsWith('.svg')).sort(),[...new Set(expected.map(file=>file.split('/').at(-1)))].sort());
 });
 

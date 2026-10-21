@@ -17,20 +17,22 @@
   let entryObserver;
   const pendingIndex = new Set();
 
-  function ventanaSecuencia({cajaTopAbs, alto, innerHeight, scrollMax, scrollY}) {
+  function ventanaSecuencia({cajaTopAbs, alto, innerHeight, scrollMax, scrollY, N}) {
     const a = cajaTopAbs + alto - innerHeight;
     const b = Math.min(scrollMax, cajaTopAbs - 76);
     const p = Math.min(1, Math.max(0, (scrollY - a) / (b > a ? b - a : 1)));
-    return {a, b, p, objetivo: Math.round(p * 33)};
+    return {a, b, p, objetivo: Math.round(p * (N - 1))};
   }
 
   function iniciarSecuencia() {
     const caja = document.querySelector('[data-secuencia]');
     if (!caja) return;
     const fotos = [...caja.querySelectorAll('img')];
+    const N = fotos.length;
+    const G = fotos.map(img => parseFloat(img.dataset.g) || 1);
     const seccion = caja.closest('section');
-    let medidas, observer, raf = 0, visible = 0, objetivo = 0;
-    let ultimo = performance.now(), listo = false, cargando = false, suspendida = false;
+    let medidas, observer, raf = 0, visible = 0, objetivo = 0, posicion = 0;
+    let ultimo = null, listo = false, cargando = false, suspendida = false;
 
     function medir() {
       medidas = {
@@ -42,28 +44,39 @@
     }
     function mostrar(indice) {
       fotos[visible].style.opacity = '0';
+      fotos[visible].style.transform = '';
       visible = indice;
       fotos[visible].style.opacity = '1';
+    }
+    function pintar() {
+      const i = Math.floor(posicion), f = posicion - i;
+      mostrar(f < .5 ? i : Math.min(i + 1, N - 1));
+      const g = G[i] * Math.pow(G[Math.min(i + 1, N - 1)] / G[i], f);
+      const escala = g / G[visible];
+      fotos[visible].style.transform = Math.abs(escala - 1) < 1e-4 ? '' : `scale(${escala.toFixed(4)})`;
     }
     function parar() {
       cancelAnimationFrame(raf);
       raf = 0;
+      ultimo = null;
     }
     function bucle(t) {
       raf = 0;
       if (reduced.matches || suspendida) return;
-      if (t - ultimo >= 70 && visible !== objetivo) {
-        mostrar(visible + Math.sign(objetivo - visible));
-        ultimo += 70;
-        if (t - ultimo >= 70) ultimo = t;
-      }
-      if (visible !== objetivo) raf = requestAnimationFrame(bucle);
+      // El primer refresco fija el origen del reloj, sin acumular la espera de decode o reposo.
+      const paso = ultimo === null ? 0 : Math.min(t - ultimo, 50) / 50;
+      ultimo = t;
+      const distancia = objetivo - posicion;
+      posicion = Math.abs(distancia) <= paso ? objetivo : posicion + Math.sign(distancia) * paso;
+      pintar();
+      if (posicion !== objetivo) raf = requestAnimationFrame(bucle);
+      else parar();
     }
     function actualizar() {
       if (reduced.matches || suspendida) return;
-      objetivo = ventanaSecuencia({...medidas, scrollY: window.scrollY}).objetivo;
+      objetivo = ventanaSecuencia({...medidas, scrollY: window.scrollY, N}).objetivo;
       if (!listo) return;
-      if (visible === objetivo) parar();
+      if (posicion === objetivo) parar();
       else if (!raf) raf = requestAnimationFrame(bucle);
     }
     function cargar() {
@@ -100,14 +113,15 @@
       parar();
       observer?.disconnect();
       caja.classList.remove('viva');
-      fotos.forEach(img => { img.style.opacity = ''; });
+      fotos.forEach(img => { img.style.opacity = ''; img.style.transform = ''; });
     }
     function iniciar() {
       if (reduced.matches || suspendida) { quieto(); return; }
       caja.classList.add('viva');
-      fotos.forEach(img => { img.style.opacity = '0'; });
-      mostrar(0);
-      ultimo = performance.now();
+      fotos.forEach(img => { img.style.opacity = '0'; img.style.transform = ''; });
+      posicion = 0;
+      pintar();
+      ultimo = null;
       medir();
       actualizar();
       observar();

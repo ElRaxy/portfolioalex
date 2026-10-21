@@ -426,7 +426,7 @@ test('CSS encodes approved timing, curves and distances, with progressive visibi
   assert.doesNotMatch(runtime.replace(sequenceModule, ''), /requestAnimationFrame/);
   assert.match(app, /requestAnimationFrame\(step\)/);
   assert.match(sequenceModule, /addEventListener\('scroll', actualizar, \{passive: true\}\)/);
-  assert.match(sequenceModule, /t - ultimo >= 70/);
+  assert.match(sequenceModule, /Math\.min\(t - ultimo, 50\) \/ 50/);
   assert.doesNotMatch(movementCSS, /pointer-events:\s*none|overflow:\s*hidden/);
 });
 
@@ -706,15 +706,17 @@ function sequenceComputedFrames(host, reduced = false) {
 test('Sequence window is pure: whole box, capsule offset, scroll limit and clamped rounded target', () => {
   const source = runtime.slice(runtime.indexOf('  function ventanaSecuencia('), runtime.indexOf('  function iniciarSecuencia('));
   const calculate = new Function(`${source}; return ventanaSecuencia;`)();
-  const geometry = {cajaTopAbs: 3000, alto: 300, innerHeight: 900, scrollMax: 3100};
+  const geometry = {cajaTopAbs: 3000, alto: 300, innerHeight: 900, scrollMax: 3100, N:56};
   assert.deepEqual(calculate({...geometry, scrollY: 2400}), {a:2400, b:2924, p:0, objetivo:0});
-  assert.deepEqual(calculate({...geometry, scrollY: 2662}), {a:2400, b:2924, p:.5, objetivo:17});
-  assert.deepEqual(calculate({...geometry, scrollY: 2924}), {a:2400, b:2924, p:1, objetivo:33});
+  assert.deepEqual(calculate({...geometry, scrollY: 2662}), {a:2400, b:2924, p:.5, objetivo:28});
+  assert.deepEqual(calculate({...geometry, scrollY: 2924}), {a:2400, b:2924, p:1, objetivo:55});
   assert.equal(calculate({...geometry, scrollY: -100}).objetivo, 0);
-  assert.equal(calculate({...geometry, scrollY: 5000}).objetivo, 33);
-  assert.deepEqual(calculate({...geometry, scrollMax: 2700, scrollY: 2550}), {a:2400, b:2700, p:.5, objetivo:17});
-  assert.deepEqual(calculate({...geometry, scrollMax:2400.5, scrollY:2400.25}), {a:2400, b:2400.5, p:.5, objetivo:17});
+  assert.equal(calculate({...geometry, scrollY: 5000}).objetivo, 55);
+  assert.deepEqual(calculate({...geometry, scrollMax: 2700, scrollY: 2550}), {a:2400, b:2700, p:.5, objetivo:28});
+  assert.deepEqual(calculate({...geometry, scrollMax:2400.5, scrollY:2400.25}), {a:2400, b:2400.5, p:.5, objetivo:28});
   assert.deepEqual(calculate({...geometry, alto:232, innerHeight:600, scrollY:2632}), {a:2632, b:2924, p:0, objetivo:0});
+  assert.equal(calculate({...geometry, N:10, scrollY:2924}).objetivo, 9);
+  assert.equal(calculate({...geometry, N:10, scrollY:2662}).objetivo, 5);
   const degenerate = calculate({...geometry, innerHeight:300, scrollMax:3000, scrollY:3000});
   assert.deepEqual(degenerate, {a:3000, b:2924, p:0, objetivo:0});
 });
@@ -725,7 +727,7 @@ test('Sequence loads only at the height-based observer threshold and waits for e
   const observer = sequenceObserver(host);
   assert.ok(observer);
   assert.equal(observer.options.rootMargin, '1350px 0px 1350px 0px');
-  assert.equal(images.filter(image => image.hasAttribute('data-src')).length, 32);
+  assert.equal(images.filter(image => image.hasAttribute('data-src')).length, 54);
   assert.equal(images.filter(image => image.hasAttribute('src')).length, 2);
   assert.equal(decodes.length, 0);
   assert.deepEqual(visibleSequenceFrames(document), [1]);
@@ -736,10 +738,10 @@ test('Sequence loads only at the height-based observer threshold and waits for e
   observer.callback([{target:document.getElementById('contacto'), isIntersecting:false}]);
   assert.equal(decodes.length, 0);
   enter(document.getElementById('contacto'));
-  assert.equal(images.filter(image => image.hasAttribute('src')).length, 34);
+  assert.equal(images.filter(image => image.hasAttribute('src')).length, 56);
   assert.equal(images.filter(image => image.hasAttribute('data-src')).length, 0);
   assert.ok(images.every(image => image.loading === 'eager'));
-  assert.equal(decodes.length, 34);
+  assert.equal(decodes.length, 56);
   assert.equal(observer.nodes.size, 0);
   decodes.slice(0,-1).forEach(decode => decode.resolve());
   await flushDecodes();
@@ -750,6 +752,8 @@ test('Sequence loads only at the height-based observer threshold and waits for e
   await flushDecodes();
   assert.equal(frames.size, 1);
   tick(16);
+  assert.deepEqual(visibleSequenceFrames(document), [1]);
+  tick(32);
   assert.deepEqual(visibleSequenceFrames(document), [2]);
 }));
 
@@ -764,66 +768,151 @@ test('Sequence decode failure leaves the first frame still and never enables its
   assert.equal(host.frameRequests.length, 0);
 }));
 
-test('Sequence visits every frame in both directions at a mean 70ms cadence on 60Hz rAF and stops at its target', async () => usingSequence({frameDuration:1000/60}, async host => {
+test('Sequence visits all 56 frames in both directions, changing every 3 refreshes at 60Hz, and stops', async () => usingSequence({frameDuration:1000/60}, async host => {
   assert.equal('ResizeObserver' in host.window, false);
   assert.deepEqual(visibleSequenceFrames(host.document), [1]);
   host.enter(host.document.getElementById('contacto'));
   await flushDecodes();
   assert.equal(host.frames.size, 0);
-  let lastChange = host.window.performance.now();
-  async function travel(y, expected) {
+  function travel(y, expected) {
     const visited = [visibleSequenceFrames(host.document)[0]];
-    const start = host.window.performance.now();
+    let previousRefresh = 0;
     scrollSequence(host, y);
     assert.equal(host.frames.size, 1);
-    for (let ms = 0; ms < 2700; ms += 1) {
-      host.tick(1);
+    for (let refresh = 1; refresh <= 167; refresh++) {
+      host.tick(1000/60);
       const visible = visibleSequenceFrames(host.document);
       assert.equal(visible.length, 1);
       if (visible[0] !== visited.at(-1)) {
-        const time = host.window.performance.now();
-        assert.ok(time - lastChange >= 70 - 1000/60 - 1e-6, `Frame ${visible[0]} changed after ${time - lastChange}ms`);
+        assert.equal(refresh - previousRefresh, 3, `Frame ${visible[0]} cadence`);
         assert.equal(Math.abs(visible[0] - visited.at(-1)), 1);
         visited.push(visible[0]);
-        lastChange = time;
+        previousRefresh = refresh;
       }
     }
     assert.deepEqual(visited, expected);
-    assert.ok(lastChange - start <= 33 * 70 + 100, `Full trip took ${lastChange - start}ms`);
+    assert.equal(previousRefresh, 55 * 3);
     assert.equal(host.frames.size, 0);
     const requests = host.frameRequests.length;
     host.tick(1000);
     assert.equal(host.frameRequests.length, requests);
     assert.deepEqual(visibleSequenceFrames(host.document), [expected.at(-1)]);
   }
-  await travel(3100, Array.from({length:34}, (_, i) => i + 1));
-  await travel(0, Array.from({length:34}, (_, i) => 34 - i));
+  travel(3100, Array.from({length:56}, (_, i) => i + 1));
+  travel(0, Array.from({length:56}, (_, i) => 56 - i));
 }));
 
-test('Sequence reversals retain the cadence and delayed frames discard debt without skipping images', async () => usingSequence({}, async host => {
+test('Sequence reversals retain the continuous position and delayed frames cap dt at 50ms without skipping', async () => usingSequence({frameDuration:1000/60}, async host => {
   host.enter(host.document.getElementById('contacto'));
   await flushDecodes();
   scrollSequence(host, 3100);
-  host.tick(80);
+  host.tick(3 * 1000/60);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
   scrollSequence(host, 0);
-  host.tick(63);
-  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
-  host.tick(1);
+  host.tick(1000/60);
   assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+  host.tick(2 * 1000/60);
   assert.equal(host.frames.size, 0);
   scrollSequence(host, 3100);
-  host.tick(80);
+  host.tick(3 * 1000/60);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
   const [id] = host.frames;
   const delayed = host.timers.get(id);
   delayed.at += 3000;
-  host.tick(3016);
+  host.tick(delayed.at - host.window.performance.now());
   assert.deepEqual(visibleSequenceFrames(host.document), [3]);
-  host.tick(69);
+  host.tick(1000/60);
   assert.deepEqual(visibleSequenceFrames(host.document), [3], 'No catch-up burst after suspension');
-  host.tick(11);
+  host.tick(1000/60);
+  assert.deepEqual(visibleSequenceFrames(host.document), [3]);
+  host.tick(1000/60);
   assert.deepEqual(visibleSequenceFrames(host.document), [4]);
+}));
+
+test('Sequence growth is geometric at half a walking step, cuts at .5 and removes unit transforms', async () => usingSequence({frameDuration:25}, async host => {
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 3100);
+  host.tick(25 + 33 * 50);
+  const images = [...host.document.querySelectorAll('[data-secuencia] img')];
+  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  assert.equal(images[33].style.transform, '');
+  host.tick(25);
+  assert.deepEqual(visibleSequenceFrames(host.document), [35], 'At f=.5 the upper frame alone is visible');
+  const expected = Math.sqrt(1.033 * 1.067) / 1.067;
+  const scale = Number(images[34].style.transform.match(/^scale\(([^)]+)\)$/)[1]);
+  assert.ok(Math.abs(scale - expected) <= .00005, `${scale} represents the geometric midpoint`);
+  assert.ok(images.filter(image => image !== images[34]).every(image => image.style.transform === ''));
+  // The visible frame already equals the target, but growth must finish at the integer position.
+  scrollSequence(host, 2400 + 524 * 34 / 55);
+  assert.equal(host.frames.size, 1);
+  host.tick(25);
+  assert.deepEqual(visibleSequenceFrames(host.document), [35]);
+  assert.equal(images[34].style.transform, '');
+  assert.equal(host.frames.size, 0);
+}));
+
+test('Sequence scales on every 60Hz refresh and uses the lower frame below the half-step', async () => usingSequence({frameDuration:1000/60}, async host => {
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 3100);
+  for (let refresh = 0; refresh < 101; refresh++) host.tick(1000/60);
+  const images = [...host.document.querySelectorAll('[data-secuencia] img')];
+  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  const expected = Math.pow(1.067 / 1.033, 1/3);
+  assert.ok(Math.abs(Number(images[33].style.transform.match(/scale\(([^)]+)\)/)[1]) - expected) <= .00005);
+  host.tick(1000/60);
+  assert.deepEqual(visibleSequenceFrames(host.document), [35]);
+  const next = 1.033 * Math.pow(1.067 / 1.033, 2/3) / 1.067;
+  assert.ok(Math.abs(Number(images[34].style.transform.match(/scale\(([^)]+)\)/)[1]) - next) <= .00005);
+}));
+
+test('Sequence quieto clears every transform on reduced motion and pagehide, and pageshow resumes', async () => {
+  for (const reason of ['reduced','pagehide']) await usingSequence({frameDuration:25}, async host => {
+    host.enter(host.document.getElementById('contacto'));
+    await flushDecodes();
+    scrollSequence(host, 3100);
+    host.tick(25 + 33.5 * 50);
+    const images = [...host.document.querySelectorAll('[data-secuencia] img')];
+    assert.ok(images.some(image => image.style.transform !== ''));
+    if (reason === 'reduced') host.setReduced(true);
+    else host.window.dispatchEvent(new host.window.PageTransitionEvent('pagehide', {persisted:true}));
+    assert.equal(host.document.querySelector('[data-secuencia]').classList.contains('viva'), false);
+    assert.ok(images.every(image => image.style.transform === '' && image.style.opacity === ''));
+    assert.equal(host.frames.size, 0);
+    const requests = host.frameRequests.length;
+    scrollSequence(host, 0);
+    host.tick(5000);
+    assert.equal(host.frameRequests.length, requests);
+    assert.ok(images.every(image => image.style.transform === ''));
+    if (reason === 'reduced') host.setReduced(false);
+    else host.window.dispatchEvent(new host.window.PageTransitionEvent('pageshow', {persisted:true}));
+    assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+    assert.ok(images.every(image => image.style.transform === ''));
+    scrollSequence(host, 3100);
+    host.tick(25 + 33.5 * 50);
+    assert.ok(images.some(image => image.style.transform !== ''));
+  });
+});
+
+test('Sequence CSS anchors growth and clips the nested group; JS and viva reach both levels', () => using({run:false}, host => {
+  const sheet = host.document.createElement('style');
+  sheet.textContent = styles[0];
+  host.document.head.append(sheet);
+  const rules = [...sheet.sheet.cssRules];
+  const images = [...host.document.querySelectorAll('[data-secuencia] img')];
+  const origin = rules.find(rule => rule.style?.getPropertyValue('transform-origin') === '50% var(--sec-oy,10%)');
+  assert.ok(origin);
+  assert.ok(images.every(image => image.matches(origin.selectorText)));
+  const clip = rules.find(rule => rule.selectorText === '.sec-cerca').style;
+  for (const [property, value] of Object.entries({position:'absolute',inset:'0',overflow:'hidden','mask-image':'linear-gradient(to bottom,#000 92.5%,transparent)','-webkit-mask-image':'linear-gradient(to bottom,#000 92.5%,transparent)'})) {
+    assert.equal(clip.getPropertyValue(property), value);
+  }
+  assert.deepEqual(sequenceComputedFrames(host), [1], 'JS before its controller shows only the first');
+  host.document.querySelector('[data-secuencia]').classList.add('viva');
+  assert.deepEqual(sequenceComputedFrames(host), [], 'Viva hides both image levels until painted');
+  host.document.querySelector('[data-secuencia]').classList.remove('viva');
+  assert.deepEqual(sequenceComputedFrames(host, true), [56]);
 }));
 
 test('Sequence resize remeasures its window and rebuilds the preload margin using viewport height', async () => usingSequence({}, async host => {
@@ -836,8 +925,8 @@ test('Sequence resize remeasures its window and rebuilds the preload margin usin
   await flushDecodes();
   scrollSequence(host, 2750);
   host.tick(3000);
-  // a=2700, b=2924, target=round(50/224*33)=7 -> frame 8.
-  assert.deepEqual(visibleSequenceFrames(host.document), [8]);
+  // a=2700, b=2924, target=round(50/224*55)=12 -> frame 13.
+  assert.deepEqual(visibleSequenceFrames(host.document), [13]);
   host.geometry.top = 3200;
   host.geometry.height = 232;
   host.geometry.scrollHeight = 3400;
@@ -845,7 +934,7 @@ test('Sequence resize remeasures its window and rebuilds the preload margin usin
   host.window.dispatchEvent(new host.window.Event('resize'));
   host.tick(3000);
   // a=2532, b=min(2500,3124)=2500: degenerate window clamps safely to the last frame.
-  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  assert.deepEqual(visibleSequenceFrames(host.document), [56]);
   assert.deepEqual(host.listeners.filter(listener => listener.type === 'scroll').map(listener => listener.options.passive), [true]);
 }));
 
@@ -854,7 +943,7 @@ test('Sequence remeasures when content height changes after decode, without a wi
   await flushDecodes();
   scrollSequence(host, 3000);
   host.tick(3000);
-  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  assert.deepEqual(visibleSequenceFrames(host.document), [56]);
   host.geometry.top = 3600;
   host.geometry.scrollHeight = 4600;
   const observer = host.resizeObservers.find(observer => observer.nodes.has(host.document.body));
@@ -864,17 +953,17 @@ test('Sequence remeasures when content height changes after decode, without a wi
   assert.deepEqual(visibleSequenceFrames(host.document), [1]);
 }));
 
-test('Sequence reduced motion starts on frame 34 without its observer, image requests or rAF', async () => usingSequence({reduced:true}, async host => {
+test('Sequence reduced motion starts on frame 56 without its observer, image requests or rAF', async () => usingSequence({reduced:true}, async host => {
   assert.equal(sequenceObserver(host), undefined);
-  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
-  assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 32);
+  assert.deepEqual(sequenceComputedFrames(host, true), [56]);
+  assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 54);
   host.enter(host.document.getElementById('contacto'));
   scrollSequence(host, 3100);
   host.window.dispatchEvent(new host.window.Event('resize'));
   host.tick(10000);
   assert.equal(host.decodes.length, 0);
   assert.equal(host.frameRequests.length, 0);
-  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  assert.deepEqual(sequenceComputedFrames(host, true), [56]);
 }));
 
 test('Sequence reduction cancels queued motion and pending decode cannot restart it; restoring motion works', async () => usingSequence({decoding:'pending'}, async host => {
@@ -885,7 +974,7 @@ test('Sequence reduction cancels queued motion and pending decode cannot restart
   await flushDecodes();
   host.tick(5000);
   assert.equal(host.frameRequests.length, 0);
-  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  assert.deepEqual(sequenceComputedFrames(host, true), [56]);
   host.setReduced(false);
   host.tick(80);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
@@ -895,10 +984,10 @@ test('Sequence reduction cancels queued motion and pending decode cannot restart
   host.tick(5000);
   assert.equal(host.frames.size, 0);
   assert.equal(host.frameRequests.length, requests);
-  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  assert.deepEqual(sequenceComputedFrames(host, true), [56]);
 }));
 
-test('Sequence reduction before loading disconnects preloading, and no-JS CSS shows only frame 34', async () => {
+test('Sequence reduction before loading disconnects preloading, and no-JS CSS shows only frame 56', async () => {
   await usingSequence({}, async host => {
     const observer = sequenceObserver(host);
     host.setReduced(true);
@@ -907,13 +996,13 @@ test('Sequence reduction before loading disconnects preloading, and no-JS CSS sh
     host.window.dispatchEvent(new host.window.Event('resize'));
     assert.equal(host.decodes.length, 0);
     assert.equal(host.frameRequests.length, 0);
-    assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 32);
-    assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+    assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 54);
+    assert.deepEqual(sequenceComputedFrames(host, true), [56]);
   });
   const dom = new JSDOM(html);
   try {
     assert.equal(dom.window.document.documentElement.classList.contains('js'), false);
-    assert.deepEqual(sequenceComputedFrames({window:dom.window, document:dom.window.document}), [34]);
+    assert.deepEqual(sequenceComputedFrames({window:dom.window, document:dom.window.document}), [56]);
   } finally { dom.window.close(); }
 });
 
@@ -935,7 +1024,7 @@ test('Sequence history restoration restarts only its controller without replayin
 
 test('Sequence uses fixed cuts without prototype parameters, blend modes or debug globals', () => {
   assert.doesNotMatch(runtime + app, /URLSearchParams|location\.search|data-trans|__secuencia/);
-  assert.doesNotMatch(html + runtime + app, /[?&](?:debug|modo|ms|fundido|movil)=/);
+  assert.doesNotMatch(html + runtime + app, /[?&](?:debug|modo|ms|fundido|fundidoms|escala|movil)=/);
   const sequenceCSS = [...movementCSS.matchAll(/([^{}]*\.secuencia[^{}]*)\{([^{}]*)\}/g)];
   for (const [, , declarations] of sequenceCSS) assert.doesNotMatch(declarations, /transition|animation/);
 });
