@@ -2,11 +2,11 @@
 
 ## Tramo 1 — 20 de octubre de 2026
 
-La portada conserva el hero, la entrada y el contacto. «Sobre mí» muestra la bio, la ficha, los tres bloques de «Cómo trabajo» y las cuatro entradas de «Mi recorrido» sin escena sticky. Trabajo se organiza en Strev destacado, Sereno/SaveMyMoneyNow/Atalaya con caso y una lista de Marky/Smarty/RoguePatch Lab/Social Scout. La demo de Sereno mantiene su contenido e interacción dentro de un desplegable cerrado en Trabajo.
+La portada conserva el hero, la entrada y el contacto. «Sobre mí» muestra la bio, la ficha, los tres bloques de «Cómo trabajo» y las cuatro entradas de «Mi recorrido» sin escena sticky. En el tramo 1b, Trabajo presenta cuatro proyectos principales con el mismo peso visual: Strev, Marky, Smarty y Sereno. RoguePatch Lab y Social Scout quedan en «Más trabajo». La demo de Sereno mantiene su contenido e interacción dentro de un desplegable cerrado, justo después de su artículo.
 
-El contrato y el copy literal están en `projects/portfolioalex/progress/revision-2026-10-20/` del workspace. Las cifras van en `span[data-metric]` y son las medidas el 2026-10-20 (`cifras-2026-10-20.md`). El layout usa los puntos de corte 600, 760, 820 y 1024 px y las imágenes completas.
+El contrato y el copy literal están en `projects/portfolioalex/progress/revision-2026-10-20/` del workspace: `tramo1b-brief.md`, `tramo1b-ac.txt` y `copy2/copy-principales.md`. Las nueve cifras van en `span[data-metric]`. Los artículos alternan texto e imagen a partir de 1024 px; por debajo, cada imagen aparece después del nombre y la línea introductoria. Las capturas se muestran completas. Marky y Smarty usan las imágenes existentes, no llevan enlaces y explican que comparten motor. El tercer bloque de «Cómo trabajo» enlaza a Smarty.
 
-Los títulos de proyecto no son enlaces: `check-prerender.mjs` exige que existan los ocho bloques de proyecto por id y conserva la exigencia de enlace para `#inicio`, `#sobre-mi`, `#trabajo` y `#contacto`.
+Los títulos de proyecto no son enlaces: `check-prerender.mjs` exige los seis ids `strev`, `marky`, `smarty`, `sereno`, `roguepatch-lab` y `social-scout`, y conserva la exigencia de enlace para `#inicio`, `#sobre-mi`, `#trabajo` y `#contacto`. Strev y Sereno conservan sus enlaces al caso y al producto o código.
 
 Verificación de esta tanda:
 
@@ -16,7 +16,7 @@ node --test scripts/check-prerender.test.mjs scripts/publish-home.test.mjs scrip
 node scripts/check-prerender.mjs
 ```
 
-Los casos AC1–AC7, la jerarquía de encabezados y los nombres accesibles se comprueban en `test-motion-journey.mjs`. `runtime-sha256.json` registra las huellas de los recursos públicos, incluidas las dos imágenes incorporadas. Los logs están en `checks/` de la carpeta del contrato; la revisión visual a 390, 820 y 1440 px, en `qa-tramo1/`.
+La estructura, el copy, las cifras, las imágenes, la jerarquía de encabezados y los nombres accesibles se comprueban en `test-motion-journey.mjs`. `runtime-sha256.json` registra las huellas de los recursos públicos y retira las dos capturas eliminadas. El informe del tramo 1b es `ship_tramo1b.md` y la salida completa de la suite es `tramo1b-node-tests.log`, ambos en la carpeta del contrato.
 
 ## Historial — 13 de octubre de 2026
 

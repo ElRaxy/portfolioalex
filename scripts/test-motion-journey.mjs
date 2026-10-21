@@ -217,14 +217,14 @@ test('AC2: About contains the literal bio, four facts, three methods and four vi
   ]);
   const methods=[...about.querySelectorAll('.about-method-grid > article')];
   assert.equal(methods.length,3);
-  assert.deepEqual(methods.map(node=>text(node.querySelector('h4'))),['Producto web','Herramientas','Automatización con IA']);
+  assert.deepEqual(methods.map(node=>text(node.querySelector('h4'))),['Producto web','Herramientas','Decisiones que se pueden comprobar']);
   assert.deepEqual(methods.map(node=>text(node.querySelector('p'))),[
     'Interfaz en React y API en Node. En Strev, el análisis de vídeo va en una cola y los datos de salud se cifran campo a campo.',
     'Sereno es un solo archivo de Python, sin dependencias, que sigue desde un panel las sesiones de cinco CLI de agentes.',
-    'Atalaya reúne ofertas de varios portales de empleo y puntúa cada una según un perfil.',
+    'Smarty y Marky comparten un motor en Python sin dependencias que devuelve decisiones, nunca órdenes, y guarda cada una para poder reproducirla.',
   ]);
-  assert.deepEqual(methods.map(node=>node.querySelector('a').getAttribute('href')),['/proyectos/strev/','/proyectos/sereno/','/proyectos/atalaya/']);
-  assert.deepEqual(methods.map(node=>text(node.querySelector('a'))),['Caso Strev','Caso Sereno','Caso Atalaya']);
+  assert.deepEqual(methods.map(node=>node.querySelector('a').getAttribute('href')),['/proyectos/strev/','/proyectos/sereno/','#smarty']);
+  assert.deepEqual(methods.map(node=>text(node.querySelector('a'))),['Caso Strev','Caso Sereno','Ver Smarty']);
   const history=[...about.querySelectorAll('.history-list > article')];
   assert.equal(history.length,4);
   assert.ok([...about.querySelectorAll('h3')].some(node=>text(node)==='Mi recorrido'));
@@ -238,18 +238,32 @@ test('AC2: About contains the literal bio, four facts, three methods and four vi
   assert.equal(about.querySelector('details'),null);
 });
 
-test('AC3: Work orders one featured project, three case articles and the four compact entries',()=>{
+test('AC3: Work orders four equal sibling projects, the demo and two compact entries',()=>{
   assert.ok(work.querySelector('h2#work-title'));
-  assert.deepEqual([...work.querySelectorAll('article[id]')].map(node=>node.id),['strev','sereno','savemymoneynow','atalaya']);
-  assert.ok(work.querySelector('article.work-featured#strev'));
-  assert.deepEqual([...work.querySelectorAll('.work-cases > article')].map(node=>node.id),['sereno','savemymoneynow','atalaya']);
+  const projects=[...work.querySelectorAll('article[id]')];
+  assert.deepEqual(projects.map(node=>node.id),['strev','marky','smarty','sereno']);
+  assert.deepEqual(projects.map(node=>node.className),Array(4).fill('work-project'));
+  for (const [index,article] of projects.entries()) {
+    assert.equal(article.parentElement,work);
+    if(index<3) assert.equal(article.nextElementSibling,projects[index+1]);
+    assert.deepEqual([...article.children].map(node=>node.className),['work-project-heading','work-image','work-project-copy']);
+    assert.ok(article.querySelector('.work-project-heading > h3'));
+    assert.ok(article.querySelector('.work-project-heading > p.work-one-line'));
+  }
+  const demo=projects.at(-1).nextElementSibling;
+  assert.equal(demo.tagName,'DETAILS');
+  const label=demo.nextElementSibling;
+  assert.equal(label.tagName,'P');
+  assert.equal(label.id,'work-more-title');
   const more=work.querySelector('ul.work-more-list');
-  assert.ok(more);
+  assert.equal(label.nextElementSibling,more);
   assert.deepEqual([...more.children].map(node=>[node.tagName,node.id]),[
-    ['LI','marky'],['LI','smarty'],['LI','roguepatch-lab'],['LI','social-scout'],
+    ['LI','roguepatch-lab'],['LI','social-scout'],
   ]);
   assert.equal(more.querySelector('img'),null);
-  [...work.querySelectorAll('article[id]'),...more.children].forEach(node=>{
+  assert.equal(work.querySelector('#savemymoneynow,#atalaya,.work-cases,.work-case,.work-featured'),null);
+  assert.doesNotMatch(work.textContent,/Destacado|Con caso/);
+  [...projects,...more.children].forEach(node=>{
     assert.ok(node.querySelector('h3'));
     visibleWithoutInteraction(node);
   });
@@ -257,23 +271,27 @@ test('AC3: Work orders one featured project, three case articles and the four co
   assert.ok(document.querySelector('#inicio h1'));
 });
 
-test('AC4: Each case article exposes its role, exact stack, result and unique accessible case link',()=>{
+test('AC4: Each main article exposes its literal copy and facts, with only the approved links',()=>{
   const projects=[
-    ['strev','Strev','React · Node · Express · MongoDB · Redis · Stripe · Gemini'],
-    ['sereno','Sereno','Python · curses · tmux'],
-    ['savemymoneynow','SaveMyMoneyNow','React · Node · Express · MongoDB'],
-    ['atalaya','Atalaya','Python · Typer · SQLite'],
+    ['strev','Strev','Preparar rutinas y seguir a cada atleta.','Una aplicación web propia para preparar rutinas, organizar clientes y seguir a cada atleta. El análisis de vídeo se procesa en segundo plano para que la interfaz siga disponible.','Proyecto propio. Lo diseño, lo desarrollo y opero la beta.','React · Node · Express · MongoDB · Redis · Stripe · Gemini','121 endpoints, 1.398 tests de API y 2.793 de interfaz.'],
+    ['marky','Marky','Seguir el mercado en directo a partir de zonas de precio marcadas a mano.','Usa el mismo motor que Smarty. Evalúa en directo las zonas que se marcan en el gráfico, avisa por Telegram o Discord y registra cada decisión. Trabaja en simulación y no envía órdenes.','Diseño y desarrollo del motor, el panel y la verificación. La estrategia se definió en colaboración.','Python 3.12 · FastAPI · React · TypeScript · klinecharts','4.736 tests, panel de gráfico con dibujo de zonas y gestos táctiles, y datos de cTrader en simulación.'],
+    ['smarty','Smarty','Comprobar si una regla de trading aguanta antes de fiarse de ella.','Es el laboratorio del motor que comparte con Marky. Reproduce el mercado barra a barra con costes y deslizamiento. Separa los datos de ajuste de una regla de los de prueba y aplica controles contra el sobreajuste a cada estrategia.','Diseño y desarrollo del motor y la verificación. La estrategia se definió en colaboración.','Python 3.12 sin dependencias en el motor · FastAPI · React · TypeScript','3.684 tests, controles SPA, PBO y DSR escritos en Python puro y validación walk-forward en 37 ventanas.'],
+    ['sereno','Sereno','Saber qué agente trabaja y cuál necesita una respuesta.',null,'Proyecto propio, código abierto.','Python · curses · tmux','101 PRs, 81 tests, 0 dependencias.'],
   ];
   const names=[];
-  for (const [slug,name,stack] of projects) {
+  for (const [slug,name,line,synthesis,role,stack,result] of projects) {
     const article=work.querySelector(`article#${slug}`),facts=article.querySelector('dl');
+    assert.equal(text(article.querySelector('h3')),name);
+    assert.equal(text(article.querySelector('p.work-one-line')),line);
+    if(synthesis) assert.equal(text(article.querySelector('.case-synthesis')),synthesis);
+    else assert.equal(article.querySelector('.case-synthesis'),null,'Sereno has no approved synthesis to add');
     visibleWithoutInteraction(facts);
     assert.deepEqual([...facts.querySelectorAll('dt')].map(text),['Rol','Stack','Resultado']);
-    const descriptions=[...facts.querySelectorAll('dd')];
-    assert.equal(descriptions.length,3);
-    assert.equal(text(descriptions[0]),slug==='strev'?'Proyecto propio. Lo diseño, lo desarrollo y opero la beta.':'Proyecto propio, código abierto.');
-    assert.equal(text(descriptions[1]),stack);
-    assert.ok(text(descriptions[2]).length>0);
+    assert.deepEqual([...facts.querySelectorAll('dd')].map(text),[role,stack,result]);
+    if(['marky','smarty'].includes(slug)) {
+      assert.equal(article.querySelectorAll('a').length,0);
+      continue;
+    }
     const links=article.querySelectorAll(`a[href="/proyectos/${slug}/"]`);
     assert.equal(links.length,1);
     const link=links[0];
@@ -282,31 +300,35 @@ test('AC4: Each case article exposes its role, exact stack, result and unique ac
     visibleWithoutInteraction(link);
     names.push(link.getAttribute('aria-label'));
   }
-  assert.equal(new Set(names).size,4);
-  assert.ok(work.querySelector('#strev a[href="https://strev.app"]'));
-  for (const [slug,url] of [
-    ['sereno','https://github.com/ElRaxy/sereno'],
-    ['savemymoneynow','https://github.com/ElRaxy/SaveMyMoneyNow'],
-    ['atalaya','https://github.com/ElRaxy/atalaya-cli'],
-    ['roguepatch-lab','https://github.com/ElRaxy/roguepatch-lab'],
-  ]) assert.ok(work.querySelector(`#${slug} a[href="${url}"]`));
+  assert.equal(new Set(names).size,2);
+  for (const [slug,url,label] of [
+    ['strev','https://strev.app','Abrir Strev'],
+    ['sereno','https://github.com/ElRaxy/sereno','Ver código'],
+    ['roguepatch-lab','https://github.com/ElRaxy/roguepatch-lab','Ver código'],
+  ]) {
+    const link=work.querySelector(`#${slug} a[href="${url}"]`);
+    assert.ok(link);
+    assert.equal(text(link),label);
+    assert.equal(link.target,'_blank');
+    assert.equal(link.rel,'noopener noreferrer');
+  }
 });
 
-test('AC5: The ten metrics measured on 2026-10-20 use named spans and Spanish number formatting',()=>{
+test('AC5: The nine metrics measured on 2026-10-20 use named spans and Spanish number formatting',()=>{
   const expected={
     'strev-endpoints':'121','strev-tests-api':'1.398','strev-tests-ui':'2.793',
-    'sereno-prs':'101','sereno-tests':'81','smmn-endpoints':'21','smmn-tests':'113',
-    'atalaya-comandos':'13','atalaya-tests':'174','roguepatch-tests':'366',
+    'sereno-prs':'101','sereno-tests':'81','marky-tests':'4.736',
+    'smarty-tests':'3.684','smarty-ventanas':'37','roguepatch-tests':'366',
   };
   const metrics=[...document.querySelectorAll('[data-metric]')];
   assert.deepEqual([...new Set(metrics.map(node=>node.dataset.metric))].sort(),Object.keys(expected).sort());
-  assert.equal(metrics.length,10,'Each metric appears once');
+  assert.equal(metrics.length,9,'Each metric appears once');
   for (const node of metrics) {
     assert.equal(node.tagName,'SPAN');
     assert.equal(text(node),expected[node.dataset.metric]);
     visibleWithoutInteraction(node);
   }
-  for (const slug of ['strev','sereno','savemymoneynow','atalaya']) {
+  for (const slug of ['strev','marky','smarty','sereno']) {
     const result=[...work.querySelectorAll(`#${slug} dl dd`)].at(-1).cloneNode(true);
     result.querySelectorAll('[data-metric]').forEach(node=>node.remove());
     assert.doesNotMatch(text(result),/[1-9]\d*/,'Every provisional result count is marked, except the literal zero dependencies');
@@ -338,8 +360,10 @@ test('AC6: Sereno demo keeps its exact markup and connected controls inside a cl
 
 test('AC7: New project images retain their complete intrinsic dimensions and approved alternatives',()=>{
   for (const [slug,src,width,height,alt] of [
-    ['savemymoneynow','assets/savemymoneynow-detection.png','914','911','SaveMyMoneyNow localizando la fila de cabecera de un extracto bancario'],
-    ['atalaya','assets/atalaya-health.svg','1200','675','Resumen de salud de las fuentes de empleo de Atalaya'],
+    ['strev','assets/strev-plan-retina.png','2400','1652','Strev: cliente de demostración con sus rutinas asignadas'],
+    ['marky','assets/marky-interface.png','1440','900','Marky: gráfico de velas de XAUUSD con la barra de dibujo y el borrador de zonas'],
+    ['smarty','assets/smarty-session.png','2880','1800','Smarty: panel de control de una sesión en simulación con el precio, las roturas de estructura y el riesgo'],
+    ['sereno','assets/sereno-native-retina.png','2880','1536','Salida real de Sereno en modo demo con sesiones y estados de agentes'],
   ]) {
     const image=work.querySelector(`article#${slug} img`);
     assert.ok(image);
@@ -357,7 +381,7 @@ test('Group labels in About and Work never sit at the same heading level as thei
     assert.equal(node.querySelectorAll('article h3').length,0);
     assert.ok(node.querySelectorAll('article h4').length>=3);
   }
-  assert.deepEqual([...work.querySelectorAll('.work-level')].map(node=>node.tagName),['P','P','P']);
+  assert.deepEqual([...work.querySelectorAll('.work-level')].map(node=>node.tagName),['P']);
   assert.equal(work.querySelector('ul.work-more-list').getAttribute('aria-labelledby'),'work-more-title');
   assert.equal(text(work.querySelector('#work-more-title')),'Más trabajo');
   assert.equal(document.querySelectorAll('#sobre-mi h3 > a[href^="#"], #trabajo h3 > a[href^="#"]').length,0);
@@ -365,7 +389,9 @@ test('Group labels in About and Work never sit at the same heading level as thei
 
 test('Every labelled link in About and Work starts its accessible name with its visible text',()=>{
   const links=[...document.querySelectorAll('#sobre-mi a[aria-label], #trabajo a[aria-label]')];
-  assert.ok(links.length>=8);
+  assert.deepEqual(links.map(link=>link.getAttribute('aria-label')),[
+    'Leer el caso de Strev','Leer el caso de Sereno','Ver código de Sereno','Ver código de RoguePatch Lab',
+  ]);
   for(const link of links){
     const visible=text(link);
     assert.ok(link.getAttribute('aria-label').startsWith(visible),`${link.getAttribute('aria-label')} / ${visible}`);

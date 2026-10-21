@@ -66,7 +66,7 @@ test('static root is validated, missing home contracts fail, and English/case Re
     }
     await broken('root without its heading fails','index.html',html=>html.replace('<h1 ','<div ').replace('</h1>','</div>'),/h1 unico de Alex/)
     await broken('root without required navigation fails','index.html',html=>html.replaceAll('href="#sobre-mi"','href="https://example.invalid/sobre"'),/falta seccion o enlace #sobre-mi/)
-    await broken('root without a project block fails','index.html',html=>html.replace('id="atalaya"','id="atalaya-old"'),/falta el bloque del proyecto #atalaya/)
+    await broken('root without a project block fails','index.html',html=>html.replace('id="marky"','id="marky-old"'),/falta el bloque del proyecto #marky/)
     await t.test('root without its published controller fails',async()=>{
       const file=path.join(fixture,'build/experimental/character-rig.js'),previous=await readFile(file)
       try {
