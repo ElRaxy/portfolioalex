@@ -6,7 +6,7 @@ La portada estática vive en `public/experimental/`. Usa HTML, CSS y JavaScript 
 
 - `index.html`: contenido servido, valores finales de las nueve métricas, cápsula, índice de proyectos y bootstrap mínimo de la entrada antes de las hojas CSS.
 - `app.js`: modalidad de teclado, navegación nativa a anclas respetando movimiento reducido y copia del correo con mensajes de resultado. La demo de Sereno conserva sus controles HTML/CSS y el desplegable nativo.
-- `movimiento.js`: único controlador del movimiento; entrada, línea rotativa, menú móvil, sección activa mediante IntersectionObserver, apariciones de una sola ejecución y cuentas visuales. No anima a partir de eventos de scroll.
+- `movimiento.js`: único controlador del movimiento; entrada, línea rotativa, menú móvil, sección activa mediante IntersectionObserver, apariciones de una sola ejecución, cuentas visuales y secuencia del personaje de Contacto. Solo el módulo interno de secuencia anima a partir del scroll.
 - `styles.css`: tokens, base tipográfica y contenido compartido; `portada-personal.css`: hero; `recorrido-personal.css`: composición de Trabajo, Sobre mí y Contacto; `movimiento.css`: cápsula, índice, tiempos, curvas, estados animados y alternativas accesibles.
 - `sereno-demo.css`: estilos existentes de la demo, conservados.
 
@@ -52,6 +52,18 @@ Con movimiento reducido no hay entrada, apariciones, cuentas, rotación ni halo;
 Sobre mí usa dos columnas desde 1024 px, con la bio y ficha a la izquierda y métodos y recorrido a la derecha. La altura objetivo de 900 px a 1440 px requiere comprobación visual: los tests de DOM/CSS no miden composición real.
 
 ## Build y comprobación
+
+### Secuencia de Contacto
+
+El dibujo de `.contact-intro` usa 34 imágenes decorativas dentro de un único `role="img"` con la descripción del prototipo. Son 32 SVG distintos de `assets/contacto/`: pasos `s01` a `s09`, `s08`, `s11`, `s08` y `s13` a `s34`. Los SVG se conservan byte a byte. Solo el primero y el último tienen `src` en el HTML; los 32 pasos intermedios usan `data-src`.
+
+El módulo interno de `movimiento.js` mide `a = cajaTopAbs + offsetHeight - innerHeight` y `b = min(scrollMax, cajaTopAbs - 76)`, limita el progreso a `[0,1]` y obtiene `round(p * 33)`. Recalcula las medidas en `resize`. Un bucle de `requestAnimationFrame` acerca el fotograma visible al objetivo un paso cada 70 ms como máximo, en ambos sentidos; se detiene al alcanzarlo. El modo es corte fijo, sin parámetros de URL, fundidos ni depuración.
+
+Un IntersectionObserver sobre Contacto usa un margen vertical de 1,5 veces `innerHeight`, expresado en píxeles para que dependa del alto. Al entrar convierte `data-src` en `src` y espera la decodificación de todas las imágenes. Mientras espera permanece el primer fotograma; si falla una decodificación tampoco avanza. Con movimiento reducido no crea el observer de carga ni solicita animación o imágenes intermedias: queda el 34. Sin JavaScript, `movimiento.css` también muestra solo el 34.
+
+La geometría vive en `styles.css`: altura de 300 px, 232 en móvil, 196 hasta 500 px y 176 hasta 380 px. Por debajo de 760 px el dibujo queda después del correo y alineado a la izquierda. Los estados visibles viven en `movimiento.css`; la entrada M1, apariciones M2 y cápsula conservan sus contratos.
+
+Las pruebas cubren orden y accesibilidad, reloj y RAF simulados, ida y vuelta sin saltos, espera de `decode`, movimiento reducido y rutas `data-src` publicadas. `publish-home.mjs` conserva su implementación: la regex existente también reescribe `data-src`. El informe está en `projects/portfolioalex/progress/revision-2026-10-20/ship_secuencia-portada.md` y el log completo en `secuencia-node-tests.log` del mismo directorio. La QA visual queda a cargo de Claude en el iMac.
 
 El build genera las páginas React existentes y `scripts/publish-home.mjs` publica esta portada como `build/index.html`. Convierte recursos en URLs absolutas sin introducir `base`; mantiene anclas locales y las páginas inglesas y de caso. Los recursos compartidos siguen en `/editorial/assets/`.
 

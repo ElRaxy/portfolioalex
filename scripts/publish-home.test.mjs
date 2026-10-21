@@ -5,11 +5,25 @@ import path from 'node:path'
 import os from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { publishHome } from './publish-home.mjs'
+import { JSDOM } from 'jsdom'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const source = await readFile(path.join(root, 'public/experimental/index.html'), 'utf8')
 const body = html => html.slice(html.indexOf('<body'))
 const references = html => [...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map(match => match[1])
+
+function assertSequencePaths(html) {
+  const document = new JSDOM(html).window.document
+  const frames = [...document.querySelectorAll('#contacto [data-secuencia] img')]
+  assert.equal(frames.length, 34)
+  assert.equal(frames.filter(frame => frame.hasAttribute('data-src')).length, 32)
+  for (const [index, frame] of frames.entries()) {
+    const number = index === 9 || index === 11 ? 8 : index + 1
+    const attribute = index === 0 || index === 33 ? 'src' : 'data-src'
+    assert.equal(frame.getAttribute(attribute), `/experimental/assets/contacto/s${String(number).padStart(2, '0')}.svg`)
+    assert.equal(frame.hasAttribute(attribute === 'src' ? 'data-src' : 'src'), false)
+  }
+}
 
 test('publica el checkpoint en la raíz y conserva las demás páginas', async () => {
   const fixture = await mkdtemp(path.join(os.tmpdir(), 'portfolio-home-'))
@@ -26,6 +40,7 @@ test('publica el checkpoint en la raíz y conserva las demás páginas', async (
 
     const html = await publishHome(fixture)
     assert.equal(await readFile(path.join(fixture, 'build/index.html'), 'utf8'), html)
+    assertSequencePaths(html)
     for (const route of routes) {
       assert.equal(await readFile(path.join(fixture, 'build', route), 'utf8'), `preservar ${route}`)
     }
@@ -70,5 +85,14 @@ test('publica el checkpoint en la raíz y conserva las demás páginas', async (
     assert.equal(await publishHome(fixture), html, 'publication is repeatable')
   } finally {
     await rm(fixture, { recursive: true, force: true })
+  }
+})
+
+test('Secuencia AC9: el build real publica también los 32 data-src desde la raíz', async () => {
+  const html = await readFile(path.join(root, 'build/index.html'), 'utf8')
+  assertSequencePaths(html)
+  const frames = new JSDOM(html).window.document.querySelectorAll('#contacto [data-secuencia] img')
+  for (const frame of frames) {
+    await access(path.join(root, 'build', frame.getAttribute('src') || frame.getAttribute('data-src')))
   }
 })

@@ -12,6 +12,115 @@
   let entryObserver;
   const pendingIndex = new Set();
 
+  function ventanaSecuencia({cajaTopAbs, alto, innerHeight, scrollMax, scrollY}) {
+    const a = cajaTopAbs + alto - innerHeight;
+    const b = Math.min(scrollMax, cajaTopAbs - 76);
+    const p = Math.min(1, Math.max(0, (scrollY - a) / (b > a ? b - a : 1)));
+    return {a, b, p, objetivo: Math.round(p * 33)};
+  }
+
+  function iniciarSecuencia() {
+    const caja = document.querySelector('[data-secuencia]');
+    if (!caja) return;
+    const fotos = [...caja.querySelectorAll('img')];
+    const seccion = caja.closest('section');
+    let medidas, observer, raf = 0, visible = 0, objetivo = 0;
+    let ultimo = performance.now(), listo = false, cargando = false, suspendida = false;
+
+    function medir() {
+      medidas = {
+        cajaTopAbs: caja.getBoundingClientRect().top + window.scrollY,
+        alto: caja.offsetHeight,
+        innerHeight: window.innerHeight,
+        scrollMax: Math.max(0, root.scrollHeight - window.innerHeight)
+      };
+    }
+    function mostrar(indice) {
+      fotos[visible].style.opacity = '0';
+      visible = indice;
+      fotos[visible].style.opacity = '1';
+    }
+    function parar() {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    function bucle(t) {
+      raf = 0;
+      if (reduced.matches || suspendida) return;
+      if (t - ultimo >= 70 && visible !== objetivo) {
+        mostrar(visible + Math.sign(objetivo - visible));
+        ultimo = t;
+      }
+      if (visible !== objetivo) raf = requestAnimationFrame(bucle);
+    }
+    function actualizar() {
+      if (reduced.matches || suspendida) return;
+      objetivo = ventanaSecuencia({...medidas, scrollY: window.scrollY}).objetivo;
+      if (!listo) return;
+      if (visible === objetivo) parar();
+      else if (!raf) raf = requestAnimationFrame(bucle);
+    }
+    function cargar() {
+      if (cargando || reduced.matches || suspendida) return;
+      cargando = true;
+      observer?.disconnect();
+      const promesas = fotos.map(img => {
+        img.loading = 'eager';
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        return img.decode();
+      });
+      Promise.all(promesas).then(() => {
+        listo = true;
+        medir();
+        actualizar();
+      }).catch(() => {
+        // Un fotograma fallido conserva el primero, sin saltos sobre imágenes vacías.
+      });
+    }
+    function observar() {
+      observer?.disconnect();
+      if (cargando || reduced.matches || suspendida || !('IntersectionObserver' in window)) return;
+      // Los porcentajes de rootMargin dependen del ancho, no del alto de pantalla.
+      const margen = window.innerHeight * 1.5;
+      observer = new IntersectionObserver(entradas => {
+        if (entradas.some(entrada => entrada.isIntersecting)) cargar();
+      }, {rootMargin: `${margen}px 0px ${margen}px 0px`});
+      observer.observe(seccion);
+    }
+    function quieto() {
+      parar();
+      observer?.disconnect();
+      caja.classList.remove('viva');
+      fotos.forEach(img => { img.style.opacity = ''; });
+    }
+    function iniciar() {
+      if (reduced.matches || suspendida) { quieto(); return; }
+      caja.classList.add('viva');
+      fotos.forEach(img => { img.style.opacity = '0'; });
+      mostrar(0);
+      ultimo = performance.now();
+      medir();
+      actualizar();
+      observar();
+    }
+    window.addEventListener('scroll', actualizar, {passive: true});
+    window.addEventListener('resize', () => {
+      medir();
+      actualizar();
+      observar();
+    });
+    if ('ResizeObserver' in window) new ResizeObserver(() => { medir(); actualizar(); }).observe(document.body);
+    reduced.addEventListener('change', iniciar);
+    window.addEventListener('pagehide', () => { suspendida = true; quieto(); });
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) { suspendida = false; iniciar(); }
+    });
+    iniciar();
+  }
+
   function finishEntry() {
     entryObserver?.disconnect();
     root.removeAttribute('data-entrada');
@@ -292,4 +401,5 @@
   reduced.addEventListener('change', () => { if (reduced.matches) settleMotion(); });
   if (reduced.matches) settleMotion();
   window.addEventListener('pagehide', settleMotion);
+  iniciarSecuencia();
 })();

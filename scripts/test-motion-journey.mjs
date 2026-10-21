@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import {readFile} from 'node:fs/promises';
+import {readFile,readdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {JSDOM} from 'jsdom';
 const app = await readFile(new URL('../public/experimental/app.js',import.meta.url),'utf8');
@@ -224,4 +224,66 @@ test('Every labelled link in the hero index, About and Work starts its accessibl
     const visible=text(link);
     assert.ok(link.getAttribute('aria-label').startsWith(visible),`${link.getAttribute('aria-label')} / ${visible}`);
   }
+});
+
+test('Secuencia AC1–AC2: Contacto serves the 34 accessible steps with only its endpoints loaded',async()=>{
+  const intro=document.querySelector('#contacto .contact-intro');
+  const boxes=intro.querySelectorAll('div.secuencia[data-secuencia]');
+  assert.equal(boxes.length,1);
+  assert.equal(intro.querySelector('svg.drawing-talk'),null);
+  const sequence=boxes[0],frames=[...sequence.children];
+  assert.equal(sequence.getAttribute('role'),'img');
+  assert.equal(sequence.getAttribute('aria-label'),'Ilustración de Alex a línea continua en cobalto. Conforme bajas deja de teclear en el portátil, te ve, te saluda, se levanta, camina hacia ti y te tiende la mano.');
+  const numbers=Array.from({length:34},(_,index)=>index===9||index===11?8:index+1);
+  const expected=numbers.map(number=>`assets/contacto/s${String(number).padStart(2,'0')}.svg`);
+  assert.equal(frames.length,34);
+  assert.deepEqual(frames.map(frame=>frame.getAttribute('src')||frame.getAttribute('data-src')),expected);
+  for (const [index,frame] of frames.entries()) {
+    assert.equal(frame.tagName,'IMG');
+    assert.equal(frame.getAttribute('alt'),'');
+    assert.equal(frame.getAttribute('aria-hidden'),'true');
+    assert.equal(frame.getAttribute('width'),'640');
+    assert.equal(frame.getAttribute('height'),'640');
+    assert.equal(frame.getAttribute('decoding'),'async');
+    assert.equal(frame.hasAttribute('data-trans'),false);
+    const endpoint=index===0||index===33;
+    assert.equal(frame.hasAttribute('src'),endpoint);
+    assert.equal(frame.hasAttribute('data-src'),!endpoint);
+    assert.equal(frame.classList.contains('sec-f'),true);
+    assert.equal(frame.classList.contains('es-primero'),index===0);
+    assert.equal(frame.classList.contains('es-final'),index===33);
+    assert.ok((await readFile(new URL(`../public/experimental/${expected[index]}`,import.meta.url))).length>0);
+  }
+  const files=await readdir(new URL('../public/experimental/assets/contacto/',import.meta.url));
+  assert.deepEqual(files.filter(file=>file.endsWith('.svg')).sort(),[...new Set(expected.map(file=>file.split('/').at(-1)))].sort());
+});
+
+test('Secuencia AC8: responsive Contacto layout keeps the drawing after the email and Work intact',async()=>{
+  const css=await readFile(new URL('../public/experimental/styles.css',import.meta.url),'utf8');
+  const style=document.createElement('style');
+  style.textContent=css;
+  document.head.append(style);
+  try {
+    const rules=[...style.sheet.cssRules];
+    const sequenceRule=rules.find(rule=>rule.selectorText==='.contact-intro>.secuencia');
+    assert.ok(sequenceRule);
+    assert.equal(sequenceRule.style.getPropertyValue('height'),'var(--sec-alto,300px)');
+    assert.equal(sequenceRule.style.getPropertyValue('justify-self'),'start');
+    assert.equal(sequenceRule.style.getPropertyValue('aspect-ratio'),'1');
+    for (const [width,height] of [[759,232],[500,196],[380,176]]) {
+      const media=rules.find(rule=>rule.media?.mediaText===`(max-width:${width}px)`);
+      const drawing=[...media.cssRules].find(rule=>rule.selectorText==='.contact-intro>.secuencia');
+      assert.equal(drawing.style.getPropertyValue('--sec-alto'),`${height}px`);
+      if(width===759) {
+        assert.equal(drawing.style.getPropertyValue('order'),'1');
+        const placement=[...media.cssRules].find(rule=>rule.selectorText==='.contact-intro>.secuencia,#contact-title,.contact-actions');
+        assert.equal(placement.style.getPropertyValue('grid-row'),'auto');
+        assert.equal(placement.style.getPropertyValue('grid-column'),'1');
+      }
+    }
+    assert.equal(document.querySelectorAll('#contacto .contact-actions .contact-address').length,1);
+    assert.doesNotMatch(css,/\.contact-intro\s*>\s*\.world-drawing|\.drawing-talk\b/);
+    assert.ok(rules.some(rule=>rule.selectorText==='.world-drawing'));
+    assert.ok(work.querySelector('svg.world-drawing.drawing-work'));
+  } finally { style.remove(); }
 });

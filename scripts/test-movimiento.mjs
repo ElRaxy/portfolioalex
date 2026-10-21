@@ -20,11 +20,16 @@ const text = node => {
   return copy.textContent.replace(/\s+/g, ' ').trim();
 };
 
-function harness({reduced = false, observer = true, hash = '', scrollY = 0, navigation = 'navigate', run = true, visible = false, historyRows = [0,0,100,100]} = {}) {
+function harness({reduced = false, observer = true, resizeObserver = false, hash = '', scrollY = 0, navigation = 'navigate', run = true, visible = false, historyRows = [0,0,100,100], sequenceTop = 3000, sequenceHeight = 300, scrollHeight = 4000, decoding = 'immediate'} = {}) {
   const dom = new JSDOM(html, {url: `https://example.test/${hash}`, runScripts: 'outside-only', pretendToBeVisual: true});
   const {window} = dom;
   let now = 0, nextID = 0;
-  const timers = new Map(), observers = [], mediaListeners = [];
+  const timers = new Map(), observers = [], resizeObservers = [], mediaListeners = [], frames = new Set(), frameRequests = [], decodes = [], listeners = [];
+  const addEventListener = window.addEventListener.bind(window);
+  window.addEventListener = (type, fn, options) => {
+    listeners.push({type, options});
+    addEventListener(type, fn, options);
+  };
   const schedule = (fn, delay = 0, interval = 0) => {
     const id = ++nextID;
     timers.set(id, {fn, at: now + Number(delay), interval});
@@ -34,8 +39,13 @@ function harness({reduced = false, observer = true, hash = '', scrollY = 0, navi
   window.clearTimeout = id => timers.delete(id);
   window.setInterval = (fn, delay) => schedule(fn, delay, delay);
   window.clearInterval = window.clearTimeout;
-  window.requestAnimationFrame = fn => schedule(() => fn(now), 16);
-  window.cancelAnimationFrame = window.clearTimeout;
+  window.requestAnimationFrame = fn => {
+    const id = schedule(() => { frames.delete(id); fn(now); }, 16);
+    frames.add(id);
+    frameRequests.push(now);
+    return id;
+  };
+  window.cancelAnimationFrame = id => { frames.delete(id); timers.delete(id); };
   window.Date.now = () => now;
   Object.defineProperty(window.performance, 'now', {value: () => now});
   Object.defineProperty(window.performance, 'getEntriesByType', {value: () => [{type: navigation}]});
@@ -45,6 +55,17 @@ function harness({reduced = false, observer = true, hash = '', scrollY = 0, navi
   window.HTMLElement.prototype.getBoundingClientRect = function () {
     const top = visible ? 100 : 2000;
     return {top, bottom: top + 100, left: 0, right: 200, width: 200, height: 100};
+  };
+  const geometry = {top: sequenceTop, height: sequenceHeight, scrollHeight};
+  const sequence = window.document.querySelector('[data-secuencia]');
+  if (sequence) {
+    sequence.getBoundingClientRect = () => ({top: geometry.top - window.scrollY});
+    Object.defineProperty(sequence, 'offsetHeight', {get: () => geometry.height});
+  }
+  Object.defineProperty(window.document.documentElement, 'scrollHeight', {get: () => geometry.scrollHeight});
+  window.HTMLImageElement.prototype.decode = function () {
+    if (decoding === 'immediate') { decodes.push({image: this}); return Promise.resolve(); }
+    return new Promise((resolve, reject) => decodes.push({image: this, resolve, reject}));
   };
   const history = [...window.document.querySelectorAll('.history-list > article')];
   history.forEach((node, index) => Object.defineProperty(node, 'offsetTop', {get: () => historyRows[index]}));
@@ -57,6 +78,13 @@ function harness({reduced = false, observer = true, hash = '', scrollY = 0, navi
     disconnect() { this.nodes.clear(); }
   };
   else delete window.IntersectionObserver;
+  if (resizeObserver) window.ResizeObserver = class {
+    constructor(callback) { this.callback = callback; this.nodes = new Set(); resizeObservers.push(this); }
+    observe(node) { this.nodes.add(node); }
+    unobserve(node) { this.nodes.delete(node); }
+    disconnect() { this.nodes.clear(); }
+  };
+  else delete window.ResizeObserver;
   const inline = [...window.document.querySelectorAll('head script:not([src])')].filter(node => node.type !== 'application/ld+json');
   inline.forEach(node => window.eval(node.textContent));
   if (run) window.eval(runtime);
@@ -78,7 +106,7 @@ function harness({reduced = false, observer = true, hash = '', scrollY = 0, navi
   const enter = node => {
     observers.filter(item => item.nodes.has(node)).forEach(item => item.callback([{target: node, isIntersecting: true, intersectionRatio: 1, boundingClientRect: node.getBoundingClientRect()}]));
   };
-  return {window, document: window.document, observers, timers, tick, enter,
+  return {window, document: window.document, observers, resizeObservers, timers, tick, enter, geometry, decodes, frames, frameRequests, listeners,
     setReduced(value) { media.matches = value; mediaListeners.forEach(fn => fn({matches: value})); },
     close() { dom.window.close(); },
   };
@@ -391,8 +419,12 @@ test('CSS encodes approved timing, curves and distances, with progressive visibi
   assert.match(css, /font-variant-numeric:\s*tabular-nums/);
   assert.match(css, /scroll-margin-top:/);
   assert.doesNotMatch(css, /position:\s*sticky/);
-  assert.doesNotMatch(runtime + app, /addEventListener\(\s*['"]scroll['"]/);
-  assert.doesNotMatch(runtime + app, /requestAnimationFrame/);
+  const sequenceModule = runtime.slice(runtime.indexOf('  function ventanaSecuencia('), runtime.indexOf('  function finishEntry('));
+  const otherMotion = runtime.replace(sequenceModule, '') + app;
+  assert.doesNotMatch(otherMotion, /addEventListener\(\s*['"]scroll['"]/);
+  assert.doesNotMatch(otherMotion, /requestAnimationFrame/);
+  assert.match(sequenceModule, /addEventListener\('scroll', actualizar, \{passive: true\}\)/);
+  assert.match(sequenceModule, /t - ultimo >= 70/);
   assert.doesNotMatch(movementCSS, /pointer-events:\s*none|overflow:\s*hidden/);
 });
 
@@ -637,4 +669,264 @@ test('Hero C: CSS keeps fluid columns, the 1024px breakpoint, visible fallbacks 
     if (/hover|focus-within/.test(selector) && /transform:/.test(declarations)) assert.match(selector, /work-index-arrow|work-index-target::after/);
   }
   assert.doesNotMatch(css, /(?:#trabajo|\.work\s|\.work-margin|\.work-heading)[^{}]*\.work-index/);
+});
+
+const visibleSequenceFrames = document => [...document.querySelectorAll('[data-secuencia] img')]
+  .flatMap((image, index) => image.style.opacity === '1' ? [index + 1] : []);
+const flushDecodes = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
+const sequenceObserver = host => host.observers.find(observer => /^\d+(?:\.\d+)?px 0px \d+(?:\.\d+)?px 0px$/.test(observer.options.rootMargin || '') && observer.nodes.has(host.document.getElementById('contacto')));
+const scrollSequence = (host, y) => {
+  host.window.scrollY = y;
+  host.window.dispatchEvent(new host.window.Event('scroll'));
+};
+
+async function usingSequence(options, fn) {
+  const host = harness(options);
+  try { await fn(host); } finally { host.close(); }
+}
+
+function sequenceComputedFrames(host, reduced = false) {
+  const sheet = host.document.createElement('style');
+  const base = movementCSS.slice(0, movementCSS.indexOf('.capsula{'));
+  const quiet = movementCSS.match(/@media\(prefers-reduced-motion:reduce\)\{([\s\S]*?)\n\}/)[1];
+  sheet.textContent = base + (reduced ? quiet : '');
+  host.document.head.append(sheet);
+  const visible = [...host.document.querySelectorAll('[data-secuencia] img')]
+    .flatMap((image, index) => host.window.getComputedStyle(image).opacity === '1' ? [index + 1] : []);
+  sheet.remove();
+  return visible;
+}
+
+test('Sequence window is pure: whole box, capsule offset, scroll limit and clamped rounded target', () => {
+  const source = runtime.slice(runtime.indexOf('  function ventanaSecuencia('), runtime.indexOf('  function iniciarSecuencia('));
+  const calculate = new Function(`${source}; return ventanaSecuencia;`)();
+  const geometry = {cajaTopAbs: 3000, alto: 300, innerHeight: 900, scrollMax: 3100};
+  assert.deepEqual(calculate({...geometry, scrollY: 2400}), {a:2400, b:2924, p:0, objetivo:0});
+  assert.deepEqual(calculate({...geometry, scrollY: 2662}), {a:2400, b:2924, p:.5, objetivo:17});
+  assert.deepEqual(calculate({...geometry, scrollY: 2924}), {a:2400, b:2924, p:1, objetivo:33});
+  assert.equal(calculate({...geometry, scrollY: -100}).objetivo, 0);
+  assert.equal(calculate({...geometry, scrollY: 5000}).objetivo, 33);
+  assert.deepEqual(calculate({...geometry, scrollMax: 2700, scrollY: 2550}), {a:2400, b:2700, p:.5, objetivo:17});
+  assert.deepEqual(calculate({...geometry, scrollMax:2400.5, scrollY:2400.25}), {a:2400, b:2400.5, p:.5, objetivo:17});
+  assert.deepEqual(calculate({...geometry, alto:232, innerHeight:600, scrollY:2632}), {a:2632, b:2924, p:0, objetivo:0});
+  const degenerate = calculate({...geometry, innerHeight:300, scrollMax:3000, scrollY:3000});
+  assert.deepEqual(degenerate, {a:3000, b:2924, p:0, objetivo:0});
+});
+
+test('Sequence loads only at the height-based observer threshold and waits for every decode', async () => usingSequence({decoding:'pending'}, async host => {
+  const {document, decodes, frames, tick, enter} = host;
+  const images = [...document.querySelectorAll('[data-secuencia] img')];
+  const observer = sequenceObserver(host);
+  assert.ok(observer);
+  assert.equal(observer.options.rootMargin, '1350px 0px 1350px 0px');
+  assert.equal(images.filter(image => image.hasAttribute('data-src')).length, 32);
+  assert.equal(images.filter(image => image.hasAttribute('src')).length, 2);
+  assert.equal(decodes.length, 0);
+  assert.deepEqual(visibleSequenceFrames(document), [1]);
+  scrollSequence(host, 3100);
+  tick(1000);
+  assert.equal(frames.size, 0);
+  assert.equal(decodes.length, 0);
+  observer.callback([{target:document.getElementById('contacto'), isIntersecting:false}]);
+  assert.equal(decodes.length, 0);
+  enter(document.getElementById('contacto'));
+  assert.equal(images.filter(image => image.hasAttribute('src')).length, 34);
+  assert.equal(images.filter(image => image.hasAttribute('data-src')).length, 0);
+  assert.ok(images.every(image => image.loading === 'eager'));
+  assert.equal(decodes.length, 34);
+  assert.equal(observer.nodes.size, 0);
+  decodes.slice(0,-1).forEach(decode => decode.resolve());
+  await flushDecodes();
+  tick(5000);
+  assert.deepEqual(visibleSequenceFrames(document), [1]);
+  assert.equal(frames.size, 0);
+  decodes.at(-1).resolve();
+  await flushDecodes();
+  assert.equal(frames.size, 1);
+  tick(16);
+  assert.deepEqual(visibleSequenceFrames(document), [2]);
+}));
+
+test('Sequence decode failure leaves the first frame still and never enables its clock', async () => usingSequence({decoding:'pending'}, async host => {
+  scrollSequence(host, 3100);
+  host.enter(host.document.getElementById('contacto'));
+  host.decodes.forEach((decode, index) => index === 18 ? decode.reject(new Error('SVG decode failed')) : decode.resolve());
+  await flushDecodes();
+  host.tick(10000);
+  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+  assert.equal(host.frames.size, 0);
+  assert.equal(host.frameRequests.length, 0);
+}));
+
+test('Sequence visits every frame in both directions, no faster than 70ms, and stops at its target', async () => usingSequence({}, async host => {
+  assert.equal('ResizeObserver' in host.window, false);
+  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  assert.equal(host.frames.size, 0);
+  let lastChange = host.window.performance.now();
+  async function travel(y, expected) {
+    const visited = [visibleSequenceFrames(host.document)[0]];
+    scrollSequence(host, y);
+    assert.equal(host.frames.size, 1);
+    for (let ms = 0; ms < 2700; ms += 1) {
+      host.tick(1);
+      const visible = visibleSequenceFrames(host.document);
+      assert.equal(visible.length, 1);
+      if (visible[0] !== visited.at(-1)) {
+        const time = host.window.performance.now();
+        assert.ok(time - lastChange >= 70, `Frame ${visible[0]} changed after ${time - lastChange}ms`);
+        assert.equal(Math.abs(visible[0] - visited.at(-1)), 1);
+        visited.push(visible[0]);
+        lastChange = time;
+      }
+    }
+    assert.deepEqual(visited, expected);
+    assert.equal(host.frames.size, 0);
+    const requests = host.frameRequests.length;
+    host.tick(1000);
+    assert.equal(host.frameRequests.length, requests);
+    assert.deepEqual(visibleSequenceFrames(host.document), [expected.at(-1)]);
+  }
+  await travel(3100, Array.from({length:34}, (_, i) => i + 1));
+  await travel(0, Array.from({length:34}, (_, i) => 34 - i));
+}));
+
+test('Sequence reversals preserve the 70ms interval, even across idle restarts and delayed frames', async () => usingSequence({}, async host => {
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 3100);
+  host.tick(80);
+  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
+  scrollSequence(host, 0);
+  host.tick(69);
+  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
+  host.tick(11);
+  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+  assert.equal(host.frames.size, 0);
+  scrollSequence(host, 3100);
+  host.tick(69);
+  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+  host.tick(11);
+  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
+  // A suspended tab delivers a late frame once; it must not catch up by skipping images.
+  const [id] = host.frames;
+  const delayed = host.timers.get(id);
+  delayed.at += 3000;
+  host.tick(3016);
+  assert.deepEqual(visibleSequenceFrames(host.document), [3]);
+}));
+
+test('Sequence resize remeasures its window and rebuilds the preload margin using viewport height', async () => usingSequence({}, async host => {
+  const oldObserver = sequenceObserver(host);
+  host.window.innerHeight = 600;
+  host.window.dispatchEvent(new host.window.Event('resize'));
+  assert.equal(oldObserver.nodes.size, 0);
+  assert.equal(sequenceObserver(host).options.rootMargin, '900px 0px 900px 0px');
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 2750);
+  host.tick(3000);
+  // a=2700, b=2924, target=round(50/224*33)=7 -> frame 8.
+  assert.deepEqual(visibleSequenceFrames(host.document), [8]);
+  host.geometry.top = 3200;
+  host.geometry.height = 232;
+  host.geometry.scrollHeight = 3400;
+  host.window.innerHeight = 900;
+  host.window.dispatchEvent(new host.window.Event('resize'));
+  host.tick(3000);
+  // a=2532, b=min(2500,3124)=2500: degenerate window clamps safely to the last frame.
+  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  assert.deepEqual(host.listeners.filter(listener => listener.type === 'scroll').map(listener => listener.options.passive), [true]);
+}));
+
+test('Sequence remeasures when content height changes after decode, without a window resize', async () => usingSequence({resizeObserver:true}, async host => {
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 3000);
+  host.tick(3000);
+  assert.deepEqual(visibleSequenceFrames(host.document), [34]);
+  host.geometry.top = 3600;
+  host.geometry.scrollHeight = 4600;
+  const observer = host.resizeObservers.find(observer => observer.nodes.has(host.document.body));
+  assert.ok(observer, 'ResizeObserver observes document.body');
+  observer.callback([{target:host.document.body}]);
+  host.tick(3000);
+  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
+}));
+
+test('Sequence reduced motion starts on frame 34 without its observer, image requests or rAF', async () => usingSequence({reduced:true}, async host => {
+  assert.equal(sequenceObserver(host), undefined);
+  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 32);
+  host.enter(host.document.getElementById('contacto'));
+  scrollSequence(host, 3100);
+  host.window.dispatchEvent(new host.window.Event('resize'));
+  host.tick(10000);
+  assert.equal(host.decodes.length, 0);
+  assert.equal(host.frameRequests.length, 0);
+  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+}));
+
+test('Sequence reduction cancels queued motion and pending decode cannot restart it; restoring motion works', async () => usingSequence({decoding:'pending'}, async host => {
+  scrollSequence(host, 3100);
+  host.enter(host.document.getElementById('contacto'));
+  host.setReduced(true);
+  host.decodes.forEach(decode => decode.resolve());
+  await flushDecodes();
+  host.tick(5000);
+  assert.equal(host.frameRequests.length, 0);
+  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  host.setReduced(false);
+  host.tick(80);
+  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
+  assert.equal(host.frames.size, 1);
+  host.setReduced(true);
+  const requests = host.frameRequests.length;
+  host.tick(5000);
+  assert.equal(host.frames.size, 0);
+  assert.equal(host.frameRequests.length, requests);
+  assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+}));
+
+test('Sequence reduction before loading disconnects preloading, and no-JS CSS shows only frame 34', async () => {
+  await usingSequence({}, async host => {
+    const observer = sequenceObserver(host);
+    host.setReduced(true);
+    assert.equal(observer.nodes.size, 0);
+    observer.callback([{isIntersecting:true}]);
+    host.window.dispatchEvent(new host.window.Event('resize'));
+    assert.equal(host.decodes.length, 0);
+    assert.equal(host.frameRequests.length, 0);
+    assert.equal(host.document.querySelectorAll('[data-secuencia] img[data-src]').length, 32);
+    assert.deepEqual(sequenceComputedFrames(host, true), [34]);
+  });
+  const dom = new JSDOM(html);
+  try {
+    assert.equal(dom.window.document.documentElement.classList.contains('js'), false);
+    assert.deepEqual(sequenceComputedFrames({window:dom.window, document:dom.window.document}), [34]);
+  } finally { dom.window.close(); }
+});
+
+test('Sequence history restoration restarts only its controller without replaying M1 or capsule rotation', async () => usingSequence({navigation:'back_forward'}, async host => {
+  assert.equal(host.document.documentElement.hasAttribute('data-entrada'), false);
+  host.enter(host.document.getElementById('contacto'));
+  await flushDecodes();
+  scrollSequence(host, 3100);
+  host.tick(80);
+  host.window.dispatchEvent(new host.window.PageTransitionEvent('pagehide', {persisted:true}));
+  assert.equal(host.frames.size, 0);
+  host.tick(5000);
+  host.window.dispatchEvent(new host.window.PageTransitionEvent('pageshow', {persisted:true}));
+  host.tick(80);
+  assert.deepEqual(visibleSequenceFrames(host.document), [2]);
+  assert.equal(host.document.documentElement.hasAttribute('data-entrada'), false);
+  assert.equal(host.document.querySelector('.capsula').hasAttribute('data-rotando'), false);
+}));
+
+test('Sequence uses fixed cuts without prototype parameters, blend modes or debug globals', () => {
+  assert.doesNotMatch(runtime + app, /URLSearchParams|location\.search|data-trans|__secuencia/);
+  assert.doesNotMatch(html + runtime + app, /[?&](?:debug|modo|ms|fundido|movil)=/);
+  const sequenceCSS = [...movementCSS.matchAll(/([^{}]*\.secuencia[^{}]*)\{([^{}]*)\}/g)];
+  for (const [, , declarations] of sequenceCSS) assert.doesNotMatch(declarations, /transition|animation/);
 });

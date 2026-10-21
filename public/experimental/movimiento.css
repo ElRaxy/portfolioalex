@@ -1,4 +1,9 @@
 /* The capsule keeps its geometry; JS only changes state and the underline transform. */
+.secuencia>img{opacity:0}
+.secuencia>img.es-final{opacity:1}
+.js .secuencia>img.es-final{opacity:0}
+.js .secuencia>img.es-primero{opacity:1}
+.js .secuencia.viva>img{opacity:0}
 .capsula{position:fixed;z-index:30;top:16px;left:50%;transform:translateX(-50%);width:min(900px,calc(100% - 32px));height:52px;display:flex;align-items:center;gap:20px;padding:0 18px;border:1px solid var(--line);border-radius:28px;background:var(--paper);color:var(--ink)}
 .capsula-nombre{display:flex;align-items:center;min-height:44px;flex:none;font-size:15px;font-weight:500}
 .capsula-estado{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
@@ -71,6 +76,8 @@ a:hover,button:hover,summary:hover{opacity:.76}
 }
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .js .secuencia>img.es-primero{opacity:0}
+ .js .secuencia>img.es-final,.secuencia>img.es-final{opacity:1}
  .reveal-pending{opacity:1;transform:none}
  .metric-counting .metric-final{opacity:1}
  .metric-copy{display:none}

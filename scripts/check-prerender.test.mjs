@@ -76,6 +76,15 @@ test('static root is validated, missing home contracts fail, and English/case Re
         assert.match(result.stderr,/recurso publicado ausente: \/experimental\/movimiento\.js/)
       } finally { await writeFile(file,previous) }
     })
+    await t.test('root without a lazy sequence frame fails',async()=>{
+      const file=path.join(fixture,'build/experimental/assets/contacto/s02.svg'),previous=await readFile(file)
+      try {
+        await rm(file)
+        const result=run(fixture)
+        assert.equal(result.status,1)
+        assert.match(result.stderr,/recurso publicado ausente: \/experimental\/assets\/contacto\/s02\.svg/)
+      } finally { await writeFile(file,previous) }
+    })
     await broken('English still requires a populated React root','en/index.html',html=>html.replace('<div id="root">','<div id="broken-root">'),/#root casi vacio/)
     await broken('cases still require the original evidence asset','proyectos/strev/index.html',html=>html.replaceAll('strev-product','missing-evidence'),/figura no usa el asset real esperado/)
   } finally { await rm(fixture,{recursive:true,force:true}) }
