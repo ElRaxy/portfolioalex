@@ -38,7 +38,7 @@
     "facts": [
       {
         "term": "Dónde",
-        "value": "Villena, Alicante. Trabajo en remoto."
+        "value": "Alicante."
       },
       {
         "term": "Disponible",
@@ -60,7 +60,7 @@
     "roles": [
       {
         "role": "Desarrollador Full Stack",
-        "org": "Anuubis Solutions · Remoto",
+        "org": "Anuubis Solutions · Presencial",
         "when": "2026 – HOY",
         "current": true,
         "bullets": [
@@ -71,7 +71,7 @@
       },
       {
         "role": "Técnico de Soporte IT · Prácticas",
-        "org": "Impulso Sistemas, Coop. · Villena",
+        "org": "Impulso Sistemas, Coop. · Alicante",
         "when": "2024",
         "current": false,
         "bullets": [

@@ -2,7 +2,7 @@
 
 > Desarrollador Full Stack con React, Node.js y Python.
 > Construye productos web alrededor de problemas concretos y publica cómo los resolvió.
-> Villena, Alicante, España. Abierto a puestos Full Stack en remoto en España y la UE.
+> Alicante, España. Abierto a puestos Full Stack en remoto en España y la UE.
 
 Web: https://portfolioalex-mico.vercel.app/ (español) · /en/ (inglés)
 Correo: alexmico2006@gmail.com
@@ -50,7 +50,7 @@ GitHub: https://github.com/ElRaxy
 ## Experiencia
 
 - abr. 2026 – hoy · Desarrollador Full Stack · Anuubis Solutions (Petrer, Alicante)
-- 2024 · Técnico de Soporte IT en prácticas · Impulso Sistemas, Coop. (Villena)
+- 2024 · Técnico de Soporte IT en prácticas · Impulso Sistemas, Coop. (Alicante)
 
 ## Formación
 

@@ -38,7 +38,7 @@
     "facts": [
       {
         "term": "Where",
-        "value": "Villena, Alicante, Spain. Working remotely."
+        "value": "Alicante, Spain."
       },
       {
         "term": "Available",
@@ -60,7 +60,7 @@
     "roles": [
       {
         "role": "Full Stack Developer",
-        "org": "Anuubis Solutions · Remote",
+        "org": "Anuubis Solutions · On-site",
         "when": "2026 – Present",
         "current": true,
         "bullets": [
@@ -71,7 +71,7 @@
       },
       {
         "role": "IT Support Technician · Internship",
-        "org": "Impulso Sistemas, Coop. · Villena",
+        "org": "Impulso Sistemas, Coop. · Alicante",
         "when": "2024",
         "current": false,
         "bullets": [

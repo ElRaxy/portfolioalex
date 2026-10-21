@@ -101,7 +101,7 @@ const setStructuredDataUrl = (html, url, language, slug, metadata) => replaceTag
 
     if (language === 'en') {
       person.description = metadata.personDescription
-      person.homeLocation.name = 'Villena, Alicante, Spain'
+      person.homeLocation.name = 'Alicante, Spain'
       person.alumniOf.forEach((school, index) => {
         const study = metadata.studies[index]
         school.description = `${study.role} (${study.when})`
