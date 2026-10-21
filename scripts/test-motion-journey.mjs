@@ -215,8 +215,8 @@ test('Group labels in About and Work never sit at the same heading level as thei
   assert.equal(document.querySelectorAll('#sobre-mi h3 > a[href^="#"], #trabajo h3 > a[href^="#"]').length,0);
 });
 
-test('Every labelled link in About and Work starts its accessible name with its visible text',()=>{
-  const links=[...document.querySelectorAll('#sobre-mi a[aria-label], #trabajo a[aria-label]')];
+test('Every labelled link in the hero index, About and Work starts its accessible name with its visible text',()=>{
+  const links=[...document.querySelectorAll('#inicio .work-index a[aria-label], #sobre-mi a[aria-label], #trabajo a[aria-label]')];
   assert.deepEqual(links.map(link=>link.getAttribute('aria-label')),[
     'Ver caso de Strev','Ver caso de Sereno','Leer el caso de Strev','Leer el caso de Sereno','Ver código de Sereno','Ver código de RoguePatch Lab',
   ]);

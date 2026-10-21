@@ -28,7 +28,7 @@ Las frases aprobadas por Alex el 2026-10-21 se editan en los nueve `li` de `temp
 
 Cada frase cambia a los 4200 ms; su entrada dura 550 ms, `translateY(3px)` y blur de 2 px, con `cubic-bezier(.33,.6,.67,1)`. El punto tiene un halo de 1800 ms, escala 1 a 1,67 y opacidad 1 a 0. Hover o foco dentro pausan ambos. Tras regresar a la primera frase al completar una vuelta, ambos se detienen. La línea es decorativa (`aria-hidden`), sin región viva.
 
-El índice enlaza a los cuatro artículos. Strev y Sereno incluyen además «Ver caso», como enlace separado. Hover/foco: cobalto al 5 %, flecha 16 px, entrada 500 ms `cubic-bezier(.52,0,.34,1)` y salida 400 ms; el texto no se desplaza.
+El único `ol.work-index` vive en Inicio, como hermano directo de `.personal-copy` dentro de `.personal-layout`, con el rótulo visible «Proyectos» asociado por `aria-labelledby`. En escritorio, desde 1024 px, el texto queda a la izquierda y el índice a la derecha; por debajo, el índice sigue a los botones del hero en una sola columna. Cada fila conserva número, nombre y resumen literal del artículo, e incluye el estado dentro del enlace: Strev «En beta», Marky y Smarty «En simulación», Sereno «Código abierto». El índice enlaza a los cuatro artículos de Trabajo; al activar una fila, el hash nativo lleva al artículo y la cápsula marca «Trabajo». Tras el encabezado de Trabajo aparece directamente Strev. Strev y Sereno incluyen además «Ver caso», como enlace separado. Hover/foco: cobalto al 5 %, flecha 16 px, entrada 500 ms `cubic-bezier(.52,0,.34,1)` y salida 400 ms; el texto no se desplaza.
 
 ## Movimiento
 
@@ -42,6 +42,8 @@ El índice enlaza a los cuatro artículos. Strev y Sereno incluyen además «Ver
 | Tres titulares | Marcador cobalto al 18 %, `background-size` de 0 a 100 %, 800 ms y retraso 200 ms |
 | Nueve cifras | Copia visual `aria-hidden`, 900 ms con salida cúbica; original final en el flujo, miles con punto formateado a mano |
 | Resto de enlaces y botones | Color/intensidad en 300 ms, sin cambio geométrico |
+
+Las filas del índice esperan al cierre de M1 antes de usar las apariciones M2, con retrasos de 0, 100, 200 y 300 ms y una única ejecución. Si no hay entrada, las filas en pantalla se muestran al iniciar el controlador. El CSS evita que aparezcan antes de cargar el controlador; el cierre por `animationend`, temporizador de 1600 ms o fallback inline libera las filas pendientes. Enfocar una fila termina la entrada y la muestra sin retraso para mantener el foco visible.
 
 El bootstrap siempre añade `html.js`. Solo arma `data-entrada` con movimiento permitido, navegación distinta de `back_forward`, `scrollY < 5` y hash vacío o `#inicio`. La entrada termina con la cápsula y cuenta con una red autónoma de 2000 ms si el controlador no llega. No espera a las fuentes ni bloquea clics o scroll.
 
@@ -63,4 +65,4 @@ node scripts/check-prerender.mjs
 
 Versión de CSS/JS: `?v=f1-1021-01`. `runtime-sha256.json` registra las huellas SHA-256 de los ficheros públicos reales. El informe y la salida íntegra de esta tarea están en `projects/portfolioalex/progress/revision-2026-10-20/ship_f1.md` y `f1-node-tests.log` del workspace.
 
-La comprobación visual corresponde a Claude, por separado. Esta tarea no hace commit, push ni despliegue; un build correcto no acredita publicación ni aceptación estética.
+Hero C registra su informe y salida íntegra en `projects/portfolioalex/progress/revision-2026-10-20/ship_hero-c.md` y `hero-c-node-tests.log` del workspace. La comprobación visual (incluidos 1440×900, 390, 820 y 1023 px) corresponde a Claude, por separado; los tests DOM/CSS no acreditan alturas ni ausencia real de desborde. El cambio se entrega mediante commit local, sin push ni despliegue; un build correcto no acredita publicación ni aceptación estética.

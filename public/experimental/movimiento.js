@@ -9,12 +9,24 @@
   const navLinks = [...capsule.querySelectorAll('nav a[href^="#"]')];
   const underline = capsule.querySelector('.capsula-subrayado');
   let entryTimer = 0;
+  let entryObserver;
+  const pendingIndex = new Set();
 
   function finishEntry() {
+    entryObserver?.disconnect();
     root.removeAttribute('data-entrada');
     clearTimeout(entryTimer);
+    pendingIndex.forEach(show);
+    pendingIndex.clear();
   }
-  if (root.hasAttribute('data-entrada')) entryTimer = setTimeout(finishEntry, 1600);
+  if (root.hasAttribute('data-entrada')) {
+    entryTimer = setTimeout(finishEntry, 1600);
+    // The inline fallback can finish M1 before a late-loaded controller's timer.
+    entryObserver = new MutationObserver(() => {
+      if (!root.hasAttribute('data-entrada')) finishEntry();
+    });
+    entryObserver.observe(root, {attributes: true, attributeFilter: ['data-entrada']});
+  }
   capsule.addEventListener('animationend', event => {
     if (event.animationName === 'entrada-capsula') finishEntry();
   });
@@ -166,6 +178,10 @@
 
   function show(element) {
     if (revealed.has(element)) return;
+    if (root.hasAttribute('data-entrada') && element.matches('.work-index > li')) {
+      pendingIndex.add(element);
+      return;
+    }
     revealed.add(element);
     element.classList.add('is-visible');
     revealObserver?.unobserve(element);
@@ -177,6 +193,7 @@
   document.addEventListener('focusin', event => {
     const block = event.target.closest('.reveal-pending');
     if (block) {
+      if (block.matches('.work-index > li')) finishEntry();
       block.style.setProperty('--reveal-delay', '0ms');
       show(block);
       block.classList.remove('reveal-pending');

@@ -163,11 +163,26 @@ test('Capsule serves its first phrase and a complete accessible navigation witho
 
 test('Project index has four literal summaries and only two separate case links', () => {
   const index = doc.querySelector('ol.work-index');
+  assert.equal(doc.querySelectorAll('ol.work-index').length, 1);
+  assert.equal(index.closest('section').id, 'inicio');
+  assert.equal(index.parentElement, doc.querySelector('#inicio .personal-layout'));
+  assert.equal(index.parentElement, doc.querySelector('.personal-copy').parentElement);
+  assert.equal(doc.querySelector('#trabajo .work-index'), null);
+  assert.equal(doc.querySelector('#trabajo .work-margin').nextElementSibling, doc.querySelector('article#strev'));
+  const label = doc.getElementById(index.getAttribute('aria-labelledby'));
+  assert.equal(text(label), 'Proyectos');
+  assert.equal(label.closest('[hidden],[aria-hidden="true"]'), null);
+  assert.equal(label.nextElementSibling, index);
+  assert.ok(doc.querySelector('.personal-actions').compareDocumentPosition(index) & 4);
   assert.equal(index.children.length, 4);
   assert.ok(index.compareDocumentPosition(doc.querySelector('article#strev')) & 4);
   ['strev','marky','smarty','sereno'].forEach((slug,i) => {
     const row = index.children[i], jump = row.querySelector(`a[href="#${slug}"]`);
     assert.ok(jump);
+    assert.equal(jump.className, 'work-index-target');
+    assert.equal(text(jump.querySelector('span.work-index-estado')), ['En beta','En simulación','En simulación','Código abierto'][i]);
+    assert.equal(text(jump.querySelector('.work-index-number')), `0${i + 1}`);
+    assert.equal(text(jump.querySelector('.work-index-line')), text(doc.querySelector(`#${slug} .work-one-line`)));
     assert.ok(text(jump).includes(`0${i + 1}`));
     assert.ok(text(jump).includes(text(doc.querySelector(`#${slug} h3`))));
     assert.ok(text(jump).includes(text(doc.querySelector(`#${slug} .work-one-line`))));
@@ -267,6 +282,8 @@ test('Active section is observed and its navigation link receives aria-current',
 }));
 
 test('Reveal groups stagger by 100ms, become visible once, and unobserve their targets', () => using({}, ({document,observers,enter,tick}) => {
+  // The hero index now comes first in DOM order; this test exercises M2 after M1.
+  tick(1600);
   const pending = [...document.querySelectorAll('.reveal-pending')];
   assert.ok(pending.length > 10);
   const delays = pending.map(node => node.style.getPropertyValue('--reveal-delay'));
@@ -295,6 +312,8 @@ test('After a jump that leaves two sections in the band, the later one stays act
 }));
 
 test('A played or focused reveal leaves the pending state, so losing focus cannot replay it', () => using({}, ({window,document,enter,tick}) => {
+  // The first linked reveals now live in the hero and must wait for M1.
+  tick(1600);
   const [played, focused] = [...document.querySelectorAll('.reveal-pending')].filter(node => node.querySelector('a'));
   enter(played); tick(1000);
   played.dispatchEvent(new window.Event('animationend', {bubbles:true}));
@@ -480,4 +499,142 @@ test('History stagger uses visual rows on desktop and reading order on mobile', 
   ]) using({historyRows}, ({document}) => {
     assert.deepEqual([...document.querySelectorAll('.history-list > article')].map(node => node.style.getPropertyValue('--reveal-delay')), expected);
   });
+});
+
+
+test('Hero C: visible and intersecting index rows wait until M1 ends at 1600ms, then reveal once with M2', () => {
+  for (const visible of [false,true]) using({visible}, ({document,observers,enter,tick}) => {
+    const rows = [...document.querySelectorAll('.work-index > li')];
+    const owner = observers.find(item => item.nodes.has(rows[0]));
+    assert.deepEqual(rows.map(row => row.style.getPropertyValue('--reveal-delay')), ['0ms','100ms','200ms','300ms']);
+    rows.forEach(enter);
+    tick(1599);
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), true);
+    for (const row of rows) {
+      assert.equal(row.classList.contains('is-visible'), false);
+      assert.equal(row.classList.contains('reveal-pending'), true);
+      assert.equal(owner.unobserved.includes(row), false);
+    }
+    tick(1);
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+    for (const row of rows) {
+      assert.equal(row.classList.contains('is-visible'), true);
+      assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+      enter(row);
+    }
+    tick(5000);
+    for (const row of rows) assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+  });
+});
+
+test('Hero C: capsule animation completion releases M2 without waiting for the safety timer', () => using({visible:true}, ({window,document,tick,observers}) => {
+  const rows = [...document.querySelectorAll('.work-index > li')];
+  const owner = observers.find(item => item.nodes.has(rows[0]));
+  tick(1200);
+  const complete = name => {
+    const event = new window.Event('animationend', {bubbles:true});
+    Object.defineProperty(event, 'animationName', {value:name});
+    document.querySelector('.capsula').dispatchEvent(event);
+  };
+  complete('aparicion');
+  assert.equal(rows.some(row => row.classList.contains('is-visible')), false);
+  complete('entrada-capsula');
+  assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+  assert.equal(rows.every(row => row.classList.contains('is-visible')), true);
+  complete('entrada-capsula');
+  tick(5000);
+  for (const row of rows) assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+}));
+
+test('Hero C: skipped entry shows viewport rows immediately for reduced motion, history, hash and initial scroll', () => {
+  for (const options of [{reduced:true},{navigation:'back_forward'},{hash:'#strev'},{hash:'#trabajo'},{scrollY:5},{scrollY:100}]) using({...options,visible:true}, ({document}) => {
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+    for (const row of document.querySelectorAll('.work-index > li')) assert.equal(row.classList.contains('is-visible'), true, JSON.stringify(options));
+  });
+  for (const row of doc.querySelectorAll('.work-index > li')) {
+    assert.equal(row.closest('[hidden],[aria-hidden="true"]'), null);
+    assert.equal(row.classList.contains('reveal-pending'), false);
+  }
+});
+
+test('Hero C: focusing an index link finishes M1 before revealing it and cannot replay the row', () => using({visible:true}, ({window,document,observers,tick}) => {
+  const row = document.querySelectorAll('.work-index > li')[2];
+  const owner = observers.find(item => item.nodes.has(row));
+  tick(300);
+  row.querySelector('a').focus();
+  assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+  assert.equal(document.activeElement, row.querySelector('a'));
+  assert.equal(row.classList.contains('is-visible'), true);
+  assert.equal(row.classList.contains('reveal-pending'), false);
+  assert.equal(row.style.getPropertyValue('--reveal-delay'), '0ms');
+  row.querySelector('a').blur();
+  row.dispatchEvent(new window.Event('animationend', {bubbles:true}));
+  tick(5000);
+  assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+}));
+
+test('Hero C: the inline fallback releases queued rows even if the controller starts late', async () => {
+  const host = harness({run:false,visible:true});
+  const {window,document,tick,observers} = host;
+  try {
+    tick(1000);
+    window.eval(runtime);
+    const rows = [...document.querySelectorAll('.work-index > li')];
+    const owner = observers.find(item => item.nodes.has(rows[0]));
+    tick(999);
+    assert.equal(rows.some(row => row.classList.contains('is-visible')), false);
+    tick(1);
+    await Promise.resolve();
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+    assert.equal(rows.every(row => row.classList.contains('is-visible')), true);
+    tick(5000);
+    for (const row of rows) assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+  } finally { host.close(); }
+});
+
+test('Hero C: native index clicks reach each article and mark Trabajo as the active capsule section', {timeout:5000}, async () => {
+  const host = harness({visible:true});
+  const {window,document,tick} = host;
+  try {
+    const scrolls = [];
+    window.scrollTo = options => scrolls.push(options);
+    window.eval(app);
+    tick(1600);
+    for (const slug of ['strev','marky','smarty','sereno']) {
+      const changed = new Promise(resolve => window.addEventListener('hashchange', resolve, {once:true}));
+      const event = new window.MouseEvent('click', {bubbles:true,cancelable:true,button:0,detail:1});
+      document.querySelector(`.work-index-target[href="#${slug}"]`).dispatchEvent(event);
+      assert.equal(event.defaultPrevented, false);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      tick(0);
+      await changed;
+      assert.equal(window.location.hash, `#${slug}`);
+      assert.equal(document.getElementById(slug).tagName, 'ARTICLE');
+      const active = document.querySelectorAll('.capsula nav a[aria-current="location"]');
+      assert.equal(active.length, 1);
+      assert.equal(active[0].getAttribute('href'), '#trabajo');
+      assert.equal(text(active[0]), 'Trabajo');
+    }
+    assert.deepEqual(scrolls.map(options => options.behavior), ['instant','instant','instant']);
+  } finally { host.close(); }
+});
+
+test('Hero C: CSS keeps fluid columns, the 1024px breakpoint, visible fallbacks and the hover contract', () => {
+  const personal = styles[1].replace(/\s+/g, '');
+  const movement = movementCSS.replace(/\s+/g, '');
+  assert.match(personal, /\.personal-layout\{display:block;/);
+  assert.match(personal, /@media\(min-width:1024px\)\{\.personal-layout\{display:grid;flex:none;grid-template-columns:minmax\(0,1\.05fr\)minmax\(0,1fr\)/);
+  assert.match(personal, /\.personal-copy\{grid-column:1;grid-row:1\/3/);
+  assert.match(personal, /\.personal-layout>\.work-index\{grid-column:2;grid-row:2/);
+  assert.match(personal, /\.work-index-title\{font-size:12px;font-weight:450;letter-spacing:\.025em;color:#686f76/);
+  assert.match(movement, /\.work-index-target\{[^}]*grid-template-columns:30pxminmax\(0,1fr\)auto/);
+  assert.match(movement, /\.work-index-estado\{[^}]*grid-column:3;grid-row:1;font-size:13px;line-height:1\.3;color:var\(--blue\)/);
+  assert.match(movement, /@media\(prefers-reduced-motion:no-preference\)\{html\.js\[data-entrada\]\.work-index>li\{opacity:0;transform:translateY\(20px\)/);
+  assert.match(movement, /@media\(prefers-reduced-motion:reduce\)\{[^}]*animation:none!important/);
+  const indexRules = [...movement.matchAll(/([^{}]*\.work-index[^{}]*)\{([^{}]*)\}/g)];
+  for (const [rule,selector,declarations] of indexRules) {
+    assert.doesNotMatch(declarations, /(?:^|;)(?:width|min-width):[1-9][\d.]*px/, rule);
+    if (/hover|focus-within/.test(selector) && /transform:/.test(declarations)) assert.match(selector, /work-index-arrow|work-index-target::after/);
+  }
+  assert.doesNotMatch(css, /(?:#trabajo|\.work\s|\.work-margin|\.work-heading)[^{}]*\.work-index/);
 });

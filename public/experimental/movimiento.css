@@ -11,16 +11,18 @@
 .capsula nav a[aria-current="location"]{color:var(--blue)}
 .capsula-subrayado{position:absolute;left:0;bottom:4px;width:1px;height:2px;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform 250ms var(--ease-out)}
 .capsula-menu{display:none;border:0;background:transparent;padding:0 10px;min-width:44px;min-height:44px;font-size:14px;color:var(--ink);cursor:pointer}
-.work-index{padding:0;margin:0 0 40px;list-style:none;border-top:1px solid var(--line)}
-.work-index li{position:relative;isolation:isolate;display:flex;align-items:center;gap:24px;border-bottom:1px solid var(--line)}
+.work-index{min-width:0;padding:0;margin:0;list-style:none;border-top:1px solid var(--ink)}
+.work-index li{position:relative;isolation:isolate;border-bottom:1px solid var(--line)}
 .work-index li::before{content:'';position:absolute;inset:0;z-index:-1;background:color-mix(in srgb,var(--blue) 5%,transparent);opacity:0;transition:opacity 400ms cubic-bezier(.52,0,.34,1)}
-.work-index-target{display:grid;grid-template-columns:24px 110px minmax(0,1fr) 20px;gap:20px;align-items:center;flex:1;min-width:0;min-height:88px;padding:16px 12px}
-.work-index-target::after{content:"→";grid-column:4;color:var(--blue);transition:transform 400ms cubic-bezier(.52,0,.34,1)}
+.work-index-target{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr) auto;column-gap:12px;row-gap:5px;align-items:baseline;min-width:0;min-height:44px;padding:17px 6px 18px}
+.work-index-target::after{content:"→";position:absolute;right:22px;bottom:16px;color:var(--blue);transition:transform 400ms cubic-bezier(.52,0,.34,1)}
 .work-index li:has(.work-index-case) .work-index-target::after{content:none}
-.work-index-number{font-size:12px;color:#686f76}
-.work-index-name{font-size:22px;font-weight:500;letter-spacing:-.025em}
-.work-index-line{font-size:15px;line-height:1.45}
-.work-index-case{display:flex;align-items:center;gap:12px;flex:none;min-height:44px;padding-right:28px;font-size:13px;color:var(--blue)}
+.work-index-number{grid-column:1;grid-row:1;font-size:12px;color:#686f76;font-variant-numeric:tabular-nums}
+.work-index-name{grid-column:2;grid-row:1;min-width:0;font-size:23px;font-weight:500;line-height:1.1;letter-spacing:-.025em}
+.work-index-estado{grid-column:3;grid-row:1;font-size:13px;line-height:1.3;color:var(--blue);text-align:right;white-space:nowrap}
+.work-index-line{grid-column:2/4;grid-row:2;min-width:0;padding-right:28px;font-size:15px;line-height:1.45;color:#60676e;text-wrap:pretty}
+.work-index-case{display:flex;align-items:center;gap:12px;width:fit-content;min-height:44px;margin-left:48px;padding:0 22px 8px 0;font-size:13px;color:var(--blue)}
+.work-index li:has(.work-index-case) .work-index-target{padding-bottom:0}
 .work-index-arrow{display:inline-block;transition:transform 400ms cubic-bezier(.52,0,.34,1)}
 .work-index li:hover::before,.work-index li:focus-within::before{opacity:1;transition-duration:500ms}
 .work-index li:hover .work-index-arrow,.work-index li:focus-within .work-index-arrow,.work-index li:hover .work-index-target::after,.work-index li:focus-within .work-index-target::after{transform:translateX(16px);transition-duration:500ms}
@@ -41,20 +43,9 @@ a:hover,button:hover,summary:hover{opacity:.76}
  html.js .capsula-menu{display:block}
  html.js #capsula-panel{visibility:hidden;opacity:0;transform:translateY(-8px);transition:transform 300ms var(--ease-out),opacity 300ms var(--ease-out)}
  html.js .capsula[data-menu-abierto] #capsula-panel{visibility:visible;opacity:1;transform:translateY(0)}
- .work-index-target{grid-template-columns:24px minmax(0,1fr) 20px;gap:6px 14px}
- .work-index-target::after{grid-column:3;grid-row:1/3}
- .work-index-number{grid-column:1;grid-row:1}
- .work-index-name{grid-column:2;grid-row:1}
- .work-index-line{grid-column:2;grid-row:2;font-size:14px}
- .work-index li{gap:8px}
- .work-index-case{padding-right:20px;font-size:12px;gap:6px}
-}
-@media(max-width:480px){
- .work-index li{align-items:start;flex-wrap:wrap;gap:0}
- .work-index-target{flex-basis:100%;padding-bottom:10px}
- .work-index-case{margin-left:50px;padding-bottom:12px}
 }
 @media(prefers-reduced-motion:no-preference){
+ html.js[data-entrada] .work-index>li{opacity:0;transform:translateY(20px)}
  html.js[data-entrada] .name-word{animation:entrada-nombre 1000ms cubic-bezier(.15,.1,.3,1) both}
  html.js[data-entrada] .name-word.last{animation-delay:100ms}
  html.js[data-entrada] .hero-acento{animation:entrada-acento 1100ms cubic-bezier(.2,1,.3,1) 400ms both}
