@@ -4,11 +4,16 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const capsule = document.querySelector('header.capsula');
   const line = capsule.querySelector('.capsula-linea');
+  const outgoing = document.createElement('span');
+  outgoing.className = 'capsula-saliente';
+  outgoing.setAttribute('aria-hidden', 'true');
+  line.after(outgoing);
   const phrases = [...document.querySelector('#capsula-frases').content.querySelectorAll('li')].map(item => item.textContent.trim());
   const menu = capsule.querySelector('.capsula-menu');
   const navLinks = [...capsule.querySelectorAll('nav a[href^="#"]')];
   const underline = capsule.querySelector('.capsula-subrayado');
   let entryTimer = 0;
+  let indexReleased = !root.hasAttribute('data-entrada');
   let entryObserver;
   const pendingIndex = new Set();
 
@@ -49,7 +54,8 @@
       if (reduced.matches || suspendida) return;
       if (t - ultimo >= 70 && visible !== objetivo) {
         mostrar(visible + Math.sign(objetivo - visible));
-        ultimo = t;
+        ultimo += 70;
+        if (t - ultimo >= 70) ultimo = t;
       }
       if (visible !== objetivo) raf = requestAnimationFrame(bucle);
     }
@@ -121,12 +127,16 @@
     iniciar();
   }
 
+  function releaseIndex() {
+    indexReleased = true;
+    pendingIndex.forEach(element => show(element));
+    pendingIndex.clear();
+  }
   function finishEntry() {
     entryObserver?.disconnect();
     root.removeAttribute('data-entrada');
     clearTimeout(entryTimer);
-    pendingIndex.forEach(show);
-    pendingIndex.clear();
+    releaseIndex();
   }
   if (root.hasAttribute('data-entrada')) {
     entryTimer = setTimeout(finishEntry, 1600);
@@ -136,6 +146,9 @@
     });
     entryObserver.observe(root, {attributes: true, attributeFilter: ['data-entrada']});
   }
+  document.querySelector('.name-word.last')?.addEventListener('animationend', event => {
+    if (event.animationName === 'entrada-nombre') releaseIndex();
+  });
   capsule.addEventListener('animationend', event => {
     if (event.animationName === 'entrada-capsula') finishEntry();
   });
@@ -158,22 +171,34 @@
   });
   capsule.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
 
-  let activeId = '';
-  function markSection(id) {
+  let activeId = '', navLock = '', underlineX = 0;
+  function markSection(id, {instant = false} = {}) {
     activeId = id;
     const active = navLinks.find(link => link.hash === `#${id}`);
     navLinks.forEach(link => {
       if (link === active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
+    if (instant) underline.style.transition = 'none';
     if (active) {
       const nav = active.closest('nav').getBoundingClientRect();
       const bounds = active.getBoundingClientRect();
-      underline.style.transform = `translateX(${bounds.left - nav.left}px) scaleX(${bounds.width})`;
+      underlineX = bounds.left - nav.left;
+      if (underline.style.opacity !== '1' && !instant) {
+        underline.style.transition = 'none';
+        underline.style.transform = `translateX(${underlineX}px) scaleX(0)`;
+        underline.getBoundingClientRect();
+        underline.style.transition = '';
+      }
+      underline.style.transform = `translateX(${underlineX}px) scaleX(${bounds.width})`;
       underline.style.opacity = '1';
     } else {
-      underline.style.transform = 'translateX(0px) scaleX(0)';
+      underline.style.transform = `translateX(${underlineX}px) scaleX(0)`;
       underline.style.opacity = '0';
+    }
+    if (instant) {
+      underline.getBoundingClientRect();
+      underline.style.transition = '';
     }
   }
   function markHash() {
@@ -191,51 +216,84 @@
     sectionObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => entry.isIntersecting ? inBand.add(entry.target) : inBand.delete(entry.target));
       const current = sections.filter(section => inBand.has(section)).pop();
-      if (current) markSection(current.id);
+      if (current && !navLock) markSection(current.id);
     }, {rootMargin: `-${Math.round(window.innerHeight * .15)}px 0px -${Math.round(window.innerHeight * .65)}px 0px`, threshold: 0});
     sections.forEach(section => sectionObserver.observe(section));
   }
   observeSections();
   navLinks.forEach(link => link.addEventListener('click', () => markSection(link.hash.slice(1))));
+  document.addEventListener('navegacion-inicio', event => {
+    navLock = event.detail.target.closest('main > section')?.id || 'inicio';
+    markSection(navLock);
+  });
+  document.addEventListener('navegacion-fin', event => {
+    navLock = '';
+    if (!event.detail.completed) {
+      const current = sections.filter(section => inBand.has(section)).pop();
+      if (current) markSection(current.id);
+    }
+  });
   window.addEventListener('hashchange', markHash);
-  window.addEventListener('resize', () => { observeSections(); markSection(activeId); });
-  document.fonts?.ready.then(() => markSection(activeId));
+  window.addEventListener('resize', () => { observeSections(); markSection(activeId, {instant: true}); });
+  document.fonts?.ready.then(() => markSection(activeId, {instant: true}));
   markHash();
 
   let phraseIndex = 0;
   let rotationDone = reduced.matches;
   let hovering = false;
   let rotationTimer = 0;
-  let changeTimer = 0;
+  let changeTimer = 0, haloTimer = 0, haloDue = 0, haloRemaining = 1800;
   let rotationDue = 0;
   let changeDue = 0;
   let rotationRemaining = 4200;
   let changeRemaining = 0;
   const rotationPaused = () => reduced.matches || hovering || capsule.contains(document.activeElement) || document.hidden;
 
+  function finishHalo() {
+    clearTimeout(haloTimer);
+    haloTimer = 0;
+    capsule.removeAttribute('data-halo');
+  }
+  function scheduleHaloEnd() {
+    if (!rotationDone || rotationPaused() || !capsule.hasAttribute('data-halo') || haloTimer) return;
+    haloDue = Date.now() + haloRemaining;
+    haloTimer = setTimeout(finishHalo, haloRemaining);
+  }
+  capsule.addEventListener('animationiteration', event => {
+    if (event.animationName === 'halo' && rotationDone && !rotationPaused()) finishHalo();
+  });
   function finishChange() {
     line.removeAttribute('data-cambio');
+    outgoing.removeAttribute('data-saliendo');
+    outgoing.textContent = '';
     changeTimer = 0;
     changeRemaining = 0;
   }
   function pauseRotation() {
+    if (haloTimer) haloRemaining = Math.max(0, haloDue - Date.now());
+    clearTimeout(haloTimer);
+    haloTimer = 0;
+    capsule.setAttribute('data-pausa', '');
     if (rotationTimer) rotationRemaining = Math.max(0, rotationDue - Date.now());
     if (changeTimer) changeRemaining = Math.max(0, changeDue - Date.now());
     clearTimeout(rotationTimer);
     clearTimeout(changeTimer);
     rotationTimer = changeTimer = 0;
     capsule.removeAttribute('data-rotando');
-    line.style.animationPlayState = 'paused';
+    line.style.animationPlayState = outgoing.style.animationPlayState = 'paused';
   }
   function resumeRotation() {
     if (rotationPaused()) return;
-    line.style.animationPlayState = '';
+    capsule.removeAttribute('data-pausa');
+    scheduleHaloEnd();
+    line.style.animationPlayState = outgoing.style.animationPlayState = '';
     if (changeRemaining && !changeTimer) {
       changeDue = Date.now() + changeRemaining;
       changeTimer = setTimeout(finishChange, changeRemaining);
     }
     if (rotationDone) return;
     capsule.setAttribute('data-rotando', '');
+    capsule.setAttribute('data-halo', '');
     if (!rotationTimer) {
       rotationDue = Date.now() + rotationRemaining;
       rotationTimer = setTimeout(rotatePhrase, rotationRemaining);
@@ -244,6 +302,8 @@
   function rotatePhrase() {
     rotationTimer = 0;
     phraseIndex = (phraseIndex + 1) % phrases.length;
+    outgoing.textContent = line.textContent;
+    outgoing.setAttribute('data-saliendo', '');
     line.textContent = phrases[phraseIndex];
     line.setAttribute('data-cambio', '');
     changeRemaining = 550;
@@ -253,6 +313,7 @@
     if (phraseIndex === 0) {
       rotationDone = true;
       capsule.removeAttribute('data-rotando');
+      scheduleHaloEnd();
     } else resumeRotation();
   }
   capsule.addEventListener('mouseenter', () => { hovering = true; pauseRotation(); });
@@ -280,17 +341,37 @@
   ].join(', ');
   const revealElements = [...document.querySelectorAll(revealSelectors)];
   const revealed = new WeakSet();
+  const decodingReveals = new WeakSet();
+  const revealStarted = performance.now();
+  const entryAtStart = root.hasAttribute('data-entrada');
   const counted = new WeakSet();
   const counts = new Map();
   let revealObserver;
   let metricObserver;
 
-  function show(element) {
+  function show(element, instant = false) {
     if (revealed.has(element)) return;
-    if (root.hasAttribute('data-entrada') && element.matches('.work-index > li')) {
+    if (!indexReleased && element.matches('.work-index > li')) {
       pendingIndex.add(element);
       return;
     }
+    if (!instant && !entryAtStart && performance.now() - revealStarted <= 150 && inViewport(element)) instant = true;
+    if (!instant && element.matches('img.work-image') && element.decode) {
+      if (decodingReveals.has(element)) return;
+      decodingReveals.add(element);
+      let timer;
+      const timeout = new Promise(resolve => { timer = setTimeout(resolve, 400); });
+      Promise.race([element.decode(), timeout]).catch(() => {}).then(() => {
+        clearTimeout(timer);
+        reveal(element);
+      });
+      return;
+    }
+    if (instant) element.classList.remove('reveal-pending');
+    reveal(element);
+  }
+  function reveal(element) {
+    if (revealed.has(element)) return;
     revealed.add(element);
     element.classList.add('is-visible');
     revealObserver?.unobserve(element);
@@ -304,7 +385,7 @@
     if (block) {
       if (block.matches('.work-index > li')) finishEntry();
       block.style.setProperty('--reveal-delay', '0ms');
-      show(block);
+      show(block, true);
       block.classList.remove('reveal-pending');
     }
   });
@@ -372,7 +453,7 @@
       element.style.setProperty('--reveal-delay', `${index * 100}ms`);
       element.classList.add('reveal-pending');
       revealObserver.observe(element);
-      if (inViewport(element)) show(element);
+      if (inViewport(element)) show(element, !element.matches('.work-index > li') || indexReleased);
     });
     metricObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) countMetric(entry.target); });
@@ -381,12 +462,13 @@
       metricObserver.observe(element);
       if (inViewport(element)) countMetric(element);
     });
-  } else revealElements.forEach(show);
+  } else revealElements.forEach(element => show(element, true));
 
   function settleMotion() {
     finishEntry();
     pauseRotation();
     rotationDone = true;
+    finishHalo();
     finishChange();
     line.textContent = phrases[0];
     revealObserver?.disconnect();
@@ -394,7 +476,7 @@
     revealElements.forEach(element => {
       element.classList.remove('reveal-pending');
       element.style.removeProperty('--reveal-delay');
-      show(element);
+      show(element, true);
     });
     [...counts.keys()].forEach(finishCount);
   }

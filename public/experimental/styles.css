@@ -11,6 +11,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 ::selection{background:var(--blue);color:var(--paper)}
 .work-project,.work-more-list>li{scroll-margin-top:88px}
 @media(max-width:820px){main>section{scroll-margin-top:24px}}
+@media(min-width:1024px){.about-sheet{scroll-margin-top:16px}}
 .skip{position:fixed;z-index:50;top:8px;left:8px;padding:12px 20px;background:var(--blue);color:white;transform:translateY(-150%)}
 .skip:focus{transform:none}
 .line-link{display:inline-flex;gap:18px;align-items:center;min-height:44px;width:max-content;max-width:100%;padding:5px 0;font-size:14px;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}

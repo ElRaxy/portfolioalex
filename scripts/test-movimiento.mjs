@@ -20,7 +20,7 @@ const text = node => {
   return copy.textContent.replace(/\s+/g, ' ').trim();
 };
 
-function harness({reduced = false, observer = true, resizeObserver = false, hash = '', scrollY = 0, navigation = 'navigate', run = true, visible = false, historyRows = [0,0,100,100], sequenceTop = 3000, sequenceHeight = 300, scrollHeight = 4000, decoding = 'immediate'} = {}) {
+function harness({reduced = false, observer = true, resizeObserver = false, hash = '', scrollY = 0, navigation = 'navigate', run = true, visible = false, historyRows = [0,0,100,100], sequenceTop = 3000, sequenceHeight = 300, scrollHeight = 4000, decoding = 'immediate', frameDuration = 16} = {}) {
   const dom = new JSDOM(html, {url: `https://example.test/${hash}`, runScripts: 'outside-only', pretendToBeVisual: true});
   const {window} = dom;
   let now = 0, nextID = 0;
@@ -40,7 +40,7 @@ function harness({reduced = false, observer = true, resizeObserver = false, hash
   window.setInterval = (fn, delay) => schedule(fn, delay, delay);
   window.clearInterval = window.clearTimeout;
   window.requestAnimationFrame = fn => {
-    const id = schedule(() => { frames.delete(id); fn(now); }, 16);
+    const id = schedule(() => { frames.delete(id); fn(now); }, frameDuration);
     frames.add(id);
     frameRequests.push(now);
     return id;
@@ -309,7 +309,7 @@ test('Active section is observed and its navigation link receives aria-current',
   }
 }));
 
-test('Reveal groups stagger by 100ms, become visible once, and unobserve their targets', () => using({}, ({document,observers,enter,tick}) => {
+test('Reveal groups stagger by 100ms, become visible once, and unobserve their targets', async () => usingSequence({}, async ({document,observers,enter,tick}) => {
   // The hero index now comes first in DOM order; this test exercises M2 after M1.
   tick(1600);
   const pending = [...document.querySelectorAll('.reveal-pending')];
@@ -322,6 +322,7 @@ test('Reveal groups stagger by 100ms, become visible once, and unobserve their t
     const owner = observers.find(item => item.nodes.has(node));
     assert.ok(owner);
     enter(node); tick(1000);
+    await flushDecodes();
     assert.equal(node.classList.contains('is-visible'), true);
     assert.equal(owner.unobserved.filter(target => target === node).length, 1);
     enter(node); tick(1000);
@@ -422,13 +423,14 @@ test('CSS encodes approved timing, curves and distances, with progressive visibi
   const sequenceModule = runtime.slice(runtime.indexOf('  function ventanaSecuencia('), runtime.indexOf('  function finishEntry('));
   const otherMotion = runtime.replace(sequenceModule, '') + app;
   assert.doesNotMatch(otherMotion, /addEventListener\(\s*['"]scroll['"]/);
-  assert.doesNotMatch(otherMotion, /requestAnimationFrame/);
+  assert.doesNotMatch(runtime.replace(sequenceModule, ''), /requestAnimationFrame/);
+  assert.match(app, /requestAnimationFrame\(step\)/);
   assert.match(sequenceModule, /addEventListener\('scroll', actualizar, \{passive: true\}\)/);
   assert.match(sequenceModule, /t - ultimo >= 70/);
   assert.doesNotMatch(movementCSS, /pointer-events:\s*none|overflow:\s*hidden/);
 });
 
-test('App preserves email copying, native anchor navigation and reduced-motion interruption', async () => {
+test('App preserves email copying, custom pointer navigation and reduced-motion interruption', async () => {
   const host = harness({run:false});
   const {window,document,tick,setReduced} = host;
   try {
@@ -444,11 +446,14 @@ test('App preserves email copying, native anchor navigation and reduced-motion i
     const link = document.querySelector('a.personal-next');
     const pointerClick = () => new window.MouseEvent('click', {bubbles:true,cancelable:true,button:0,detail:1});
     const first = pointerClick(); link.dispatchEvent(first);
-    assert.equal(first.defaultPrevented, false, 'Native anchor history and focus are preserved');
-    assert.equal(document.documentElement.style.scrollBehavior, 'smooth');
+    assert.equal(first.defaultPrevented, true, 'Pointer anchors use the ported curve');
+    assert.equal(window.location.hash, '#trabajo');
+    tick(100);
+    const beforeReduction = scrolls.length;
     setReduced(true);
     assert.equal(document.documentElement.style.scrollBehavior, '');
-    assert.equal(scrolls.at(-1).behavior, 'instant');
+    tick(100);
+    assert.equal(scrolls.length, beforeReduction);
     link.dispatchEvent(pointerClick());
     assert.equal(document.documentElement.style.scrollBehavior, '');
     setReduced(false);
@@ -512,10 +517,10 @@ test('CSS associates each duration with its intended motion, not merely a shared
   assert.match(compact, /\.name-word\{animation:entrada-nombre1000mscubic-bezier\(\.15,\.1,\.3,1\)both/);
   assert.match(compact, /\.name-word\.last\{animation-delay:100ms/);
   assert.match(compact, /\.hero-acento\{animation:entrada-acento1100mscubic-bezier\(\.2,1,\.3,1\)400msboth/);
-  assert.match(compact, /\.capsula\{animation:entrada-capsula400mslinear1200msboth/);
-  assert.match(compact, /\.reveal-pending\.is-visible\{animation:aparicion700mscubic-bezier\(\.3,0,\.3,1\)var\(--reveal-delay,0ms\)both/);
+  assert.match(compact, /\.capsula\{animation:entrada-capsula400msvar\(--ease-out\)1200msboth/);
+  assert.match(compact, /\.reveal-pending\.is-visible\{animation:aparicion700msvar\(--ease-out\)var\(--reveal-delay,0ms\)both/);
   assert.match(compact, /h2\.is-visible\.marcador\{background-size:100%35%;transition:background-size800mscubic-bezier\(\.3,0,\.3,1\)calc\(var\(--reveal-delay,0ms\)\+200ms\)/);
-  assert.match(compact, /\.capsula\[data-rotando\]\.capsula-punto::after\{animation:halo1800mslinearinfinite/);
+  assert.match(compact, /\.capsula\[data-halo\]\.capsula-punto::after\{animation:halo1800mslinearinfinite/);
   assert.match(compact, /\.capsula-linea\[data-cambio\]\{animation:capsula-cambio550mscubic-bezier\(\.33,\.6,\.67,1\)both/);
   assert.match(compact, /\.capsula-subrayado\{[^}]*transition:transform250ms/);
   assert.match(compact, /\.work-indexli::before\{[^}]*background:color-mix\(insrgb,var\(--blue\)5%,transparent\);opacity:0;transition:opacity400mscubic-bezier\(\.52,0,\.34,1\)/);
@@ -534,13 +539,13 @@ test('History stagger uses visual rows on desktop and reading order on mobile', 
 });
 
 
-test('Hero C: visible and intersecting index rows wait until M1 ends at 1600ms, then reveal once with M2', () => {
-  for (const visible of [false,true]) using({visible}, ({document,observers,enter,tick}) => {
+test('Hero C: visible and intersecting index rows wait until the name lands at 1100ms, then reveal once with M2', () => {
+  for (const visible of [false,true]) using({visible}, ({window,document,observers,enter,tick}) => {
     const rows = [...document.querySelectorAll('.work-index > li')];
     const owner = observers.find(item => item.nodes.has(rows[0]));
     assert.deepEqual(rows.map(row => row.style.getPropertyValue('--reveal-delay')), ['0ms','100ms','200ms','300ms']);
     rows.forEach(enter);
-    tick(1599);
+    tick(1099);
     assert.equal(document.documentElement.hasAttribute('data-entrada'), true);
     for (const row of rows) {
       assert.equal(row.classList.contains('is-visible'), false);
@@ -548,7 +553,10 @@ test('Hero C: visible and intersecting index rows wait until M1 ends at 1600ms, 
       assert.equal(owner.unobserved.includes(row), false);
     }
     tick(1);
-    assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
+    const landed = new window.Event('animationend', {bubbles:true});
+    Object.defineProperty(landed, 'animationName', {value:'entrada-nombre'});
+    document.querySelector('.name-word.last').dispatchEvent(landed);
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), true, 'M1 itself still ends at 1600ms');
     for (const row of rows) {
       assert.equal(row.classList.contains('is-visible'), true);
       assert.equal(owner.unobserved.filter(node => node === row).length, 1);
@@ -559,24 +567,27 @@ test('Hero C: visible and intersecting index rows wait until M1 ends at 1600ms, 
   });
 });
 
-test('Hero C: capsule animation completion releases M2 without waiting for the safety timer', () => using({visible:true}, ({window,document,tick,observers}) => {
-  const rows = [...document.querySelectorAll('.work-index > li')];
-  const owner = observers.find(item => item.nodes.has(rows[0]));
-  tick(1200);
-  const complete = name => {
-    const event = new window.Event('animationend', {bubbles:true});
-    Object.defineProperty(event, 'animationName', {value:name});
-    document.querySelector('.capsula').dispatchEvent(event);
-  };
-  complete('aparicion');
-  assert.equal(rows.some(row => row.classList.contains('is-visible')), false);
-  complete('entrada-capsula');
-  assert.equal(document.documentElement.hasAttribute('data-entrada'), false);
-  assert.equal(rows.every(row => row.classList.contains('is-visible')), true);
-  complete('entrada-capsula');
-  tick(5000);
-  for (const row of rows) assert.equal(owner.unobserved.filter(node => node === row).length, 1);
-}));
+test('Hero C: only the last name animation releases rows; capsule completion remains the safety net', () => {
+  for (const source of ['name','capsule']) using({visible:true}, ({window,document,tick,observers}) => {
+    const rows = [...document.querySelectorAll('.work-index > li')];
+    const owner = observers.find(item => item.nodes.has(rows[0]));
+    tick(1100);
+    const complete = (target, name) => {
+      const event = new window.Event('animationend', {bubbles:true});
+      Object.defineProperty(event, 'animationName', {value:name});
+      target.dispatchEvent(event);
+    };
+    complete(document.querySelector('.name-word'), 'entrada-nombre');
+    complete(document.querySelector('.name-word.last'), 'aparicion');
+    assert.equal(rows.some(row => row.classList.contains('is-visible')), false);
+    if (source === 'name') complete(document.querySelector('.name-word.last'), 'entrada-nombre');
+    else complete(document.querySelector('.capsula'), 'entrada-capsula');
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), source === 'name');
+    assert.equal(rows.every(row => row.classList.contains('is-visible')), true);
+    tick(5000);
+    for (const row of rows) assert.equal(owner.unobserved.filter(node => node === row).length, 1);
+  });
+});
 
 test('Hero C: skipped entry shows viewport rows immediately for reduced motion, history, hash and initial scroll', () => {
   for (const options of [{reduced:true},{navigation:'back_forward'},{hash:'#strev'},{hash:'#trabajo'},{scrollY:5},{scrollY:100}]) using({...options,visible:true}, ({document}) => {
@@ -624,32 +635,27 @@ test('Hero C: the inline fallback releases queued rows even if the controller st
   } finally { host.close(); }
 });
 
-test('Hero C: native index clicks reach each article and mark Trabajo as the active capsule section', {timeout:5000}, async () => {
-  const host = harness({visible:true});
-  const {window,document,tick} = host;
-  try {
-    const scrolls = [];
-    window.scrollTo = options => scrolls.push(options);
-    window.eval(app);
-    tick(1600);
-    for (const slug of ['strev','marky','smarty','sereno']) {
-      const changed = new Promise(resolve => window.addEventListener('hashchange', resolve, {once:true}));
-      const event = new window.MouseEvent('click', {bubbles:true,cancelable:true,button:0,detail:1});
-      document.querySelector(`.work-index-target[href="#${slug}"]`).dispatchEvent(event);
-      assert.equal(event.defaultPrevented, false);
-      await new Promise(resolve => setTimeout(resolve, 0));
-      tick(0);
-      await changed;
-      assert.equal(window.location.hash, `#${slug}`);
-      assert.equal(document.getElementById(slug).tagName, 'ARTICLE');
-      const active = document.querySelectorAll('.capsula nav a[aria-current="location"]');
-      assert.equal(active.length, 1);
-      assert.equal(active[0].getAttribute('href'), '#trabajo');
-      assert.equal(text(active[0]), 'Trabajo');
-    }
-    assert.deepEqual(scrolls.map(options => options.behavior), ['instant','instant','instant']);
-  } finally { host.close(); }
-});
+test('Hero C: custom index clicks reach each article, transfer focus and mark Trabajo', () => using({visible:true}, ({window,document,tick}) => {
+  const scrolls = [];
+  window.scrollTo = options => { scrolls.push(options); window.scrollY = options.top; };
+  window.eval(app);
+  tick(1600);
+  for (const slug of ['strev','marky','smarty','sereno']) {
+    const event = new window.MouseEvent('click', {bubbles:true,cancelable:true,button:0,detail:1});
+    document.querySelector(`.work-index-target[href="#${slug}"]`).dispatchEvent(event);
+    assert.equal(event.defaultPrevented, true);
+    assert.equal(window.location.hash, `#${slug}`);
+    assert.equal(document.getElementById(slug).tagName, 'ARTICLE');
+    const active = document.querySelectorAll('.capsula nav a[aria-current="location"]');
+    assert.equal(active.length, 1);
+    assert.equal(active[0].getAttribute('href'), '#trabajo');
+    assert.equal(text(active[0]), 'Trabajo');
+    tick(1000);
+    assert.equal(document.activeElement, document.getElementById(slug));
+  }
+  assert.ok(scrolls.length > 4);
+  assert.ok(scrolls.every(options => options.behavior === 'instant'));
+}));
 
 test('Hero C: CSS keeps fluid columns, the 1024px breakpoint, visible fallbacks and the hover contract', () => {
   const personal = styles[1].replace(/\s+/g, '');
@@ -661,7 +667,7 @@ test('Hero C: CSS keeps fluid columns, the 1024px breakpoint, visible fallbacks 
   assert.match(personal, /\.work-index-title\{font-size:12px;font-weight:450;letter-spacing:\.025em;color:#686f76/);
   assert.match(movement, /\.work-index-target\{[^}]*grid-template-columns:30pxminmax\(0,1fr\)auto/);
   assert.match(movement, /\.work-index-estado\{[^}]*grid-column:3;grid-row:1;font-size:13px;line-height:1\.3;color:var\(--blue\)/);
-  assert.match(movement, /@media\(prefers-reduced-motion:no-preference\)\{html\.js\[data-entrada\]\.work-index>li\{opacity:0;transform:translateY\(20px\)/);
+  assert.match(movement, /@media\(prefers-reduced-motion:no-preference\)\{html\.js\[data-entrada\]\.work-index>li:not\(\.is-visible\)\{opacity:0;transform:translateY\(20px\)/);
   assert.match(movement, /@media\(prefers-reduced-motion:reduce\)\{[^}]*animation:none!important/);
   const indexRules = [...movement.matchAll(/([^{}]*\.work-index[^{}]*)\{([^{}]*)\}/g)];
   for (const [rule,selector,declarations] of indexRules) {
@@ -758,7 +764,7 @@ test('Sequence decode failure leaves the first frame still and never enables its
   assert.equal(host.frameRequests.length, 0);
 }));
 
-test('Sequence visits every frame in both directions, no faster than 70ms, and stops at its target', async () => usingSequence({}, async host => {
+test('Sequence visits every frame in both directions at a mean 70ms cadence on 60Hz rAF and stops at its target', async () => usingSequence({frameDuration:1000/60}, async host => {
   assert.equal('ResizeObserver' in host.window, false);
   assert.deepEqual(visibleSequenceFrames(host.document), [1]);
   host.enter(host.document.getElementById('contacto'));
@@ -767,6 +773,7 @@ test('Sequence visits every frame in both directions, no faster than 70ms, and s
   let lastChange = host.window.performance.now();
   async function travel(y, expected) {
     const visited = [visibleSequenceFrames(host.document)[0]];
+    const start = host.window.performance.now();
     scrollSequence(host, y);
     assert.equal(host.frames.size, 1);
     for (let ms = 0; ms < 2700; ms += 1) {
@@ -775,13 +782,14 @@ test('Sequence visits every frame in both directions, no faster than 70ms, and s
       assert.equal(visible.length, 1);
       if (visible[0] !== visited.at(-1)) {
         const time = host.window.performance.now();
-        assert.ok(time - lastChange >= 70, `Frame ${visible[0]} changed after ${time - lastChange}ms`);
+        assert.ok(time - lastChange >= 70 - 1000/60 - 1e-6, `Frame ${visible[0]} changed after ${time - lastChange}ms`);
         assert.equal(Math.abs(visible[0] - visited.at(-1)), 1);
         visited.push(visible[0]);
         lastChange = time;
       }
     }
     assert.deepEqual(visited, expected);
+    assert.ok(lastChange - start <= 33 * 70 + 100, `Full trip took ${lastChange - start}ms`);
     assert.equal(host.frames.size, 0);
     const requests = host.frameRequests.length;
     host.tick(1000);
@@ -792,29 +800,30 @@ test('Sequence visits every frame in both directions, no faster than 70ms, and s
   await travel(0, Array.from({length:34}, (_, i) => 34 - i));
 }));
 
-test('Sequence reversals preserve the 70ms interval, even across idle restarts and delayed frames', async () => usingSequence({}, async host => {
+test('Sequence reversals retain the cadence and delayed frames discard debt without skipping images', async () => usingSequence({}, async host => {
   host.enter(host.document.getElementById('contacto'));
   await flushDecodes();
   scrollSequence(host, 3100);
   host.tick(80);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
   scrollSequence(host, 0);
-  host.tick(69);
+  host.tick(63);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
-  host.tick(11);
+  host.tick(1);
   assert.deepEqual(visibleSequenceFrames(host.document), [1]);
   assert.equal(host.frames.size, 0);
   scrollSequence(host, 3100);
-  host.tick(69);
-  assert.deepEqual(visibleSequenceFrames(host.document), [1]);
-  host.tick(11);
+  host.tick(80);
   assert.deepEqual(visibleSequenceFrames(host.document), [2]);
-  // A suspended tab delivers a late frame once; it must not catch up by skipping images.
   const [id] = host.frames;
   const delayed = host.timers.get(id);
   delayed.at += 3000;
   host.tick(3016);
   assert.deepEqual(visibleSequenceFrames(host.document), [3]);
+  host.tick(69);
+  assert.deepEqual(visibleSequenceFrames(host.document), [3], 'No catch-up burst after suspension');
+  host.tick(11);
+  assert.deepEqual(visibleSequenceFrames(host.document), [4]);
 }));
 
 test('Sequence resize remeasures its window and rebuilds the preload margin using viewport height', async () => usingSequence({}, async host => {
@@ -929,4 +938,286 @@ test('Sequence uses fixed cuts without prototype parameters, blend modes or debu
   assert.doesNotMatch(html + runtime + app, /[?&](?:debug|modo|ms|fundido|movil)=/);
   const sequenceCSS = [...movementCSS.matchAll(/([^{}]*\.secuencia[^{}]*)\{([^{}]*)\}/g)];
   for (const [, , declarations] of sequenceCSS) assert.doesNotMatch(declarations, /transition|animation/);
+});
+
+test('Fluidez AC1: copy, M2 and capsule use the shared ease-out while marker and signature stay unchanged', () => {
+  const compact = movementCSS.replace(/\s+/g, '');
+  assert.match(styles[0], /--ease-out:cubic-bezier\(\.23,1,\.32,1\)/);
+  assert.match(compact, /:is\(\.personal-role,\.personal-statement,\.personal-description,\.personal-actions\)\{animation:aparicion700msvar\(--ease-out\)both/);
+  assert.match(compact, /@keyframesentrada-capsula\{from\{opacity:0;translate:0-6px\}to\{opacity:1;translate:00\}\}/);
+  assert.match(compact, /\.capsula\{[^}]*transform:translateX\(-50%\)/);
+});
+
+const pointerAnchor = (host, href) => {
+  const event = new host.window.MouseEvent('click', {bubbles:true,cancelable:true,button:0,detail:1});
+  host.document.querySelector(`a[href="${href}"]`).dispatchEvent(event);
+  return event;
+};
+const installScroll = host => {
+  const scrolls = [];
+  host.window.scrollTo = options => { scrolls.push({top:options.top, at:host.window.performance.now()}); host.window.scrollY = options.top; };
+  host.window.eval(app);
+  return scrolls;
+};
+
+test('Fluidez AC2: anchor lock ignores intermediate sections and scrollend, releases on completion or cancellation', () => {
+  for (const stop of ['complete','wheel','touchstart','keydown','timeout']) using({}, host => {
+    const {window,document,observers,tick} = host;
+    installScroll(host);
+    const owner = observers.find(item => item.nodes.has(document.getElementById('trabajo')));
+    pointerAnchor(host, '#contacto');
+    const current = () => document.querySelector('.capsula nav a[aria-current]').hash;
+    assert.equal(current(), '#contacto');
+    for (const id of ['trabajo','sobre-mi']) {
+      owner.callback([{target:document.getElementById(id),isIntersecting:true}]);
+      window.dispatchEvent(new window.Event('scrollend'));
+      assert.equal(current(), '#contacto');
+    }
+    if (stop === 'complete') {
+      tick(1000);
+      assert.equal(current(), '#contacto', 'Stale observer batch does not displace arrival');
+    } else if (stop === 'timeout') {
+      for (const id of host.frames) host.timers.delete(id);
+      tick(1500);
+      assert.equal(current(), '#sobre-mi');
+    } else {
+      const event = stop === 'keydown' ? new window.KeyboardEvent(stop, {key:'ArrowDown',bubbles:true}) : new window.Event(stop);
+      (stop === 'keydown' ? document : window).dispatchEvent(event);
+      assert.equal(current(), '#sobre-mi');
+    }
+    owner.callback([{target:document.getElementById('contacto'),isIntersecting:true}]);
+    assert.equal(current(), '#contacto');
+  });
+});
+
+test('Fluidez AC2: underline grows and shrinks at its link and resize measures without transition', () => using({}, ({window,document,enter}) => {
+  const underline = document.querySelector('.capsula-subrayado');
+  const link = document.querySelector('.capsula nav a[href="#contacto"]');
+  link.closest('nav').getBoundingClientRect = () => ({left:300});
+  link.getBoundingClientRect = () => ({left:500,width:80});
+  const measured = [];
+  underline.getBoundingClientRect = () => { measured.push([underline.style.transform,underline.style.transition]); return {}; };
+  enter(document.getElementById('contacto'));
+  assert.deepEqual(measured.at(-1), ['translateX(200px) scaleX(0)','none']);
+  assert.equal(underline.style.transform, 'translateX(200px) scaleX(80)');
+  assert.equal(underline.style.opacity, '1');
+  link.getBoundingClientRect = () => ({left:520,width:90});
+  window.dispatchEvent(new window.Event('resize'));
+  assert.deepEqual(measured.at(-1), ['translateX(220px) scaleX(90)','none']);
+  assert.equal(underline.style.transition, '');
+  window.history.replaceState(null, '', '#inicio');
+  window.dispatchEvent(new window.HashChangeEvent('hashchange'));
+  assert.equal(underline.style.transform, 'translateX(220px) scaleX(0)');
+  assert.equal(underline.style.opacity, '0');
+  assert.match(movementCSS, /transition:transform 250ms var\(--ease-out\),opacity 150ms var\(--ease-out\)/);
+  assert.match(movementCSS, /\.capsula nav a\{transition:opacity 300ms,color 250ms var\(--ease-out\)/);
+}));
+
+test('Fluidez AC3: outgoing phrase overlaps 200ms, shares pauses and clears at 550ms without changing cadence', () => using({}, ({window,document,tick,setReduced}) => {
+  const capsule = document.querySelector('.capsula'), line = capsule.querySelector('.capsula-linea');
+  const outgoing = capsule.querySelector('.capsula-saliente');
+  assert.equal(document.querySelectorAll('.capsula-saliente').length, 1);
+  assert.equal(outgoing.getAttribute('aria-hidden'), 'true');
+  tick(4200);
+  assert.equal(outgoing.textContent.trim(), phrases[0]);
+  assert.equal(line.textContent, phrases[1]);
+  assert.equal(outgoing.hasAttribute('data-saliendo'), true);
+  tick(100);
+  capsule.dispatchEvent(new window.MouseEvent('mouseenter'));
+  assert.equal(outgoing.style.animationPlayState, 'paused');
+  assert.equal(line.style.animationPlayState, 'paused');
+  tick(9000);
+  assert.equal(outgoing.hasAttribute('data-saliendo'), true);
+  capsule.dispatchEvent(new window.MouseEvent('mouseleave'));
+  tick(449);
+  assert.equal(outgoing.hasAttribute('data-saliendo'), true);
+  tick(1);
+  assert.equal(outgoing.textContent, '');
+  assert.equal(outgoing.hasAttribute('data-saliendo'), false);
+  assert.equal(line.textContent, phrases[1]);
+  tick(3650);
+  assert.equal(line.textContent, phrases[2]);
+  setReduced(true);
+  assert.equal(outgoing.textContent, '');
+  tick(10000);
+  assert.equal(outgoing.hasAttribute('data-saliendo'), false);
+  assert.match(movementCSS, /capsula-salida 200ms var\(--ease-out\) both/);
+  assert.match(movementCSS, /@keyframes capsula-salida\{to\{opacity:0;transform:translateY\(-3px\);filter:blur\(2px\)/);
+}));
+
+test('Fluidez AC5: anchor curve matches the port, clamps geometry, updates history and focuses without scroll', () => {
+  for (const [top,margin,expected,duration] of [[1000,88,912,420],[2100,100,2000,640],[10000,0,3100,900],[-50,0,0,420]]) using({}, host => {
+    const {window,document,tick} = host;
+    const target = document.getElementById('trabajo');
+    target.style.scrollMarginTop = `${margin}px`;
+    target.getBoundingClientRect = () => ({top});
+    const scrolls = installScroll(host);
+    const focus = target.focus.bind(target);
+    let focusOptions;
+    target.focus = options => { focusOptions = options; focus(options); };
+    assert.equal(pointerAnchor(host, '#trabajo').defaultPrevented, true);
+    assert.equal(window.location.hash, '#trabajo');
+    assert.equal(window.history.length, 2);
+    assert.equal(scrolls.length, 0);
+    tick(duration - 1);
+    for (const sample of scrolls) {
+      const t = sample.at / duration;
+      const progress = t < .5 ? 4*t*t*t : 1 - (-2*t+2)**3/2;
+      assert.ok(Math.abs(sample.top - expected * progress) < 1e-8);
+    }
+    assert.notEqual(document.activeElement, target);
+    tick(17);
+    assert.equal(scrolls.at(-1).top, expected);
+    assert.equal(document.activeElement, target);
+    assert.equal(focusOptions.preventScroll, true);
+    assert.equal(host.frames.size, 0);
+    target.blur();
+    assert.equal(target.hasAttribute('tabindex'), false);
+  });
+});
+
+test('Fluidez AC5: history back restores the prior hash and cancels an ongoing anchor', {timeout:2000}, async () => usingSequence({}, async host => {
+  const {window,tick} = host;
+  const scrolls = installScroll(host);
+  pointerAnchor(host, '#trabajo'); tick(1000);
+  pointerAnchor(host, '#contacto'); tick(100);
+  const restored = new Promise(resolve => window.addEventListener('popstate', resolve, {once:true}));
+  window.history.back();
+  tick(0);
+  await restored;
+  assert.equal(window.location.hash, '#trabajo');
+  const count = scrolls.length;
+  tick(1000);
+  assert.equal(scrolls.length, count);
+  assert.equal(host.frames.size, 0);
+}));
+
+test('Fluidez AC5: wheel and touch cancel without stealing focus; keyboard and reduced motion stay native', () => {
+  for (const kind of ['wheel','touchstart','keydown','reduced']) using({}, host => {
+    const {window,document,tick,setReduced} = host;
+    const scrolls = installScroll(host);
+    pointerAnchor(host, '#contacto'); tick(100);
+    const count = scrolls.length;
+    if (kind === 'reduced') setReduced(true);
+    else if (kind === 'keydown') document.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Tab',bubbles:true}));
+    else window.dispatchEvent(new window.Event(kind));
+    tick(2000);
+    assert.equal(scrolls.length, count);
+    assert.notEqual(document.activeElement, document.getElementById('contacto'));
+    if (kind === 'keydown' || kind === 'reduced') assert.equal(pointerAnchor(host, '#trabajo').defaultPrevented, false);
+  });
+  using({}, host => {
+    installScroll(host);
+    const event = new host.window.MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:0});
+    host.document.querySelector('a.personal-next').dispatchEvent(event);
+    assert.equal(event.defaultPrevented, false);
+    assert.equal(host.frames.size, 0);
+  });
+});
+
+test('Fluidez AC6: viewport content and early restored intersections never enter M2; later content does', () => {
+  for (const options of [{},{hash:'#contacto'},{navigation:'back_forward'},{scrollY:100}]) using({...options,visible:true}, ({document}) => {
+    for (const node of document.querySelectorAll('.is-visible')) assert.equal(node.classList.contains('reveal-pending'), false);
+    for (const node of document.querySelectorAll('.reveal-pending')) assert.ok(node.matches('.work-index > li'));
+  });
+  using({hash:'#contacto'}, host => {
+    const early = host.document.querySelector('#about-title'), late = host.document.querySelector('#work-title');
+    const rect = () => ({top:50,bottom:150,height:100});
+    early.getBoundingClientRect = rect;
+    host.tick(150); host.enter(early);
+    assert.equal(early.classList.contains('reveal-pending'), false);
+    late.getBoundingClientRect = rect;
+    host.tick(1); host.enter(late);
+    assert.equal(late.classList.contains('reveal-pending'), true);
+    assert.equal(late.classList.contains('is-visible'), true);
+  });
+});
+
+test('Fluidez AC6: Work images wait for decode once, recover at 400ms or rejection and cannot replay', async () => {
+  for (const outcome of ['decoded','timeout','rejected','reduced']) await usingSequence({decoding:'pending'}, async host => {
+    const image = host.document.querySelector('img.work-image');
+    host.enter(image); host.enter(image);
+    assert.equal(host.decodes.length, 1);
+    assert.equal(image.classList.contains('is-visible'), false);
+    host.tick(399); await flushDecodes();
+    assert.equal(image.classList.contains('is-visible'), false);
+    if (outcome === 'decoded') host.decodes[0].resolve();
+    else if (outcome === 'rejected') host.decodes[0].reject(new Error('decode failed'));
+    else if (outcome === 'reduced') host.setReduced(true);
+    else host.tick(1);
+    await flushDecodes();
+    assert.equal(image.classList.contains('is-visible'), true);
+    if (outcome === 'reduced') assert.equal(image.classList.contains('reveal-pending'), false);
+    const owner = host.observers.find(item => item.unobserved.includes(image));
+    assert.equal(owner.unobserved.filter(node => node === image).length, 1);
+    host.decodes[0].resolve(); await flushDecodes();
+    assert.equal(owner.unobserved.filter(node => node === image).length, 1);
+  });
+});
+
+test('Fluidez AC7: menu visibility has asymmetric timings, all hover rules require hover, About has a desktop offset', () => {
+  assert.match(movementCSS, /visibility:hidden;[^}]*transition:transform 200ms var\(--ease-out\),opacity 200ms var\(--ease-out\),visibility 200ms/);
+  assert.match(movementCSS, /\[data-menu-abierto\] #capsula-panel\{[^}]*transition-duration:300ms/);
+  assert.match(styles[0], /@media\(min-width:1024px\)\{\.about-sheet\{scroll-margin-top:16px\}\}/);
+  const hoverBlock = movementCSS.match(/@media\(hover:hover\) and \(pointer:fine\)\{[\s\S]*?\n\}/)[0];
+  assert.match(hoverBlock, /a:hover,button:hover,summary:hover/);
+  assert.doesNotMatch(movementCSS.replace(hoverBlock,''), /:hover/);
+});
+
+test('Fluidez AC8: halo pauses in place and stops only at its final iteration or the 1800ms limit', () => {
+  for (const ending of ['iteration','timeout','paused']) using({}, ({window,document,tick}) => {
+    const capsule = document.querySelector('.capsula');
+    assert.equal(capsule.hasAttribute('data-halo'), true);
+    tick(1000);
+    capsule.dispatchEvent(new window.MouseEvent('mouseenter'));
+    assert.equal(capsule.hasAttribute('data-halo'), true);
+    assert.equal(capsule.hasAttribute('data-pausa'), true);
+    tick(5000);
+    capsule.dispatchEvent(new window.MouseEvent('mouseleave'));
+    assert.equal(capsule.hasAttribute('data-pausa'), false);
+    tick(phrases.length * 4200 - 1000);
+    assert.equal(capsule.hasAttribute('data-rotando'), false);
+    assert.equal(capsule.hasAttribute('data-halo'), true);
+    const iteration = name => {
+      const event = new window.Event('animationiteration',{bubbles:true});
+      Object.defineProperty(event,'animationName',{value:name});
+      capsule.querySelector('.capsula-punto').dispatchEvent(event);
+    };
+    iteration('capsula-cambio');
+    assert.equal(capsule.hasAttribute('data-halo'), true);
+    if (ending === 'iteration') iteration('halo');
+    else {
+      tick(500);
+      if (ending === 'paused') {
+        capsule.dispatchEvent(new window.MouseEvent('mouseenter'));
+        tick(5000); iteration('halo');
+        assert.equal(capsule.hasAttribute('data-halo'), true);
+        capsule.dispatchEvent(new window.MouseEvent('mouseleave'));
+      }
+      tick(1299);
+      assert.equal(capsule.hasAttribute('data-halo'), true);
+      tick(1);
+    }
+    assert.equal(capsule.hasAttribute('data-halo'), false);
+  });
+  assert.match(movementCSS, /\.capsula\[data-pausa\] \.capsula-punto::after\{animation-play-state:paused/);
+});
+
+test('Fluidez AC4: delayed name completion owns release and a missing event falls back only at 1600ms', () => {
+  for (const eventArrives of [true,false]) using({visible:true}, ({window,document,tick}) => {
+    const rows = [...document.querySelectorAll('.work-index > li')];
+    tick(1200);
+    assert.equal(rows.some(row => row.classList.contains('is-visible')), false, 'No independent 1100ms timer');
+    if (eventArrives) {
+      const event = new window.Event('animationend', {bubbles:true});
+      Object.defineProperty(event,'animationName',{value:'entrada-nombre'});
+      document.querySelector('.name-word.last').dispatchEvent(event);
+    } else {
+      tick(399);
+      assert.equal(rows.some(row => row.classList.contains('is-visible')), false);
+      tick(1);
+    }
+    assert.equal(rows.every(row => row.classList.contains('is-visible')), true);
+    assert.equal(document.documentElement.hasAttribute('data-entrada'), eventArrives);
+  });
 });

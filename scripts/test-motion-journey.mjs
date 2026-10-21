@@ -199,6 +199,7 @@ test('AC7: New project images retain their complete intrinsic dimensions and app
     assert.equal(image.getAttribute('width'),width);
     assert.equal(image.getAttribute('height'),height);
     assert.equal(image.getAttribute('alt'),alt);
+    assert.equal(image.getAttribute('decoding'),'async');
   }
 });
 
