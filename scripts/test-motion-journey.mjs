@@ -31,8 +31,8 @@ test('AC1: retired story, project disclosures and their controllers are absent',
 test('AC2: About contains the literal bio, four facts, three methods and four visible history entries',()=>{
   assert.ok(about.querySelector('h2#about-title'));
   assert.deepEqual([...about.querySelectorAll('.about-relato > p')].map(text),[
-    'Soy Alex Micó, desarrollador full stack de Alicante. Me formé en sistemas y redes y en desarrollo web. Hoy compagino mi trabajo con productos propios y herramientas para desarrollo con IA.',
-    'Trabajo de extremo a extremo: interfaz, API, automatización, despliegue y diagnóstico de incidencias. Antes de cerrar una entrega, pruebo los flujos frágiles y compruebo el resultado en el entorno real.',
+    'Uso Claude Code y Codex a diario, reparto tareas, reviso lo que sale y lo pruebo. Para ver qué hace cada sesión de agente hice Sereno, un panel de terminal en un solo fichero de Python y sin dependencias, donde bajé una orden de 33 segundos a 0,3. También he creado Flota, un plugin para Claude Code CLI que lleva ese seguimiento a la propia terminal, con una banda de ejecuciones Codex y avisos de sesiones que esperan respuesta (sin dependencias npm).',
+    'Soy desarrollador full stack de Alicante, trabajo presencialmente en Anuubis Solutions y me gusta todo el recorrido, desde el backend hasta la interfaz, el diseño y el producto. Con Strev, mi app para entrenadores personales en beta abierta, ahora he aparcado la landing para arreglar primero el interior.',
   ]);
   const facts=about.querySelector('dl.about-facts');
   assert.ok(facts);

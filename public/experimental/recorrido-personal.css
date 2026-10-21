@@ -52,6 +52,8 @@
  .about-methods{margin-top:0}
  .about-history{margin-top:24px}
  .about-utility{grid-column:1;align-self:end}
+ .about-secondary{padding-top:36px}
+ .about-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
  .work-project{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;row-gap:0}
  .work-project-heading{grid-column:1;grid-row:1;margin-bottom:24px}
  .work-project-copy{grid-column:1;grid-row:2}
